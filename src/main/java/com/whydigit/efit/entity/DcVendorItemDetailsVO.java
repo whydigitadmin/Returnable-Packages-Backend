@@ -14,30 +14,24 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name="warehouse")
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class WarehouseVO {
+@Data
+@Table(name="dcvendor_item_details")
+public class DcVendorItemDetailsVO {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int warehouse_id;
-	private String warehouse_name;
-	private String country;
-	private String state;
-	private String city;
-	private String pincode;
-	private String address;
-	private String gst;
-	private boolean active;
-		
+	private int id;
+	private String product_type;
+	private String product;
+	private float rate;
+	private int quantity;
+	private float tax;
+	private float amount;
+	private int dcvendor_id;
+	
 	@Embedded
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
-
-	
-	
-	
-	
 
 }
