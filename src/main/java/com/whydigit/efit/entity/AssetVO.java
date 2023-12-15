@@ -46,6 +46,7 @@ public class AssetVO {
 	private String costPrice;
 	private String sellPrice;
 	private String scrapValue;
+	private String itemCategory;
 	@Embedded
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
 }
