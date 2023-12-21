@@ -24,9 +24,9 @@ public class AssetVO {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
-	private String name;
-	private String sku;
-	private String productUnit;
+	private String assetGroup;
+	private String assetName;
+	private String AssetId;
 	private boolean active;
 	private float length;
 	private float breath;
@@ -36,7 +36,7 @@ public class AssetVO {
 	private float weight;
 	private String weightUnit;
 	private String Brand;
-	private String uanUpc;
+	private String eanUpc;
 	private String assetCategory;
 	private String expectedLife;
 	private String maintanencePeriod;
@@ -46,7 +46,7 @@ public class AssetVO {
 	private String costPrice;
 	private String sellPrice;
 	private String scrapValue;
-	private String itemCategory;
+
 	@Embedded
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
 }

@@ -15,12 +15,16 @@ import com.whydigit.efit.entity.AssetVO;
 import com.whydigit.efit.entity.CustomersVO;
 import com.whydigit.efit.entity.FlowDetailVO;
 import com.whydigit.efit.entity.FlowVO;
+import com.whydigit.efit.entity.ManufacturerProductVO;
+import com.whydigit.efit.entity.ManufacturerVO;
 import com.whydigit.efit.entity.VenderVO;
 import com.whydigit.efit.repo.AddressRepo;
 import com.whydigit.efit.repo.AssetGroupRepo;
 import com.whydigit.efit.repo.AssetRepo;
 import com.whydigit.efit.repo.CustomersRepo;
 import com.whydigit.efit.repo.FlowRepo;
+import com.whydigit.efit.repo.ManufacturerProductRepo;
+import com.whydigit.efit.repo.ManufacturerRepo;
 import com.whydigit.efit.repo.VenderRepo;
 
 @Service
@@ -38,6 +42,10 @@ public class MasterServiceImpl implements MasterService {
 	VenderRepo venderRepo;
 	@Autowired
 	AddressRepo addressRepo;
+	@Autowired
+	ManufacturerRepo manufacturerRepo;
+	@Autowired
+	ManufacturerProductRepo manufacturerProductRepo;
 
 	@Override
 	public List<AssetVO> getAllAsset() {
@@ -209,6 +217,47 @@ public class MasterServiceImpl implements MasterService {
 	public void deleteVender(int id) {
 		venderRepo.deleteById(id);
 
+	}
+	
+	
+	@Override
+	public List<ManufacturerVO> getAllManufacturer() {
+		return manufacturerRepo.findAll();
+	}
+
+	@Override
+	public Optional<ManufacturerVO> getManufacturerById(int id) {
+		return manufacturerRepo.findById(id);
+	}
+
+	@Override
+	public ManufacturerVO createManufacturer(ManufacturerVO manufacturerVO) {
+		return manufacturerRepo.save(manufacturerVO);
+	}
+
+	@Override
+	public Optional<ManufacturerVO> updateManufacturer(ManufacturerVO manufacturerVO) {
+		if (manufacturerRepo.existsById(manufacturerVO.getId())) {
+			return Optional.of(manufacturerRepo.save(manufacturerVO));
+		} else {
+			return Optional.empty();
+		}
+	}
+
+	@Override
+	public void deleteManufacturer(int id) {
+		manufacturerRepo.deleteById(id);
+
+	}
+	
+	@Override
+	public List<ManufacturerProductVO> getAllManufacturerProduct() {
+		return manufacturerProductRepo.findAll();
+	}
+	
+	@Override
+	public ManufacturerProductVO createManufacturerProduct(ManufacturerProductVO manufacturerProductVO) {
+		return manufacturerProductRepo.save(manufacturerProductVO);
 	}
 
 }

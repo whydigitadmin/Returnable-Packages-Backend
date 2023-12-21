@@ -26,11 +26,21 @@ public class CustomersVO {
 	private String firstName;
 	private String lastName;
 	private String customerOrgName;
+	private String customerCode;
 	private String displayName;
 	private String Email;
 	private int phone;
+	private String sop;
+	private String document;
 	private boolean customerActivatePortal;
 	private boolean active;
+	private String bankName;
+	private String accountNO;
+	private String accountName;
+	private String branch;
+	private String ifscCode;
+	
+	
 	
 	@Embedded
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();

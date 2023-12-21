@@ -99,7 +99,7 @@ public class WarehouseController extends BaseController {
 				responseObjectsMap.put("WarehouseVO", updateWarehousevo);
 				responseDTO = createServiceResponse(responseObjectsMap);
 			} else {
-				errorMsg = "Warehouse not found for ID: " + warehousevo.getWarehouse_id();
+				errorMsg = "Warehouse not found for ID: " + warehousevo.getId();
 				responseDTO = createServiceResponseError(responseObjectsMap, "Warehouse update failed", errorMsg);
 			}
 		} catch (Exception e) {

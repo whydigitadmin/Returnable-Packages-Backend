@@ -17,4 +17,7 @@ public interface WarehouseService {
 	
 	void deleteWarehouse(int id);
 	
+	
+	
+	
 }

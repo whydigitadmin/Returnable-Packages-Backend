@@ -29,6 +29,8 @@ import com.whydigit.efit.entity.AssetGroupVO;
 import com.whydigit.efit.entity.AssetVO;
 import com.whydigit.efit.entity.CustomersVO;
 import com.whydigit.efit.entity.FlowVO;
+import com.whydigit.efit.entity.ManufacturerProductVO;
+import com.whydigit.efit.entity.ManufacturerVO;
 import com.whydigit.efit.entity.VenderVO;
 import com.whydigit.efit.service.MasterService;
 
@@ -37,7 +39,7 @@ import com.whydigit.efit.service.MasterService;
 @RequestMapping("api/master")
 
 public class MasterController extends BaseController {
-	public static final Logger LOGGER = LoggerFactory.getLogger(BasicMasterController.class);
+	public static final Logger LOGGER = LoggerFactory.getLogger(MasterController.class);
 	
 	@Autowired
 	MasterService masterService;
@@ -651,4 +653,174 @@ public class MasterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	
 	}
+	
+	//Manufacturer
+	
+	@GetMapping("/manufacturer")
+	public ResponseEntity<ResponseDTO> getAllManufacturer() {
+		String methodName = "getAllManufacturer()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<ManufacturerVO> manufacturerVO = new ArrayList<>();
+		try {
+			manufacturerVO = masterService.getAllManufacturer();
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Manufacturer information get successfully");
+			responseObjectsMap.put("manufacturerVO", manufacturerVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "Manufacturer information receive failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
+	@GetMapping("/manufacturerVO/{id}")
+	public ResponseEntity<ResponseDTO> getManufacturerById(@PathVariable int id) {
+		String methodName = "getManufacturerById()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		ManufacturerVO manufacturerVO = null;
+		try {
+			manufacturerVO = masterService.getManufacturerById(id).orElse(null);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Manufacturer found by ID");
+			responseObjectsMap.put("manufacturerVO", manufacturerVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			errorMsg = "Manufacturer not found for ID: " + id;
+			responseDTO = createServiceResponseError(responseObjectsMap, "Manufacturer not found", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
+	@PostMapping("/manufacturer")
+	public ResponseEntity<ResponseDTO> createManufacturer(@RequestBody ManufacturerVO manufacturerVO) {
+		String methodName = "createManufacturer()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		try {
+			ManufacturerVO createdManufacturerVO = masterService.createManufacturer(manufacturerVO);
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Manufacturer created successfully");
+			responseObjectsMap.put("manufacturerVO", createdManufacturerVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "Manufacturer creation failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
+	@PutMapping("/manufacturer")
+	public ResponseEntity<ResponseDTO> updateManufacturer(@RequestBody ManufacturerVO manufacturerVO) {
+		String methodName = "updateManufacturer()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		try {
+			ManufacturerVO updatedManufacturerVO = masterService.updateManufacturer(manufacturerVO).orElse(null);
+			if (updatedManufacturerVO!= null) {
+				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Manufacturer updated successfully");
+				responseObjectsMap.put("manufacturerVO", updatedManufacturerVO);
+				responseDTO = createServiceResponse(responseObjectsMap);
+			} else {
+				errorMsg = "Flow not found for ID: " + manufacturerVO.getId();
+				responseDTO = createServiceResponseError(responseObjectsMap, "Manufacturer update failed", errorMsg);
+			}
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "Manufacturer"
+					+ " update failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
+	@DeleteMapping("/manufacturer/{id}")
+	public ResponseEntity<ResponseDTO> deleteManufacturer(@PathVariable int id) {
+		String methodName = "deleteManufacturer()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		try {
+			masterService.deleteManufacturer(id);
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Manufacturer deleted successfully");
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "Manufacturer deletion failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+	
+	@PostMapping("/manufacturerProduct")
+	public ResponseEntity<ResponseDTO> createManufactureProduct(@RequestBody ManufacturerProductVO manufacturerProductVO) {
+		String methodName = "createManufactureProduct()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		try {
+			ManufacturerProductVO createdManufacturerProductVO = masterService.createManufacturerProduct(manufacturerProductVO);
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "ManufacturerProduct created successfully");
+			responseObjectsMap.put("manufacturerProductVO", createdManufacturerProductVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "ManufacturerProduct creation failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+	
+	@GetMapping("/manufacturerProduct")
+	public ResponseEntity<ResponseDTO> getAllManufacturerProduct() {
+		String methodName = "getAllManufacturerProduct()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<ManufacturerProductVO> manufacturerProductVO = new ArrayList<>();
+		try {
+			manufacturerProductVO = masterService.getAllManufacturerProduct();
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "ManufacturerProduct information get successfully");
+			responseObjectsMap.put("manufacturerProductVO", manufacturerProductVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "ManufacturerProduct information receive failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
 }

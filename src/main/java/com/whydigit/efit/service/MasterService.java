@@ -9,6 +9,8 @@ import com.whydigit.efit.entity.AssetGroupVO;
 import com.whydigit.efit.entity.AssetVO;
 import com.whydigit.efit.entity.CustomersVO;
 import com.whydigit.efit.entity.FlowVO;
+import com.whydigit.efit.entity.ManufacturerProductVO;
+import com.whydigit.efit.entity.ManufacturerVO;
 import com.whydigit.efit.entity.VenderVO;
 
 public interface MasterService {
@@ -68,4 +70,21 @@ public interface MasterService {
 	Optional<VenderVO>updateVender(VenderVO venderVO);
 	
 	void deleteVender(int id);
+	
+	
+	 List<ManufacturerVO>getAllManufacturer();
+		
+		Optional<ManufacturerVO>getManufacturerById(int id);
+		
+		ManufacturerVO createManufacturer(ManufacturerVO manufacturerVO);
+		
+		Optional<ManufacturerVO>updateManufacturer(ManufacturerVO manufacturerVO);
+		
+		void deleteManufacturer(int id);
+		
+		
+		List<ManufacturerProductVO>getAllManufacturerProduct();
+		
+		ManufacturerProductVO createManufacturerProduct(ManufacturerProductVO manufacturerProductVO);
 }
+

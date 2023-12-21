@@ -35,7 +35,7 @@ public class WarehouseServiceImpl implements WarehouseService {
 
 	@Override
 	public Optional<WarehouseVO> updateWarehouseVo(WarehouseVO warehouse) {
-		if(warehouseRepo.existsById(warehouse.getWarehouse_id()))
+		if(warehouseRepo.existsById(warehouse.getId()))
 		{
 			return Optional.of(warehouseRepo.save(warehouse));
 		}

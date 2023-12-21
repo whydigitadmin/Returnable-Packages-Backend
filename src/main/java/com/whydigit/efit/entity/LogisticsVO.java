@@ -1,3 +1,4 @@
+
 package com.whydigit.efit.entity;
 
 import javax.persistence.Embedded;
@@ -14,38 +15,19 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name="warehouse")
+@Table(name = "ps_logistics")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class WarehouseVO {
-	
+public class LogisticsVO {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int warehouseCode;
-	private String warehouseName;
-	private String storageMapping;
-	private String country;
-	private String state;
-	private String city;
-	private String pincode;
-	private String address;
-	private String gst;
-	private String locationType;
-	private String document;
-	private boolean active;
-		
-	@Embedded
+	private Integer id;
+	private String avgLotSize;
+	private String dispatchFrequency;
+	private String diapatchTo;
+	private String transpotationTo;
+    @Embedded
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
-
-	public Integer getId() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	
-	
-	
-	
-
 }
