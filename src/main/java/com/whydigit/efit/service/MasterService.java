@@ -5,13 +5,16 @@ import java.util.Optional;
 
 import com.whydigit.efit.dto.FlowDTO;
 import com.whydigit.efit.entity.AddressVO;
+import com.whydigit.efit.entity.AssetCategoryVO;
 import com.whydigit.efit.entity.AssetGroupVO;
 import com.whydigit.efit.entity.AssetVO;
 import com.whydigit.efit.entity.CustomersVO;
 import com.whydigit.efit.entity.FlowVO;
 import com.whydigit.efit.entity.ManufacturerProductVO;
 import com.whydigit.efit.entity.ManufacturerVO;
+import com.whydigit.efit.entity.UnitVO;
 import com.whydigit.efit.entity.VenderVO;
+import com.whydigit.efit.entity.WarehouseLocationVO;
 
 public interface MasterService {
 
@@ -86,5 +89,35 @@ public interface MasterService {
 		List<ManufacturerProductVO>getAllManufacturerProduct();
 		
 		ManufacturerProductVO createManufacturerProduct(ManufacturerProductVO manufacturerProductVO);
+		
+List<AssetCategoryVO>getAllAssetCategory();
+		
+AssetCategoryVO createAssetCategory(AssetCategoryVO assetCategoryVO);
+
+
+
+//unit
+	
+ List<UnitVO>getAllUnit();
+	
+	Optional<UnitVO>getUnitById(int id);
+	
+	UnitVO createUnit(UnitVO unitVO);
+	
+	Optional<UnitVO>updateUnit(UnitVO unitVO);
+	
+	void deleteUnit(int id);
+
+//warehouse location
+
+ List<WarehouseLocationVO>getAllWarehouseLocation();
+	
+	Optional<WarehouseLocationVO>getWarehouseLocationById(int id);
+	
+	WarehouseLocationVO createWarehouseLocation(WarehouseLocationVO warehouselocationVO);
+	
+	Optional<WarehouseLocationVO>updateWarehouseLocation(WarehouseLocationVO warehouselocationVO);
+	
+	void deleteWarehouseLocation(int id);
 }
 

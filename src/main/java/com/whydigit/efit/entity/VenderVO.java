@@ -1,15 +1,9 @@
 package com.whydigit.efit.entity;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.whydigit.efit.dto.CreatedUpdatedDate;
@@ -31,7 +25,8 @@ public class VenderVO {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	private String venderType;
-	private String primaryContact;
+	private String firstName;
+	private String lastName;
 	private String venderOrgName;
 	private String displyName;
 	private String email;

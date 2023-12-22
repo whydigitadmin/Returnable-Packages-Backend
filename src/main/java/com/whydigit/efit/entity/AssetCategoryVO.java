@@ -1,4 +1,6 @@
+
 package com.whydigit.efit.entity;
+
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -13,19 +15,18 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "unit")
+@Table(name="asset_category")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UnitVO {
+public class AssetCategoryVO {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
-	private String unit;
-    private boolean active;
-    private String createdBy;
-    private String updatedBy;
-    @Embedded
+	private String assetCategory;
+	private String assetCategoryId;
+	private boolean active;
+	@Embedded
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
 }

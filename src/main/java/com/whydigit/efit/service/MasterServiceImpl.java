@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.whydigit.efit.dto.FlowDTO;
 import com.whydigit.efit.entity.AddressVO;
+import com.whydigit.efit.entity.AssetCategoryVO;
 import com.whydigit.efit.entity.AssetGroupVO;
 import com.whydigit.efit.entity.AssetVO;
 import com.whydigit.efit.entity.CustomersVO;
@@ -17,15 +18,20 @@ import com.whydigit.efit.entity.FlowDetailVO;
 import com.whydigit.efit.entity.FlowVO;
 import com.whydigit.efit.entity.ManufacturerProductVO;
 import com.whydigit.efit.entity.ManufacturerVO;
+import com.whydigit.efit.entity.UnitVO;
 import com.whydigit.efit.entity.VenderVO;
+import com.whydigit.efit.entity.WarehouseLocationVO;
 import com.whydigit.efit.repo.AddressRepo;
+import com.whydigit.efit.repo.AssetCategoryRepo;
 import com.whydigit.efit.repo.AssetGroupRepo;
 import com.whydigit.efit.repo.AssetRepo;
 import com.whydigit.efit.repo.CustomersRepo;
 import com.whydigit.efit.repo.FlowRepo;
 import com.whydigit.efit.repo.ManufacturerProductRepo;
 import com.whydigit.efit.repo.ManufacturerRepo;
+import com.whydigit.efit.repo.UnitRepo;
 import com.whydigit.efit.repo.VenderRepo;
+import com.whydigit.efit.repo.WarehouseLocationRepo;
 
 @Service
 public class MasterServiceImpl implements MasterService {
@@ -46,7 +52,14 @@ public class MasterServiceImpl implements MasterService {
 	ManufacturerRepo manufacturerRepo;
 	@Autowired
 	ManufacturerProductRepo manufacturerProductRepo;
-
+	@Autowired
+	AssetCategoryRepo assetCategoryRepo;
+	
+	@Autowired
+	UnitRepo unitRepo;
+	
+	@Autowired
+	WarehouseLocationRepo warehouseLocationRepo;
 	@Override
 	public List<AssetVO> getAllAsset() {
 		return assetRepo.findAll();
@@ -259,5 +272,88 @@ public class MasterServiceImpl implements MasterService {
 	public ManufacturerProductVO createManufacturerProduct(ManufacturerProductVO manufacturerProductVO) {
 		return manufacturerProductRepo.save(manufacturerProductVO);
 	}
+	
+	@Override
+	public List<AssetCategoryVO> getAllAssetCategory() {
+		return assetCategoryRepo.findAll();
+	}
+	
+	@Override
+	public AssetCategoryVO createAssetCategory(AssetCategoryVO assetCategoryVO) {
+		return assetCategoryRepo.save(assetCategoryVO);
+	}
+	
+	
+	//Unit 
+		
+		@Override
+		public List<UnitVO> getAllUnit() {
+			return unitRepo.findAll();
+		}
+
+		@Override
+		public Optional<UnitVO> getUnitById(int id) {
+			return unitRepo.findById(id);
+		}
+
+		@Override
+		public UnitVO createUnit(UnitVO unitVO) {
+			return unitRepo.save(unitVO);
+		}
+
+		@Override
+		public Optional<UnitVO> updateUnit(UnitVO unitVO) {
+			if (unitRepo.existsById(unitVO.getId())) {
+				return Optional.of(unitRepo.save(unitVO));
+			} else {
+				return Optional.empty();
+			}
+		}
+
+	
+		
+	//Warehouse Location
+
+		@Override
+		public List<WarehouseLocationVO> getAllWarehouseLocation() {
+			// TODO Auto-generated method stub
+			return warehouseLocationRepo.findAll();
+		}
+
+		@Override
+		public Optional<WarehouseLocationVO> getWarehouseLocationById(int id) {
+			// TODO Auto-generated method stub 
+			return warehouseLocationRepo.findById(id);
+		}
+
+		@Override
+		public WarehouseLocationVO createWarehouseLocation(WarehouseLocationVO warehouselocationVO) {
+			// TODO Auto-generated method stub 
+			return warehouseLocationRepo.save(warehouselocationVO);
+		}
+
+		@Override
+		public Optional<WarehouseLocationVO> updateWarehouseLocation(WarehouseLocationVO warehouselocationVO) {
+			// TODO Auto-generated method stub 
+			if (warehouseLocationRepo.existsById(warehouselocationVO.getId())) {
+			return Optional.of(warehouseLocationRepo.save(warehouselocationVO));
+		} else {
+			return Optional.empty();}
+		}
+
+		@Override
+		public void deleteWarehouseLocation(int id) {
+			// TODO Auto-generated method stub
+			warehouseLocationRepo.deleteById(id);
+			
+		}
+
+		@Override
+		public void deleteUnit(int id) {
+			// TODO Auto-generated method stub
+			unitRepo.deleteById(id);
+		}
+		
+
 
 }
