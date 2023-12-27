@@ -18,7 +18,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.whydigit.efit.common.CommonConstant;
 import com.whydigit.efit.common.UserConstants;
@@ -95,7 +97,6 @@ public class MasterController extends BaseController {
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
-		
 	}
 	
 	@PutMapping("/asset")
@@ -175,7 +176,7 @@ public class MasterController extends BaseController {
 	}
 
 	@GetMapping("/assetGroup/{id}")
-	public ResponseEntity<ResponseDTO> getAssetGroupById(@PathVariable int id) {
+	public ResponseEntity<ResponseDTO> getAssetGroupById(@PathVariable String id) {
 		String methodName = "getAssetGroupById()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -1119,4 +1120,24 @@ public class MasterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
+	@PostMapping("/assetGroupByCSV")
+	public ResponseEntity<ResponseDTO> createAssetGroupByCSV(@RequestParam("assetFile") MultipartFile assetFile) {
+		String methodName = "createAssetGroupByCSV()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		try {
+			List<AssetGroupVO> createdAssetGroupVO = masterService.createAssetGroupByCSV(assetFile);
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "AssetGroup created successfully");
+			responseObjectsMap.put("assetGroupVO", createdAssetGroupVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "AssetGroup creation failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
 }

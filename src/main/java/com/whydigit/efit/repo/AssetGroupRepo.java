@@ -8,5 +8,5 @@ import com.whydigit.efit.entity.AssetGroupVO;
 
 
 @Repository
-public interface AssetGroupRepo extends JpaRepository<AssetGroupVO, Integer> {
+public interface AssetGroupRepo extends JpaRepository<AssetGroupVO, String> {
 }

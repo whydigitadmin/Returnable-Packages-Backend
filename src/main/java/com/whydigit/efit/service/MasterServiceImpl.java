@@ -1,13 +1,24 @@
 package com.whydigit.efit.service;
 
+import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.opencsv.CSVReader;
+import com.whydigit.efit.common.CommonConstant;
+import com.whydigit.efit.controller.MasterController;
 import com.whydigit.efit.dto.FlowDTO;
 import com.whydigit.efit.entity.AddressVO;
 import com.whydigit.efit.entity.AssetCategoryVO;
@@ -21,6 +32,7 @@ import com.whydigit.efit.entity.ManufacturerVO;
 import com.whydigit.efit.entity.UnitVO;
 import com.whydigit.efit.entity.VenderVO;
 import com.whydigit.efit.entity.WarehouseLocationVO;
+import com.whydigit.efit.exception.ApplicationException;
 import com.whydigit.efit.repo.AddressRepo;
 import com.whydigit.efit.repo.AssetCategoryRepo;
 import com.whydigit.efit.repo.AssetGroupRepo;
@@ -35,6 +47,8 @@ import com.whydigit.efit.repo.WarehouseLocationRepo;
 
 @Service
 public class MasterServiceImpl implements MasterService {
+
+	public static final Logger LOGGER = LoggerFactory.getLogger(MasterServiceImpl.class);
 
 	@Autowired
 	AssetRepo assetRepo;
@@ -54,12 +68,13 @@ public class MasterServiceImpl implements MasterService {
 	ManufacturerProductRepo manufacturerProductRepo;
 	@Autowired
 	AssetCategoryRepo assetCategoryRepo;
-	
+
 	@Autowired
 	UnitRepo unitRepo;
-	
+
 	@Autowired
 	WarehouseLocationRepo warehouseLocationRepo;
+
 	@Override
 	public List<AssetVO> getAllAsset() {
 		return assetRepo.findAll();
@@ -96,13 +111,20 @@ public class MasterServiceImpl implements MasterService {
 	}
 
 	@Override
-	public Optional<AssetGroupVO> getAssetGroupById(int id) {
+	public Optional<AssetGroupVO> getAssetGroupById(String id) {
 		return assetGroupRepo.findById(id);
 	}
 
 	@Override
-	public AssetGroupVO createAssetGroup(AssetGroupVO assetGroupVO) {
-		return assetGroupRepo.save(assetGroupVO);
+	public AssetGroupVO createAssetGroup(AssetGroupVO assetGroupVO) throws ApplicationException {
+		if (ObjectUtils.isNotEmpty(assetGroupVO) && StringUtils.isNotBlank(assetGroupVO.getId())) {
+			if (assetGroupRepo.existsById(assetGroupVO.getId())) {
+				throw new ApplicationException("AssetGroup already exist. Please try another one.");
+			}
+			return assetGroupRepo.save(assetGroupVO);
+		} else {
+			throw new ApplicationException("Invalid AssetGoup Information.");
+		}
 	}
 
 	@Override
@@ -134,7 +156,7 @@ public class MasterServiceImpl implements MasterService {
 	public CustomersVO createCustomers(CustomersVO customersVO) {
 		return customersRepo.save(customersVO);
 	}
-	
+
 	@Override
 	public AddressVO createAddress(AddressVO addressVO) {
 		return addressRepo.save(addressVO);
@@ -186,7 +208,8 @@ public class MasterServiceImpl implements MasterService {
 		flowVO.setFlowDetailVO(flowDetailVOList);
 		return flowVO;
 	}
-@Override
+
+	@Override
 	public Optional<FlowVO> updateFlow(FlowVO flowVO) {
 		if (flowRepo.existsById(flowVO.getId())) {
 			return Optional.of(flowRepo.save(flowVO));
@@ -200,8 +223,7 @@ public class MasterServiceImpl implements MasterService {
 		flowRepo.deleteById(id);
 
 	}
-	
-	
+
 	@Override
 	public List<VenderVO> getAllVender() {
 		return venderRepo.findAll();
@@ -231,8 +253,7 @@ public class MasterServiceImpl implements MasterService {
 		venderRepo.deleteById(id);
 
 	}
-	
-	
+
 	@Override
 	public List<ManufacturerVO> getAllManufacturer() {
 		return manufacturerRepo.findAll();
@@ -262,98 +283,132 @@ public class MasterServiceImpl implements MasterService {
 		manufacturerRepo.deleteById(id);
 
 	}
-	
+
 	@Override
 	public List<ManufacturerProductVO> getAllManufacturerProduct() {
 		return manufacturerProductRepo.findAll();
 	}
-	
+
 	@Override
 	public ManufacturerProductVO createManufacturerProduct(ManufacturerProductVO manufacturerProductVO) {
 		return manufacturerProductRepo.save(manufacturerProductVO);
 	}
-	
+
 	@Override
 	public List<AssetCategoryVO> getAllAssetCategory() {
 		return assetCategoryRepo.findAll();
 	}
-	
+
 	@Override
 	public AssetCategoryVO createAssetCategory(AssetCategoryVO assetCategoryVO) {
 		return assetCategoryRepo.save(assetCategoryVO);
 	}
-	
-	
-	//Unit 
-		
-		@Override
-		public List<UnitVO> getAllUnit() {
-			return unitRepo.findAll();
+
+	// Unit
+
+	@Override
+	public List<UnitVO> getAllUnit() {
+		return unitRepo.findAll();
+	}
+
+	@Override
+	public Optional<UnitVO> getUnitById(int id) {
+		return unitRepo.findById(id);
+	}
+
+	@Override
+	public UnitVO createUnit(UnitVO unitVO) {
+		return unitRepo.save(unitVO);
+	}
+
+	@Override
+	public Optional<UnitVO> updateUnit(UnitVO unitVO) {
+		if (unitRepo.existsById(unitVO.getId())) {
+			return Optional.of(unitRepo.save(unitVO));
+		} else {
+			return Optional.empty();
 		}
+	}
 
-		@Override
-		public Optional<UnitVO> getUnitById(int id) {
-			return unitRepo.findById(id);
-		}
+	// Warehouse Location
 
-		@Override
-		public UnitVO createUnit(UnitVO unitVO) {
-			return unitRepo.save(unitVO);
-		}
+	@Override
+	public List<WarehouseLocationVO> getAllWarehouseLocation() {
+		// TODO Auto-generated method stub
+		return warehouseLocationRepo.findAll();
+	}
 
-		@Override
-		public Optional<UnitVO> updateUnit(UnitVO unitVO) {
-			if (unitRepo.existsById(unitVO.getId())) {
-				return Optional.of(unitRepo.save(unitVO));
-			} else {
-				return Optional.empty();
-			}
-		}
+	@Override
+	public Optional<WarehouseLocationVO> getWarehouseLocationById(int id) {
+		// TODO Auto-generated method stub
+		return warehouseLocationRepo.findById(id);
+	}
 
-	
-		
-	//Warehouse Location
+	@Override
+	public WarehouseLocationVO createWarehouseLocation(WarehouseLocationVO warehouselocationVO) {
+		// TODO Auto-generated method stub
+		return warehouseLocationRepo.save(warehouselocationVO);
+	}
 
-		@Override
-		public List<WarehouseLocationVO> getAllWarehouseLocation() {
-			// TODO Auto-generated method stub
-			return warehouseLocationRepo.findAll();
-		}
-
-		@Override
-		public Optional<WarehouseLocationVO> getWarehouseLocationById(int id) {
-			// TODO Auto-generated method stub 
-			return warehouseLocationRepo.findById(id);
-		}
-
-		@Override
-		public WarehouseLocationVO createWarehouseLocation(WarehouseLocationVO warehouselocationVO) {
-			// TODO Auto-generated method stub 
-			return warehouseLocationRepo.save(warehouselocationVO);
-		}
-
-		@Override
-		public Optional<WarehouseLocationVO> updateWarehouseLocation(WarehouseLocationVO warehouselocationVO) {
-			// TODO Auto-generated method stub 
-			if (warehouseLocationRepo.existsById(warehouselocationVO.getId())) {
+	@Override
+	public Optional<WarehouseLocationVO> updateWarehouseLocation(WarehouseLocationVO warehouselocationVO) {
+		// TODO Auto-generated method stub
+		if (warehouseLocationRepo.existsById(warehouselocationVO.getId())) {
 			return Optional.of(warehouseLocationRepo.save(warehouselocationVO));
 		} else {
-			return Optional.empty();}
+			return Optional.empty();
 		}
+	}
 
-		@Override
-		public void deleteWarehouseLocation(int id) {
-			// TODO Auto-generated method stub
-			warehouseLocationRepo.deleteById(id);
-			
+	@Override
+	public void deleteWarehouseLocation(int id) {
+		// TODO Auto-generated method stub
+		warehouseLocationRepo.deleteById(id);
+
+	}
+
+	@Override
+	public void deleteUnit(int id) {
+		// TODO Auto-generated method stub
+		unitRepo.deleteById(id);
+	}
+
+	@Override
+	public List<AssetGroupVO> createAssetGroupByCSV(MultipartFile assetFile) throws ApplicationException {
+		if (assetFile.isEmpty()) {
+			throw new ApplicationException("Invalid CSV File.");
 		}
-
-		@Override
-		public void deleteUnit(int id) {
-			// TODO Auto-generated method stub
-			unitRepo.deleteById(id);
+		List<AssetGroupVO> assetGroups = new ArrayList<>();
+		try (CSVReader reader = new CSVReader(new InputStreamReader(assetFile.getInputStream()))) {
+			List<String[]> lines = reader.readAll();
+			assetGroups = lines.stream().skip(1) // Skip header
+					.map(this::createAssetGroupFromCsvLine).filter(Objects::nonNull) // Filter out null values if
+																						// validation fails
+					.collect(Collectors.toList());
+			System.out.println(lines);
+		} catch (Exception e) {
+			LOGGER.error(CommonConstant.ERR_MSG_FORMAT, "createAssetGroupByCSV()", e.getMessage());
+			throw new ApplicationException("Failed to read CSV file.");
 		}
-		
+		return assetGroupRepo.saveAll(assetGroups);
+	}
 
-
+	private AssetGroupVO createAssetGroupFromCsvLine(String[] csvLine) {
+		try {
+			if (StringUtils.isEmpty(csvLine[0])) {
+				LOGGER.warn("Validation failed for CSV line: {}", Arrays.toString(csvLine));
+				return null;
+			}
+			if (assetGroupRepo.existsById(csvLine[0])) {
+				return null;
+			}
+			return AssetGroupVO.builder().id(csvLine[0]).assetCode(csvLine[1]).assetCategory(csvLine[2])
+					.active(Boolean.parseBoolean(csvLine[3])).length(Float.parseFloat(csvLine[4]))
+					.breath(Float.parseFloat(csvLine[5])).height(Float.parseFloat(csvLine[6])).dimUnit(csvLine[7])
+					.build();
+		} catch (Exception e) {
+			LOGGER.error("Error processing CSV line: {}", Arrays.toString(csvLine), e);
+			return null;
+		}
+	}
 }
