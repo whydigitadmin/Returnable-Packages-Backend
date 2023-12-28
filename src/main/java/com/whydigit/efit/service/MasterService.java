@@ -3,6 +3,8 @@ package com.whydigit.efit.service;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.whydigit.efit.dto.FlowDTO;
 import com.whydigit.efit.entity.AddressVO;
 import com.whydigit.efit.entity.AssetCategoryVO;
@@ -15,6 +17,7 @@ import com.whydigit.efit.entity.ManufacturerVO;
 import com.whydigit.efit.entity.UnitVO;
 import com.whydigit.efit.entity.VenderVO;
 import com.whydigit.efit.entity.WarehouseLocationVO;
+import com.whydigit.efit.exception.ApplicationException;
 
 public interface MasterService {
 
@@ -31,9 +34,9 @@ public interface MasterService {
 	
     List<AssetGroupVO>getAllAssetGroup();
 	
-	Optional<AssetGroupVO>getAssetGroupById(int id);
+	Optional<AssetGroupVO>getAssetGroupById(String id);
 	
-	AssetGroupVO createAssetGroup(AssetGroupVO assetGroupVO);
+	AssetGroupVO createAssetGroup(AssetGroupVO assetGroupVO) throws ApplicationException;
 	
 	Optional<AssetGroupVO>updateAssetGroup(AssetGroupVO assetGroupVO);
 	
@@ -119,5 +122,8 @@ AssetCategoryVO createAssetCategory(AssetCategoryVO assetCategoryVO);
 	Optional<WarehouseLocationVO>updateWarehouseLocation(WarehouseLocationVO warehouselocationVO);
 	
 	void deleteWarehouseLocation(int id);
+
+	List<AssetGroupVO> createAssetGroupByCSV(MultipartFile assetFile) throws ApplicationException;
+
 }
 

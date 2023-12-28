@@ -2,46 +2,41 @@ package com.whydigit.efit.entity;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 import com.whydigit.efit.dto.CreatedUpdatedDate;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name="asset_group")
+@Table(name = "asset_group")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class AssetGroupVO {
-
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
+	@NotEmpty(message = "Asset group id is required")
+	private String id;
+	@NotEmpty(message = "AssetCode is required")
+	private String assetCode;	
+	@NotEmpty(message = "AssetCategory is required")
 	private String assetCategory;
-	private String assetName;
-	private String uom;
 	private boolean active;
+	@NotNull(message = "Length is required")
 	private float length;
+	@NotNull(message = "Breath is required")
 	private float breath;
+	@NotNull(message = "Height is required")
 	private float height;
+	@NotEmpty(message = "DimUnit is required")
 	private String dimUnit;
-	private float weight;
-	private String weightUnit;
-	private String chargableWeight;
-	private String chargableWeightUnit;
-	private String expectedLife;
-	private String maintanenceInterval;
-	private String expectedTransaction;
-	private String eanUpc;
-	private String hsnCode;
-	private String scrapValue;
-	
 	@Embedded
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
 }
