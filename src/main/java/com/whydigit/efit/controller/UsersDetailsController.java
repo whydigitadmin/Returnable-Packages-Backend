@@ -23,8 +23,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.whydigit.efit.common.CommonConstant;
 import com.whydigit.efit.common.UserConstants;
 import com.whydigit.efit.dto.ResponseDTO;
-import com.whydigit.efit.service.UsersDetailsService;
 import com.whydigit.efit.entity.UsersDetails;
+import com.whydigit.efit.service.UsersDetailsService;
 
 @RestController
 @CrossOrigin
