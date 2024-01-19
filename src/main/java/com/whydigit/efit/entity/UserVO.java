@@ -1,5 +1,7 @@
 package com.whydigit.efit.entity;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Date;
 
 import javax.persistence.Embedded;
@@ -39,6 +41,7 @@ public class UserVO {
 	private String password;
 	private boolean loginStatus;
 	private boolean isActive;
+	private LocalDateTime lastLogin;
 	@Enumerated(EnumType.STRING)
 	private Role role;
 	@ManyToOne

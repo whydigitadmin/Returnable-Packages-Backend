@@ -1,5 +1,6 @@
 package com.whydigit.efit.dto;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import javax.persistence.Embedded;
@@ -28,4 +29,6 @@ public class UserResponseDTO {
 	private Date accountRemovedDate;
 	private String token;
 	private String tokenId;
+	private LocalDateTime lastLogin;
+	
 }
