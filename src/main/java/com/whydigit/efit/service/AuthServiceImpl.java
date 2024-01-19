@@ -24,14 +24,17 @@ import com.whydigit.efit.dto.OrganizationDTO;
 import com.whydigit.efit.dto.RefreshTokenDTO;
 import com.whydigit.efit.dto.ResetPasswordFormDTO;
 import com.whydigit.efit.dto.Role;
+import com.whydigit.efit.dto.UserAddressDTO;
 import com.whydigit.efit.dto.UserResponseDTO;
 import com.whydigit.efit.entity.OrganizationVO;
 import com.whydigit.efit.entity.TokenVO;
+import com.whydigit.efit.entity.UserAddressVO;
 import com.whydigit.efit.entity.UserVO;
 import com.whydigit.efit.exception.ApplicationException;
 import com.whydigit.efit.repo.OrganizationRepo;
 import com.whydigit.efit.repo.TokenRepo;
 import com.whydigit.efit.repo.UserActionRepo;
+import com.whydigit.efit.repo.UserAddressRepo;
 import com.whydigit.efit.repo.UserRepo;
 import com.whydigit.efit.security.TokenProvider;
 import com.whydigit.efit.util.CryptoUtils;
@@ -60,7 +63,10 @@ public class AuthServiceImpl implements AuthService {
 
 	@Autowired
 	OrganizationRepo organizationRepo;
-	
+
+	@Autowired
+	UserAddressRepo userAddressRepo;
+
 	@Transactional
 	@Override
 	public void signup(CreateOrganizationFormDTO createOrganizationFormDTO) {
@@ -78,12 +84,35 @@ public class AuthServiceImpl implements AuthService {
 		UserVO userVO = getUserVOFromCreateOrganizationFormDTO(createOrganizationFormDTO);
 		userVO.setOrganizationVO(
 				organizationRepo.save(getOrganizationVOFromCreateOrganizationFormDTO(createOrganizationFormDTO)));
+		userVO.setUserAddressVO(userAddressRepo.save(getAddressVOFromCreateOrganizationFormDTO(createOrganizationFormDTO)));
 		userRepo.save(userVO);
 		userService.createUserAction(userVO.getEmail(), userVO.getUserId(), UserConstants.USER_ACTION_ADD_ACCOUNT);
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 	}
 
+	private UserAddressVO getAddressVOFromCreateOrganizationFormDTO(CreateOrganizationFormDTO createOrganizationFormDTO) {
+		UserAddressVO userAddressVO=new UserAddressVO();
+		UserAddressDTO userAddressDTO=createOrganizationFormDTO.getUserAddressDTO();
+		userAddressVO.setAddress1(userAddressDTO.getAddress1());
+		userAddressVO.setAddress2(userAddressDTO.getAddress2());
+		userAddressVO.setCountry(userAddressDTO.getCountry());
+		userAddressVO.setLocation(userAddressDTO.getLocation());
+		userAddressVO.setPin(userAddressDTO.getPin());
+		userAddressVO.setState(userAddressDTO.getState());
+		return userAddressVO;
+	}
 
+	private UserAddressVO getAddressVOFromCreateUserFormDTO(CreateUserFormDTO createUserFormDTO) {
+		UserAddressVO userAddressVO=new UserAddressVO();
+		UserAddressDTO userAddressDTO=createUserFormDTO.getUserAddressDTO();
+		userAddressVO.setAddress1(userAddressDTO.getAddress1());
+		userAddressVO.setAddress2(userAddressDTO.getAddress2());
+		userAddressVO.setCountry(userAddressDTO.getCountry());
+		userAddressVO.setLocation(userAddressDTO.getLocation());
+		userAddressVO.setPin(userAddressDTO.getPin());
+		userAddressVO.setState(userAddressDTO.getState());
+		return userAddressVO;
+	}
 	private OrganizationVO getOrganizationVOFromCreateOrganizationFormDTO(
 			CreateOrganizationFormDTO createOrganizationFormDTO) {
 		OrganizationVO organizationVO = new OrganizationVO();
@@ -101,7 +130,6 @@ public class AuthServiceImpl implements AuthService {
 		return organizationVO;
 	}
 
-	
 	private UserVO getUserVOFromCreateOrganizationFormDTO(CreateOrganizationFormDTO createOrganizationFormDTO) {
 		UserVO userVO = new UserVO();
 		userVO.setFirstName(createOrganizationFormDTO.getFirstName());
@@ -156,7 +184,6 @@ public class AuthServiceImpl implements AuthService {
 		}
 	}
 
-
 	/**
 	 * @param encryptedPassword -> Data from user;
 	 * @param encodedPassword   ->Data from DB;
@@ -180,7 +207,8 @@ public class AuthServiceImpl implements AuthService {
 		try {
 			userVO.setLoginStatus(true);
 			userRepo.save(userVO);
-			userService.createUserAction(userVO.getUserName(), userVO.getUserId(), UserConstants.USER_ACTION_TYPE_LOGIN);
+			userService.createUserAction(userVO.getUserName(), userVO.getUserId(),
+					UserConstants.USER_ACTION_TYPE_LOGIN);
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage());
 			throw new ApplicationContextException(UserConstants.ERRROR_MSG_UNABLE_TO_UPDATE_USER_INFORMATION);
@@ -202,7 +230,6 @@ public class AuthServiceImpl implements AuthService {
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 	}
-
 
 	@Override
 	public void changePassword(ChangePasswordFormDTO changePasswordRequest) {
@@ -250,7 +277,8 @@ public class AuthServiceImpl implements AuthService {
 				throw new ApplicationContextException(UserConstants.ERRROR_MSG_UNABLE_TO_ENCODE_USER_PASSWORD);
 			}
 			userRepo.save(userVO);
-			userService.createUserAction(userVO.getUserName(), userVO.getUserId(), UserConstants.USER_ACTION_TYPE_RESET_PASSWORD);
+			userService.createUserAction(userVO.getUserName(), userVO.getUserId(),
+					UserConstants.USER_ACTION_TYPE_RESET_PASSWORD);
 		} else {
 			throw new ApplicationContextException(UserConstants.ERRROR_MSG_USER_INFORMATION_NOT_FOUND);
 		}
@@ -290,7 +318,7 @@ public class AuthServiceImpl implements AuthService {
 		}
 		return refreshTokenDTO;
 	}
-	
+
 	@Override
 	public void createUser(CreateUserFormDTO createUserFormDTO) throws ApplicationException {
 		String methodName = "createUser()";
@@ -303,6 +331,7 @@ public class AuthServiceImpl implements AuthService {
 		UserVO userVO = getUserVOFromCreateUserFormDTO(createUserFormDTO);
 		userVO.setOrganizationVO(organizationRepo.findById(createUserFormDTO.getOrgId())
 				.orElseThrow(() -> new ApplicationException("No orginaization found.")));
+		userVO.setUserAddressVO(userAddressRepo.save(getAddressVOFromCreateUserFormDTO(createUserFormDTO)));
 		userRepo.save(userVO);
 		userService.createUserAction(userVO.getEmail(), userVO.getUserId(), UserConstants.USER_ACTION_ADD_ACCOUNT);
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
@@ -326,4 +355,3 @@ public class AuthServiceImpl implements AuthService {
 	}
 
 }
-

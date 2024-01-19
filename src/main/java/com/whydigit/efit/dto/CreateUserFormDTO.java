@@ -33,4 +33,5 @@ public class CreateUserFormDTO {
 
 	private long orgId;
 
+	private UserAddressDTO userAddressDTO;
 }
