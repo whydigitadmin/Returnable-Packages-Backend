@@ -15,12 +15,12 @@ import org.springframework.stereotype.Service;
 
 import com.whydigit.efit.common.CommonConstant;
 import com.whydigit.efit.common.UserConstants;
-import com.whydigit.efit.controller.RefreshTokenDTO;
 import com.whydigit.efit.dto.ChangePasswordFormDTO;
 import com.whydigit.efit.dto.CreateOrganizationFormDTO;
 import com.whydigit.efit.dto.CreateUserFormDTO;
 import com.whydigit.efit.dto.LoginFormDTO;
 import com.whydigit.efit.dto.OrganizationDTO;
+import com.whydigit.efit.dto.RefreshTokenDTO;
 import com.whydigit.efit.dto.ResetPasswordFormDTO;
 import com.whydigit.efit.dto.Role;
 import com.whydigit.efit.dto.UserResponseDTO;

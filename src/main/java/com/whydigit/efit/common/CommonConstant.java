@@ -18,6 +18,8 @@ public class CommonConstant {
 	public static final String REFRESH_TOKEN = "refreshToken";
 	public static final String SUBSCRIPTION_TYPE_DEMO ="DEMO";
 	public static final String SUBSCRIPTION_TYPE_PRO ="PRO";
+	public static final String ACTION_CREATE = "create";
+	public static final String ACTION_UPDATE = "update";
 			
 
 }

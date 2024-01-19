@@ -22,6 +22,7 @@ import com.whydigit.efit.common.UserConstants;
 import com.whydigit.efit.dto.CreateOrganizationFormDTO;
 import com.whydigit.efit.dto.CreateUserFormDTO;
 import com.whydigit.efit.dto.LoginFormDTO;
+import com.whydigit.efit.dto.RefreshTokenDTO;
 import com.whydigit.efit.dto.ResponseDTO;
 import com.whydigit.efit.dto.UserResponseDTO;
 import com.whydigit.efit.service.AuthService;
