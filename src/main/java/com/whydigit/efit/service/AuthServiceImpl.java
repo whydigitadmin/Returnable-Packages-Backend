@@ -1,5 +1,6 @@
 package com.whydigit.efit.service;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import javax.transaction.Transactional;
@@ -141,9 +142,20 @@ public class AuthServiceImpl implements AuthService {
 		TokenVO tokenVO = tokenProvider.createToken(userVO.getUserId(), loginRequest.getUserName());
 		userResponseDTO.setToken(tokenVO.getToken());
 		userResponseDTO.setTokenId(tokenVO.getId());
+		updateLastLoginByUserId(userVO.getUserId());
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return userResponseDTO;
 	}
+
+	private void updateLastLoginByUserId(Long userId) {
+		try {
+			userRepo.updateLastLoginByUserId(userId, LocalDateTime.now());
+		} catch (Exception e) {
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME_WITH_USER_ID, "updateLastLoginByUserId()", userId,
+					e.getMessage());
+		}
+	}
+
 
 	/**
 	 * @param encryptedPassword -> Data from user;
@@ -257,6 +269,7 @@ public class AuthServiceImpl implements AuthService {
 		userDTO.setRole(userVO.getRole());
 		userDTO.setCommonDate(userVO.getCommonDate());
 		userDTO.setAccountRemovedDate(userVO.getAccountRemovedDate());
+		userDTO.setLastLogin(userVO.getLastLogin());
 		return userDTO;
 	}
 
