@@ -32,7 +32,7 @@ import com.whydigit.efit.service.AuthService;
 @RequestMapping("api/auth")
 public class AuthController extends BaseController{
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(AuthController.class);
+	private static final Logger LOGGER = LoggerFactory. getLogger(AuthController.class);
 
 	@Autowired
 	AuthService authService;
@@ -49,7 +49,7 @@ public class AuthController extends BaseController{
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME_WITH_USER_NAME, methodName,
-					createOrganizationFormDTO.getEmail(), errorMsg);
+					createOrganizationFormDTO.  getEmail(), errorMsg);
 		}
 		if (StringUtils.isBlank(errorMsg)) {
 			responseObjectsMap.put(CommonConstant.STRING_MESSAGE,

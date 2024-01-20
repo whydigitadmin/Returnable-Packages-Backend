@@ -7,6 +7,8 @@ import javax.persistence.Embedded;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 
+import com.whydigit.efit.entity.AccessRightsVO;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -30,5 +32,5 @@ public class UserResponseDTO {
 	private String token;
 	private String tokenId;
 	private LocalDateTime lastLogin;
-	
+	private AccessRightsVO accessRightsVO;
 }

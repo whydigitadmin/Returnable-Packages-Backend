@@ -34,5 +34,6 @@ public class AccessRightsVO {
 	private int expences;
 	private int lifeCycleManagement;
 	private int reports;
+	
 
 }
