@@ -31,5 +31,7 @@ public class CreateOrganizationFormDTO {
 	
 	private Role role;
 	
+	private UserAddressDTO userAddressDTO; 
+	
 	private OrganizationDTO organizationDTO; 
 }
