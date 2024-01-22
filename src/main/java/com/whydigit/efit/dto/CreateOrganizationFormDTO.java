@@ -1,7 +1,9 @@
 package com.whydigit.efit.dto;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import lombok.AllArgsConstructor;
@@ -31,7 +33,10 @@ public class CreateOrganizationFormDTO {
 	
 	private Role role;
 	
+	
 	private UserAddressDTO userAddressDTO; 
 	
+	@NotNull
+	@Valid
 	private OrganizationDTO organizationDTO; 
 }
