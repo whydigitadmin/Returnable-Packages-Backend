@@ -24,6 +24,8 @@ public class UnitVO {
 	private int id;
 	private String unit;
     private boolean active;
+    private String createdBy;
+    private String updatedBy;
     @Embedded
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
 }
