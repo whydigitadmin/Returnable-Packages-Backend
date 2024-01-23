@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,7 +28,7 @@ import com.whydigit.efit.dto.RefreshTokenDTO;
 import com.whydigit.efit.dto.ResponseDTO;
 import com.whydigit.efit.dto.UserResponseDTO;
 import com.whydigit.efit.service.AuthService;
-
+@CrossOrigin
 @RestController
 @RequestMapping("api/auth")
 public class AuthController extends BaseController{
