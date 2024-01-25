@@ -1,12 +1,21 @@
 package com.whydigit.efit.service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
+import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.whydigit.efit.dto.IssueItemDTO;
@@ -55,7 +64,32 @@ public class EmitterServiceImpl implements EmitterService {
 		issueRequestVO.setRemark(issueRequestDTO.getRemark());
 		issueRequestVO.setReqAddressId(issueRequestDTO.getReqAddressId());
 		issueRequestVO.setRequestedDate(LocalDateTime.now());
-		issueRequestVO.setReqUserId(issueRequestDTO.getReqUserId());
+		issueRequestVO.setOrgId(issueRequestDTO.getOrgId());
+		issueRequestVO.setEmitterId(issueRequestDTO.getEmitterId());
 	}
 
+	@Override
+	public List<IssueRequestVO> getIssueRequest(Long emitterId, Long orgId, LocalDate startDate, LocalDate endDate) {
+
+		return issueRequestRepo.findAll(new Specification<IssueRequestVO>() {
+
+			@Override
+			public Predicate toPredicate(Root<IssueRequestVO> root, CriteriaQuery<?> query,
+					CriteriaBuilder criteriaBuilder) {
+				List<Predicate> predicates = new ArrayList<>();
+				if (ObjectUtils.isNotEmpty(emitterId)) {
+					predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("emitterId"), emitterId)));
+				}
+				if (ObjectUtils.isNotEmpty(orgId)) {
+					predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("orgId"), orgId)));
+				}
+				if (ObjectUtils.isNotEmpty(startDate) && ObjectUtils.isNotEmpty(endDate)) {
+					predicates.add(criteriaBuilder.between(root.get("requestedDate"),
+							LocalDateTime.of(startDate, LocalTime.MIDNIGHT),
+							LocalDateTime.of(endDate, LocalTime.MIDNIGHT)));
+				}
+				return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
+			}
+		});
+	}
 }
