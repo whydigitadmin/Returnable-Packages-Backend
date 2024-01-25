@@ -3,6 +3,7 @@ package com.whydigit.efit.entity;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -29,7 +30,8 @@ public class IssueRequestVO {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
-	private long reqUserId;
+	private long orgId;
+	private long emitterId;
 	private long reqAddressId;
 	private long flowTo;
 	private int totalIssueItem;
