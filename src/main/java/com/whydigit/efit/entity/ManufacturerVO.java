@@ -24,6 +24,7 @@ public class ManufacturerVO {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
+	private long orgId;
 	private String company;
 	private String branch;
 	private String address;

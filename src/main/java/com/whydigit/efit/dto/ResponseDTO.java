@@ -29,7 +29,7 @@ public class ResponseDTO {
 	private String statusFlag;
 
 	private boolean status;
-
+	
 	@JsonInclude(JsonInclude.Include.NON_EMPTY)
 	private Map<String, Object> paramObjectsMap = new HashMap<>();
 

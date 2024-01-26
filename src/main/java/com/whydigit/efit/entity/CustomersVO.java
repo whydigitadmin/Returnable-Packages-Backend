@@ -23,6 +23,7 @@ public class CustomersVO {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
+	private long orgId;
 	private String firstName;
 	private String lastName;
 	private String customerOrgName;
@@ -39,8 +40,6 @@ public class CustomersVO {
 	private String accountName;
 	private String branch;
 	private String ifscCode;
-	
-	
 	
 	@Embedded
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();

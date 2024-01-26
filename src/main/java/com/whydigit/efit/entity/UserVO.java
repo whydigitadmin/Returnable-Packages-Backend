@@ -44,7 +44,7 @@ public class UserVO {
 	private LocalDateTime lastLogin;
 	@Enumerated(EnumType.STRING)
 	private Role role;
-	private long accessRightsRole;
+	private long accessRightsRoleId;
 	@ManyToOne
 	@JoinColumn(name = "orgId")
 	private OrganizationVO organizationVO;

@@ -24,6 +24,7 @@ public class VenderVO {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
+	private long orgId;
 	private String venderType;
 	private String firstName;
 	private String lastName;
