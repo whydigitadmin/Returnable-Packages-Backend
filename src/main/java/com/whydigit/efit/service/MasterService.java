@@ -21,7 +21,7 @@ import com.whydigit.efit.exception.ApplicationException;
 
 public interface MasterService {
 
-	List<AssetVO>getAllAsset();
+	List<AssetVO>getAllAsset(Long orgId);
 	
 	Optional<AssetVO>getAssetById(int id);
 	

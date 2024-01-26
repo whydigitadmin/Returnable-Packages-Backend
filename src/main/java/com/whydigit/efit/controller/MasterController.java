@@ -52,7 +52,7 @@ public class MasterController extends BaseController {
 	//asset
 	
 	@GetMapping("/asset")
-	public ResponseEntity<ResponseDTO>getAllAsset(){
+	public ResponseEntity<ResponseDTO>getAllAsset(@RequestParam(required = false) Long orgId){
 		String methodName = "getAllAsset()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -60,7 +60,7 @@ public class MasterController extends BaseController {
 		ResponseDTO responseDTO = null;
 		List<AssetVO> assetVO = new ArrayList<>();
 		try {
-			assetVO = masterService.getAllAsset();
+			assetVO = masterService.getAllAsset(orgId);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);

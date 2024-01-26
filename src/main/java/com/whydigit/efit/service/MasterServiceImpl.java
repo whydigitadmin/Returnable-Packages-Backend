@@ -75,8 +75,18 @@ public class MasterServiceImpl implements MasterService {
 	WarehouseLocationRepo warehouseLocationRepo;
 
 	@Override
-	public List<AssetVO> getAllAsset() {
-		return assetRepo.findAll();
+	public List<AssetVO> getAllAsset(Long orgId) 
+	{
+		List<AssetVO> assetVO=new ArrayList<>();
+		if(ObjectUtils.isNotEmpty(orgId)) {
+			LOGGER.info("Successfully Received  AssetInformation BY OrgId : {}",orgId);
+			assetVO= assetRepo.getAllAssetByOrgId(orgId);
+		}else
+		{
+			LOGGER.info("Successfully Received  AssetInformation For All OrgId.");
+			assetVO= assetRepo.findAll();
+		}
+		return assetVO;
 	}
 
 	@Override
