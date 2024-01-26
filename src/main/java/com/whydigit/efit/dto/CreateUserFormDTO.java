@@ -19,7 +19,7 @@ public class CreateUserFormDTO {
 	private String lastName;
 
 	private String userName;
-
+	
 	@NotBlank(message = "Email is required")
 	@Size(max = 30)
 	@Email
@@ -34,4 +34,6 @@ public class CreateUserFormDTO {
 	private long orgId;
 
 	private UserAddressDTO userAddressDTO;
+	
+	private long accessRightsRoleId;
 }

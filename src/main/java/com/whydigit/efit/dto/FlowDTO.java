@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 public class FlowDTO {
 
 	private int id;
+	private long orgId;
 	private String flowName;
 	private String flowInfo;
 	private String flowType;

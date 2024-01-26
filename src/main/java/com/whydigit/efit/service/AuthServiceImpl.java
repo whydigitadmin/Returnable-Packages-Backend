@@ -31,6 +31,7 @@ import com.whydigit.efit.entity.TokenVO;
 import com.whydigit.efit.entity.UserAddressVO;
 import com.whydigit.efit.entity.UserVO;
 import com.whydigit.efit.exception.ApplicationException;
+import com.whydigit.efit.repo.AccessRightsRepo;
 import com.whydigit.efit.repo.OrganizationRepo;
 import com.whydigit.efit.repo.TokenRepo;
 import com.whydigit.efit.repo.UserActionRepo;
@@ -66,7 +67,9 @@ public class AuthServiceImpl implements AuthService {
 
 	@Autowired
 	UserAddressRepo userAddressRepo;
-
+	
+	@Autowired
+    AccessRightsRepo accessRightsRepo;
 	@Transactional
 	@Override
 	public void signup(CreateOrganizationFormDTO createOrganizationFormDTO) {
@@ -82,6 +85,7 @@ public class AuthServiceImpl implements AuthService {
 			throw new ApplicationContextException(UserConstants.ERRROR_MSG_ORGANIZATION_INFORMATION_ALREADY_REGISTERED);
 		}
 		UserVO userVO = getUserVOFromCreateOrganizationFormDTO(createOrganizationFormDTO);
+		userVO.setAccessRightsRoleId(1);
 		userVO.setOrganizationVO(
 				organizationRepo.save(getOrganizationVOFromCreateOrganizationFormDTO(createOrganizationFormDTO)));
 		userVO.setUserAddressVO(userAddressRepo.save(getAddressVOFromCreateOrganizationFormDTO(createOrganizationFormDTO)));
@@ -169,7 +173,8 @@ public class AuthServiceImpl implements AuthService {
 		UserResponseDTO userResponseDTO = mapUserVOToDTO(userVO);
 		TokenVO tokenVO = tokenProvider.createToken(userVO.getUserId(), loginRequest.getUserName());
 		userResponseDTO.setToken(tokenVO.getToken());
-		userResponseDTO.setTokenId(tokenVO.getId());
+		userResponseDTO.setTokenId(tokenVO.getId());		
+		userResponseDTO.setAccessRightsVO(accessRightsRepo.findById(userVO.getAccessRightsRoleId()).orElse(null));
 		updateLastLoginByUserId(userVO.getUserId());
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return userResponseDTO;
@@ -298,6 +303,7 @@ public class AuthServiceImpl implements AuthService {
 		userDTO.setCommonDate(userVO.getCommonDate());
 		userDTO.setAccountRemovedDate(userVO.getAccountRemovedDate());
 		userDTO.setLastLogin(userVO.getLastLogin());
+		userDTO.setOrgId(userVO.getOrganizationVO().getId());
 		return userDTO;
 	}
 
@@ -343,6 +349,7 @@ public class AuthServiceImpl implements AuthService {
 		userVO.setLastName(createUserFormDTO.getLastName());
 		userVO.setUserName(createUserFormDTO.getUserName());
 		userVO.setEmail(createUserFormDTO.getEmail());
+		userVO.setAccessRightsRoleId(createUserFormDTO.getAccessRightsRoleId());
 		try {
 			userVO.setPassword(encoder.encode(CryptoUtils.getDecrypt(createUserFormDTO.getPassword())));
 		} catch (Exception e) {

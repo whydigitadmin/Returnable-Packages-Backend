@@ -1,7 +1,10 @@
 
 package com.whydigit.efit.repo;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.whydigit.efit.entity.AssetGroupVO;
@@ -9,4 +12,6 @@ import com.whydigit.efit.entity.AssetGroupVO;
 
 @Repository
 public interface AssetGroupRepo extends JpaRepository<AssetGroupVO, String> {
+	@Query(value = "select a from AssetGroupVO a Where a.orgId=?1")
+	List<AssetGroupVO> getAllAssetGroupByOrgId(Long orgId);
 }

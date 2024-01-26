@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.validation.Valid;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +39,7 @@ import com.whydigit.efit.entity.ManufacturerVO;
 import com.whydigit.efit.entity.UnitVO;
 import com.whydigit.efit.entity.VenderVO;
 import com.whydigit.efit.entity.WarehouseLocationVO;
+import com.whydigit.efit.repo.AssetGroupRepo;
 import com.whydigit.efit.service.MasterService;
 
 @CrossOrigin
@@ -50,6 +53,8 @@ public class MasterController extends BaseController {
 	MasterService masterService;
 	
 	//asset
+	@Autowired
+	AssetGroupRepo assetGroupRepo;
 	
 	@GetMapping("/asset")
 	public ResponseEntity<ResponseDTO>getAllAsset(@RequestParam(required = false) Long orgId){
@@ -150,7 +155,7 @@ public class MasterController extends BaseController {
 	
 	
 	@GetMapping("/assetGroup")
-	public ResponseEntity<ResponseDTO> getAllAssetGroup() {
+	public ResponseEntity<ResponseDTO> getAllAssetGroup(@RequestParam(required = false) Long orgId) {
 		String methodName = "getAllAssetGroup()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -158,7 +163,7 @@ public class MasterController extends BaseController {
 		ResponseDTO responseDTO = null;
 		List<AssetGroupVO> assetGroupVO = new ArrayList<>();
 		try {
-			assetGroupVO = masterService.getAllAssetGroup();
+			assetGroupVO = masterService.getAllAssetGroup(orgId);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
@@ -202,8 +207,8 @@ public class MasterController extends BaseController {
 	}
 
 	@PostMapping("/assetGroup")
-	public ResponseEntity<ResponseDTO> createAssetGroup(@RequestBody AssetGroupVO assetGroupVO) {
-		String methodName = "createCountry()";
+	public ResponseEntity<ResponseDTO> createAssetGroup(@Valid @RequestBody AssetGroupVO assetGroupVO) {
+		String methodName = "createAssetGroup()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
@@ -272,7 +277,7 @@ public class MasterController extends BaseController {
 	//customers
 	
 	@GetMapping("/customers")
-	public ResponseEntity<ResponseDTO> getAllCustomers() {
+	public ResponseEntity<ResponseDTO> getAllCustomers(@RequestParam(required = false) Long orgId) {
 		String methodName = "getAllCustomers()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -280,7 +285,7 @@ public class MasterController extends BaseController {
 		ResponseDTO responseDTO = null;
 		List<CustomersVO> customersVO = new ArrayList<>();
 		try {
-			customersVO = masterService.getAllCustomers();
+			customersVO = masterService.getAllCustomers(orgId);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
@@ -416,7 +421,7 @@ public class MasterController extends BaseController {
 	//flow
 	
 	@GetMapping("/flow")
-	public ResponseEntity<ResponseDTO> getAllflow() {
+	public ResponseEntity<ResponseDTO> getAllflow(@RequestParam(required = false) Long orgId) {
 		String methodName = "getAllflow()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -424,7 +429,7 @@ public class MasterController extends BaseController {
 		ResponseDTO responseDTO = null;
 		List<FlowVO> flowVO = new ArrayList<>();
 		try {
-			flowVO = masterService.getAllFlow();
+			flowVO = masterService.getAllFlow(orgId);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
@@ -538,7 +543,7 @@ public class MasterController extends BaseController {
 	// vendors
 	
 	@GetMapping("/vendor")
-	public ResponseEntity<ResponseDTO> getAllVender() {
+	public ResponseEntity<ResponseDTO> getAllVender(@RequestParam(required = false) Long orgId) {
 		String methodName = "getAllVender()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -546,7 +551,7 @@ public class MasterController extends BaseController {
 		ResponseDTO responseDTO = null;
 		List<VenderVO> venderVO = new ArrayList<>();
 		try {
-			venderVO = masterService.getAllVender();
+			venderVO = masterService.getAllVender(orgId);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
@@ -661,7 +666,7 @@ public class MasterController extends BaseController {
 	//Manufacturer
 	
 	@GetMapping("/manufacturer")
-	public ResponseEntity<ResponseDTO> getAllManufacturer() {
+	public ResponseEntity<ResponseDTO> getAllManufacturer(@RequestParam(required = false) Long orgId) {
 		String methodName = "getAllManufacturer()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -669,7 +674,7 @@ public class MasterController extends BaseController {
 		ResponseDTO responseDTO = null;
 		List<ManufacturerVO> manufacturerVO = new ArrayList<>();
 		try {
-			manufacturerVO = masterService.getAllManufacturer();
+			manufacturerVO = masterService.getAllManufacturer(orgId);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
