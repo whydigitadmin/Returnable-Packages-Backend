@@ -22,6 +22,7 @@ public class UnitVO {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
+	private long orgId;
 	private String unit;
     private boolean active;
     private String createdBy;

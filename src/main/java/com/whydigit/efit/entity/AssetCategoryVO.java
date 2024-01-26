@@ -24,6 +24,7 @@ public class AssetCategoryVO {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
+	private long orgId;
 	private String assetCategory;
 	private String assetCategoryId;
 	private boolean active;

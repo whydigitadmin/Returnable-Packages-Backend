@@ -75,16 +75,14 @@ public class MasterServiceImpl implements MasterService {
 	WarehouseLocationRepo warehouseLocationRepo;
 
 	@Override
-	public List<AssetVO> getAllAsset(Long orgId) 
-	{
-		List<AssetVO> assetVO=new ArrayList<>();
-		if(ObjectUtils.isNotEmpty(orgId)) {
-			LOGGER.info("Successfully Received  AssetInformation BY OrgId : {}",orgId);
-			assetVO= assetRepo.getAllAssetByOrgId(orgId);
-		}else
-		{
+	public List<AssetVO> getAllAsset(Long orgId) {
+		List<AssetVO> assetVO = new ArrayList<>();
+		if (ObjectUtils.isNotEmpty(orgId)) {
+			LOGGER.info("Successfully Received  AssetInformation BY OrgId : {}", orgId);
+			assetVO = assetRepo.getAllAssetByOrgId(orgId);
+		} else {
 			LOGGER.info("Successfully Received  AssetInformation For All OrgId.");
-			assetVO= assetRepo.findAll();
+			assetVO = assetRepo.findAll();
 		}
 		return assetVO;
 	}
@@ -294,8 +292,16 @@ public class MasterServiceImpl implements MasterService {
 	}
 
 	@Override
-	public List<ManufacturerProductVO> getAllManufacturerProduct() {
-		return manufacturerProductRepo.findAll();
+	public List<ManufacturerProductVO> getAllManufacturerProduct(Long orgId) {
+		List<ManufacturerProductVO> manufacturerProductVO = new ArrayList<>();
+		if (ObjectUtils.isNotEmpty(orgId)) {
+			LOGGER.info("Successfully Received   Manufacturer Product Information BY OrgId : {}", orgId);
+			manufacturerProductVO = manufacturerProductRepo.getAllManufacturerProduct(orgId);
+		} else {
+			LOGGER.info("Successfully Received  Manufacturer Product Information For All OrgId.");
+			manufacturerProductVO = manufacturerProductRepo.findAll();
+		}
+		return manufacturerProductVO;
 	}
 
 	@Override
@@ -304,8 +310,16 @@ public class MasterServiceImpl implements MasterService {
 	}
 
 	@Override
-	public List<AssetCategoryVO> getAllAssetCategory() {
-		return assetCategoryRepo.findAll();
+	public List<AssetCategoryVO> getAllAssetCategory(Long orgId) {
+		List<AssetCategoryVO> assetCategoryVO = new ArrayList<>();
+		if (ObjectUtils.isNotEmpty(orgId)) {
+			LOGGER.info("Successfully Received AssetCategory BY OrgId : {}", orgId);
+			assetCategoryVO = assetCategoryRepo.getAllAssetCategory(orgId);
+		} else {
+			LOGGER.info("Successfully Received AssetCategory Information For All OrgId.");
+			assetCategoryVO = assetCategoryRepo.findAll();
+		}
+		return assetCategoryVO;
 	}
 
 	@Override
@@ -316,8 +330,16 @@ public class MasterServiceImpl implements MasterService {
 	// Unit
 
 	@Override
-	public List<UnitVO> getAllUnit() {
-		return unitRepo.findAll();
+	public List<UnitVO> getAllUnit(Long orgId) {
+		List<UnitVO> unitVO = new ArrayList<>();
+		if (ObjectUtils.isNotEmpty(orgId)) {
+			LOGGER.info("Successfully Received Unit BY OrgId : {}", orgId);
+			unitVO = unitRepo.getAllUnit(orgId);
+		} else {
+			LOGGER.info("Successfully Received Unit Information For All OrgId.");
+			unitVO = unitRepo.findAll();
+		}
+		return unitVO;
 	}
 
 	@Override
@@ -342,9 +364,16 @@ public class MasterServiceImpl implements MasterService {
 	// Warehouse Location
 
 	@Override
-	public List<WarehouseLocationVO> getAllWarehouseLocation() {
-		// TODO Auto-generated method stub
-		return warehouseLocationRepo.findAll();
+	public List<WarehouseLocationVO> getAllWarehouseLocation(Long orgId) {
+		List<WarehouseLocationVO> warehouseLocationVO = new ArrayList<>();
+		if (ObjectUtils.isNotEmpty(orgId)) {
+			LOGGER.info("Successfully Received WarehouseLocation BY OrgId : {}", orgId);
+			warehouseLocationVO = warehouseLocationRepo.getAllWarehouseLocation(orgId);
+		} else {
+			LOGGER.info("Successfully Received WarehouseLocation Information For All OrgId.");
+			warehouseLocationVO = warehouseLocationRepo.findAll();
+		}
+		return warehouseLocationVO;
 	}
 
 	@Override
