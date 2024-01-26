@@ -24,6 +24,7 @@ public class WarehouseLocationVO {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
+	private long orgId;
 	private String warehouselocation;
     private boolean active;
     private String createdBy;
