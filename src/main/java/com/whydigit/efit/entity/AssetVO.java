@@ -24,6 +24,7 @@ public class AssetVO {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
+	private long orgId;
 	private String assetGroup;
 	private String assetName;
 	private String AssetId;
