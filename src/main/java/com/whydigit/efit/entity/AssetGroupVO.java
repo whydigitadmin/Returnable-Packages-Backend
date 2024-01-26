@@ -25,6 +25,8 @@ public class AssetGroupVO {
 	@NotEmpty(message = "Asset group id is required")
 	private String id;
 	@NotEmpty(message = "AssetCode is required")
+	private long orgId;
+	@NotEmpty(message = "Organisation Id is required")
 	private String assetCode;	
 	@NotEmpty(message = "AssetCategory is required")
 	private String assetCategory;

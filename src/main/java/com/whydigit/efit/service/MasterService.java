@@ -32,7 +32,7 @@ public interface MasterService {
 	void deleteAsset(int id);
 	
 	
-    List<AssetGroupVO>getAllAssetGroup();
+    List<AssetGroupVO>getAllAssetGroup(Long orgId);
 	
 	Optional<AssetGroupVO>getAssetGroupById(String id);
 	
@@ -43,7 +43,7 @@ public interface MasterService {
 	void deleteAssetGroup(int id);
 	
 	
-    List<CustomersVO>getAllCustomers();
+    List<CustomersVO>getAllCustomers(Long orgId);
 	
 	Optional<CustomersVO>getCustomersById(int id);
 	
@@ -56,7 +56,7 @@ public interface MasterService {
 	void deleteCustomers(int id);
 	
 	
-    List<FlowVO>getAllFlow();
+    List<FlowVO>getAllFlow(Long orgId);
 	
 	Optional<FlowVO>getFlowById(int id);
 	
@@ -67,7 +67,7 @@ public interface MasterService {
 	void deleteFlow(int id);
 	
 	
-    List<VenderVO>getAllVender();
+    List<VenderVO>getAllVender(Long orgId);
 	
 	Optional<VenderVO>getVenderById(int id);
 	
@@ -78,7 +78,7 @@ public interface MasterService {
 	void deleteVender(int id);
 	
 	
-	 List<ManufacturerVO>getAllManufacturer();
+	 List<ManufacturerVO>getAllManufacturer(Long orgId);
 		
 		Optional<ManufacturerVO>getManufacturerById(int id);
 		
