@@ -489,7 +489,7 @@ public class MasterServiceImpl implements MasterService {
 			if (assetGroupRepo.existsById(csvLine[0])) {
 				return null;
 			}
-			return AssetGroupVO.builder().id(csvLine[0]).assetCode(csvLine[1]).assetCategory(csvLine[2])
+			return AssetGroupVO.builder().id(csvLine[0]).assetName(csvLine[1]).assetCategory(csvLine[2])
 					.active(Boolean.parseBoolean(csvLine[3])).length(Float.parseFloat(csvLine[4]))
 					.breath(Float.parseFloat(csvLine[5])).height(Float.parseFloat(csvLine[6])).dimUnit(csvLine[7])
 					.build();
