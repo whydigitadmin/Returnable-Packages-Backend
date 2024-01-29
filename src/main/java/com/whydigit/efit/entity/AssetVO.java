@@ -15,7 +15,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name="asset")
+@Table(name = "asset")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -38,12 +38,14 @@ public class AssetVO {
 	private String weightUnit;
 	private String Brand;
 	private String eanUpc;
-	private String assetCategory;
+	//private String assetCategory;
 	private String expectedLife;
 	private String maintanencePeriod;
 	private String expectedTrips;
 	private String hsnCode;
 	private String taxRate;
+	private String skuFrom;
+	private String skuTo;
 	private String costPrice;
 	private String sellPrice;
 	private String scrapValue;

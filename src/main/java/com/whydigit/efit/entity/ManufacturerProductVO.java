@@ -1,5 +1,6 @@
 
 package com.whydigit.efit.entity;
+
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -24,14 +25,15 @@ public class ManufacturerProductVO {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	private long orgId;
-	private String assetGroup;
+	private String assetCategory;
 	private String assetName;
+	private String brand;
 	private String warranty;
 	private String sellingPrice;
 	private String leadTime;
-	private String maintananceDuration;
+	private String maintananceFrequency;
 	private String notes;
-    private boolean active;
-    @Embedded
+	private boolean active;
+	@Embedded
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
 }

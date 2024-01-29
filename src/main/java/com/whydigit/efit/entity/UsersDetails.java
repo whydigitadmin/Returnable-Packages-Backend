@@ -17,13 +17,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@Table(name="usersdetails")
+@Table(name = "usersdetails")
 public class UsersDetails {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int userdetails_id;
-	
 	private String employee_type;
 	private String emploee_id;
 	private String employee_name;
@@ -31,12 +30,11 @@ public class UsersDetails {
 	private String password;
 	private String conatct_no;
 	private String email_id;
+	private String customer_assigned;
 	private String location_assigned;
 	private boolean active;
-	
+
 	@Embedded
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
-	
 
 }
-
