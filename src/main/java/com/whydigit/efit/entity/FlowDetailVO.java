@@ -1,4 +1,5 @@
 package com.whydigit.efit.entity;
+
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -27,23 +28,29 @@ public class FlowDetailVO {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
-	private String itemGroup;
-	private String productToPack;
-	private int quantity;
-	private String rentalTerm;
+	private int orgId;
+	private String kitName;
+	private long partNumber;
+	private String emitter;
+	private String partName;
 	private String cycleTime;
-    private boolean active;
-    private String fixedRentalCharge;
-    private String dhr;
-    private String issueCharge;
-    private String returnCharge;
-    
-    @JsonBackReference
-    @ManyToOne
-    @JoinColumn(name = "flow_id")
-    private FlowVO flowVO;
-    
-    @Embedded
-    @Builder.Default
-	private CreatedUpdatedDate commonDate=new CreatedUpdatedDate();
+	private String receiver;
+	private boolean active;
+//	private String itemGroup;
+//	private String productToPack;
+//	private int quantity;
+//	private String rentalTerm;
+//  private String fixedRentalCharge;
+//  private String dhr;
+//  private String issueCharge;
+//  private String returnCharge;
+
+	@JsonBackReference
+	@ManyToOne
+	@JoinColumn(name = "flow_id")
+	private FlowVO flowVO;
+
+	@Embedded
+	@Builder.Default
+	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
 }

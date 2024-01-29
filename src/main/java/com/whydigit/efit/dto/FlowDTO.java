@@ -16,10 +16,12 @@ public class FlowDTO {
 	private int id;
 	private long orgId;
 	private String flowName;
-	private String flowInfo;
-	private String flowType;
+	private String receiver;
+	private String emitter;
+//	private String flowInfo;
+//	private String flowType;
 	private String orgin;
 	private String destination;
-    private boolean active;
-    private List<FlowDetailDTO> flowDetailDTO;
+	private boolean active;
+	private List<FlowDetailDTO> flowDetailDTO;
 }

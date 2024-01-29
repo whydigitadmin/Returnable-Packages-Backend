@@ -1,4 +1,5 @@
 package com.whydigit.efit.entity;
+
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -32,13 +33,12 @@ public class VenderVO {
 	private String displyName;
 	private String email;
 	private int phoneNumber;
-    private boolean active;
-    private boolean venderActivePortal;
-    
+	private boolean active;
+	private boolean venderActivePortal;
+
 //	@OneToMany(mappedBy="flowVO",cascade = CascadeType.ALL)
 //	private List<FlowDetailVO> flowDetailVO;
-    
-    @Embedded
+
+	@Embedded
 	private CreatedUpdatedDate commonDate;
 }
-

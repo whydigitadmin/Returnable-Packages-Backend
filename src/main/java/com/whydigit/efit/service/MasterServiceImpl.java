@@ -113,20 +113,17 @@ public class MasterServiceImpl implements MasterService {
 	}
 
 	@Override
-	public List<AssetGroupVO> getAllAssetGroup(Long orgId) 
-	{
-		List<AssetGroupVO> assetGroupVO=new ArrayList<>();
-		if(ObjectUtils.isNotEmpty(orgId)) {
-			LOGGER.info("Successfully Received  AssetGroupInformation BY OrgId : {}",orgId);
-			assetGroupVO= assetGroupRepo.getAllAssetGroupByOrgId(orgId);
-		}else
-		{
+	public List<AssetGroupVO> getAllAssetGroup(Long orgId) {
+		List<AssetGroupVO> assetGroupVO = new ArrayList<>();
+		if (ObjectUtils.isNotEmpty(orgId)) {
+			LOGGER.info("Successfully Received  AssetGroupInformation BY OrgId : {}", orgId);
+			assetGroupVO = assetGroupRepo.getAllAssetGroupByOrgId(orgId);
+		} else {
 			LOGGER.info("Successfully Received  AssetGroupInformation For All OrgId.");
-			assetGroupVO= assetGroupRepo.findAll();
+			assetGroupVO = assetGroupRepo.findAll();
 		}
 		return assetGroupVO;
 	}
-
 
 	@Override
 	public Optional<AssetGroupVO> getAssetGroupById(String id) {
@@ -162,18 +159,17 @@ public class MasterServiceImpl implements MasterService {
 
 	@Override
 	public List<CustomersVO> getAllCustomers(Long orgId) {
-		List<CustomersVO> customersVO=new ArrayList<>();
-		if(ObjectUtils.isNotEmpty(orgId)) {
-			LOGGER.info("Successfully Received  CustomerInformation BY OrgId : {}",orgId);
-			customersVO= customersRepo.getAllCustomersByOrgId(orgId);
-		}else
-		{
+		List<CustomersVO> customersVO = new ArrayList<>();
+		if (ObjectUtils.isNotEmpty(orgId)) {
+			LOGGER.info("Successfully Received  CustomerInformation BY OrgId : {}", orgId);
+			customersVO = customersRepo.getAllCustomersByOrgId(orgId);
+		} else {
 			LOGGER.info("Successfully Received  CustomerInformation For All OrgId.");
-			customersVO= customersRepo.findAll();
+			customersVO = customersRepo.findAll();
 		}
 		return customersVO;
 	}
-	
+
 	@Override
 	public Optional<CustomersVO> getCustomersById(int id) {
 		return customersRepo.findById(id);
@@ -206,18 +202,16 @@ public class MasterServiceImpl implements MasterService {
 
 	@Override
 	public List<FlowVO> getAllFlow(Long orgId) {
-		List<FlowVO> flowVO=new ArrayList<>();
-		if(ObjectUtils.isNotEmpty(orgId)) {
-			LOGGER.info("Successfully Received  FlowInformation BY OrgId : {}",orgId);
-			flowVO= flowRepo.getAllFlowByOrgId(orgId);
-		}else
-		{
+		List<FlowVO> flowVO = new ArrayList<>();
+		if (ObjectUtils.isNotEmpty(orgId)) {
+			LOGGER.info("Successfully Received  FlowInformation BY OrgId : {}", orgId);
+			flowVO = flowRepo.getAllFlowByOrgId(orgId);
+		} else {
 			LOGGER.info("Successfully Received  FlowInformation For All OrgId.");
-			flowVO= flowRepo.findAll();
+			flowVO = flowRepo.findAll();
 		}
 		return flowVO;
 	}
-	
 
 	@Override
 	public Optional<FlowVO> getFlowById(int id) {
@@ -232,15 +226,25 @@ public class MasterServiceImpl implements MasterService {
 
 	private FlowVO createFlowVOByFlowDTO(FlowDTO flowDTO) {
 		List<FlowDetailVO> flowDetailVOList = new ArrayList<>();
+//		FlowVO flowVO = FlowVO.builder().active(flowDTO.isActive()).orgin(flowDTO.getOrgin())
+//				.flowInfo(flowDTO.getFlowInfo()).flowName(flowDTO.getFlowName()).flowType(flowDTO.getFlowType()).orgId(flowDTO.getOrgId())
+//				.flowDetailVO(flowDetailVOList).build();
+//		flowDetailVOList = flowDTO.getFlowDetailDTO().stream()
+//				.map(fdDTO -> FlowDetailVO.builder().active(fdDTO.isActive()).cycleTime(fdDTO.getCycleTime())
+//						.dhr(fdDTO.getDhr()).fixedRentalCharge(fdDTO.getFixedRentalCharge()).flowVO(flowVO)
+//						.itemGroup(fdDTO.getItemGroup()).issueCharge(fdDTO.getIssueCharge())
+//						.productToPack(fdDTO.getProductToPack()).quantity(fdDTO.getQuantity())
+//						.rentalTerm(fdDTO.getRentalTerm()).returnCharge(fdDTO.getReturnCharge()).build())
+//				.collect(Collectors.toList());
+
 		FlowVO flowVO = FlowVO.builder().active(flowDTO.isActive()).orgin(flowDTO.getOrgin())
-				.flowInfo(flowDTO.getFlowInfo()).flowName(flowDTO.getFlowName()).flowType(flowDTO.getFlowType()).orgId(flowDTO.getOrgId())
-				.flowDetailVO(flowDetailVOList).build();
+				.flowName(flowDTO.getFlowName()).emitter(flowDTO.getEmitter()).destination(flowDTO.getDestination())
+				.orgId(flowDTO.getOrgId()).flowDetailVO(flowDetailVOList).build();
+
 		flowDetailVOList = flowDTO.getFlowDetailDTO().stream()
 				.map(fdDTO -> FlowDetailVO.builder().active(fdDTO.isActive()).cycleTime(fdDTO.getCycleTime())
-						.dhr(fdDTO.getDhr()).fixedRentalCharge(fdDTO.getFixedRentalCharge()).flowVO(flowVO)
-						.itemGroup(fdDTO.getItemGroup()).issueCharge(fdDTO.getIssueCharge())
-						.productToPack(fdDTO.getProductToPack()).quantity(fdDTO.getQuantity())
-						.rentalTerm(fdDTO.getRentalTerm()).returnCharge(fdDTO.getReturnCharge()).build())
+						.partName(fdDTO.getPartName()).kitName(fdDTO.getKitName()).emitter(flowDTO.getEmitter())
+						.receiver(flowDTO.getReceiver()).build())
 				.collect(Collectors.toList());
 		flowVO.setFlowDetailVO(flowDetailVOList);
 		return flowVO;
@@ -263,18 +267,16 @@ public class MasterServiceImpl implements MasterService {
 
 	@Override
 	public List<VenderVO> getAllVender(Long orgId) {
-		List<VenderVO> venderVO=new ArrayList<>();
-		if(ObjectUtils.isNotEmpty(orgId)) {
-			LOGGER.info("Successfully Received  VenderInformation BY OrgId : {}",orgId);
-			venderVO= venderRepo.getAllVenderByOrgId(orgId);
-		}else
-		{
+		List<VenderVO> venderVO = new ArrayList<>();
+		if (ObjectUtils.isNotEmpty(orgId)) {
+			LOGGER.info("Successfully Received  VenderInformation BY OrgId : {}", orgId);
+			venderVO = venderRepo.getAllVenderByOrgId(orgId);
+		} else {
 			LOGGER.info("Successfully Received  VenderInformation For All OrgId.");
-			venderVO= venderRepo.findAll();
+			venderVO = venderRepo.findAll();
 		}
 		return venderVO;
 	}
-
 
 	@Override
 	public Optional<VenderVO> getVenderById(int id) {
@@ -303,14 +305,13 @@ public class MasterServiceImpl implements MasterService {
 
 	@Override
 	public List<ManufacturerVO> getAllManufacturer(Long orgId) {
-		List<ManufacturerVO> manufacturerVO=new ArrayList<>();
-		if(ObjectUtils.isNotEmpty(orgId)) {
-			LOGGER.info("Successfully Received  ManufacturerInformation BY OrgId : {}",orgId);
-			manufacturerVO= manufacturerRepo.getAllManufacturerByOrgId(orgId);
-		}else
-		{
+		List<ManufacturerVO> manufacturerVO = new ArrayList<>();
+		if (ObjectUtils.isNotEmpty(orgId)) {
+			LOGGER.info("Successfully Received  ManufacturerInformation BY OrgId : {}", orgId);
+			manufacturerVO = manufacturerRepo.getAllManufacturerByOrgId(orgId);
+		} else {
 			LOGGER.info("Successfully Received  VenderInformation For All OrgId.");
-			manufacturerVO= manufacturerRepo.findAll();
+			manufacturerVO = manufacturerRepo.findAll();
 		}
 		return manufacturerVO;
 	}
