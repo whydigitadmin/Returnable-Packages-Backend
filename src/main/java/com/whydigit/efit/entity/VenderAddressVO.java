@@ -14,7 +14,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "venderAddress")
+@Table(name = "vender_address")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -33,7 +33,7 @@ public class VenderAddressVO {
 	private long pincode;
 	private String contactName;
 	private String phone;
-	private boolean primary;
+	private boolean markPrimary;
 	private String createdBy;
 	private String updatedBy;
 	private boolean active;
