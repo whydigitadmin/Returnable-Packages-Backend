@@ -37,6 +37,8 @@ import com.whydigit.efit.entity.FlowVO;
 import com.whydigit.efit.entity.ManufacturerProductVO;
 import com.whydigit.efit.entity.ManufacturerVO;
 import com.whydigit.efit.entity.UnitVO;
+import com.whydigit.efit.entity.VenderAddressVO;
+import com.whydigit.efit.entity.VenderBankdetailsVO;
 import com.whydigit.efit.entity.VenderVO;
 import com.whydigit.efit.entity.WarehouseLocationVO;
 import com.whydigit.efit.repo.AssetGroupRepo;
@@ -48,16 +50,16 @@ import com.whydigit.efit.service.MasterService;
 
 public class MasterController extends BaseController {
 	public static final Logger LOGGER = LoggerFactory.getLogger(MasterController.class);
-	
+
 	@Autowired
 	MasterService masterService;
-	
-	//asset
+
+	// asset
 	@Autowired
 	AssetGroupRepo assetGroupRepo;
-	
+
 	@GetMapping("/asset")
-	public ResponseEntity<ResponseDTO>getAllAsset(@RequestParam(required = false) Long orgId){
+	public ResponseEntity<ResponseDTO> getAllAsset(@RequestParam(required = false) Long orgId) {
 		String methodName = "getAllAsset()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -75,16 +77,15 @@ public class MasterController extends BaseController {
 			responseObjectsMap.put("assetVO", assetVO);
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} else {
-			responseDTO = createServiceResponseError(responseObjectsMap, "Asset information receive failed",
-					errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "Asset information receive failed", errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
-		
+
 	}
-	
+
 	@PostMapping("/asset")
-	public ResponseEntity<ResponseDTO>createWarehouseVO(@RequestBody AssetVO assetVO){
+	public ResponseEntity<ResponseDTO> createWarehouseVO(@RequestBody AssetVO assetVO) {
 		String methodName = "createAssetVO()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -103,7 +104,7 @@ public class MasterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-	
+
 	@PutMapping("/asset")
 	public ResponseEntity<ResponseDTO> updateAsset(@RequestBody AssetVO assetVO) {
 		String methodName = "updateAssetVO()";
@@ -129,7 +130,7 @@ public class MasterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-	
+
 	@DeleteMapping("/asset/{id}")
 	public ResponseEntity<ResponseDTO> deleteAsset(@PathVariable int id) {
 		String methodName = "deleteAsset()";
@@ -150,10 +151,8 @@ public class MasterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
-	
 //asset group
-	
-	
+
 	@GetMapping("/assetGroup")
 	public ResponseEntity<ResponseDTO> getAllAssetGroup(@RequestParam(required = false) Long orgId) {
 		String methodName = "getAllAssetGroup()";
@@ -273,9 +272,8 @@ public class MasterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
-	
-	//customers
-	
+	// customers
+
 	@GetMapping("/customers")
 	public ResponseEntity<ResponseDTO> getAllCustomers(@RequestParam(required = false) Long orgId) {
 		String methodName = "getAllCustomers()";
@@ -348,7 +346,7 @@ public class MasterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-	
+
 	@PostMapping("/addAddress")
 	public ResponseEntity<ResponseDTO> createAddress(@RequestBody AddressVO addressVO) {
 		String methodName = "createAddress()";
@@ -379,7 +377,7 @@ public class MasterController extends BaseController {
 		ResponseDTO responseDTO = null;
 		try {
 			CustomersVO updatedCustomersVO = masterService.updateCustomers(customersVO).orElse(null);
-			if (updatedCustomersVO!= null) {
+			if (updatedCustomersVO != null) {
 				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Customers updated successfully");
 				responseObjectsMap.put("customersVO", updatedCustomersVO);
 				responseDTO = createServiceResponse(responseObjectsMap);
@@ -390,8 +388,7 @@ public class MasterController extends BaseController {
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-			responseDTO = createServiceResponseError(responseObjectsMap, "Customers"
-					+ " update failed", errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "Customers" + " update failed", errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
@@ -416,10 +413,9 @@ public class MasterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-	
-	
-	//flow
-	
+
+	// flow
+
 	@GetMapping("/flow")
 	public ResponseEntity<ResponseDTO> getAllflow(@RequestParam(required = false) Long orgId) {
 		String methodName = "getAllflow()";
@@ -439,8 +435,7 @@ public class MasterController extends BaseController {
 			responseObjectsMap.put("flowVO", flowVO);
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} else {
-			responseDTO = createServiceResponseError(responseObjectsMap, "Flow information receive failed",
-					errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "Flow information receive failed", errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
@@ -502,7 +497,7 @@ public class MasterController extends BaseController {
 		ResponseDTO responseDTO = null;
 		try {
 			FlowVO updatedFlowVO = masterService.updateFlow(flowVO).orElse(null);
-			if (updatedFlowVO!= null) {
+			if (updatedFlowVO != null) {
 				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Flow updated successfully");
 				responseObjectsMap.put("flowVO", updatedFlowVO);
 				responseDTO = createServiceResponse(responseObjectsMap);
@@ -513,8 +508,7 @@ public class MasterController extends BaseController {
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-			responseDTO = createServiceResponseError(responseObjectsMap, "FlowVO"
-					+ " update failed", errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "FlowVO" + " update failed", errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
@@ -539,9 +533,9 @@ public class MasterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-	
+
 	// vendors
-	
+
 	@GetMapping("/vendor")
 	public ResponseEntity<ResponseDTO> getAllVender(@RequestParam(required = false) Long orgId) {
 		String methodName = "getAllVender()";
@@ -561,8 +555,7 @@ public class MasterController extends BaseController {
 			responseObjectsMap.put("venderVO", venderVO);
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} else {
-			responseDTO = createServiceResponseError(responseObjectsMap, "Vender information receive failed",
-					errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "Vender information receive failed", errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
@@ -624,7 +617,7 @@ public class MasterController extends BaseController {
 		ResponseDTO responseDTO = null;
 		try {
 			VenderVO updatedVenderVO = masterService.updateVender(venderVO).orElse(null);
-			if (updatedVenderVO!= null) {
+			if (updatedVenderVO != null) {
 				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Vender updated successfully");
 				responseObjectsMap.put("venderVO", updatedVenderVO);
 				responseDTO = createServiceResponse(responseObjectsMap);
@@ -635,8 +628,7 @@ public class MasterController extends BaseController {
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-			responseDTO = createServiceResponseError(responseObjectsMap, "Vender"
-					+ " update failed", errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "Vender" + " update failed", errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
@@ -660,11 +652,11 @@ public class MasterController extends BaseController {
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
-	
+
 	}
-	
-	//Manufacturer
-	
+
+	// Manufacturer
+
 	@GetMapping("/manufacturer")
 	public ResponseEntity<ResponseDTO> getAllManufacturer(@RequestParam(required = false) Long orgId) {
 		String methodName = "getAllManufacturer()";
@@ -747,7 +739,7 @@ public class MasterController extends BaseController {
 		ResponseDTO responseDTO = null;
 		try {
 			ManufacturerVO updatedManufacturerVO = masterService.updateManufacturer(manufacturerVO).orElse(null);
-			if (updatedManufacturerVO!= null) {
+			if (updatedManufacturerVO != null) {
 				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Manufacturer updated successfully");
 				responseObjectsMap.put("manufacturerVO", updatedManufacturerVO);
 				responseDTO = createServiceResponse(responseObjectsMap);
@@ -758,8 +750,7 @@ public class MasterController extends BaseController {
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-			responseDTO = createServiceResponseError(responseObjectsMap, "Manufacturer"
-					+ " update failed", errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "Manufacturer" + " update failed", errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
@@ -784,28 +775,31 @@ public class MasterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-	
+
 	@PostMapping("/manufacturerProduct")
-	public ResponseEntity<ResponseDTO> createManufactureProduct(@RequestBody ManufacturerProductVO manufacturerProductVO) {
+	public ResponseEntity<ResponseDTO> createManufactureProduct(
+			@RequestBody ManufacturerProductVO manufacturerProductVO) {
 		String methodName = "createManufactureProduct()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
 		try {
-			ManufacturerProductVO createdManufacturerProductVO = masterService.createManufacturerProduct(manufacturerProductVO);
+			ManufacturerProductVO createdManufacturerProductVO = masterService
+					.createManufacturerProduct(manufacturerProductVO);
 			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "ManufacturerProduct created successfully");
 			responseObjectsMap.put("manufacturerProductVO", createdManufacturerProductVO);
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-			responseDTO = createServiceResponseError(responseObjectsMap, "ManufacturerProduct creation failed", errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "ManufacturerProduct creation failed",
+					errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-	
+
 	@GetMapping("/manufacturerProduct")
 	public ResponseEntity<ResponseDTO> getAllManufacturerProduct(@RequestParam(required = false) Long orgId) {
 		String methodName = "getAllManufacturerProduct()";
@@ -825,15 +819,15 @@ public class MasterController extends BaseController {
 			responseObjectsMap.put("manufacturerProductVO", manufacturerProductVO);
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} else {
-			responseDTO = createServiceResponseError(responseObjectsMap, "ManufacturerProduct information receive failed",
-					errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap,
+					"ManufacturerProduct information receive failed", errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-	
-	//add asset Category
-	
+
+	// add asset Category
+
 	@PostMapping("/addAssetCategory")
 	public ResponseEntity<ResponseDTO> createAssetCategory(@RequestBody AssetCategoryVO assetCategoryVO) {
 		String methodName = "createAssetCategory()";
@@ -854,7 +848,7 @@ public class MasterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-	
+
 	@GetMapping("/getAllAssetCategory")
 	public ResponseEntity<ResponseDTO> getAllAssetCategory(Long orgId) {
 		String methodName = "getAllAssetCategory()";
@@ -880,7 +874,7 @@ public class MasterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-	
+
 	@GetMapping("/unit")
 	public ResponseEntity<ResponseDTO> getAllUnit(@RequestParam Long orgId) {
 		String methodName = "getAllUnit()";
@@ -900,8 +894,7 @@ public class MasterController extends BaseController {
 			responseObjectsMap.put("unitVO", unitVO);
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} else {
-			responseDTO = createServiceResponseError(responseObjectsMap, "Unit information receive failed",
-					errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "Unit information receive failed", errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
@@ -963,7 +956,7 @@ public class MasterController extends BaseController {
 		ResponseDTO responseDTO = null;
 		try {
 			UnitVO updatedUnitVO = masterService.updateUnit(unitVO).orElse(null);
-			if (updatedUnitVO!= null) {
+			if (updatedUnitVO != null) {
 				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Unit updated successfully");
 				responseObjectsMap.put("unitVO", updatedUnitVO);
 				responseDTO = createServiceResponse(responseObjectsMap);
@@ -974,8 +967,7 @@ public class MasterController extends BaseController {
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-			responseDTO = createServiceResponseError(responseObjectsMap, "Unit"
-					+ " update failed", errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "Unit" + " update failed", errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
@@ -1001,9 +993,8 @@ public class MasterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
-	//Controller
+	// Controller
 	// Warehouse Location
-
 
 	@GetMapping("/warehouselocation")
 	public ResponseEntity<ResponseDTO> getAllWarehouseLocation(@RequestParam(required = false) Long orgId) {
@@ -1024,8 +1015,7 @@ public class MasterController extends BaseController {
 			responseObjectsMap.put("warehouseloactionVO", warehouseloactionVO);
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} else {
-			responseDTO = createServiceResponseError(responseObjectsMap, "Unit information receive failed",
-					errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "Unit information receive failed", errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
@@ -1065,9 +1055,10 @@ public class MasterController extends BaseController {
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
 		try {
-			WarehouseLocationVO createdWarehouseLocationVO = (WarehouseLocationVO) masterService.createWarehouseLocation(warehouselocationVO);
+			WarehouseLocationVO createdWarehouseLocationVO = (WarehouseLocationVO) masterService
+					.createWarehouseLocation(warehouselocationVO);
 			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "WarehouseLocation created successfully");
-			responseObjectsMap.put("warehouselocationVo",createdWarehouseLocationVO);
+			responseObjectsMap.put("warehouselocationVo", createdWarehouseLocationVO);
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
@@ -1086,20 +1077,21 @@ public class MasterController extends BaseController {
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
 		try {
-			WarehouseLocationVO updatedWarehouseLocationVO= masterService.updateWarehouseLocation(warehouselocationVO).orElse(null);
-			if (updatedWarehouseLocationVO!= null) {
+			WarehouseLocationVO updatedWarehouseLocationVO = masterService.updateWarehouseLocation(warehouselocationVO)
+					.orElse(null);
+			if (updatedWarehouseLocationVO != null) {
 				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "WarehouseLocation updated successfully");
 				responseObjectsMap.put("warehouselocationVO", updatedWarehouseLocationVO);
 				responseDTO = createServiceResponse(responseObjectsMap);
 			} else {
 				errorMsg = "WarehouseLocation not found for ID: " + warehouselocationVO.getId();
-				responseDTO = createServiceResponseError(responseObjectsMap, "WarehouseLocation update failed", errorMsg);
+				responseDTO = createServiceResponseError(responseObjectsMap, "WarehouseLocation update failed",
+						errorMsg);
 			}
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-			responseDTO = createServiceResponseError(responseObjectsMap, "UnitName"
-					+ " update failed", errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "UnitName" + " update failed", errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
@@ -1141,6 +1133,248 @@ public class MasterController extends BaseController {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
 			responseDTO = createServiceResponseError(responseObjectsMap, "AssetGroup creation failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
+	// venderAddress
+	@GetMapping("/venderAddress")
+	public ResponseEntity<ResponseDTO> getAllVenderAddress() {
+		String methodName = "getAllVenderAddress()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<VenderAddressVO> venderAddressVO = new ArrayList<>();
+		try {
+			venderAddressVO = masterService.getAllVenderAddress();
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "VenderAddress information get successfully");
+			responseObjectsMap.put("VenderAddress", venderAddressVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "VenderAddress information receive failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
+	@GetMapping("/venderAddress/{id}")
+	public ResponseEntity<ResponseDTO> getVenderAddressById(@PathVariable int id) {
+		String methodName = "getVenderAddressById()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		VenderAddressVO venderAddressVO = null;
+		try {
+			venderAddressVO = masterService.getVenderAddressById(id).orElse(null);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "VenderAddress found by ID");
+			responseObjectsMap.put("VenderAddress", venderAddressVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			errorMsg = "VenderAddress not found for ID: " + id;
+			responseDTO = createServiceResponseError(responseObjectsMap, "VenderAddress not found", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
+	@PostMapping("/VenderAddress")
+	public ResponseEntity<ResponseDTO> createVenderAddress(@RequestBody VenderAddressVO venderAddressVO) {
+		String methodName = "createVenderAddress()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		try {
+			VenderAddressVO createdVenderAddress = masterService.createVenderAddress(venderAddressVO);
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "VenderAddress created successfully");
+			responseObjectsMap.put("VenderAddress", createdVenderAddress);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "VenderAddress creation failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
+	@PutMapping("/venderAddress")
+	public ResponseEntity<ResponseDTO> updateVenderAddress(@RequestBody VenderAddressVO venderAddressVO) {
+		String methodName = "updateVenderAddress()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		try {
+			VenderAddressVO updatedVenderAddress = masterService.updateVenderAddress(venderAddressVO).orElse(null);
+			if (updatedVenderAddress != null) {
+				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "VenderAddress updated successfully");
+				responseObjectsMap.put("venderAddress", updatedVenderAddress);
+				responseDTO = createServiceResponse(responseObjectsMap);
+			} else {
+				errorMsg = "VenderAddress not found for ID: " + venderAddressVO.getId();
+				responseDTO = createServiceResponseError(responseObjectsMap, "VenderAddress update failed", errorMsg);
+			}
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "VenderAddress update failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
+	@DeleteMapping("/venderAddress/{id}")
+	public ResponseEntity<ResponseDTO> deleteVenderAddress(@PathVariable int id) {
+		String methodName = "deleteVenderAddress()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		try {
+			masterService.deleteVenderAddress(id);
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "VenderAddress deleted successfully");
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "VenderAddress deletion failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
+//venderBankdetails
+	@GetMapping("/venderBankdetails")
+	public ResponseEntity<ResponseDTO> getAllVenderBankdetails() {
+		String methodName = "getAllVenderBankdetails()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<VenderBankdetailsVO> venderBankdetailsVO = new ArrayList<>();
+		try {
+			venderBankdetailsVO = masterService.getAllVenderBankdetails();
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "VenderBankdetails information get successfully");
+			responseObjectsMap.put("VenderBankdetails", venderBankdetailsVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "VenderBankdetails information receive failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
+	@GetMapping("/venderBankdetails/{id}")
+	public ResponseEntity<ResponseDTO> getVenderBankdetailsById(@PathVariable int id) {
+		String methodName = "getVenderBankdetailsById()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		VenderBankdetailsVO venderBankdetailsVO = null;
+		try {
+			venderBankdetailsVO = masterService.getVenderBankdetailsById(id).orElse(null);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "VenderBankdetails found by ID");
+			responseObjectsMap.put("VenderBankdetails", venderBankdetailsVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			errorMsg = "VenderBankdetails not found for ID: " + id;
+			responseDTO = createServiceResponseError(responseObjectsMap, "VenderBankdetails not found", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
+	@PostMapping("/VenderBankdetails")
+	public ResponseEntity<ResponseDTO> createVenderBankdetails(@RequestBody VenderBankdetailsVO venderBankdetailsVO) {
+		String methodName = "createVenderBankdetails()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		try {
+			VenderBankdetailsVO createdVenderBankdetails = masterService.createVenderBankdetails(venderBankdetailsVO);
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "VenderBankdetails created successfully");
+			responseObjectsMap.put("VenderBankdetails", createdVenderBankdetails);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "VenderBankdetails creation failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
+	@PutMapping("/venderBankdetails")
+	public ResponseEntity<ResponseDTO> updateVenderBankdetails(@RequestBody VenderBankdetailsVO venderBankdetailsVO) {
+		String methodName = "updateVenderBankdetails()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		try {
+			VenderBankdetailsVO updatedVenderBankdetails = masterService.updateVenderBankdetails(venderBankdetailsVO)
+					.orElse(null);
+			if (updatedVenderBankdetails != null) {
+				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "VenderBankdetails updated successfully");
+				responseObjectsMap.put("venderBankdetails", updatedVenderBankdetails);
+				responseDTO = createServiceResponse(responseObjectsMap);
+			} else {
+				errorMsg = "VenderBankdetails not found for ID: " + venderBankdetailsVO.getId();
+				responseDTO = createServiceResponseError(responseObjectsMap, "VenderBankdetailsupdate failed",
+						errorMsg);
+			}
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "VenderBankdetails update failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
+	@DeleteMapping("/venderBankdetails/{id}")
+	public ResponseEntity<ResponseDTO> deleteVenderBankdetails(@PathVariable int id) {
+		String methodName = "deleteVenderBankdetails()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		try {
+			masterService.deleteVenderBankdetails(id);
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "VenderBankdetails deleted successfully");
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "VenderBankdetails deletion failed", errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
