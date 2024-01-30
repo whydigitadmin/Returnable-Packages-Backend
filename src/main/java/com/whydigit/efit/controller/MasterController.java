@@ -27,6 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.whydigit.efit.common.CommonConstant;
 import com.whydigit.efit.common.UserConstants;
 import com.whydigit.efit.dto.FlowDTO;
+import com.whydigit.efit.dto.KitDTO;
 import com.whydigit.efit.dto.ResponseDTO;
 import com.whydigit.efit.entity.AddressVO;
 import com.whydigit.efit.entity.AssetCategoryVO;
@@ -34,6 +35,7 @@ import com.whydigit.efit.entity.AssetGroupVO;
 import com.whydigit.efit.entity.AssetVO;
 import com.whydigit.efit.entity.CustomersVO;
 import com.whydigit.efit.entity.FlowVO;
+import com.whydigit.efit.entity.KitVO;
 import com.whydigit.efit.entity.ManufacturerProductVO;
 import com.whydigit.efit.entity.ManufacturerVO;
 import com.whydigit.efit.entity.UnitVO;
@@ -1379,4 +1381,127 @@ public class MasterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
+	
+	
+	//Create KIT
+	
+		@GetMapping("/getallkit")
+		public ResponseEntity<ResponseDTO> getAllKit() {
+			String methodName = "getAllKit()";
+			LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+			String errorMsg = null;
+			Map<String, Object> responseObjectsMap = new HashMap<>();
+			ResponseDTO responseDTO = null;
+			List<KitVO> kitVO = new ArrayList<>();
+			try {
+				kitVO = masterService.getAllKit();
+			} catch (Exception e) {
+				errorMsg = e.getMessage();
+				LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			}
+			if (StringUtils.isBlank(errorMsg)) {
+				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Kit information get successfully");
+				responseObjectsMap.put("localCurrencies", kitVO);
+				responseDTO = createServiceResponse(responseObjectsMap);
+			} else {
+				responseDTO = createServiceResponseError(responseObjectsMap, "Kit information receive failed",
+						errorMsg);
+			}
+			LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+			return ResponseEntity.ok().body(responseDTO);
+		}
+
+		@GetMapping("/kit/{id}")
+		public ResponseEntity<ResponseDTO> getKitById(@PathVariable String id) {
+			String methodName = "getKitById()";
+			LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+			String errorMsg = null;
+			Map<String, Object> responseObjectsMap = new HashMap<>();
+			ResponseDTO responseDTO = null;
+			KitVO kitVO = null;
+			try {
+				kitVO = masterService.getKitById(id).orElse(null);
+			} catch (Exception e) {
+				errorMsg = e.getMessage();
+				LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			}
+			if (StringUtils.isEmpty(errorMsg)) {
+				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Kit found by ID");
+				responseObjectsMap.put("CreateKit", kitVO);
+				responseDTO = createServiceResponse(responseObjectsMap);
+			} else {
+				errorMsg = "CreateKit not found for ID: " + id;
+				responseDTO = createServiceResponseError(responseObjectsMap, "Kit not found", errorMsg);
+			}
+			LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+			return ResponseEntity.ok().body(responseDTO);
+		}
+
+		@PostMapping("/createkit")
+		public ResponseEntity<ResponseDTO> createkit(@RequestBody KitDTO kitDTO) {
+			String methodName = "createkit()";
+			LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+			String errorMsg = null;
+			Map<String, Object> responseObjectsMap = new HashMap<>();
+			ResponseDTO responseDTO = null;
+			try {
+				KitVO createdKit = masterService.createkit(kitDTO);
+				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Kit created successfully");
+				responseObjectsMap.put("CreateKit", createdKit);
+				responseDTO = createServiceResponse(responseObjectsMap);
+			} catch (Exception e) {
+				errorMsg = e.getMessage();
+				LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+				responseDTO = createServiceResponseError(responseObjectsMap, "Kit creation failed", errorMsg);
+			}
+			LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+			return ResponseEntity.ok().body(responseDTO);
+		}
+
+		@PutMapping("/updateKit")
+		public ResponseEntity<ResponseDTO> updateKit(@RequestBody KitVO kitVO) {
+			String methodName = "updateKit()";
+			LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+			String errorMsg = null;
+			Map<String, Object> responseObjectsMap = new HashMap<>();
+			ResponseDTO responseDTO = null;
+			try {
+				KitVO updatedKit = masterService.updatedKit(kitVO).orElse(null);
+				if (updatedKit != null) {
+					responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Kit updated successfully");
+					responseObjectsMap.put("CreateKit", updatedKit);
+					responseDTO = createServiceResponse(responseObjectsMap);
+				} else {
+					errorMsg = "LocalCurrency not found for ID: " + kitVO.getId();
+					responseDTO = createServiceResponseError(responseObjectsMap, "Kit update failed", errorMsg);
+				}
+			} catch (Exception e) {
+				errorMsg = e.getMessage();
+				LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+				responseDTO = createServiceResponseError(responseObjectsMap, "Kit update failed", errorMsg);
+			}
+			LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+			return ResponseEntity.ok().body(responseDTO);
+		}
+
+		@DeleteMapping("/delteKit/{id}")
+		public ResponseEntity<ResponseDTO> deleteKit(@PathVariable String id) {
+			String methodName = "deleteKit()";
+			LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+			String errorMsg = null;
+			Map<String, Object> responseObjectsMap = new HashMap<>();
+			ResponseDTO responseDTO = null;
+			try {
+				masterService.deleteKit(id);
+				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Kit deleted successfully");
+				responseDTO = createServiceResponse(responseObjectsMap);
+			} catch (Exception e) {
+				errorMsg = e.getMessage();
+				LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+				responseDTO = createServiceResponseError(responseObjectsMap, "Kit deletion failed", errorMsg);
+			}
+			LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+			return ResponseEntity.ok().body(responseDTO);
+		}
+	
 }
