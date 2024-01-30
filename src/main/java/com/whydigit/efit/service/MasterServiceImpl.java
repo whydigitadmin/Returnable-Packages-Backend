@@ -19,6 +19,8 @@ import org.springframework.web.multipart.MultipartFile;
 import com.opencsv.CSVReader;
 import com.whydigit.efit.common.CommonConstant;
 import com.whydigit.efit.dto.FlowDTO;
+import com.whydigit.efit.dto.KitAssetDTO;
+import com.whydigit.efit.dto.KitDTO;
 import com.whydigit.efit.entity.AddressVO;
 import com.whydigit.efit.entity.AssetCategoryVO;
 import com.whydigit.efit.entity.AssetGroupVO;
@@ -26,11 +28,12 @@ import com.whydigit.efit.entity.AssetVO;
 import com.whydigit.efit.entity.CustomersVO;
 import com.whydigit.efit.entity.FlowDetailVO;
 import com.whydigit.efit.entity.FlowVO;
+import com.whydigit.efit.entity.KitAssetVO;
+import com.whydigit.efit.entity.KitVO;
 import com.whydigit.efit.entity.ManufacturerProductVO;
 import com.whydigit.efit.entity.ManufacturerVO;
 import com.whydigit.efit.entity.UnitVO;
 import com.whydigit.efit.entity.VenderAddressVO;
-import com.whydigit.efit.entity.VenderBankdetailsVO;
 import com.whydigit.efit.entity.VenderVO;
 import com.whydigit.efit.entity.WarehouseLocationVO;
 import com.whydigit.efit.exception.ApplicationException;
@@ -40,11 +43,11 @@ import com.whydigit.efit.repo.AssetGroupRepo;
 import com.whydigit.efit.repo.AssetRepo;
 import com.whydigit.efit.repo.CustomersRepo;
 import com.whydigit.efit.repo.FlowRepo;
+import com.whydigit.efit.repo.KitRepo;
 import com.whydigit.efit.repo.ManufacturerProductRepo;
 import com.whydigit.efit.repo.ManufacturerRepo;
 import com.whydigit.efit.repo.UnitRepo;
 import com.whydigit.efit.repo.VenderAddressRepo;
-import com.whydigit.efit.repo.VenderBankdetailsRepo;
 import com.whydigit.efit.repo.VenderRepo;
 import com.whydigit.efit.repo.WarehouseLocationRepo;
 
@@ -78,7 +81,7 @@ public class MasterServiceImpl implements MasterService {
 	@Autowired
 	VenderAddressRepo venderAddressRepo;
 	@Autowired
-	VenderBankdetailsRepo venderBankdetailsRepo;
+	KitRepo kitRepo;
 
 	@Override
 	public List<AssetVO> getAllAsset(Long orgId) {
@@ -243,9 +246,9 @@ public class MasterServiceImpl implements MasterService {
 //						.rentalTerm(fdDTO.getRentalTerm()).returnCharge(fdDTO.getReturnCharge()).build())
 //				.collect(Collectors.toList());
 
-		FlowVO flowVO = FlowVO.builder().active(flowDTO.isActive()).orgin(flowDTO.getOrgin()).receiver(flowDTO.getReceiver())
-				.flowName(flowDTO.getFlowName()).emitter(flowDTO.getEmitter()).destination(flowDTO.getDestination())
-				.orgId(flowDTO.getOrgId()).flowDetailVO(flowDetailVOList).build();
+		FlowVO flowVO = FlowVO.builder().active(flowDTO.isActive()).orgin(flowDTO.getOrgin())
+				.receiver(flowDTO.getReceiver()).flowName(flowDTO.getFlowName()).emitter(flowDTO.getEmitter())
+				.destination(flowDTO.getDestination()).orgId(flowDTO.getOrgId()).flowDetailVO(flowDetailVOList).build();
 
 		flowDetailVOList = flowDTO.getFlowDetailDTO().stream()
 				.map(fdDTO -> FlowDetailVO.builder().active(fdDTO.isActive()).cycleTime(fdDTO.getCycleTime())
@@ -506,7 +509,7 @@ public class MasterServiceImpl implements MasterService {
 		}
 	}
 
-	//venderAddress
+	// venderAddress
 
 	@Override
 	public List<VenderAddressVO> getAllVenderAddress() {
@@ -536,34 +539,44 @@ public class MasterServiceImpl implements MasterService {
 	public void deleteVenderAddress(int id) {
 		venderAddressRepo.deleteById(id);
 	}
-//vender bank details
 
+// create kit
 	@Override
-	public List<VenderBankdetailsVO> getAllVenderBankdetails() {
-		return venderBankdetailsRepo.findAll();
+	public List<KitVO> getAllKit() {
+		// TODO Auto-generated method stub
+		return kitRepo.findAll();
 	}
 
 	@Override
-	public Optional<VenderBankdetailsVO> getVenderBankdetailsById(int id) {
-		return venderBankdetailsRepo.findById(id);
+	public Optional<KitVO> getKitById(String id) {
+		// TODO Auto-generated method stub
+		return kitRepo.findById(id);
 	}
 
 	@Override
-	public VenderBankdetailsVO createVenderBankdetails(VenderBankdetailsVO venderBankdetailsVO) {
-		return venderBankdetailsRepo.save(venderBankdetailsVO);
+	public KitVO createkit(KitDTO kitDTO) {
+		List<KitAssetVO> kitAssetVO = new ArrayList<>();
+		KitVO kitVO = KitVO.builder().id(kitDTO.getId()).orgId(kitDTO.getOrgId()).partId(kitDTO.getPartId())
+				.partQty(kitDTO.getPartQty()).kitAssetVO(kitAssetVO).build();
+		for (KitAssetDTO kitAsset : kitDTO.getKitAssetDTO()) {
+			kitAssetVO.add(KitAssetVO.builder().assetCategory(kitAsset.getAssetCategory())
+					.assetName(kitAsset.getAssetName()).quantity(kitAsset.getQuantity()).kitVO(kitVO).build());
+		}
+		return kitRepo.save(kitVO);
 	}
 
 	@Override
-	public Optional<VenderBankdetailsVO> updateVenderBankdetails(VenderBankdetailsVO venderBankdetailsVO) {
-		if (venderBankdetailsRepo.existsById(venderBankdetailsVO.getId())) {
-			return Optional.of(venderBankdetailsRepo.save(venderBankdetailsVO));
+	public Optional<KitVO> updatedKit(KitVO kitVO) {
+		if (kitRepo.existsById(kitVO.getId())) {
+			return Optional.of(kitRepo.save(kitVO));
 		} else {
 			return Optional.empty();
 		}
 	}
 
 	@Override
-	public void deleteVenderBankdetails(int id) {
-		venderBankdetailsRepo.deleteById(id);
+	public void deleteKit(String id) {
+		kitRepo.deleteById(id);
+
 	}
 }

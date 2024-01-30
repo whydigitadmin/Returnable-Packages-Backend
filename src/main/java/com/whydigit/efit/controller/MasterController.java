@@ -27,6 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.whydigit.efit.common.CommonConstant;
 import com.whydigit.efit.common.UserConstants;
 import com.whydigit.efit.dto.FlowDTO;
+import com.whydigit.efit.dto.KitDTO;
 import com.whydigit.efit.dto.ResponseDTO;
 import com.whydigit.efit.entity.AddressVO;
 import com.whydigit.efit.entity.AssetCategoryVO;
@@ -34,11 +35,11 @@ import com.whydigit.efit.entity.AssetGroupVO;
 import com.whydigit.efit.entity.AssetVO;
 import com.whydigit.efit.entity.CustomersVO;
 import com.whydigit.efit.entity.FlowVO;
+import com.whydigit.efit.entity.KitVO;
 import com.whydigit.efit.entity.ManufacturerProductVO;
 import com.whydigit.efit.entity.ManufacturerVO;
 import com.whydigit.efit.entity.UnitVO;
 import com.whydigit.efit.entity.VenderAddressVO;
-import com.whydigit.efit.entity.VenderBankdetailsVO;
 import com.whydigit.efit.entity.VenderVO;
 import com.whydigit.efit.entity.WarehouseLocationVO;
 import com.whydigit.efit.repo.AssetGroupRepo;
@@ -536,7 +537,7 @@ public class MasterController extends BaseController {
 
 	// vendors
 
-	@GetMapping("/vendor")
+	@GetMapping("/vender")
 	public ResponseEntity<ResponseDTO> getAllVender(@RequestParam(required = false) Long orgId) {
 		String methodName = "getAllVender()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
@@ -1258,125 +1259,124 @@ public class MasterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
-//venderBankdetails
-	@GetMapping("/venderBankdetails")
-	public ResponseEntity<ResponseDTO> getAllVenderBankdetails() {
-		String methodName = "getAllVenderBankdetails()";
+	// Create KIT
+
+	@GetMapping("/getallkit")
+	public ResponseEntity<ResponseDTO> getAllKit() {
+		String methodName = "getAllKit()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
-		List<VenderBankdetailsVO> venderBankdetailsVO = new ArrayList<>();
+		List<KitVO> kitVO = new ArrayList<>();
 		try {
-			venderBankdetailsVO = masterService.getAllVenderBankdetails();
+			kitVO = masterService.getAllKit();
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
 		}
 		if (StringUtils.isBlank(errorMsg)) {
-			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "VenderBankdetails information get successfully");
-			responseObjectsMap.put("VenderBankdetails", venderBankdetailsVO);
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Kit information get successfully");
+			responseObjectsMap.put("localCurrencies", kitVO);
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} else {
-			responseDTO = createServiceResponseError(responseObjectsMap, "VenderBankdetails information receive failed",
-					errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "Kit information receive failed", errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
-	@GetMapping("/venderBankdetails/{id}")
-	public ResponseEntity<ResponseDTO> getVenderBankdetailsById(@PathVariable int id) {
-		String methodName = "getVenderBankdetailsById()";
+	@GetMapping("/kit/{id}")
+	public ResponseEntity<ResponseDTO> getKitById(@PathVariable String id) {
+		String methodName = "getKitById()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
-		VenderBankdetailsVO venderBankdetailsVO = null;
+		KitVO kitVO = null;
 		try {
-			venderBankdetailsVO = masterService.getVenderBankdetailsById(id).orElse(null);
+			kitVO = masterService.getKitById(id).orElse(null);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
 		}
 		if (StringUtils.isEmpty(errorMsg)) {
-			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "VenderBankdetails found by ID");
-			responseObjectsMap.put("VenderBankdetails", venderBankdetailsVO);
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Kit found by ID");
+			responseObjectsMap.put("CreateKit", kitVO);
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} else {
-			errorMsg = "VenderBankdetails not found for ID: " + id;
-			responseDTO = createServiceResponseError(responseObjectsMap, "VenderBankdetails not found", errorMsg);
+			errorMsg = "CreateKit not found for ID: " + id;
+			responseDTO = createServiceResponseError(responseObjectsMap, "Kit not found", errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
-	@PostMapping("/VenderBankdetails")
-	public ResponseEntity<ResponseDTO> createVenderBankdetails(@RequestBody VenderBankdetailsVO venderBankdetailsVO) {
-		String methodName = "createVenderBankdetails()";
+	@PostMapping("/createkit")
+	public ResponseEntity<ResponseDTO> createkit(@RequestBody KitDTO kitDTO) {
+		String methodName = "createkit()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
 		try {
-			VenderBankdetailsVO createdVenderBankdetails = masterService.createVenderBankdetails(venderBankdetailsVO);
-			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "VenderBankdetails created successfully");
-			responseObjectsMap.put("VenderBankdetails", createdVenderBankdetails);
+			KitVO createdKit = masterService.createkit(kitDTO);
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Kit created successfully");
+			responseObjectsMap.put("CreateKit", createdKit);
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-			responseDTO = createServiceResponseError(responseObjectsMap, "VenderBankdetails creation failed", errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "Kit creation failed", errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
-	@PutMapping("/venderBankdetails")
-	public ResponseEntity<ResponseDTO> updateVenderBankdetails(@RequestBody VenderBankdetailsVO venderBankdetailsVO) {
-		String methodName = "updateVenderBankdetails()";
+	@PutMapping("/updateKit")
+	public ResponseEntity<ResponseDTO> updateKit(@RequestBody KitVO kitVO) {
+		String methodName = "updateKit()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
 		try {
-			VenderBankdetailsVO updatedVenderBankdetails = masterService.updateVenderBankdetails(venderBankdetailsVO)
-					.orElse(null);
-			if (updatedVenderBankdetails != null) {
-				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "VenderBankdetails updated successfully");
-				responseObjectsMap.put("venderBankdetails", updatedVenderBankdetails);
+			KitVO updatedKit = masterService.updatedKit(kitVO).orElse(null);
+			if (updatedKit != null) {
+				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Kit updated successfully");
+				responseObjectsMap.put("CreateKit", updatedKit);
 				responseDTO = createServiceResponse(responseObjectsMap);
 			} else {
-				errorMsg = "VenderBankdetails not found for ID: " + venderBankdetailsVO.getId();
-				responseDTO = createServiceResponseError(responseObjectsMap, "VenderBankdetailsupdate failed",
-						errorMsg);
+				errorMsg = "LocalCurrency not found for ID: " + kitVO.getId();
+				responseDTO = createServiceResponseError(responseObjectsMap, "Kit update failed", errorMsg);
 			}
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-			responseDTO = createServiceResponseError(responseObjectsMap, "VenderBankdetails update failed", errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "Kit update failed", errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
-	@DeleteMapping("/venderBankdetails/{id}")
-	public ResponseEntity<ResponseDTO> deleteVenderBankdetails(@PathVariable int id) {
-		String methodName = "deleteVenderBankdetails()";
+	@DeleteMapping("/delteKit/{id}")
+	public ResponseEntity<ResponseDTO> deleteKit(@PathVariable String id) {
+		String methodName = "deleteKit()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
 		try {
-			masterService.deleteVenderBankdetails(id);
-			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "VenderBankdetails deleted successfully");
+			masterService.deleteKit(id);
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Kit deleted successfully");
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-			responseDTO = createServiceResponseError(responseObjectsMap, "VenderBankdetails deletion failed", errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "Kit deletion failed", errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
+
 }

@@ -6,21 +6,21 @@ import java.util.Optional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.whydigit.efit.dto.FlowDTO;
+import com.whydigit.efit.dto.KitDTO;
 import com.whydigit.efit.entity.AddressVO;
 import com.whydigit.efit.entity.AssetCategoryVO;
 import com.whydigit.efit.entity.AssetGroupVO;
 import com.whydigit.efit.entity.AssetVO;
 import com.whydigit.efit.entity.CustomersVO;
 import com.whydigit.efit.entity.FlowVO;
+import com.whydigit.efit.entity.KitVO;
 import com.whydigit.efit.entity.ManufacturerProductVO;
 import com.whydigit.efit.entity.ManufacturerVO;
 import com.whydigit.efit.entity.UnitVO;
 import com.whydigit.efit.entity.VenderAddressVO;
-import com.whydigit.efit.entity.VenderBankdetailsVO;
 import com.whydigit.efit.entity.VenderVO;
 import com.whydigit.efit.entity.WarehouseLocationVO;
 import com.whydigit.efit.exception.ApplicationException;
-import com.whydigit.efit.repo.VenderAddressRepo;
 
 public interface MasterService {
 
@@ -132,14 +132,14 @@ public interface MasterService {
 
 	void deleteVenderAddress(int id);
 
-//vender bank details
-	List<VenderBankdetailsVO> getAllVenderBankdetails();
+	// Create Kit
+	List<KitVO> getAllKit();
 
-	Optional<VenderBankdetailsVO> getVenderBankdetailsById(int id);
+	Optional<KitVO> getKitById(String id);
 
-	VenderBankdetailsVO createVenderBankdetails(VenderBankdetailsVO venderBankdetailsVO);
+	KitVO createkit(KitDTO kitDTO);
 
-	Optional<VenderBankdetailsVO> updateVenderBankdetails(VenderBankdetailsVO venderBankdetailsVO);
+	Optional<KitVO> updatedKit(KitVO kitVO);
 
-	void deleteVenderBankdetails(int id);
+	void deleteKit(String id);
 }

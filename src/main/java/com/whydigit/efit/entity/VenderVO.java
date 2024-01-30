@@ -35,6 +35,11 @@ public class VenderVO {
 	private String phoneNumber;
 	private boolean active;
 	private boolean venderActivePortal;
+	private String bankName;
+	private String accountNO;
+	private String accountName;
+	private String branch;
+	private String ifscCode;
 
 //	@OneToMany(mappedBy="flowVO",cascade = CascadeType.ALL)
 //	private List<FlowDetailVO> flowDetailVO;
