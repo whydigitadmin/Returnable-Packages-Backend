@@ -34,7 +34,6 @@ import com.whydigit.efit.entity.ManufacturerProductVO;
 import com.whydigit.efit.entity.ManufacturerVO;
 import com.whydigit.efit.entity.UnitVO;
 import com.whydigit.efit.entity.VenderAddressVO;
-import com.whydigit.efit.entity.VenderBankdetailsVO;
 import com.whydigit.efit.entity.VenderVO;
 import com.whydigit.efit.entity.WarehouseLocationVO;
 import com.whydigit.efit.exception.ApplicationException;
@@ -49,7 +48,6 @@ import com.whydigit.efit.repo.ManufacturerProductRepo;
 import com.whydigit.efit.repo.ManufacturerRepo;
 import com.whydigit.efit.repo.UnitRepo;
 import com.whydigit.efit.repo.VenderAddressRepo;
-import com.whydigit.efit.repo.VenderBankdetailsRepo;
 import com.whydigit.efit.repo.VenderRepo;
 import com.whydigit.efit.repo.WarehouseLocationRepo;
 
@@ -82,8 +80,6 @@ public class MasterServiceImpl implements MasterService {
 	WarehouseLocationRepo warehouseLocationRepo;
 	@Autowired
 	VenderAddressRepo venderAddressRepo;
-	@Autowired
-	VenderBankdetailsRepo venderBankdetailsRepo;
 	@Autowired
 	KitRepo kitRepo;
 
@@ -543,37 +539,8 @@ public class MasterServiceImpl implements MasterService {
 	public void deleteVenderAddress(int id) {
 		venderAddressRepo.deleteById(id);
 	}
-//vender bank details
 
-	@Override
-	public List<VenderBankdetailsVO> getAllVenderBankdetails() {
-		return venderBankdetailsRepo.findAll();
-	}
-
-	@Override
-	public Optional<VenderBankdetailsVO> getVenderBankdetailsById(int id) {
-		return venderBankdetailsRepo.findById(id);
-	}
-
-	@Override
-	public VenderBankdetailsVO createVenderBankdetails(VenderBankdetailsVO venderBankdetailsVO) {
-		return venderBankdetailsRepo.save(venderBankdetailsVO);
-	}
-
-	@Override
-	public Optional<VenderBankdetailsVO> updateVenderBankdetails(VenderBankdetailsVO venderBankdetailsVO) {
-		if (venderBankdetailsRepo.existsById(venderBankdetailsVO.getId())) {
-			return Optional.of(venderBankdetailsRepo.save(venderBankdetailsVO));
-		} else {
-			return Optional.empty();
-		}
-	}
-
-	@Override
-	public void deleteVenderBankdetails(int id) {
-		venderBankdetailsRepo.deleteById(id);
-	}
-
+// create kit
 	@Override
 	public List<KitVO> getAllKit() {
 		// TODO Auto-generated method stub
