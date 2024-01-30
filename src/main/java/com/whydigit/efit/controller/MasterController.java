@@ -537,7 +537,7 @@ public class MasterController extends BaseController {
 
 	// vendors
 
-	@GetMapping("/vendor")
+	@GetMapping("/vender")
 	public ResponseEntity<ResponseDTO> getAllVender(@RequestParam(required = false) Long orgId) {
 		String methodName = "getAllVender()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
