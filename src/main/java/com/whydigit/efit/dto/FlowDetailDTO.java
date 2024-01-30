@@ -10,12 +10,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class FlowDetailDTO {
-	private int orgId;
 	private String kitName;
 	private String emitter;
+	private long partNumber;
 	private String partName;
 	private String cycleTime;
-	private String receiver;
+	private String subReceiver;
 	private boolean active;
 	// private String fixedRentalCharge;
 	// private String dhr;

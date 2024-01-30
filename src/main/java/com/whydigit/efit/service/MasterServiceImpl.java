@@ -243,14 +243,14 @@ public class MasterServiceImpl implements MasterService {
 //						.rentalTerm(fdDTO.getRentalTerm()).returnCharge(fdDTO.getReturnCharge()).build())
 //				.collect(Collectors.toList());
 
-		FlowVO flowVO = FlowVO.builder().active(flowDTO.isActive()).orgin(flowDTO.getOrgin())
+		FlowVO flowVO = FlowVO.builder().active(flowDTO.isActive()).orgin(flowDTO.getOrgin()).receiver(flowDTO.getReceiver())
 				.flowName(flowDTO.getFlowName()).emitter(flowDTO.getEmitter()).destination(flowDTO.getDestination())
 				.orgId(flowDTO.getOrgId()).flowDetailVO(flowDetailVOList).build();
 
 		flowDetailVOList = flowDTO.getFlowDetailDTO().stream()
 				.map(fdDTO -> FlowDetailVO.builder().active(fdDTO.isActive()).cycleTime(fdDTO.getCycleTime())
 						.partName(fdDTO.getPartName()).kitName(fdDTO.getKitName()).emitter(flowDTO.getEmitter())
-						.receiver(flowDTO.getReceiver()).build())
+						.subReceiver(fdDTO.getSubReceiver()).partNumber(fdDTO.getPartNumber()).build())
 				.collect(Collectors.toList());
 		flowVO.setFlowDetailVO(flowDetailVOList);
 		return flowVO;
