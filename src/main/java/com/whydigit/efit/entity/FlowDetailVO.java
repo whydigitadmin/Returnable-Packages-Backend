@@ -30,11 +30,11 @@ public class FlowDetailVO {
 	private int id;
 	private int orgId;
 	private String kitName;
-	private long partNumber;
+	private long  partNumber;
 	private String emitter;
 	private String partName;
 	private String cycleTime;
-	private String receiver;
+	private String subReceiver;
 	private boolean active;
 //	private String itemGroup;
 //	private String productToPack;
