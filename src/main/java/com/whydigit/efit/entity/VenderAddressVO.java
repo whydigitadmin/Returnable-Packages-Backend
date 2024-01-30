@@ -14,33 +14,30 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name="customer")
+@Table(name = "venderAddress")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CustomersVO {
-
+public class VenderAddressVO {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
-	private long orgId;
-	private String firstName;
-	private String lastName;
-	private String customerOrgName;
-	private String customerCode;
-	private String displayName;
-	private String Email;
+//	private long orgId;
+	private int venderId;
+	private String gstRegistrationStatus;
+	private long gstNumber;
+	private String street1;
+	private String street2;
+	private String city;
+	private String state;
+	private long pincode;
+	private String contactName;
 	private String phone;
-	private String sop;
-	private String document;
-	private boolean customerActivatePortal;
+	private boolean primary;
+	private String createdBy;
+	private String updatedBy;
 	private boolean active;
-	private String bankName;
-	private String accountNO;
-	private String accountName;
-	private String branch;
-	private String ifscCode;
-	
 	@Embedded
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
+
 }

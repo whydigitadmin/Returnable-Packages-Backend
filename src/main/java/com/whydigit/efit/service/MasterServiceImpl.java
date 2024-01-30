@@ -29,6 +29,8 @@ import com.whydigit.efit.entity.FlowVO;
 import com.whydigit.efit.entity.ManufacturerProductVO;
 import com.whydigit.efit.entity.ManufacturerVO;
 import com.whydigit.efit.entity.UnitVO;
+import com.whydigit.efit.entity.VenderAddressVO;
+import com.whydigit.efit.entity.VenderBankdetailsVO;
 import com.whydigit.efit.entity.VenderVO;
 import com.whydigit.efit.entity.WarehouseLocationVO;
 import com.whydigit.efit.exception.ApplicationException;
@@ -41,6 +43,8 @@ import com.whydigit.efit.repo.FlowRepo;
 import com.whydigit.efit.repo.ManufacturerProductRepo;
 import com.whydigit.efit.repo.ManufacturerRepo;
 import com.whydigit.efit.repo.UnitRepo;
+import com.whydigit.efit.repo.VenderAddressRepo;
+import com.whydigit.efit.repo.VenderBankdetailsRepo;
 import com.whydigit.efit.repo.VenderRepo;
 import com.whydigit.efit.repo.WarehouseLocationRepo;
 
@@ -67,12 +71,14 @@ public class MasterServiceImpl implements MasterService {
 	ManufacturerProductRepo manufacturerProductRepo;
 	@Autowired
 	AssetCategoryRepo assetCategoryRepo;
-
 	@Autowired
 	UnitRepo unitRepo;
-
 	@Autowired
 	WarehouseLocationRepo warehouseLocationRepo;
+	@Autowired
+	VenderAddressRepo venderAddressRepo;
+	@Autowired
+	VenderBankdetailsRepo venderBankdetailsRepo;
 
 	@Override
 	public List<AssetVO> getAllAsset(Long orgId) {
@@ -498,5 +504,66 @@ public class MasterServiceImpl implements MasterService {
 			LOGGER.error("Error processing CSV line: {}", Arrays.toString(csvLine), e);
 			return null;
 		}
+	}
+
+	//venderAddress
+
+	@Override
+	public List<VenderAddressVO> getAllVenderAddress() {
+		return venderAddressRepo.findAll();
+	}
+
+	@Override
+	public Optional<VenderAddressVO> getVenderAddressById(int id) {
+		return venderAddressRepo.findById(id);
+	}
+
+	@Override
+	public VenderAddressVO createVenderAddress(VenderAddressVO venderAddressVO) {
+		return venderAddressRepo.save(venderAddressVO);
+	}
+
+	@Override
+	public Optional<VenderAddressVO> updateVenderAddress(VenderAddressVO venderAddressVO) {
+		if (venderAddressRepo.existsById(venderAddressVO.getId())) {
+			return Optional.of(venderAddressRepo.save(venderAddressVO));
+		} else {
+			return Optional.empty();
+		}
+	}
+
+	@Override
+	public void deleteVenderAddress(int id) {
+		venderAddressRepo.deleteById(id);
+	}
+//vender bank details
+
+	@Override
+	public List<VenderBankdetailsVO> getAllVenderBankdetails() {
+		return venderBankdetailsRepo.findAll();
+	}
+
+	@Override
+	public Optional<VenderBankdetailsVO> getVenderBankdetailsById(int id) {
+		return venderBankdetailsRepo.findById(id);
+	}
+
+	@Override
+	public VenderBankdetailsVO createVenderBankdetails(VenderBankdetailsVO venderBankdetailsVO) {
+		return venderBankdetailsRepo.save(venderBankdetailsVO);
+	}
+
+	@Override
+	public Optional<VenderBankdetailsVO> updateVenderBankdetails(VenderBankdetailsVO venderBankdetailsVO) {
+		if (venderBankdetailsRepo.existsById(venderBankdetailsVO.getId())) {
+			return Optional.of(venderBankdetailsRepo.save(venderBankdetailsVO));
+		} else {
+			return Optional.empty();
+		}
+	}
+
+	@Override
+	public void deleteVenderBankdetails(int id) {
+		venderBankdetailsRepo.deleteById(id);
 	}
 }

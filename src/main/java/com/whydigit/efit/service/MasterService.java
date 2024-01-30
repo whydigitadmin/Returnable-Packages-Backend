@@ -15,9 +15,12 @@ import com.whydigit.efit.entity.FlowVO;
 import com.whydigit.efit.entity.ManufacturerProductVO;
 import com.whydigit.efit.entity.ManufacturerVO;
 import com.whydigit.efit.entity.UnitVO;
+import com.whydigit.efit.entity.VenderAddressVO;
+import com.whydigit.efit.entity.VenderBankdetailsVO;
 import com.whydigit.efit.entity.VenderVO;
 import com.whydigit.efit.entity.WarehouseLocationVO;
 import com.whydigit.efit.exception.ApplicationException;
+import com.whydigit.efit.repo.VenderAddressRepo;
 
 public interface MasterService {
 
@@ -117,4 +120,26 @@ public interface MasterService {
 
 	List<AssetGroupVO> createAssetGroupByCSV(MultipartFile assetFile) throws ApplicationException;
 
+//venderAddress
+
+	List<VenderAddressVO> getAllVenderAddress();
+
+	Optional<VenderAddressVO> getVenderAddressById(int id);
+
+	VenderAddressVO createVenderAddress(VenderAddressVO venderAddressVO);
+
+	Optional<VenderAddressVO> updateVenderAddress(VenderAddressVO venderAddressVO);
+
+	void deleteVenderAddress(int id);
+
+//vender bank details
+	List<VenderBankdetailsVO> getAllVenderBankdetails();
+
+	Optional<VenderBankdetailsVO> getVenderBankdetailsById(int id);
+
+	VenderBankdetailsVO createVenderBankdetails(VenderBankdetailsVO venderBankdetailsVO);
+
+	Optional<VenderBankdetailsVO> updateVenderBankdetails(VenderBankdetailsVO venderBankdetailsVO);
+
+	void deleteVenderBankdetails(int id);
 }

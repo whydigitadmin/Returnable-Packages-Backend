@@ -32,7 +32,7 @@ public class VenderVO {
 	private String venderOrgName;
 	private String displyName;
 	private String email;
-	private int phoneNumber;
+	private String phoneNumber;
 	private boolean active;
 	private boolean venderActivePortal;
 

@@ -14,33 +14,23 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name="customer")
+@Table(name = "venderBankdetails")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CustomersVO {
-
+public class VenderBankdetailsVO {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
-	private long orgId;
-	private String firstName;
-	private String lastName;
-	private String customerOrgName;
-	private String customerCode;
-	private String displayName;
-	private String Email;
-	private String phone;
-	private String sop;
-	private String document;
-	private boolean customerActivatePortal;
-	private boolean active;
-	private String bankName;
-	private String accountNO;
+	private String bank;
+	private long accountNumber;
 	private String accountName;
 	private String branch;
 	private String ifscCode;
-	
+	private String createdBy;
+	private String updatedBy;
+	private boolean active;
 	@Embedded
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
+
 }
