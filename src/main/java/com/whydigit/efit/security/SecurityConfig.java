@@ -38,7 +38,7 @@ public class SecurityConfig {
 						"/api/master/asset", "/api/warehouse/view/{id}", "/api/usersdetails/view", "/api/DcVendor/view",
 						"/api/master/**", "​/api​/master​/addAddress", "/api/DcVendor/view/{id}",
 						"/api/partStudy/basicDetails", "/api/partStudy/basicDetails/{id}",
-						"/api/partStudy/packingDetail", "/api/partStudy/packingDetail/{id}", "/api/partStudy/logistics",
+						"/api/partStudy/packageDetail", "/api/partStudy/packageDetail/{id}", "/api/partStudy/logistics",
 						"/api/partStudy/logistics/{id}", "/api/partStudy/stockDetail",
 						"/api/partStudy/stockDetail/{id}")
 				.permitAll().antMatchers("/api/**").hasAnyRole("USER", "GUEST_USER").anyRequest().authenticated();

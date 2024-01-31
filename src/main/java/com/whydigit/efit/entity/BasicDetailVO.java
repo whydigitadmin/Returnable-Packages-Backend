@@ -27,7 +27,7 @@ public class BasicDetailVO {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	private long orgId;
-	private String partStudyNo;
+	private String partStudyId;
 	private LocalDate partStudyDate;
 	private String emitterId;
 	private String receiverId;
@@ -35,9 +35,9 @@ public class BasicDetailVO {
 	private String partNumber;
 	private float weight;
 	private String weightUnit;
-	private String partValue;
-	private String highestValue;
-	private String lowestValue;
+	private String partVolume;
+	private String highestVolume;
+	private String lowestVolume;
 	
     @Embedded
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();

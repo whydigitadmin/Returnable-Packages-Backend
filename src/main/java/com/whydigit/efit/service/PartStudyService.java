@@ -20,7 +20,7 @@ public interface PartStudyService {
 
 	void deleteBasicDetail(int id);
 
-	List<PackingDetailVO> getAllPackingDetail();
+	List<PackingDetailVO> getAllpackingDetail(Long orgId);
 
 	Optional<PackingDetailVO> getPackingDetailById(int id);
 
@@ -30,9 +30,7 @@ public interface PartStudyService {
 
 	void deletePackingDetail(int id);
 
-	List<PackingDetailVO> getAllpackingDetail();
-
-	List<LogisticsVO> getAllLogistics();
+	List<LogisticsVO> getAllLogistics(Long orgId);
 
 	Optional<LogisticsVO> getLogisticsById(int id);
 
@@ -42,7 +40,7 @@ public interface PartStudyService {
 
 	void deleteLogistics(int id);
 
-	List<StockDetailVO> getAllStockDetail();
+	List<StockDetailVO> getAllStockDetail(Long orgId);
 
 	Optional<StockDetailVO> getStockDetailById(int id);
 

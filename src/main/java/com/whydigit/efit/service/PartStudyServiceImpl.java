@@ -72,8 +72,16 @@ public class PartStudyServiceImpl implements PartStudyService {
 	}
 
 	@Override
-	public List<PackingDetailVO> getAllpackingDetail() {
-		return packingDetailRepo.findAll();
+	public List<PackingDetailVO> getAllpackingDetail(Long orgId) {
+		List<PackingDetailVO> packingDetailVO = new ArrayList<>();
+		if (ObjectUtils.isNotEmpty(orgId)) {
+			LOGGER.info("Successfully Received Package Detail Information BY OrgId : {}", orgId);
+			packingDetailVO = packingDetailRepo.getpackingDetailByOrgId(orgId);
+		} else {
+			LOGGER.info("Successfully Received  Package Detail Information For All OrgId.");
+			packingDetailVO = packingDetailRepo.findAll();
+		}
+		return packingDetailVO;
 	}
 
 	@Override
@@ -102,14 +110,16 @@ public class PartStudyServiceImpl implements PartStudyService {
 	}
 
 	@Override
-	public List<PackingDetailVO> getAllPackingDetail() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<LogisticsVO> getAllLogistics() {
-		return logisticRepo.findAll();
+	public List<LogisticsVO> getAllLogistics(Long orgId) {
+		List<LogisticsVO> logisticsVO = new ArrayList<>();
+		if (ObjectUtils.isNotEmpty(orgId)) {
+			LOGGER.info("Successfully Received Logistics Information BY OrgId : {}", orgId);
+			logisticsVO = logisticRepo.getLogisticsByOrgId(orgId);
+		} else {
+			LOGGER.info("Successfully Received  Logistics Information For All OrgId.");
+			logisticsVO = logisticRepo.findAll();
+		}
+		return logisticsVO;
 	}
 
 	@Override
@@ -137,8 +147,16 @@ public class PartStudyServiceImpl implements PartStudyService {
 	}
 
 	@Override
-	public List<StockDetailVO> getAllStockDetail() {
-		return stockDetailRepo.findAll();
+	public List<StockDetailVO> getAllStockDetail(Long orgId) {
+		List<StockDetailVO> stockDetailVO = new ArrayList<>();
+		if (ObjectUtils.isNotEmpty(orgId)) {
+			LOGGER.info("Successfully Received StockDetaill Information BY OrgId : {}", orgId);
+			stockDetailVO = stockDetailRepo.getStockDetailByOrgId(orgId);
+		} else {
+			LOGGER.info("Successfully Received  StockDetail Information For All OrgId.");
+			stockDetailVO = stockDetailRepo.findAll();
+		}
+		return stockDetailVO;
 	}
 
 	@Override
