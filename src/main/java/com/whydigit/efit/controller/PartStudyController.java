@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.whydigit.efit.common.CommonConstant;
@@ -61,7 +62,7 @@ public class PartStudyController  extends BaseController{
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
-	@PutMapping("/basicDetail")
+	@PutMapping("/basicDetails")
 	public ResponseEntity<ResponseDTO> updateBasicDetail(@RequestBody BasicDetailVO basicDetailVO) {
 		String methodName = "updateCompany()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
@@ -87,8 +88,8 @@ public class PartStudyController  extends BaseController{
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
-	@GetMapping("basicDetail")
-	public ResponseEntity<ResponseDTO> getAllBasicDetail() {
+	@GetMapping("/basicDetails")
+	public ResponseEntity<ResponseDTO> getAllBasicDetail(@RequestParam (required = false)Long orgId) {
 		String methodName = "getAllBasicDetail()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -96,7 +97,7 @@ public class PartStudyController  extends BaseController{
 		ResponseDTO responseDTO = null;
 		List<BasicDetailVO> basicDetailVO = new ArrayList<>();
 		try {
-			basicDetailVO = partStudyService.getAllBasicDetail();
+			basicDetailVO = partStudyService.getAllBasicDetail(orgId);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
@@ -113,7 +114,7 @@ public class PartStudyController  extends BaseController{
 		return ResponseEntity.ok().body(responseDTO);
 	}
 	
-	@GetMapping("/basicDetail/{id}")
+	@GetMapping("/basicDetails/{id}")
 	public ResponseEntity<ResponseDTO> getBasicDetailById(@PathVariable int id) {
 		String methodName = "getBasicDetailById()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
@@ -140,7 +141,7 @@ public class PartStudyController  extends BaseController{
 	}
 
 	
-	@DeleteMapping("/basicDetail/{id}")
+	@DeleteMapping("/basicDetails/{id}")
 	public ResponseEntity<ResponseDTO> deleteBasicDetail(@PathVariable int id) {
 		String methodName = "deleteBasicDetail()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);

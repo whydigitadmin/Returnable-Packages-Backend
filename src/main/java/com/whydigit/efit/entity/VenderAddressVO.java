@@ -1,4 +1,3 @@
-
 package com.whydigit.efit.entity;
 
 import javax.persistence.Embedded;
@@ -15,22 +14,30 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "warehouse_location")
+@Table(name = "vender_address")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class WarehouseLocationVO {
-
+public class VenderAddressVO {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
-	private long orgId;
-	private String warehouselocation;
-	private boolean active;
+//	private long orgId;
+	private int venderId;
+	private String gstRegistrationStatus;
+	private long gstNumber;
+	private String street1;
+	private String street2;
+	private String city;
+	private String state;
+	private long pincode;
+	private String contactName;
+	private String phone;
+	private boolean markPrimary;
 	private String createdBy;
 	private String updatedBy;
-	private String unitName;
-
+	private boolean active;
 	@Embedded
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
+
 }

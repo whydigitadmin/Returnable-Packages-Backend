@@ -30,7 +30,7 @@ public class CustomersVO {
 	private String customerCode;
 	private String displayName;
 	private String Email;
-	private int phone;
+	private String phone;
 	private String sop;
 	private String document;
 	private boolean customerActivatePortal;

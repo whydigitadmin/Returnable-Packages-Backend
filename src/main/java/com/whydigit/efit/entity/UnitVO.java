@@ -1,4 +1,5 @@
 package com.whydigit.efit.entity;
+
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -24,9 +25,10 @@ public class UnitVO {
 	private int id;
 	private long orgId;
 	private String unit;
-    private boolean active;
-    private String createdBy;
-    private String updatedBy;
-    @Embedded
+	private boolean active;
+	//private String action;
+	private String createdBy;
+	private String updatedBy;
+	@Embedded
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
 }

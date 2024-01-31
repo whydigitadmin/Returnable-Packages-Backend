@@ -1,4 +1,5 @@
 package com.whydigit.efit.entity;
+
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -33,14 +34,13 @@ public class AddressVO {
 	private String pincode;
 	private String contactName;
 	private String phoneNumber;
-	private String addressType;
-    private boolean primary;
-    
-//    @JsonManagedReference
-//	@OneToMany(mappedBy="flowVO",cascade = CascadeType.ALL)
-//	private List<FlowDetailVO> flowDetailVO;
-    
-    @Embedded
-    @Builder.Default
-	private CreatedUpdatedDate commonDate=new CreatedUpdatedDate();
+	// private String addressType;
+	private boolean primary;
+   // @JsonManagedReference
+   //@OneToMany(mappedBy="flowVO",cascade = CascadeType.ALL)
+   //private List<FlowDetailVO> flowDetailVO;
+
+	@Embedded
+	@Builder.Default
+	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
 }

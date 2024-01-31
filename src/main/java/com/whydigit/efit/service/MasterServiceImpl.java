@@ -19,6 +19,8 @@ import org.springframework.web.multipart.MultipartFile;
 import com.opencsv.CSVReader;
 import com.whydigit.efit.common.CommonConstant;
 import com.whydigit.efit.dto.FlowDTO;
+import com.whydigit.efit.dto.KitAssetDTO;
+import com.whydigit.efit.dto.KitDTO;
 import com.whydigit.efit.entity.AddressVO;
 import com.whydigit.efit.entity.AssetCategoryVO;
 import com.whydigit.efit.entity.AssetGroupVO;
@@ -26,9 +28,12 @@ import com.whydigit.efit.entity.AssetVO;
 import com.whydigit.efit.entity.CustomersVO;
 import com.whydigit.efit.entity.FlowDetailVO;
 import com.whydigit.efit.entity.FlowVO;
+import com.whydigit.efit.entity.KitAssetVO;
+import com.whydigit.efit.entity.KitVO;
 import com.whydigit.efit.entity.ManufacturerProductVO;
 import com.whydigit.efit.entity.ManufacturerVO;
 import com.whydigit.efit.entity.UnitVO;
+import com.whydigit.efit.entity.VenderAddressVO;
 import com.whydigit.efit.entity.VenderVO;
 import com.whydigit.efit.entity.WarehouseLocationVO;
 import com.whydigit.efit.exception.ApplicationException;
@@ -38,9 +43,11 @@ import com.whydigit.efit.repo.AssetGroupRepo;
 import com.whydigit.efit.repo.AssetRepo;
 import com.whydigit.efit.repo.CustomersRepo;
 import com.whydigit.efit.repo.FlowRepo;
+import com.whydigit.efit.repo.KitRepo;
 import com.whydigit.efit.repo.ManufacturerProductRepo;
 import com.whydigit.efit.repo.ManufacturerRepo;
 import com.whydigit.efit.repo.UnitRepo;
+import com.whydigit.efit.repo.VenderAddressRepo;
 import com.whydigit.efit.repo.VenderRepo;
 import com.whydigit.efit.repo.WarehouseLocationRepo;
 
@@ -67,12 +74,14 @@ public class MasterServiceImpl implements MasterService {
 	ManufacturerProductRepo manufacturerProductRepo;
 	@Autowired
 	AssetCategoryRepo assetCategoryRepo;
-
 	@Autowired
 	UnitRepo unitRepo;
-
 	@Autowired
 	WarehouseLocationRepo warehouseLocationRepo;
+	@Autowired
+	VenderAddressRepo venderAddressRepo;
+	@Autowired
+	KitRepo kitRepo;
 
 	@Override
 	public List<AssetVO> getAllAsset(Long orgId) {
@@ -113,20 +122,17 @@ public class MasterServiceImpl implements MasterService {
 	}
 
 	@Override
-	public List<AssetGroupVO> getAllAssetGroup(Long orgId) 
-	{
-		List<AssetGroupVO> assetGroupVO=new ArrayList<>();
-		if(ObjectUtils.isNotEmpty(orgId)) {
-			LOGGER.info("Successfully Received  AssetGroupInformation BY OrgId : {}",orgId);
-			assetGroupVO= assetGroupRepo.getAllAssetGroupByOrgId(orgId);
-		}else
-		{
+	public List<AssetGroupVO> getAllAssetGroup(Long orgId) {
+		List<AssetGroupVO> assetGroupVO = new ArrayList<>();
+		if (ObjectUtils.isNotEmpty(orgId)) {
+			LOGGER.info("Successfully Received  AssetGroupInformation BY OrgId : {}", orgId);
+			assetGroupVO = assetGroupRepo.getAllAssetGroupByOrgId(orgId);
+		} else {
 			LOGGER.info("Successfully Received  AssetGroupInformation For All OrgId.");
-			assetGroupVO= assetGroupRepo.findAll();
+			assetGroupVO = assetGroupRepo.findAll();
 		}
 		return assetGroupVO;
 	}
-
 
 	@Override
 	public Optional<AssetGroupVO> getAssetGroupById(String id) {
@@ -162,18 +168,17 @@ public class MasterServiceImpl implements MasterService {
 
 	@Override
 	public List<CustomersVO> getAllCustomers(Long orgId) {
-		List<CustomersVO> customersVO=new ArrayList<>();
-		if(ObjectUtils.isNotEmpty(orgId)) {
-			LOGGER.info("Successfully Received  CustomerInformation BY OrgId : {}",orgId);
-			customersVO= customersRepo.getAllCustomersByOrgId(orgId);
-		}else
-		{
+		List<CustomersVO> customersVO = new ArrayList<>();
+		if (ObjectUtils.isNotEmpty(orgId)) {
+			LOGGER.info("Successfully Received  CustomerInformation BY OrgId : {}", orgId);
+			customersVO = customersRepo.getAllCustomersByOrgId(orgId);
+		} else {
 			LOGGER.info("Successfully Received  CustomerInformation For All OrgId.");
-			customersVO= customersRepo.findAll();
+			customersVO = customersRepo.findAll();
 		}
 		return customersVO;
 	}
-	
+
 	@Override
 	public Optional<CustomersVO> getCustomersById(int id) {
 		return customersRepo.findById(id);
@@ -206,18 +211,16 @@ public class MasterServiceImpl implements MasterService {
 
 	@Override
 	public List<FlowVO> getAllFlow(Long orgId) {
-		List<FlowVO> flowVO=new ArrayList<>();
-		if(ObjectUtils.isNotEmpty(orgId)) {
-			LOGGER.info("Successfully Received  FlowInformation BY OrgId : {}",orgId);
-			flowVO= flowRepo.getAllFlowByOrgId(orgId);
-		}else
-		{
+		List<FlowVO> flowVO = new ArrayList<>();
+		if (ObjectUtils.isNotEmpty(orgId)) {
+			LOGGER.info("Successfully Received  FlowInformation BY OrgId : {}", orgId);
+			flowVO = flowRepo.getAllFlowByOrgId(orgId);
+		} else {
 			LOGGER.info("Successfully Received  FlowInformation For All OrgId.");
-			flowVO= flowRepo.findAll();
+			flowVO = flowRepo.findAll();
 		}
 		return flowVO;
 	}
-	
 
 	@Override
 	public Optional<FlowVO> getFlowById(int id) {
@@ -232,15 +235,25 @@ public class MasterServiceImpl implements MasterService {
 
 	private FlowVO createFlowVOByFlowDTO(FlowDTO flowDTO) {
 		List<FlowDetailVO> flowDetailVOList = new ArrayList<>();
+//		FlowVO flowVO = FlowVO.builder().active(flowDTO.isActive()).orgin(flowDTO.getOrgin())
+//				.flowInfo(flowDTO.getFlowInfo()).flowName(flowDTO.getFlowName()).flowType(flowDTO.getFlowType()).orgId(flowDTO.getOrgId())
+//				.flowDetailVO(flowDetailVOList).build();
+//		flowDetailVOList = flowDTO.getFlowDetailDTO().stream()
+//				.map(fdDTO -> FlowDetailVO.builder().active(fdDTO.isActive()).cycleTime(fdDTO.getCycleTime())
+//						.dhr(fdDTO.getDhr()).fixedRentalCharge(fdDTO.getFixedRentalCharge()).flowVO(flowVO)
+//						.itemGroup(fdDTO.getItemGroup()).issueCharge(fdDTO.getIssueCharge())
+//						.productToPack(fdDTO.getProductToPack()).quantity(fdDTO.getQuantity())
+//						.rentalTerm(fdDTO.getRentalTerm()).returnCharge(fdDTO.getReturnCharge()).build())
+//				.collect(Collectors.toList());
+
 		FlowVO flowVO = FlowVO.builder().active(flowDTO.isActive()).orgin(flowDTO.getOrgin())
-				.flowInfo(flowDTO.getFlowInfo()).flowName(flowDTO.getFlowName()).flowType(flowDTO.getFlowType()).orgId(flowDTO.getOrgId())
-				.flowDetailVO(flowDetailVOList).build();
+				.receiver(flowDTO.getReceiver()).flowName(flowDTO.getFlowName()).emitter(flowDTO.getEmitter())
+				.destination(flowDTO.getDestination()).orgId(flowDTO.getOrgId()).flowDetailVO(flowDetailVOList).build();
+
 		flowDetailVOList = flowDTO.getFlowDetailDTO().stream()
 				.map(fdDTO -> FlowDetailVO.builder().active(fdDTO.isActive()).cycleTime(fdDTO.getCycleTime())
-						.dhr(fdDTO.getDhr()).fixedRentalCharge(fdDTO.getFixedRentalCharge()).flowVO(flowVO)
-						.itemGroup(fdDTO.getItemGroup()).issueCharge(fdDTO.getIssueCharge())
-						.productToPack(fdDTO.getProductToPack()).quantity(fdDTO.getQuantity())
-						.rentalTerm(fdDTO.getRentalTerm()).returnCharge(fdDTO.getReturnCharge()).build())
+						.partName(fdDTO.getPartName()).kitName(fdDTO.getKitName()).emitter(flowDTO.getEmitter())
+						.subReceiver(fdDTO.getSubReceiver()).partNumber(fdDTO.getPartNumber()).build())
 				.collect(Collectors.toList());
 		flowVO.setFlowDetailVO(flowDetailVOList);
 		return flowVO;
@@ -263,18 +276,16 @@ public class MasterServiceImpl implements MasterService {
 
 	@Override
 	public List<VenderVO> getAllVender(Long orgId) {
-		List<VenderVO> venderVO=new ArrayList<>();
-		if(ObjectUtils.isNotEmpty(orgId)) {
-			LOGGER.info("Successfully Received  VenderInformation BY OrgId : {}",orgId);
-			venderVO= venderRepo.getAllVenderByOrgId(orgId);
-		}else
-		{
+		List<VenderVO> venderVO = new ArrayList<>();
+		if (ObjectUtils.isNotEmpty(orgId)) {
+			LOGGER.info("Successfully Received  VenderInformation BY OrgId : {}", orgId);
+			venderVO = venderRepo.getAllVenderByOrgId(orgId);
+		} else {
 			LOGGER.info("Successfully Received  VenderInformation For All OrgId.");
-			venderVO= venderRepo.findAll();
+			venderVO = venderRepo.findAll();
 		}
 		return venderVO;
 	}
-
 
 	@Override
 	public Optional<VenderVO> getVenderById(int id) {
@@ -303,14 +314,13 @@ public class MasterServiceImpl implements MasterService {
 
 	@Override
 	public List<ManufacturerVO> getAllManufacturer(Long orgId) {
-		List<ManufacturerVO> manufacturerVO=new ArrayList<>();
-		if(ObjectUtils.isNotEmpty(orgId)) {
-			LOGGER.info("Successfully Received  ManufacturerInformation BY OrgId : {}",orgId);
-			manufacturerVO= manufacturerRepo.getAllManufacturerByOrgId(orgId);
-		}else
-		{
+		List<ManufacturerVO> manufacturerVO = new ArrayList<>();
+		if (ObjectUtils.isNotEmpty(orgId)) {
+			LOGGER.info("Successfully Received  ManufacturerInformation BY OrgId : {}", orgId);
+			manufacturerVO = manufacturerRepo.getAllManufacturerByOrgId(orgId);
+		} else {
 			LOGGER.info("Successfully Received  VenderInformation For All OrgId.");
-			manufacturerVO= manufacturerRepo.findAll();
+			manufacturerVO = manufacturerRepo.findAll();
 		}
 		return manufacturerVO;
 	}
@@ -497,5 +507,76 @@ public class MasterServiceImpl implements MasterService {
 			LOGGER.error("Error processing CSV line: {}", Arrays.toString(csvLine), e);
 			return null;
 		}
+	}
+
+	// venderAddress
+
+	@Override
+	public List<VenderAddressVO> getAllVenderAddress() {
+		return venderAddressRepo.findAll();
+	}
+
+	@Override
+	public Optional<VenderAddressVO> getVenderAddressById(int id) {
+		return venderAddressRepo.findById(id);
+	}
+
+	@Override
+	public VenderAddressVO createVenderAddress(VenderAddressVO venderAddressVO) {
+		return venderAddressRepo.save(venderAddressVO);
+	}
+
+	@Override
+	public Optional<VenderAddressVO> updateVenderAddress(VenderAddressVO venderAddressVO) {
+		if (venderAddressRepo.existsById(venderAddressVO.getId())) {
+			return Optional.of(venderAddressRepo.save(venderAddressVO));
+		} else {
+			return Optional.empty();
+		}
+	}
+
+	@Override
+	public void deleteVenderAddress(int id) {
+		venderAddressRepo.deleteById(id);
+	}
+
+// create kit
+	@Override
+	public List<KitVO> getAllKit() {
+		// TODO Auto-generated method stub
+		return kitRepo.findAll();
+	}
+
+	@Override
+	public Optional<KitVO> getKitById(String id) {
+		// TODO Auto-generated method stub
+		return kitRepo.findById(id);
+	}
+
+	@Override
+	public KitVO createkit(KitDTO kitDTO) {
+		List<KitAssetVO> kitAssetVO = new ArrayList<>();
+		KitVO kitVO = KitVO.builder().id(kitDTO.getId()).orgId(kitDTO.getOrgId()).partId(kitDTO.getPartId())
+				.partQty(kitDTO.getPartQty()).kitAssetVO(kitAssetVO).build();
+		for (KitAssetDTO kitAsset : kitDTO.getKitAssetDTO()) {
+			kitAssetVO.add(KitAssetVO.builder().assetCategory(kitAsset.getAssetCategory())
+					.assetName(kitAsset.getAssetName()).quantity(kitAsset.getQuantity()).kitVO(kitVO).build());
+		}
+		return kitRepo.save(kitVO);
+	}
+
+	@Override
+	public Optional<KitVO> updatedKit(KitVO kitVO) {
+		if (kitRepo.existsById(kitVO.getId())) {
+			return Optional.of(kitRepo.save(kitVO));
+		} else {
+			return Optional.empty();
+		}
+	}
+
+	@Override
+	public void deleteKit(String id) {
+		kitRepo.deleteById(id);
+
 	}
 }

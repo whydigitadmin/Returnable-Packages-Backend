@@ -15,7 +15,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name="manufacturer")
+@Table(name = "manufacturer")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -35,7 +35,7 @@ public class ManufacturerVO {
 	private String productionCapacity;
 	private String notes;
 	private boolean active;
-	
+
 	@Embedded
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
 }

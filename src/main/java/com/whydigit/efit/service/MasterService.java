@@ -6,15 +6,18 @@ import java.util.Optional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.whydigit.efit.dto.FlowDTO;
+import com.whydigit.efit.dto.KitDTO;
 import com.whydigit.efit.entity.AddressVO;
 import com.whydigit.efit.entity.AssetCategoryVO;
 import com.whydigit.efit.entity.AssetGroupVO;
 import com.whydigit.efit.entity.AssetVO;
 import com.whydigit.efit.entity.CustomersVO;
 import com.whydigit.efit.entity.FlowVO;
+import com.whydigit.efit.entity.KitVO;
 import com.whydigit.efit.entity.ManufacturerProductVO;
 import com.whydigit.efit.entity.ManufacturerVO;
 import com.whydigit.efit.entity.UnitVO;
+import com.whydigit.efit.entity.VenderAddressVO;
 import com.whydigit.efit.entity.VenderVO;
 import com.whydigit.efit.entity.WarehouseLocationVO;
 import com.whydigit.efit.exception.ApplicationException;
@@ -117,4 +120,26 @@ public interface MasterService {
 
 	List<AssetGroupVO> createAssetGroupByCSV(MultipartFile assetFile) throws ApplicationException;
 
+//venderAddress
+
+	List<VenderAddressVO> getAllVenderAddress();
+
+	Optional<VenderAddressVO> getVenderAddressById(int id);
+
+	VenderAddressVO createVenderAddress(VenderAddressVO venderAddressVO);
+
+	Optional<VenderAddressVO> updateVenderAddress(VenderAddressVO venderAddressVO);
+
+	void deleteVenderAddress(int id);
+
+	// Create Kit
+	List<KitVO> getAllKit();
+
+	Optional<KitVO> getKitById(String id);
+
+	KitVO createkit(KitDTO kitDTO);
+
+	Optional<KitVO> updatedKit(KitVO kitVO);
+
+	void deleteKit(String id);
 }
