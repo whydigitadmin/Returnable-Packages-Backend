@@ -6,10 +6,11 @@ import java.util.List;
 import java.util.Optional;
 
 import org.apache.commons.lang3.ObjectUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.whydigit.efit.entity.AssetVO;
 import com.whydigit.efit.entity.BasicDetailVO;
 import com.whydigit.efit.entity.LogisticsVO;
 import com.whydigit.efit.entity.PackingDetailVO;
@@ -30,19 +31,16 @@ public class PartStudyServiceImpl implements PartStudyService {
 	LogisticsRepo logisticRepo;
 	@Autowired
 	StockDetailRepo stockDetailRepo;
-	
-	
-	
-	
+	public static final Logger LOGGER = LoggerFactory.getLogger(MasterServiceImpl.class);
 
 	@Override
 	public List<BasicDetailVO> getAllBasicDetail(Long orgId) {
 		List<BasicDetailVO> basicDetailVO = new ArrayList<>();
 		if (ObjectUtils.isNotEmpty(orgId)) {
-			//LOGGER.info("Successfully Received  BasicDetail Information BY OrgId : {}", orgId);
+			LOGGER.info("Successfully Received  BasicDetail Information BY OrgId : {}", orgId);
 			basicDetailVO = basicDetailRepo.getAllBasicDetailByOrgId(orgId);
 		} else {
-			//LOGGER.info("Successfully Received  BasicDetail Information For All OrgId.");
+			LOGGER.info("Successfully Received  BasicDetail Information For All OrgId.");
 			basicDetailVO = basicDetailRepo.findAll();
 		}
 		return basicDetailVO;
@@ -72,10 +70,18 @@ public class PartStudyServiceImpl implements PartStudyService {
 		basicDetailRepo.deleteById(id);
 
 	}
-	
+
 	@Override
-	public List<PackingDetailVO> getAllpackingDetail() {
-		return packingDetailRepo.findAll();
+	public List<PackingDetailVO> getAllpackingDetail(Long orgId) {
+		List<PackingDetailVO> packingDetailVO = new ArrayList<>();
+		if (ObjectUtils.isNotEmpty(orgId)) {
+			LOGGER.info("Successfully Received Package Detail Information BY OrgId : {}", orgId);
+			packingDetailVO = packingDetailRepo.getpackingDetailByOrgId(orgId);
+		} else {
+			LOGGER.info("Successfully Received  Package Detail Information For All OrgId.");
+			packingDetailVO = packingDetailRepo.findAll();
+		}
+		return packingDetailVO;
 	}
 
 	@Override
@@ -104,15 +110,16 @@ public class PartStudyServiceImpl implements PartStudyService {
 	}
 
 	@Override
-	public List<PackingDetailVO> getAllPackingDetail() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	
-	@Override
-	public List<LogisticsVO> getAllLogistics() {
-		return logisticRepo.findAll();
+	public List<LogisticsVO> getAllLogistics(Long orgId) {
+		List<LogisticsVO> logisticsVO = new ArrayList<>();
+		if (ObjectUtils.isNotEmpty(orgId)) {
+			LOGGER.info("Successfully Received Logistics Information BY OrgId : {}", orgId);
+			logisticsVO = logisticRepo.getLogisticsByOrgId(orgId);
+		} else {
+			LOGGER.info("Successfully Received  Logistics Information For All OrgId.");
+			logisticsVO = logisticRepo.findAll();
+		}
+		return logisticsVO;
 	}
 
 	@Override
@@ -138,11 +145,18 @@ public class PartStudyServiceImpl implements PartStudyService {
 	public void deleteLogistics(int id) {
 		logisticRepo.deleteById(id);
 	}
-	
-	
+
 	@Override
-	public List<StockDetailVO> getAllStockDetail() {
-		return stockDetailRepo.findAll();
+	public List<StockDetailVO> getAllStockDetail(Long orgId) {
+		List<StockDetailVO> stockDetailVO = new ArrayList<>();
+		if (ObjectUtils.isNotEmpty(orgId)) {
+			LOGGER.info("Successfully Received StockDetaill Information BY OrgId : {}", orgId);
+			stockDetailVO = stockDetailRepo.getStockDetailByOrgId(orgId);
+		} else {
+			LOGGER.info("Successfully Received  StockDetail Information For All OrgId.");
+			stockDetailVO = stockDetailRepo.findAll();
+		}
+		return stockDetailVO;
 	}
 
 	@Override
@@ -169,6 +183,4 @@ public class PartStudyServiceImpl implements PartStudyService {
 		stockDetailRepo.deleteById(id);
 	}
 
-	
 }
-
