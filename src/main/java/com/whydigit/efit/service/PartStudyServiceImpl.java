@@ -1,12 +1,15 @@
 
 package com.whydigit.efit.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.whydigit.efit.entity.AssetVO;
 import com.whydigit.efit.entity.BasicDetailVO;
 import com.whydigit.efit.entity.LogisticsVO;
 import com.whydigit.efit.entity.PackingDetailVO;
@@ -33,8 +36,16 @@ public class PartStudyServiceImpl implements PartStudyService {
 	
 
 	@Override
-	public List<BasicDetailVO> getAllBasicDetail() {
-		return basicDetailRepo.findAll();
+	public List<BasicDetailVO> getAllBasicDetail(Long orgId) {
+		List<BasicDetailVO> basicDetailVO = new ArrayList<>();
+		if (ObjectUtils.isNotEmpty(orgId)) {
+			//LOGGER.info("Successfully Received  BasicDetail Information BY OrgId : {}", orgId);
+			basicDetailVO = basicDetailRepo.getAllBasicDetailByOrgId(orgId);
+		} else {
+			//LOGGER.info("Successfully Received  BasicDetail Information For All OrgId.");
+			basicDetailVO = basicDetailRepo.findAll();
+		}
+		return basicDetailVO;
 	}
 
 	@Override

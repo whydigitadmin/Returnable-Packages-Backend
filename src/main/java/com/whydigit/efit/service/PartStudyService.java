@@ -10,7 +10,7 @@ import com.whydigit.efit.entity.StockDetailVO;
 
 public interface PartStudyService {
 
-	List<BasicDetailVO>getAllBasicDetail();
+	List<BasicDetailVO>getAllBasicDetail(Long orgId);
 	
 	Optional<BasicDetailVO>getBasicDetailById(int id);
 	
