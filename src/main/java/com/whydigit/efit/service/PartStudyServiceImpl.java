@@ -6,10 +6,11 @@ import java.util.List;
 import java.util.Optional;
 
 import org.apache.commons.lang3.ObjectUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.whydigit.efit.entity.AssetVO;
 import com.whydigit.efit.entity.BasicDetailVO;
 import com.whydigit.efit.entity.LogisticsVO;
 import com.whydigit.efit.entity.PackingDetailVO;
@@ -30,19 +31,16 @@ public class PartStudyServiceImpl implements PartStudyService {
 	LogisticsRepo logisticRepo;
 	@Autowired
 	StockDetailRepo stockDetailRepo;
-	
-	
-	
-	
+	public static final Logger LOGGER = LoggerFactory.getLogger(MasterServiceImpl.class);
 
 	@Override
 	public List<BasicDetailVO> getAllBasicDetail(Long orgId) {
 		List<BasicDetailVO> basicDetailVO = new ArrayList<>();
 		if (ObjectUtils.isNotEmpty(orgId)) {
-			//LOGGER.info("Successfully Received  BasicDetail Information BY OrgId : {}", orgId);
+			LOGGER.info("Successfully Received  BasicDetail Information BY OrgId : {}", orgId);
 			basicDetailVO = basicDetailRepo.getAllBasicDetailByOrgId(orgId);
 		} else {
-			//LOGGER.info("Successfully Received  BasicDetail Information For All OrgId.");
+			LOGGER.info("Successfully Received  BasicDetail Information For All OrgId.");
 			basicDetailVO = basicDetailRepo.findAll();
 		}
 		return basicDetailVO;
@@ -72,7 +70,7 @@ public class PartStudyServiceImpl implements PartStudyService {
 		basicDetailRepo.deleteById(id);
 
 	}
-	
+
 	@Override
 	public List<PackingDetailVO> getAllpackingDetail() {
 		return packingDetailRepo.findAll();
@@ -109,7 +107,6 @@ public class PartStudyServiceImpl implements PartStudyService {
 		return null;
 	}
 
-	
 	@Override
 	public List<LogisticsVO> getAllLogistics() {
 		return logisticRepo.findAll();
@@ -138,8 +135,7 @@ public class PartStudyServiceImpl implements PartStudyService {
 	public void deleteLogistics(int id) {
 		logisticRepo.deleteById(id);
 	}
-	
-	
+
 	@Override
 	public List<StockDetailVO> getAllStockDetail() {
 		return stockDetailRepo.findAll();
@@ -169,6 +165,4 @@ public class PartStudyServiceImpl implements PartStudyService {
 		stockDetailRepo.deleteById(id);
 	}
 
-	
 }
-
