@@ -250,12 +250,14 @@ public class MasterServiceImpl implements MasterService {
 
 		FlowVO flowVO = FlowVO.builder().active(flowDTO.isActive()).orgin(flowDTO.getOrgin())
 				.receiver(flowDTO.getReceiver()).flowName(flowDTO.getFlowName()).emitter(flowDTO.getEmitter())
-				.destination(flowDTO.getDestination()).orgId(flowDTO.getOrgId()).flowDetailVO(flowDetailVOList).build();
+				.emitterId(flowDTO.getEmitterId()).destination(flowDTO.getDestination()).orgId(flowDTO.getOrgId())
+				.flowDetailVO(flowDetailVOList).build();
 
 		flowDetailVOList = flowDTO.getFlowDetailDTO().stream()
 				.map(fdDTO -> FlowDetailVO.builder().active(fdDTO.isActive()).cycleTime(fdDTO.getCycleTime())
-						.partName(fdDTO.getPartName()).kitName(fdDTO.getKitName()).emitter(flowDTO.getEmitter())
-						.subReceiver(fdDTO.getSubReceiver()).partNumber(fdDTO.getPartNumber()).build())
+						.emitterId(fdDTO.getEmitterId()).partName(fdDTO.getPartName()).kitName(fdDTO.getKitName())
+						.emitter(flowDTO.getEmitter()).subReceiver(fdDTO.getSubReceiver())
+						.partNumber(fdDTO.getPartNumber()).build())
 				.collect(Collectors.toList());
 		flowVO.setFlowDetailVO(flowDetailVOList);
 		return flowVO;
