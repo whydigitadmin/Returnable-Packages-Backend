@@ -17,6 +17,7 @@ public class FlowDTO {
 	private String flowName;
 	private String receiver;
 	private String emitter;
+	private long emitterId;
 //	private String flowInfo;
 //	private String flowType;
 	private String orgin;

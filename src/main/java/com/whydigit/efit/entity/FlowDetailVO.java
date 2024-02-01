@@ -32,6 +32,7 @@ public class FlowDetailVO {
 	private String kitName;
 	private long  partNumber;
 	private String emitter;
+	private long emitterId;
 	private String partName;
 	private String cycleTime;
 	private String subReceiver;

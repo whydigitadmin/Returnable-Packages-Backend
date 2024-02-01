@@ -32,6 +32,7 @@ public class FlowVO {
 	private long orgId;
 	private String flowName;
 	private String emitter;
+	private long emitterId;
 	private String receiver;
 	private String orgin;
 	private String destination;
