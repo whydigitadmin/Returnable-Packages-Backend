@@ -35,7 +35,7 @@ public class AddressVO {
 	private String contactName;
 	private String phoneNumber;
 	// private String addressType;
-	private boolean primary;
+	private boolean isPrimary;
    // @JsonManagedReference
    //@OneToMany(mappedBy="flowVO",cascade = CascadeType.ALL)
    //private List<FlowDetailVO> flowDetailVO;

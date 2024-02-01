@@ -303,6 +303,7 @@ public class AuthServiceImpl implements AuthService {
 		userDTO.setCommonDate(userVO.getCommonDate());
 		userDTO.setAccountRemovedDate(userVO.getAccountRemovedDate());
 		userDTO.setLastLogin(userVO.getLastLogin());
+		userDTO.setUserAddressVO(userVO.getUserAddressVO());
 		userDTO.setOrgId(userVO.getOrganizationVO().getId());
 		return userDTO;
 	}
