@@ -175,7 +175,6 @@ public class MasterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
-
 	@GetMapping("/assetGroup/{id}")
 	public ResponseEntity<ResponseDTO> getAssetGroupById(@PathVariable String id) {
 		String methodName = "getAssetGroupById()";
@@ -414,7 +413,8 @@ public class MasterController extends BaseController {
 	// flow
 
 	@GetMapping("/flow")
-	public ResponseEntity<ResponseDTO> getAllflow(@RequestParam(required = false) Long orgId) {
+	public ResponseEntity<ResponseDTO> getAllflow(@RequestParam(required = false) Long orgId,
+			@RequestParam(required = false) Long emitterId) {
 		String methodName = "getAllflow()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -422,7 +422,7 @@ public class MasterController extends BaseController {
 		ResponseDTO responseDTO = null;
 		List<FlowVO> flowVO = new ArrayList<>();
 		try {
-			flowVO = masterService.getAllFlow(orgId);
+			flowVO = masterService.getAllFlow(orgId,emitterId);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
@@ -847,7 +847,8 @@ public class MasterController extends BaseController {
 	}
 
 	@GetMapping("/getAllAssetCategory")
-	public ResponseEntity<ResponseDTO> getAllAssetCategory(@RequestParam(required = false)Long orgId ,@RequestParam(required = false) String assetCategoryName) {
+	public ResponseEntity<ResponseDTO> getAllAssetCategory(@RequestParam(required = false) Long orgId,
+			@RequestParam(required = false) String assetCategoryName) {
 		String methodName = "getAllAssetCategory()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -855,7 +856,7 @@ public class MasterController extends BaseController {
 		ResponseDTO responseDTO = null;
 		List<AssetCategoryVO> assetCategoryVO = new ArrayList<>();
 		try {
-			assetCategoryVO = masterService.getAllAssetCategory(orgId,assetCategoryName);
+			assetCategoryVO = masterService.getAllAssetCategory(orgId, assetCategoryName);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);

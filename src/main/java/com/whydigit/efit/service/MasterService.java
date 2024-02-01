@@ -56,7 +56,7 @@ public interface MasterService {
 
 	void deleteCustomers(int id);
 
-	List<FlowVO> getAllFlow(Long orgId);
+	List<FlowVO> getAllFlow(Long orgId,Long emitterId);
 
 	Optional<FlowVO> getFlowById(int id);
 

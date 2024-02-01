@@ -210,13 +210,20 @@ public class MasterServiceImpl implements MasterService {
 	}
 
 	@Override
-	public List<FlowVO> getAllFlow(Long orgId) {
+	public List<FlowVO> getAllFlow(Long orgId, Long emitterId) {
 		List<FlowVO> flowVO = new ArrayList<>();
-		if (ObjectUtils.isNotEmpty(orgId)) {
-			LOGGER.info("Successfully Received  FlowInformation BY OrgId : {}", orgId);
-			flowVO = flowRepo.getAllFlowByOrgId(orgId);
+		if (ObjectUtils.isNotEmpty(orgId) && (ObjectUtils.isEmpty(emitterId))) {
+			LOGGER.info("Successfully Received Flow BY OrgId : {}", orgId);
+			flowVO = flowRepo.findByOrgId(orgId);
+		} else if (ObjectUtils.isEmpty(orgId) && (ObjectUtils.isNotEmpty(emitterId))) {
+			LOGGER.info("Successfully Received Flow BY EmitterId : {}", emitterId);
+			flowVO = flowRepo.findByEmitterId(emitterId);
+		} else if (ObjectUtils.isNotEmpty(orgId) && (ObjectUtils.isNotEmpty(emitterId))) {
+			LOGGER.info("Successfully Received Flow BY EmitterId : {} orgId : {}", emitterId,
+					orgId);
+			flowVO = flowRepo.findByOrgIdAndEmitterId( orgId,emitterId);
 		} else {
-			LOGGER.info("Successfully Received  FlowInformation For All OrgId.");
+			LOGGER.info("Successfully Received Flow Information For All OrgId.");
 			flowVO = flowRepo.findAll();
 		}
 		return flowVO;
@@ -235,17 +242,6 @@ public class MasterServiceImpl implements MasterService {
 
 	private FlowVO createFlowVOByFlowDTO(FlowDTO flowDTO) {
 		List<FlowDetailVO> flowDetailVOList = new ArrayList<>();
-//		FlowVO flowVO = FlowVO.builder().active(flowDTO.isActive()).orgin(flowDTO.getOrgin())
-//				.flowInfo(flowDTO.getFlowInfo()).flowName(flowDTO.getFlowName()).flowType(flowDTO.getFlowType()).orgId(flowDTO.getOrgId())
-//				.flowDetailVO(flowDetailVOList).build();
-//		flowDetailVOList = flowDTO.getFlowDetailDTO().stream()
-//				.map(fdDTO -> FlowDetailVO.builder().active(fdDTO.isActive()).cycleTime(fdDTO.getCycleTime())
-//						.dhr(fdDTO.getDhr()).fixedRentalCharge(fdDTO.getFixedRentalCharge()).flowVO(flowVO)
-//						.itemGroup(fdDTO.getItemGroup()).issueCharge(fdDTO.getIssueCharge())
-//						.productToPack(fdDTO.getProductToPack()).quantity(fdDTO.getQuantity())
-//						.rentalTerm(fdDTO.getRentalTerm()).returnCharge(fdDTO.getReturnCharge()).build())
-//				.collect(Collectors.toList());
-
 		FlowVO flowVO = FlowVO.builder().active(flowDTO.isActive()).orgin(flowDTO.getOrgin())
 				.receiver(flowDTO.getReceiver()).flowName(flowDTO.getFlowName()).emitter(flowDTO.getEmitter())
 				.emitterId(flowDTO.getEmitterId()).destination(flowDTO.getDestination()).orgId(flowDTO.getOrgId())
