@@ -32,12 +32,12 @@ import com.whydigit.efit.service.WarehouseService;
 
 public class WarehouseController extends BaseController {
 	public static final Logger LOGGER = LoggerFactory.getLogger(BasicMasterController.class);
-	
+
 	@Autowired
 	WarehouseService warehouseService;
-	
+
 	@GetMapping("/view")
-	public ResponseEntity<ResponseDTO>getAllWarehouse(){
+	public ResponseEntity<ResponseDTO> getAllWarehouse() {
 		String methodName = "getAllWarehouse()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -60,11 +60,11 @@ public class WarehouseController extends BaseController {
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
-		
+
 	}
-	
+
 	@PostMapping("/view")
-	public ResponseEntity<ResponseDTO>createWarehouseVO(@RequestBody WarehouseVO warehousevo){
+	public ResponseEntity<ResponseDTO> createWarehouseVO(@RequestBody WarehouseVO warehousevo) {
 		String methodName = "createWarehouseVO()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -82,9 +82,9 @@ public class WarehouseController extends BaseController {
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
-		
+
 	}
-	
+
 	@PutMapping("/view")
 	public ResponseEntity<ResponseDTO> updateWarehouseVo(@RequestBody WarehouseVO warehousevo) {
 		String methodName = "updateWarehouseVo()";
@@ -110,7 +110,7 @@ public class WarehouseController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-	
+
 	@DeleteMapping("/view/{id}")
 	public ResponseEntity<ResponseDTO> deleteWarehouse(@PathVariable int id) {
 		String methodName = "deleteWarehouse()";
@@ -130,10 +130,5 @@ public class WarehouseController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-
-	
-
-	
-	
 
 }

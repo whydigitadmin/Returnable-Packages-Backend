@@ -1277,7 +1277,7 @@ public class MasterController extends BaseController {
 		}
 		if (StringUtils.isBlank(errorMsg)) {
 			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Kit information get successfully");
-			responseObjectsMap.put("localCurrencies", kitVO);
+			responseObjectsMap.put("KitVO", kitVO);
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} else {
 			responseDTO = createServiceResponseError(responseObjectsMap, "Kit information receive failed", errorMsg);
@@ -1302,7 +1302,7 @@ public class MasterController extends BaseController {
 		}
 		if (StringUtils.isEmpty(errorMsg)) {
 			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Kit found by ID");
-			responseObjectsMap.put("CreateKit", kitVO);
+			responseObjectsMap.put("KitVO", kitVO);
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} else {
 			errorMsg = "CreateKit not found for ID: " + id;
@@ -1322,7 +1322,7 @@ public class MasterController extends BaseController {
 		try {
 			KitVO createdKit = masterService.createkit(kitDTO);
 			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Kit created successfully");
-			responseObjectsMap.put("CreateKit", createdKit);
+			responseObjectsMap.put("KitVO", createdKit);
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
@@ -1344,7 +1344,7 @@ public class MasterController extends BaseController {
 			KitVO updatedKit = masterService.updatedKit(kitVO).orElse(null);
 			if (updatedKit != null) {
 				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Kit updated successfully");
-				responseObjectsMap.put("CreateKit", updatedKit);
+				responseObjectsMap.put("KitVO", updatedKit);
 				responseDTO = createServiceResponse(responseObjectsMap);
 			} else {
 				errorMsg = "LocalCurrency not found for ID: " + kitVO.getId();

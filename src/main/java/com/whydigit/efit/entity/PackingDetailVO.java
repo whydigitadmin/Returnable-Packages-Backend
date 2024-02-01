@@ -25,7 +25,11 @@ public class PackingDetailVO {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
+	private long orgId;
 	private int partDimension;
+	private int length;
+	private int breath;
+	private int height;
 	private String partUnit;
 	private String existingPart;
 	private String currentPackingStudy;
@@ -34,20 +38,19 @@ public class PackingDetailVO {
 	private String partSensitive;
 	private String greasy;
 	private String partOrientation;
-	private String multiPartInSingleSocket;
+	private String multiPartInSingleUnit;
 	private String stacking;
 	private String nesting;
 	private String remarks;
 	private String partDrawing;
 	private String approvedPackingTechnicalDrawing;
 	private String approvedCommercialContract;
-	 @Lob
-	    private byte[] partImage;
-	 
-	 @Lob
-	    private byte[] existingPackingImage;
-	
-	
+	@Lob
+	private byte[] partImage;
+
+	@Lob
+	private byte[] existingPackingImage;
+
 	private Boolean active;
 	@Embedded
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();

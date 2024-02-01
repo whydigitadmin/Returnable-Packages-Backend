@@ -24,14 +24,15 @@ public class StockDetailVO {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
+	private long orgId;
 	private String emitterStoreDays;
 	private String emitterLineDays;
-    private String inTransitDays;
-    private String endUserLineStorageDays;
-    private String endUserManufacturingLineDays;
-    private String otherStorageDays;
-    private String totalCycleTime;
-    private String emptyPackagingReverseDays;
-    @Embedded
+	private String inTransitDays;
+	private String endUserLineStorageDays;
+	private String endUserManufacturingLineDays;
+	private String otherStorageDays;
+	private String totalCycleTime;
+	private String emptyPackagingReverseDays;
+	@Embedded
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
 }

@@ -24,10 +24,11 @@ public class LogisticsVO {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
+	private Long orgId;
 	private String avgLotSize;
 	private String dispatchFrequency;
 	private String diapatchTo;
 	private String transpotationTo;
-    @Embedded
+	@Embedded
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
 }
