@@ -42,7 +42,6 @@ import com.whydigit.efit.entity.UnitVO;
 import com.whydigit.efit.entity.VenderAddressVO;
 import com.whydigit.efit.entity.VenderVO;
 import com.whydigit.efit.entity.WarehouseLocationVO;
-import com.whydigit.efit.repo.AssetGroupRepo;
 import com.whydigit.efit.service.MasterService;
 
 @CrossOrigin
@@ -54,10 +53,6 @@ public class MasterController extends BaseController {
 
 	@Autowired
 	MasterService masterService;
-
-	// asset
-	@Autowired
-	AssetGroupRepo assetGroupRepo;
 
 	@GetMapping("/asset")
 	public ResponseEntity<ResponseDTO> getAllAsset(@RequestParam(required = false) Long orgId) {
@@ -86,8 +81,8 @@ public class MasterController extends BaseController {
 	}
 
 	@PostMapping("/asset")
-	public ResponseEntity<ResponseDTO> createWarehouseVO(@RequestBody AssetVO assetVO) {
-		String methodName = "createAssetVO()";
+	public ResponseEntity<ResponseDTO> createAsset(@RequestBody AssetVO assetVO) {
+		String methodName = "createAsset()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
@@ -108,7 +103,7 @@ public class MasterController extends BaseController {
 
 	@PutMapping("/asset")
 	public ResponseEntity<ResponseDTO> updateAsset(@RequestBody AssetVO assetVO) {
-		String methodName = "updateAssetVO()";
+		String methodName = "updateAsset()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
@@ -179,6 +174,7 @@ public class MasterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
+
 
 	@GetMapping("/assetGroup/{id}")
 	public ResponseEntity<ResponseDTO> getAssetGroupById(@PathVariable String id) {
@@ -851,7 +847,7 @@ public class MasterController extends BaseController {
 	}
 
 	@GetMapping("/getAllAssetCategory")
-	public ResponseEntity<ResponseDTO> getAllAssetCategory(Long orgId) {
+	public ResponseEntity<ResponseDTO> getAllAssetCategory(@RequestParam(required = false)Long orgId ,@RequestParam(required = false) String assetCategoryName) {
 		String methodName = "getAllAssetCategory()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -859,7 +855,7 @@ public class MasterController extends BaseController {
 		ResponseDTO responseDTO = null;
 		List<AssetCategoryVO> assetCategoryVO = new ArrayList<>();
 		try {
-			assetCategoryVO = masterService.getAllAssetCategory(orgId);
+			assetCategoryVO = masterService.getAllAssetCategory(orgId,assetCategoryName);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);

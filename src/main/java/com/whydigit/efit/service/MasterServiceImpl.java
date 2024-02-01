@@ -248,12 +248,14 @@ public class MasterServiceImpl implements MasterService {
 
 		FlowVO flowVO = FlowVO.builder().active(flowDTO.isActive()).orgin(flowDTO.getOrgin())
 				.receiver(flowDTO.getReceiver()).flowName(flowDTO.getFlowName()).emitter(flowDTO.getEmitter())
-				.destination(flowDTO.getDestination()).orgId(flowDTO.getOrgId()).flowDetailVO(flowDetailVOList).build();
+				.emitterId(flowDTO.getEmitterId()).destination(flowDTO.getDestination()).orgId(flowDTO.getOrgId())
+				.flowDetailVO(flowDetailVOList).build();
 
 		flowDetailVOList = flowDTO.getFlowDetailDTO().stream()
 				.map(fdDTO -> FlowDetailVO.builder().active(fdDTO.isActive()).cycleTime(fdDTO.getCycleTime())
-						.partName(fdDTO.getPartName()).kitName(fdDTO.getKitName()).emitter(flowDTO.getEmitter())
-						.subReceiver(fdDTO.getSubReceiver()).partNumber(fdDTO.getPartNumber()).build())
+						.emitterId(fdDTO.getEmitterId()).partName(fdDTO.getPartName()).kitName(fdDTO.getKitName())
+						.emitter(flowDTO.getEmitter()).subReceiver(fdDTO.getSubReceiver())
+						.partNumber(fdDTO.getPartNumber()).build())
 				.collect(Collectors.toList());
 		flowVO.setFlowDetailVO(flowDetailVOList);
 		return flowVO;
@@ -369,11 +371,18 @@ public class MasterServiceImpl implements MasterService {
 	}
 
 	@Override
-	public List<AssetCategoryVO> getAllAssetCategory(Long orgId) {
+	public List<AssetCategoryVO> getAllAssetCategory(Long orgId, String assetCategoryName) {
 		List<AssetCategoryVO> assetCategoryVO = new ArrayList<>();
-		if (ObjectUtils.isNotEmpty(orgId)) {
+		if (ObjectUtils.isNotEmpty(orgId) && (ObjectUtils.isEmpty(assetCategoryName))) {
 			LOGGER.info("Successfully Received AssetCategory BY OrgId : {}", orgId);
 			assetCategoryVO = assetCategoryRepo.getAllAssetCategory(orgId);
+		} else if (ObjectUtils.isEmpty(orgId) && (ObjectUtils.isNotEmpty(assetCategoryName))) {
+			LOGGER.info("Successfully Received AssetCategory BY AssetCategoryName : {}", assetCategoryName);
+			assetCategoryVO = assetCategoryRepo.findByAssetCategory(assetCategoryName);
+		} else if (ObjectUtils.isNotEmpty(orgId) && (ObjectUtils.isNotEmpty(assetCategoryName))) {
+			LOGGER.info("Successfully Received AssetCategory BY AssetCategoryName : {} orgId : {}", assetCategoryName,
+					orgId);
+			assetCategoryVO = assetCategoryRepo.findByAssetCategoryAndOrgId(assetCategoryName, orgId);
 		} else {
 			LOGGER.info("Successfully Received AssetCategory Information For All OrgId.");
 			assetCategoryVO = assetCategoryRepo.findAll();

@@ -90,7 +90,7 @@ public interface MasterService {
 
 	ManufacturerProductVO createManufacturerProduct(ManufacturerProductVO manufacturerProductVO);
 
-	List<AssetCategoryVO> getAllAssetCategory(Long orgId);
+	List<AssetCategoryVO> getAllAssetCategory(Long orgId, String assetCategoryName);
 
 	AssetCategoryVO createAssetCategory(AssetCategoryVO assetCategoryVO);
 
