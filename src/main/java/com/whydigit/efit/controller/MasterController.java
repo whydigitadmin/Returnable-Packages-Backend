@@ -28,6 +28,7 @@ import com.whydigit.efit.common.CommonConstant;
 import com.whydigit.efit.common.UserConstants;
 import com.whydigit.efit.dto.FlowDTO;
 import com.whydigit.efit.dto.KitDTO;
+import com.whydigit.efit.dto.KitResponseDTO;
 import com.whydigit.efit.dto.ResponseDTO;
 import com.whydigit.efit.entity.AddressVO;
 import com.whydigit.efit.entity.AssetCategoryVO;
@@ -1258,22 +1259,22 @@ public class MasterController extends BaseController {
 	// Create KIT
 
 	@GetMapping("/getallkit")
-	public ResponseEntity<ResponseDTO> getAllKit() {
+	public ResponseEntity<ResponseDTO> getAllKit(@RequestParam (required = false) Long orgId) {
 		String methodName = "getAllKit()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
-		List<KitVO> kitVO = new ArrayList<>();
+		List<KitResponseDTO> kitResponseDTO = new ArrayList<>();
 		try {
-			kitVO = masterService.getAllKit();
+			kitResponseDTO = masterService.getAllKit(orgId);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
 		}
 		if (StringUtils.isBlank(errorMsg)) {
 			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Kit information get successfully");
-			responseObjectsMap.put("KitVO", kitVO);
+			responseObjectsMap.put("KitVO", kitResponseDTO);
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} else {
 			responseDTO = createServiceResponseError(responseObjectsMap, "Kit information receive failed", errorMsg);
