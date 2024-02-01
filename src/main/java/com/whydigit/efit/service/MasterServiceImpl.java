@@ -369,11 +369,18 @@ public class MasterServiceImpl implements MasterService {
 	}
 
 	@Override
-	public List<AssetCategoryVO> getAllAssetCategory(Long orgId) {
+	public List<AssetCategoryVO> getAllAssetCategory(Long orgId, String assetCategoryName) {
 		List<AssetCategoryVO> assetCategoryVO = new ArrayList<>();
-		if (ObjectUtils.isNotEmpty(orgId)) {
+		if (ObjectUtils.isNotEmpty(orgId) && (ObjectUtils.isEmpty(assetCategoryName))) {
 			LOGGER.info("Successfully Received AssetCategory BY OrgId : {}", orgId);
 			assetCategoryVO = assetCategoryRepo.getAllAssetCategory(orgId);
+		} else if (ObjectUtils.isEmpty(orgId) && (ObjectUtils.isNotEmpty(assetCategoryName))) {
+			LOGGER.info("Successfully Received AssetCategory BY AssetCategoryName : {}", assetCategoryName);
+			assetCategoryVO = assetCategoryRepo.findByAssetCategory(assetCategoryName);
+		} else if (ObjectUtils.isNotEmpty(orgId) && (ObjectUtils.isNotEmpty(assetCategoryName))) {
+			LOGGER.info("Successfully Received AssetCategory BY AssetCategoryName : {} orgId : {}", assetCategoryName,
+					orgId);
+			assetCategoryVO = assetCategoryRepo.findByAssetCategoryAndOrgId(assetCategoryName, orgId);
 		} else {
 			LOGGER.info("Successfully Received AssetCategory Information For All OrgId.");
 			assetCategoryVO = assetCategoryRepo.findAll();

@@ -15,4 +15,8 @@ public interface AssetCategoryRepo extends JpaRepository<AssetCategoryVO, Intege
 	@Query(value = "select a from AssetCategoryVO a Where a.orgId=?1")
 	List<AssetCategoryVO> getAllAssetCategory(Long orgId);
 
+	List<AssetCategoryVO> findByAssetCategory(String assetCategoryName);
+
+	List<AssetCategoryVO> findByAssetCategoryAndOrgId(String assetCategoryName, Long orgId);
+
 }

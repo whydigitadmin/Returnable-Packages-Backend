@@ -31,7 +31,7 @@ public class PartStudyServiceImpl implements PartStudyService {
 	LogisticsRepo logisticRepo;
 	@Autowired
 	StockDetailRepo stockDetailRepo;
-	public static final Logger LOGGER = LoggerFactory.getLogger(MasterServiceImpl.class);
+	public static final Logger LOGGER = LoggerFactory.getLogger(PartStudyServiceImpl.class);
 
 	@Override
 	public List<BasicDetailVO> getAllBasicDetail(Long orgId) {
