@@ -11,10 +11,14 @@ import com.whydigit.efit.entity.FlowVO;
 
 @Repository
 public interface FlowRepo extends JpaRepository<FlowVO, Integer> {
-	@Query(value = "select a from FlowVO a Where a.orgId=?1")
-	List<FlowVO> getAllFlowByOrgId(Long orgId);
 
+	@Query(value = "select a from FlowVO a Where a.orgId=?1")
+	List<FlowVO> getAllFlow(Long orgId);
+
+	List<FlowVO> findByOrgId(Long orgId);
+
+	List<FlowVO> findByEmitterId(Long emitterId);
+
+	List<FlowVO> findByOrgIdAndEmitterId(Long orgId, Long emitterId);
 
 }
-
-
