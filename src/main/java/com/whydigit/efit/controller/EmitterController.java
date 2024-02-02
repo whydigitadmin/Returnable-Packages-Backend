@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.whydigit.efit.common.CommonConstant;
 import com.whydigit.efit.common.EmitterConstant;
+import com.whydigit.efit.dto.EmitterAddressDTO;
 import com.whydigit.efit.dto.IssueRequestDTO;
 import com.whydigit.efit.dto.ResponseDTO;
 import com.whydigit.efit.entity.IssueRequestVO;
@@ -84,6 +85,32 @@ public class EmitterController extends BaseController {
 		} else {
 			responseDTO = createServiceResponseError(responseObjectsMap,
 					EmitterConstant.ISSUE_REQUEST_REGISTERED_FAILED_MESSAGE, errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+	@GetMapping("/getEmitterAddress")
+	public  ResponseEntity<ResponseDTO>getEmitterAddress(@RequestParam(required = false) Long orgId)
+			 {
+		String methodName = "getEmitterAddress()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+	ResponseDTO responseDTO = null;
+		List<EmitterAddressDTO> emitterAddressDTO = new ArrayList<>();
+		try {
+			emitterAddressDTO = emitterService.getEmitterAddress( orgId);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(CommonConstant.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, EmitterConstant.EMITTER_ADRESS_SUCCESS_MESSAGE);
+			responseObjectsMap.put(EmitterConstant.EMITTER_ADDRESS_VO, emitterAddressDTO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap,
+					EmitterConstant.EMITTER_ADDRESS_REGISTERED_FAILED_MESSAGE, errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);

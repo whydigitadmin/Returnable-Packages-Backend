@@ -11,5 +11,5 @@ import com.whydigit.efit.entity.IssueRequestVO;
 public interface IssueRequestRepo extends  JpaRepository<IssueRequestVO, Long>,JpaSpecificationExecutor<IssueRequestVO>{
 	
     List<IssueRequestVO> findAll(Specification<IssueRequestVO> specification);
-
+    List<IssueRequestVO> findByOrgId(Long orgId);
 }
