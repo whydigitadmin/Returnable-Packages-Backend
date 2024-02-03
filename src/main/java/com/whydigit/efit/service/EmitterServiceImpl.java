@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -22,8 +23,12 @@ import com.whydigit.efit.dto.EmitterAddressDTO;
 import com.whydigit.efit.dto.IssueItemDTO;
 import com.whydigit.efit.dto.IssueRequestDTO;
 import com.whydigit.efit.dto.Role;
+import com.whydigit.efit.entity.EmitterInwardVO;
+import com.whydigit.efit.entity.EmitterOutwardVO;
 import com.whydigit.efit.entity.IssueItemVO;
 import com.whydigit.efit.entity.IssueRequestVO;
+import com.whydigit.efit.repo.EmitterInwardRepo;
+import com.whydigit.efit.repo.EmitterOutwardRepo;
 import com.whydigit.efit.repo.IssueRequestRepo;
 import com.whydigit.efit.repo.UserRepo;
 
@@ -34,6 +39,10 @@ public class EmitterServiceImpl implements EmitterService {
 	IssueRequestRepo issueRequestRepo;
 	@Autowired
 	UserRepo userRepo;
+	@Autowired
+	EmitterInwardRepo emitterInwardRepo;
+	@Autowired
+	EmitterOutwardRepo emitterOutwardRepo;
 
 	@Override
 	public IssueRequestVO createIssueRequest(IssueRequestDTO issueRequestDTO) {
@@ -118,5 +127,81 @@ public class EmitterServiceImpl implements EmitterService {
 			emitterAddressList.add(emitterAddressDTO);
 		}
 		return emitterAddressList;
+	}
+
+	// emitter inward
+	public List<EmitterInwardVO> getAllEmitterInward(Long orgId) {
+		List<EmitterInwardVO> emitterInwardVO = new ArrayList<>();
+		if (ObjectUtils.isNotEmpty(orgId)) {
+			LOGGER.info("Successfully Received  EmitterInward Information BY OrgId : {}", orgId);
+			emitterInwardVO = emitterInwardRepo.getAllEmitterInwardByOrgId(orgId);
+		} else {
+			LOGGER.info("Successfully Received  EmitterInward Information For All OrgId.");
+			emitterInwardVO = emitterInwardRepo.findAll();
+		}
+		return emitterInwardVO;
+	}
+
+	@Override
+	public Optional<EmitterInwardVO> getEmitterInwardById(int id) {
+		return emitterInwardRepo.findById(id);
+	}
+
+	@Override
+	public EmitterInwardVO createEmitterInward(EmitterInwardVO emitterInwardVO) {
+		return emitterInwardRepo.save(emitterInwardVO);
+	}
+
+	@Override
+	public Optional<EmitterInwardVO> updateEmitterInward(EmitterInwardVO emitterInwardVO) {
+		if (emitterInwardRepo.existsById(emitterInwardVO.getId())) {
+			return Optional.of(emitterInwardRepo.save(emitterInwardVO));
+		} else {
+			return Optional.empty();
+		}
+	}
+
+	@Override
+	public void deleteEmitterInward(int id) {
+		emitterInwardRepo.deleteById(id);
+
+	}
+
+	// emitter outward
+	public List<EmitterOutwardVO> getAllEmitterOutward(Long orgId) {
+		List<EmitterOutwardVO> emitterOutwardVO = new ArrayList<>();
+		if (ObjectUtils.isNotEmpty(orgId)) {
+			LOGGER.info("Successfully Received  EmitterOutward Information BY OrgId : {}", orgId);
+			emitterOutwardVO = emitterOutwardRepo.getAllEmitterOutwardByOrgId(orgId);
+		} else {
+			LOGGER.info("Successfully Received  EmitterOutward Information For All OrgId.");
+			emitterOutwardVO = emitterOutwardRepo.findAll();
+		}
+		return emitterOutwardVO;
+	}
+
+	@Override
+	public Optional<EmitterOutwardVO> getEmitterOutwardById(int id) {
+		return emitterOutwardRepo.findById(id);
+	}
+
+	@Override
+	public EmitterOutwardVO createEmitterOutward(EmitterOutwardVO emitterOutwardVO) {
+		return emitterOutwardRepo.save(emitterOutwardVO);
+	}
+
+	@Override
+	public Optional<EmitterOutwardVO> updateEmitterOutward(EmitterOutwardVO emitterOutwardVO) {
+		if (emitterOutwardRepo.existsById(emitterOutwardVO.getId())) {
+			return Optional.of(emitterOutwardRepo.save(emitterOutwardVO));
+		} else {
+			return Optional.empty();
+		}
+	}
+
+	@Override
+	public void deleteEmitterOutward(int id) {
+		emitterOutwardRepo.deleteById(id);
+
 	}
 }
