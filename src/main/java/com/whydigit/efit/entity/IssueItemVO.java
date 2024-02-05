@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
@@ -30,11 +31,18 @@ public class IssueItemVO {
 	private String partNo;
 	private int partQty;
 	private int issueItemStatus;
+	private int issuedQty;
+	@Transient
+	private int balanceQty;
 	private String remark;
 	private LocalDateTime reachedDate;
 	@ManyToOne
 	@JoinColumn(name = "issue_request_id")
 	@JsonBackReference
 	private IssueRequestVO issueRequestVO;
+	
+	public int getBalanceQty() {
+		return balanceQty = this.kitQty - this.issuedQty;
+	}
 
 }
