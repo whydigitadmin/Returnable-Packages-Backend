@@ -89,6 +89,7 @@ public class EmitterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
+	
 	@GetMapping("/getEmitterAddress")
 	public  ResponseEntity<ResponseDTO>getEmitterAddress(@RequestParam(required = false) Long orgId)
 			 {
@@ -116,4 +117,30 @@ public class EmitterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
+	@GetMapping("/updateIssueQty")
+	public  ResponseEntity<ResponseDTO>updateIssueQty(@RequestParam Long issueRequestId,@RequestParam Long issueItemId,@RequestParam int issuedQty)
+			 {
+		String methodName = "updateIssueQty()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+	ResponseDTO responseDTO = null;
+		IssueRequestVO issueRequestVO = new IssueRequestVO();
+		try {
+			issueRequestVO = emitterService.updateIssueQty(issueRequestId,issueItemId,issuedQty);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(CommonConstant.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, EmitterConstant.UPDATE_ISSUE_QTY_SUCCESS_MESSAGE);
+			responseObjectsMap.put(EmitterConstant.ISSUE_REQUEST_VO, issueRequestVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap,
+					EmitterConstant.UPDATE_ISSUE_QTY_FAILED_MESSAGE, errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
 }
