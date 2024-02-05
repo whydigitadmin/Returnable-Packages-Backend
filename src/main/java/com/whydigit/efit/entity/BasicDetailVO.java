@@ -2,13 +2,17 @@
 package com.whydigit.efit.entity;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.GenericGenerator;
 
 import com.whydigit.efit.dto.CreatedUpdatedDate;
 
@@ -24,10 +28,10 @@ import lombok.NoArgsConstructor;
 public class BasicDetailVO {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
+	@GeneratedValue(generator = "UUID")
+	@GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+	private UUID partStudyId;
 	private long orgId;
-	private String partStudyId;
 	private LocalDate partStudyDate;
 	private String emitterId;
 	private String receiverId;
@@ -38,7 +42,17 @@ public class BasicDetailVO {
 	private String partVolume;
 	private String highestVolume;
 	private String lowestVolume;
-	
-    @Embedded
+
+	@Embedded
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
+	
+	@OneToOne(mappedBy = "basicDetailVO", cascade = CascadeType.ALL)
+	private PackingDetailVO packingDetailVO;
+
+	@OneToOne(mappedBy = "basicDetailVO", cascade = CascadeType.ALL)
+	private LogisticsVO logisticsVO;
+
+	@OneToOne(mappedBy = "basicDetailVO", cascade = CascadeType.ALL)
+	private StockDetailVO stockDetailVO;
+
 }
