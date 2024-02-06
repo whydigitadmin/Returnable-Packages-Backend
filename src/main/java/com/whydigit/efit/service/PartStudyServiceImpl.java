@@ -4,7 +4,6 @@ package com.whydigit.efit.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.Logger;
@@ -48,7 +47,7 @@ public class PartStudyServiceImpl implements PartStudyService {
 	}
 
 	@Override
-	public Optional<BasicDetailVO> getBasicDetailById(UUID id) {
+	public Optional<BasicDetailVO> getBasicDetailById(Long id) {
 		return basicDetailRepo.findById(id);
 	}
 
@@ -77,7 +76,7 @@ public class PartStudyServiceImpl implements PartStudyService {
 	}
 
 	@Override
-	public void deleteBasicDetail(UUID id) {
+	public void deleteBasicDetail(Long id) {
 		basicDetailRepo.deleteById(id);
 
 	}
@@ -96,7 +95,7 @@ public class PartStudyServiceImpl implements PartStudyService {
 	}
 
 	@Override
-	public Optional<PackingDetailVO> getPackingDetailById(UUID id) {
+	public Optional<PackingDetailVO> getPackingDetailById(Long id) {
 		return packingDetailRepo.findById(id);
 	}
 
@@ -115,7 +114,7 @@ public class PartStudyServiceImpl implements PartStudyService {
 	}
 
 	@Override
-	public void deletePackingDetail(UUID id) {
+	public void deletePackingDetail(Long id) {
 		packingDetailRepo.deleteById(id);
 
 	}
@@ -134,7 +133,7 @@ public class PartStudyServiceImpl implements PartStudyService {
 	}
 
 	@Override
-	public Optional<LogisticsVO> getLogisticsById(UUID id) {
+	public Optional<LogisticsVO> getLogisticsById(Long id) {
 		return logisticRepo.findById(id);
 	}
 
@@ -153,7 +152,7 @@ public class PartStudyServiceImpl implements PartStudyService {
 	}
 
 	@Override
-	public void deleteLogistics(UUID id) {
+	public void deleteLogistics(Long id) {
 		logisticRepo.deleteById(id);
 	}
 
@@ -171,7 +170,7 @@ public class PartStudyServiceImpl implements PartStudyService {
 	}
 
 	@Override
-	public Optional<StockDetailVO> getStockDetailById(UUID id) {
+	public Optional<StockDetailVO> getStockDetailById(Long id) {
 		return stockDetailRepo.findById(id);
 	}
 
@@ -190,7 +189,7 @@ public class PartStudyServiceImpl implements PartStudyService {
 	}
 
 	@Override
-	public void deleteStockDetail(UUID id) {
+	public void deleteStockDetail(Long id) {
 		stockDetailRepo.deleteById(id);
 	}
 

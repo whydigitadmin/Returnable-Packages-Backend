@@ -1,15 +1,16 @@
 
 package com.whydigit.efit.entity;
 
-import java.util.UUID;
-
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
+import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.whydigit.efit.dto.CreatedUpdatedDate;
 
 import lombok.AllArgsConstructor;
@@ -24,7 +25,7 @@ import lombok.NoArgsConstructor;
 public class PackingDetailVO {
 
 	@Id
-	private UUID partStudyId;
+	private long partStudyId;
 	private long orgId;
 	private int partDimension;
 	private int length;
@@ -51,7 +52,10 @@ public class PackingDetailVO {
 	@Lob
 	private byte[] existingPackingImage;
 
+	@JsonBackReference
 	@OneToOne
+	@MapsId
+    @JoinColumn(name = "partStudyId")
 	private BasicDetailVO basicDetailVO;
 
 	@Embedded

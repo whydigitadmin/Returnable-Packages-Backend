@@ -1,18 +1,15 @@
 
 package com.whydigit.efit.entity;
 
-import java.util.UUID;
-
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.GenericGenerator;
-
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.whydigit.efit.dto.CreatedUpdatedDate;
 
 import lombok.AllArgsConstructor;
@@ -26,7 +23,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class StockDetailVO {
 	@Id
-	private UUID partStudyId;
+	private long partStudyId;
 	private long orgId;
 	private String emitterStoreDays;
 	private String emitterLineDays;
@@ -37,7 +34,10 @@ public class StockDetailVO {
 	private String totalCycleTime;
 	private String emptyPackagingReverseDays;
 
+	@JsonBackReference
 	@OneToOne
+	@MapsId
+    @JoinColumn(name = "partStudyId")
 	private BasicDetailVO basicDetailVO;
 	@Embedded
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();

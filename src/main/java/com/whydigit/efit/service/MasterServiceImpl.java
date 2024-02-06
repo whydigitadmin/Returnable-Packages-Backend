@@ -124,11 +124,18 @@ public class MasterServiceImpl implements MasterService {
 	}
 
 	@Override
-	public List<AssetGroupVO> getAllAssetGroup(Long orgId) {
+	public List<AssetGroupVO> getAllAssetGroup(Long orgId, String assetCategory) {
 		List<AssetGroupVO> assetGroupVO = new ArrayList<>();
-		if (ObjectUtils.isNotEmpty(orgId)) {
+		if (ObjectUtils.isNotEmpty(orgId) && ObjectUtils.isEmpty(assetCategory)) {
 			LOGGER.info("Successfully Received  AssetGroupInformation BY OrgId : {}", orgId);
 			assetGroupVO = assetGroupRepo.getAllAssetGroupByOrgId(orgId);
+		} else if (ObjectUtils.isEmpty(orgId) && ObjectUtils.isNotEmpty(assetCategory)) {
+			LOGGER.info("Successfully Received  AssetGroupInformation BY AssetCategory : {}", assetCategory);
+			assetGroupVO = assetGroupRepo.findByAssetCategory(assetCategory);
+		} else if (ObjectUtils.isNotEmpty(orgId) && ObjectUtils.isNotEmpty(assetCategory)) {
+			LOGGER.info("Successfully Received  AssetGroupInformation BY OrgId : {} , AssetCategory : {}", orgId,
+					assetCategory);
+			assetGroupVO = assetGroupRepo.findByOrgIdAndAssetCategory(orgId, assetCategory);
 		} else {
 			LOGGER.info("Successfully Received  AssetGroupInformation For All OrgId.");
 			assetGroupVO = assetGroupRepo.findAll();
@@ -143,8 +150,8 @@ public class MasterServiceImpl implements MasterService {
 
 	@Override
 	public AssetGroupVO createAssetGroup(AssetGroupVO assetGroupVO) throws ApplicationException {
-		if (ObjectUtils.isNotEmpty(assetGroupVO) && StringUtils.isNotBlank(assetGroupVO.getId())) {
-			if (assetGroupRepo.existsById(assetGroupVO.getId())) {
+		if (ObjectUtils.isNotEmpty(assetGroupVO) && StringUtils.isNotBlank(assetGroupVO.getAssetCodeId())) {
+			if (assetGroupRepo.existsById(assetGroupVO.getAssetCodeId())) {
 				throw new ApplicationException("AssetGroup already exist. Please try another one.");
 			}
 			return assetGroupRepo.save(assetGroupVO);
@@ -155,7 +162,7 @@ public class MasterServiceImpl implements MasterService {
 
 	@Override
 	public Optional<AssetGroupVO> updateAssetGroup(AssetGroupVO assetGroupVO) {
-		if (assetGroupRepo.existsById(assetGroupVO.getId())) {
+		if (assetGroupRepo.existsById(assetGroupVO.getAssetCodeId())) {
 			return Optional.of(assetGroupRepo.save(assetGroupVO));
 		} else {
 			return Optional.empty();
@@ -506,7 +513,7 @@ public class MasterServiceImpl implements MasterService {
 			if (assetGroupRepo.existsById(csvLine[0])) {
 				return null;
 			}
-			return AssetGroupVO.builder().id(csvLine[0]).assetName(csvLine[1]).assetCategory(csvLine[2])
+			return AssetGroupVO.builder().assetCodeId(csvLine[0]).assetName(csvLine[1]).assetCategory(csvLine[2])
 					.active(Boolean.parseBoolean(csvLine[3])).length(Float.parseFloat(csvLine[4]))
 					.breath(Float.parseFloat(csvLine[5])).height(Float.parseFloat(csvLine[6])).dimUnit(csvLine[7])
 					.build();
