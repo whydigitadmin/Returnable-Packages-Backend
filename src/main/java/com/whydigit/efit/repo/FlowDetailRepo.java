@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 import com.whydigit.efit.entity.FlowVO;
 
 @Repository
-public interface FlowDetailRepo extends JpaRepository<FlowVO, Integer> {
+public interface FlowDetailRepo extends JpaRepository<FlowVO, Long> {
 
 }
 

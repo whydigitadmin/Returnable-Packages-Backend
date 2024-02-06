@@ -27,7 +27,7 @@ public class FlowDetailVO {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
+	private long id;
 	private int orgId;
 	private String kitName;
 	private long  partNumber;

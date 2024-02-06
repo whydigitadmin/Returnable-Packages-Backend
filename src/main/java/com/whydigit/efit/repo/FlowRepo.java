@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import com.whydigit.efit.entity.FlowVO;
 
 @Repository
-public interface FlowRepo extends JpaRepository<FlowVO, Integer> {
+public interface FlowRepo extends JpaRepository<FlowVO, Long> {
 
 	@Query(value = "select a from FlowVO a Where a.orgId=?1")
 	List<FlowVO> getAllFlow(Long orgId);
