@@ -239,7 +239,7 @@ public class MasterServiceImpl implements MasterService {
 	}
 
 	@Override
-	public Optional<FlowVO> getFlowById(int id) {
+	public Optional<FlowVO> getFlowById(long id) {
 		return flowRepo.findById(id);
 	}
 
@@ -276,7 +276,7 @@ public class MasterServiceImpl implements MasterService {
 	}
 
 	@Override
-	public void deleteFlow(int id) {
+	public void deleteFlow(long id) {
 		flowRepo.deleteById(id);
 
 	}

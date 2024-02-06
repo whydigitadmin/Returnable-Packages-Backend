@@ -59,13 +59,13 @@ public interface MasterService {
 
 	List<FlowVO> getAllFlow(Long orgId,Long emitterId);
 
-	Optional<FlowVO> getFlowById(int id);
+	Optional<FlowVO> getFlowById(long id);
 
 	FlowVO createFlow(FlowDTO flowDTO);
 
 	Optional<FlowVO> updateFlow(FlowVO flowVO);
 
-	void deleteFlow(int id);
+	void deleteFlow(long id);
 
 	List<VenderVO> getAllVender(Long orgId);
 

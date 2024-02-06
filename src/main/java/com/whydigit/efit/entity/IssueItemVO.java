@@ -2,16 +2,19 @@ package com.whydigit.efit.entity;
 
 import java.time.LocalDateTime;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -36,13 +39,18 @@ public class IssueItemVO {
 	private int balanceQty;
 	private String remark;
 	private LocalDateTime reachedDate;
+
 	@ManyToOne
 	@JoinColumn(name = "issue_request_id")
 	@JsonBackReference
 	private IssueRequestVO issueRequestVO;
-	
+
 	public int getBalanceQty() {
 		return balanceQty = this.kitQty - this.issuedQty;
 	}
+
+	@JsonManagedReference
+	@OneToOne(mappedBy = "issueItemVO", cascade = CascadeType.ALL)
+	private InwardVO inwardVO;
 
 }
