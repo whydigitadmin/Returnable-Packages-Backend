@@ -4,6 +4,7 @@ package com.whydigit.efit.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.Logger;
@@ -47,18 +48,28 @@ public class PartStudyServiceImpl implements PartStudyService {
 	}
 
 	@Override
-	public Optional<BasicDetailVO> getBasicDetailById(int id) {
+	public Optional<BasicDetailVO> getBasicDetailById(UUID id) {
 		return basicDetailRepo.findById(id);
 	}
 
 	@Override
 	public BasicDetailVO createBasicDetail(BasicDetailVO basicDetailVO) {
+		PackingDetailVO packingDetailVO = new PackingDetailVO();
+		packingDetailVO.setBasicDetailVO(basicDetailVO);
+		StockDetailVO stockdetailVO = new StockDetailVO();
+		stockdetailVO.setBasicDetailVO(basicDetailVO);
+		LogisticsVO logisticsVO = new LogisticsVO();
+		logisticsVO.setBasicDetailVO(basicDetailVO);
+		basicDetailVO.setPackingDetailVO(packingDetailVO);
+		basicDetailVO.setStockDetailVO(stockdetailVO);
+		basicDetailVO.setLogisticsVO(logisticsVO);
 		return basicDetailRepo.save(basicDetailVO);
+
 	}
 
 	@Override
 	public Optional<BasicDetailVO> updateBasicDetail(BasicDetailVO basicDetailVO) {
-		if (basicDetailRepo.existsById(basicDetailVO.getId())) {
+		if (basicDetailRepo.existsById(basicDetailVO.getPartStudyId())) {
 			return Optional.of(basicDetailRepo.save(basicDetailVO));
 		} else {
 			return Optional.empty();
@@ -66,7 +77,7 @@ public class PartStudyServiceImpl implements PartStudyService {
 	}
 
 	@Override
-	public void deleteBasicDetail(int id) {
+	public void deleteBasicDetail(UUID id) {
 		basicDetailRepo.deleteById(id);
 
 	}
@@ -85,7 +96,7 @@ public class PartStudyServiceImpl implements PartStudyService {
 	}
 
 	@Override
-	public Optional<PackingDetailVO> getPackingDetailById(int id) {
+	public Optional<PackingDetailVO> getPackingDetailById(UUID id) {
 		return packingDetailRepo.findById(id);
 	}
 
@@ -96,7 +107,7 @@ public class PartStudyServiceImpl implements PartStudyService {
 
 	@Override
 	public Optional<PackingDetailVO> updatePackingDetail(PackingDetailVO packingDetailVO) {
-		if (packingDetailRepo.existsById(packingDetailVO.getId())) {
+		if (packingDetailRepo.existsById(packingDetailVO.getPartStudyId())) {
 			return Optional.of(packingDetailRepo.save(packingDetailVO));
 		} else {
 			return Optional.empty();
@@ -104,7 +115,7 @@ public class PartStudyServiceImpl implements PartStudyService {
 	}
 
 	@Override
-	public void deletePackingDetail(int id) {
+	public void deletePackingDetail(UUID id) {
 		packingDetailRepo.deleteById(id);
 
 	}
@@ -123,7 +134,7 @@ public class PartStudyServiceImpl implements PartStudyService {
 	}
 
 	@Override
-	public Optional<LogisticsVO> getLogisticsById(int id) {
+	public Optional<LogisticsVO> getLogisticsById(UUID id) {
 		return logisticRepo.findById(id);
 	}
 
@@ -134,7 +145,7 @@ public class PartStudyServiceImpl implements PartStudyService {
 
 	@Override
 	public Optional<LogisticsVO> updateLogistics(LogisticsVO logisticsVO) {
-		if (logisticRepo.existsById(logisticsVO.getId())) {
+		if (logisticRepo.existsById(logisticsVO.getPartStudyId())) {
 			return Optional.of(logisticRepo.save(logisticsVO));
 		} else {
 			return Optional.empty();
@@ -142,7 +153,7 @@ public class PartStudyServiceImpl implements PartStudyService {
 	}
 
 	@Override
-	public void deleteLogistics(int id) {
+	public void deleteLogistics(UUID id) {
 		logisticRepo.deleteById(id);
 	}
 
@@ -160,7 +171,7 @@ public class PartStudyServiceImpl implements PartStudyService {
 	}
 
 	@Override
-	public Optional<StockDetailVO> getStockDetailById(int id) {
+	public Optional<StockDetailVO> getStockDetailById(UUID id) {
 		return stockDetailRepo.findById(id);
 	}
 
@@ -171,7 +182,7 @@ public class PartStudyServiceImpl implements PartStudyService {
 
 	@Override
 	public Optional<StockDetailVO> updateStockDetail(StockDetailVO stockDetailVO) {
-		if (stockDetailRepo.existsById(stockDetailVO.getId())) {
+		if (stockDetailRepo.existsById(stockDetailVO.getPartStudyId())) {
 			return Optional.of(stockDetailRepo.save(stockDetailVO));
 		} else {
 			return Optional.empty();
@@ -179,7 +190,7 @@ public class PartStudyServiceImpl implements PartStudyService {
 	}
 
 	@Override
-	public void deleteStockDetail(int id) {
+	public void deleteStockDetail(UUID id) {
 		stockDetailRepo.deleteById(id);
 	}
 

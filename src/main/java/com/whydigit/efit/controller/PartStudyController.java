@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -67,7 +68,7 @@ public class PartStudyController extends BaseController {
 	}
 
 	@GetMapping("/basicDetails/{id}")
-	public ResponseEntity<ResponseDTO> getBasicDetailById(@PathVariable int id) {
+	public ResponseEntity<ResponseDTO> getBasicDetailById(@PathVariable UUID id) {
 		String methodName = "getBasicDetailById()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -127,7 +128,7 @@ public class PartStudyController extends BaseController {
 				responseObjectsMap.put("basicDetailVO", updatedBasicDetailVO);
 				responseDTO = createServiceResponse(responseObjectsMap);
 			} else {
-				errorMsg = "BasicDetail not found for ID: " + basicDetailVO.getId();
+				errorMsg = "BasicDetail not found for ID: " + basicDetailVO.getPartStudyId();
 				responseDTO = createServiceResponseError(responseObjectsMap, "BasicDetail update failed", errorMsg);
 			}
 		} catch (Exception e) {
@@ -140,7 +141,7 @@ public class PartStudyController extends BaseController {
 	}
 
 	@DeleteMapping("/basicDetails/{id}")
-	public ResponseEntity<ResponseDTO> deleteBasicDetail(@PathVariable int id) {
+	public ResponseEntity<ResponseDTO> deleteBasicDetail(@PathVariable UUID id) {
 		String methodName = "deleteBasicDetail()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -188,7 +189,7 @@ public class PartStudyController extends BaseController {
 	}
 
 	@GetMapping("/packageDetail/{id}")
-	public ResponseEntity<ResponseDTO> getPackingDetailById(@PathVariable int id) {
+	public ResponseEntity<ResponseDTO> getPackingDetailById(@PathVariable UUID id) {
 		String methodName = "getPackingDetailById()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -248,7 +249,7 @@ public class PartStudyController extends BaseController {
 				responseObjectsMap.put("packingDetailVO", updatedPackingDetailVO);
 				responseDTO = createServiceResponse(responseObjectsMap);
 			} else {
-				errorMsg = "PackingDetail not found for ID: " + packingDetailVO.getId();
+				errorMsg = "PackingDetail not found for ID: " + packingDetailVO.getPartStudyId();
 				responseDTO = createServiceResponseError(responseObjectsMap, "PackingDetail update failed", errorMsg);
 			}
 		} catch (Exception e) {
@@ -261,7 +262,7 @@ public class PartStudyController extends BaseController {
 	}
 
 	@DeleteMapping("/packageDetail/{id}")
-	public ResponseEntity<ResponseDTO> deletePackingDetail(@PathVariable int id) {
+	public ResponseEntity<ResponseDTO> deletePackingDetail(@PathVariable UUID id) {
 		String methodName = "deletePackingDetail()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -308,7 +309,7 @@ public class PartStudyController extends BaseController {
 	}
 
 	@GetMapping("/logistics/{id}")
-	public ResponseEntity<ResponseDTO> getLogisticsById(@PathVariable int id) {
+	public ResponseEntity<ResponseDTO> getLogisticsById(@PathVariable UUID id) {
 		String methodName = "getLogisticsById()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -368,7 +369,7 @@ public class PartStudyController extends BaseController {
 				responseObjectsMap.put("logisticsVO", updatedLogisticsVO);
 				responseDTO = createServiceResponse(responseObjectsMap);
 			} else {
-				errorMsg = "Logistics not found for ID: " + logisticsVO.getId();
+				errorMsg = "Logistics not found for ID: " + logisticsVO.getPartStudyId();
 				responseDTO = createServiceResponseError(responseObjectsMap, "Logistics update failed", errorMsg);
 			}
 		} catch (Exception e) {
@@ -381,7 +382,7 @@ public class PartStudyController extends BaseController {
 	}
 
 	@DeleteMapping("/logistics/{id}")
-	public ResponseEntity<ResponseDTO> deleteLogistics(@PathVariable int id) {
+	public ResponseEntity<ResponseDTO> deleteLogistics(@PathVariable UUID id) {
 		String methodName = "deleteLogistics()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -429,7 +430,7 @@ public class PartStudyController extends BaseController {
 	}
 
 	@GetMapping("/stockDetail/{id}")
-	public ResponseEntity<ResponseDTO> getStockDetailById(@PathVariable int id) {
+	public ResponseEntity<ResponseDTO> getStockDetailById(@PathVariable UUID id) {
 		String methodName = "getStockDetailById()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -489,7 +490,7 @@ public class PartStudyController extends BaseController {
 				responseObjectsMap.put("stockDetailVO", updatedStockDetailVO);
 				responseDTO = createServiceResponse(responseObjectsMap);
 			} else {
-				errorMsg = "StockDetail not found for ID: " + stockDetailVO.getId();
+				errorMsg = "StockDetail not found for ID: " + stockDetailVO.getPartStudyId();
 				responseDTO = createServiceResponseError(responseObjectsMap, "StockDetail update failed", errorMsg);
 			}
 		} catch (Exception e) {
@@ -502,7 +503,7 @@ public class PartStudyController extends BaseController {
 	}
 
 	@DeleteMapping("/stockDetail/{id}")
-	public ResponseEntity<ResponseDTO> deleteStockDetail(@PathVariable int id) {
+	public ResponseEntity<ResponseDTO> deleteStockDetail(@PathVariable UUID id) {
 		String methodName = "deleteStockDetail()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
