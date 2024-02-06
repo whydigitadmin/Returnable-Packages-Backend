@@ -28,6 +28,7 @@ import com.whydigit.efit.common.CommonConstant;
 import com.whydigit.efit.common.UserConstants;
 import com.whydigit.efit.dto.FlowDTO;
 import com.whydigit.efit.dto.KitDTO;
+import com.whydigit.efit.dto.KitResponseDTO;
 import com.whydigit.efit.dto.ResponseDTO;
 import com.whydigit.efit.entity.AddressVO;
 import com.whydigit.efit.entity.AssetCategoryVO;
@@ -150,7 +151,8 @@ public class MasterController extends BaseController {
 //asset group
 
 	@GetMapping("/assetGroup")
-	public ResponseEntity<ResponseDTO> getAllAssetGroup(@RequestParam(required = false) Long orgId) {
+	public ResponseEntity<ResponseDTO> getAllAssetGroup(@RequestParam(required = false) Long orgId,
+			@RequestParam(required = false) String assetCategory) {
 		String methodName = "getAllAssetGroup()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -158,7 +160,7 @@ public class MasterController extends BaseController {
 		ResponseDTO responseDTO = null;
 		List<AssetGroupVO> assetGroupVO = new ArrayList<>();
 		try {
-			assetGroupVO = masterService.getAllAssetGroup(orgId);
+			assetGroupVO = masterService.getAllAssetGroup(orgId,assetCategory);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
@@ -236,7 +238,7 @@ public class MasterController extends BaseController {
 				responseObjectsMap.put("assetGroupVO", updatedAssetGroupVO);
 				responseDTO = createServiceResponse(responseObjectsMap);
 			} else {
-				errorMsg = "AssetGroup not found for ID: " + assetGroupVO.getId();
+				errorMsg = "AssetGroup not found for AssetCode ID: " + assetGroupVO.getAssetCodeId();
 				responseDTO = createServiceResponseError(responseObjectsMap, "AssetGroup update failed", errorMsg);
 			}
 		} catch (Exception e) {
@@ -409,6 +411,7 @@ public class MasterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
+
 	// flow
 	@GetMapping("/flow")
 	public ResponseEntity<ResponseDTO> getAllflow(@RequestParam(required = false) Long orgId,
@@ -420,7 +423,7 @@ public class MasterController extends BaseController {
 		ResponseDTO responseDTO = null;
 		List<FlowVO> flowVO = new ArrayList<>();
 		try {
-			flowVO = masterService.getAllFlow(orgId,emitterId);
+			flowVO = masterService.getAllFlow(orgId, emitterId);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
@@ -843,7 +846,7 @@ public class MasterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-	
+
 	@GetMapping("/getAllAssetCategory")
 	public ResponseEntity<ResponseDTO> getAllAssetCategory(@RequestParam(required = false) Long orgId,
 			@RequestParam(required = false) String assetCategoryName) {
@@ -1257,22 +1260,22 @@ public class MasterController extends BaseController {
 	// Create KIT
 
 	@GetMapping("/getallkit")
-	public ResponseEntity<ResponseDTO> getAllKit() {
+	public ResponseEntity<ResponseDTO> getAllKit(@RequestParam(required = false) Long orgId) {
 		String methodName = "getAllKit()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
-		List<KitVO> kitVO = new ArrayList<>();
+		List<KitResponseDTO> kitResponseDTO = new ArrayList<>();
 		try {
-			kitVO = masterService.getAllKit();
+			kitResponseDTO = masterService.getAllKit(orgId);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
 		}
 		if (StringUtils.isBlank(errorMsg)) {
 			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Kit information get successfully");
-			responseObjectsMap.put("KitVO", kitVO);
+			responseObjectsMap.put("KitVO", kitResponseDTO);
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} else {
 			responseDTO = createServiceResponseError(responseObjectsMap, "Kit information receive failed", errorMsg);

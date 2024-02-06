@@ -4,6 +4,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -21,6 +22,7 @@ import com.whydigit.efit.common.CommonConstant;
 import com.whydigit.efit.dto.FlowDTO;
 import com.whydigit.efit.dto.KitAssetDTO;
 import com.whydigit.efit.dto.KitDTO;
+import com.whydigit.efit.dto.KitResponseDTO;
 import com.whydigit.efit.entity.AddressVO;
 import com.whydigit.efit.entity.AssetCategoryVO;
 import com.whydigit.efit.entity.AssetGroupVO;
@@ -122,11 +124,18 @@ public class MasterServiceImpl implements MasterService {
 	}
 
 	@Override
-	public List<AssetGroupVO> getAllAssetGroup(Long orgId) {
+	public List<AssetGroupVO> getAllAssetGroup(Long orgId, String assetCategory) {
 		List<AssetGroupVO> assetGroupVO = new ArrayList<>();
-		if (ObjectUtils.isNotEmpty(orgId)) {
+		if (ObjectUtils.isNotEmpty(orgId) && ObjectUtils.isEmpty(assetCategory)) {
 			LOGGER.info("Successfully Received  AssetGroupInformation BY OrgId : {}", orgId);
 			assetGroupVO = assetGroupRepo.getAllAssetGroupByOrgId(orgId);
+		} else if (ObjectUtils.isEmpty(orgId) && ObjectUtils.isNotEmpty(assetCategory)) {
+			LOGGER.info("Successfully Received  AssetGroupInformation BY AssetCategory : {}", assetCategory);
+			assetGroupVO = assetGroupRepo.findByAssetCategory(assetCategory);
+		} else if (ObjectUtils.isNotEmpty(orgId) && ObjectUtils.isNotEmpty(assetCategory)) {
+			LOGGER.info("Successfully Received  AssetGroupInformation BY OrgId : {} , AssetCategory : {}", orgId,
+					assetCategory);
+			assetGroupVO = assetGroupRepo.findByOrgIdAndAssetCategory(orgId, assetCategory);
 		} else {
 			LOGGER.info("Successfully Received  AssetGroupInformation For All OrgId.");
 			assetGroupVO = assetGroupRepo.findAll();
@@ -141,8 +150,8 @@ public class MasterServiceImpl implements MasterService {
 
 	@Override
 	public AssetGroupVO createAssetGroup(AssetGroupVO assetGroupVO) throws ApplicationException {
-		if (ObjectUtils.isNotEmpty(assetGroupVO) && StringUtils.isNotBlank(assetGroupVO.getId())) {
-			if (assetGroupRepo.existsById(assetGroupVO.getId())) {
+		if (ObjectUtils.isNotEmpty(assetGroupVO) && StringUtils.isNotBlank(assetGroupVO.getAssetCodeId())) {
+			if (assetGroupRepo.existsById(assetGroupVO.getAssetCodeId())) {
 				throw new ApplicationException("AssetGroup already exist. Please try another one.");
 			}
 			return assetGroupRepo.save(assetGroupVO);
@@ -153,7 +162,7 @@ public class MasterServiceImpl implements MasterService {
 
 	@Override
 	public Optional<AssetGroupVO> updateAssetGroup(AssetGroupVO assetGroupVO) {
-		if (assetGroupRepo.existsById(assetGroupVO.getId())) {
+		if (assetGroupRepo.existsById(assetGroupVO.getAssetCodeId())) {
 			return Optional.of(assetGroupRepo.save(assetGroupVO));
 		} else {
 			return Optional.empty();
@@ -504,7 +513,7 @@ public class MasterServiceImpl implements MasterService {
 			if (assetGroupRepo.existsById(csvLine[0])) {
 				return null;
 			}
-			return AssetGroupVO.builder().id(csvLine[0]).assetName(csvLine[1]).assetCategory(csvLine[2])
+			return AssetGroupVO.builder().assetCodeId(csvLine[0]).assetName(csvLine[1]).assetCategory(csvLine[2])
 					.active(Boolean.parseBoolean(csvLine[3])).length(Float.parseFloat(csvLine[4]))
 					.breath(Float.parseFloat(csvLine[5])).height(Float.parseFloat(csvLine[6])).dimUnit(csvLine[7])
 					.build();
@@ -545,11 +554,30 @@ public class MasterServiceImpl implements MasterService {
 		venderAddressRepo.deleteById(id);
 	}
 
-// create kit
+// kit
 	@Override
-	public List<KitVO> getAllKit() {
-		// TODO Auto-generated method stub
-		return kitRepo.findAll();
+	public List<KitResponseDTO> getAllKit(Long orgId) {
+		List<KitResponseDTO> kitResponseDTO=new ArrayList<>(); 
+		List<KitVO> kitVO=new ArrayList<>();		
+		if(ObjectUtils.isEmpty(orgId)) {	
+			LOGGER.info("Get All kit information.",orgId);
+			kitVO= kitRepo.findAll();
+		}else {
+			LOGGER.info("Get All kit information by orgID : {}",orgId);
+			kitVO =kitRepo.findByOrgId(orgId);
+		}
+		kitResponseDTO=kitVO.stream().map(kit ->{
+			KitResponseDTO KitResponse=new KitResponseDTO();
+			KitResponse.setId(kit.getId());
+			KitResponse.setOrgId(kit.getOrgId());
+			KitResponse.setPartId(kit.getPartId());
+			KitResponse.setPartQty(kit.getPartQty());
+			Map<String, List<KitAssetVO>> kitAssetVOByCategory = kit.getKitAssetVO().stream()
+			            .collect(Collectors.groupingBy(KitAssetVO::getAssetCategory));
+			KitResponse.setKitAssetCategory(kitAssetVOByCategory);
+			return KitResponse;
+		}).collect(Collectors.toList());
+		return kitResponseDTO;
 	}
 
 	@Override
@@ -559,7 +587,10 @@ public class MasterServiceImpl implements MasterService {
 	}
 
 	@Override
-	public KitVO createkit(KitDTO kitDTO) {
+	public KitVO createkit(KitDTO kitDTO) throws ApplicationException {
+		if(kitRepo.existsById(kitDTO.getId())) {
+			throw new ApplicationException("Kit code already exist. Please try with new kit code.");
+		}
 		List<KitAssetVO> kitAssetVO = new ArrayList<>();
 		KitVO kitVO = KitVO.builder().id(kitDTO.getId()).orgId(kitDTO.getOrgId()).partId(kitDTO.getPartId())
 				.partQty(kitDTO.getPartQty()).kitAssetVO(kitAssetVO).build();

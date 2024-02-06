@@ -3,12 +3,14 @@ package com.whydigit.efit.entity;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
+import javax.persistence.MapsId;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.whydigit.efit.dto.CreatedUpdatedDate;
 
 import lombok.AllArgsConstructor;
@@ -23,8 +25,7 @@ import lombok.NoArgsConstructor;
 public class PackingDetailVO {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
+	private long partStudyId;
 	private long orgId;
 	private int partDimension;
 	private int length;
@@ -45,13 +46,18 @@ public class PackingDetailVO {
 	private String partDrawing;
 	private String approvedPackingTechnicalDrawing;
 	private String approvedCommercialContract;
-	@Lob
+	private Boolean active;
 	private byte[] partImage;
 
 	@Lob
 	private byte[] existingPackingImage;
 
-	private Boolean active;
+	@JsonBackReference
+	@OneToOne
+	@MapsId
+    @JoinColumn(name = "partStudyId")
+	private BasicDetailVO basicDetailVO;
+
 	@Embedded
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
 }

@@ -7,6 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.whydigit.efit.dto.FlowDTO;
 import com.whydigit.efit.dto.KitDTO;
+import com.whydigit.efit.dto.KitResponseDTO;
 import com.whydigit.efit.entity.AddressVO;
 import com.whydigit.efit.entity.AssetCategoryVO;
 import com.whydigit.efit.entity.AssetGroupVO;
@@ -34,7 +35,7 @@ public interface MasterService {
 
 	void deleteAsset(int id);
 
-	List<AssetGroupVO> getAllAssetGroup(Long orgId);
+	List<AssetGroupVO> getAllAssetGroup(Long orgId, String assetCategory);
 
 	Optional<AssetGroupVO> getAssetGroupById(String id);
 
@@ -133,11 +134,11 @@ public interface MasterService {
 	void deleteVenderAddress(int id);
 
 	// Create Kit
-	List<KitVO> getAllKit();
+	List<KitResponseDTO> getAllKit(Long orgId);
 
 	Optional<KitVO> getKitById(String id);
 
-	KitVO createkit(KitDTO kitDTO);
+	KitVO createkit(KitDTO kitDTO) throws ApplicationException;
 
 	Optional<KitVO> updatedKit(KitVO kitVO);
 
