@@ -23,7 +23,7 @@ import lombok.NoArgsConstructor;
 public class AssetGroupVO {
 	@Id
 	@NotEmpty(message = "Asset Code id is required")
-	private String id;
+	private String assetCodeId;
 	@NotNull(message = "Organisation Id is required")
 	private long orgId;
 	@NotEmpty(message = "Asset Name is required")

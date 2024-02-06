@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -68,7 +67,7 @@ public class PartStudyController extends BaseController {
 	}
 
 	@GetMapping("/basicDetails/{id}")
-	public ResponseEntity<ResponseDTO> getBasicDetailById(@PathVariable UUID id) {
+	public ResponseEntity<ResponseDTO> getBasicDetailById(@PathVariable Long id) {
 		String methodName = "getBasicDetailById()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -141,7 +140,7 @@ public class PartStudyController extends BaseController {
 	}
 
 	@DeleteMapping("/basicDetails/{id}")
-	public ResponseEntity<ResponseDTO> deleteBasicDetail(@PathVariable UUID id) {
+	public ResponseEntity<ResponseDTO> deleteBasicDetail(@PathVariable Long id) {
 		String methodName = "deleteBasicDetail()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -189,7 +188,7 @@ public class PartStudyController extends BaseController {
 	}
 
 	@GetMapping("/packageDetail/{id}")
-	public ResponseEntity<ResponseDTO> getPackingDetailById(@PathVariable UUID id) {
+	public ResponseEntity<ResponseDTO> getPackingDetailById(@PathVariable Long id) {
 		String methodName = "getPackingDetailById()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -262,7 +261,7 @@ public class PartStudyController extends BaseController {
 	}
 
 	@DeleteMapping("/packageDetail/{id}")
-	public ResponseEntity<ResponseDTO> deletePackingDetail(@PathVariable UUID id) {
+	public ResponseEntity<ResponseDTO> deletePackingDetail(@PathVariable Long id) {
 		String methodName = "deletePackingDetail()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -309,7 +308,7 @@ public class PartStudyController extends BaseController {
 	}
 
 	@GetMapping("/logistics/{id}")
-	public ResponseEntity<ResponseDTO> getLogisticsById(@PathVariable UUID id) {
+	public ResponseEntity<ResponseDTO> getLogisticsById(@PathVariable Long id) {
 		String methodName = "getLogisticsById()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -382,7 +381,7 @@ public class PartStudyController extends BaseController {
 	}
 
 	@DeleteMapping("/logistics/{id}")
-	public ResponseEntity<ResponseDTO> deleteLogistics(@PathVariable UUID id) {
+	public ResponseEntity<ResponseDTO> deleteLogistics(@PathVariable Long id) {
 		String methodName = "deleteLogistics()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -430,7 +429,7 @@ public class PartStudyController extends BaseController {
 	}
 
 	@GetMapping("/stockDetail/{id}")
-	public ResponseEntity<ResponseDTO> getStockDetailById(@PathVariable UUID id) {
+	public ResponseEntity<ResponseDTO> getStockDetailById(@PathVariable Long id) {
 		String methodName = "getStockDetailById()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -503,7 +502,7 @@ public class PartStudyController extends BaseController {
 	}
 
 	@DeleteMapping("/stockDetail/{id}")
-	public ResponseEntity<ResponseDTO> deleteStockDetail(@PathVariable UUID id) {
+	public ResponseEntity<ResponseDTO> deleteStockDetail(@PathVariable Long id) {
 		String methodName = "deleteStockDetail()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
