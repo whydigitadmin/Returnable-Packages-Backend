@@ -24,12 +24,14 @@ import com.whydigit.efit.common.EmitterConstant;
 import com.whydigit.efit.dto.EmitterAddressDTO;
 import com.whydigit.efit.dto.IssueItemDTO;
 import com.whydigit.efit.dto.IssueRequestDTO;
+import com.whydigit.efit.dto.IssueRequestQtyApprovelDTO;
 import com.whydigit.efit.dto.Role;
 import com.whydigit.efit.entity.EmitterInwardVO;
 import com.whydigit.efit.entity.EmitterOutwardVO;
 import com.whydigit.efit.entity.FlowVO;
 import com.whydigit.efit.entity.InwardVO;
 import com.whydigit.efit.entity.IssueItemVO;
+import com.whydigit.efit.entity.IssueRequestApprovedVO;
 import com.whydigit.efit.entity.IssueRequestVO;
 import com.whydigit.efit.exception.ApplicationException;
 import com.whydigit.efit.repo.EmitterInwardRepo;
@@ -52,7 +54,7 @@ public class EmitterServiceImpl implements EmitterService {
 
 	@Autowired
 	FlowRepo flowRepo;
-	
+
 	@Override
 	public IssueRequestVO createIssueRequest(IssueRequestDTO issueRequestDTO) throws ApplicationException {
 		IssueRequestVO issueRequestVO = new IssueRequestVO();
@@ -81,7 +83,7 @@ public class EmitterServiceImpl implements EmitterService {
 		issueItem.setPartQty(issueItemDTO.getPartQty());
 		issueItem.setRemark(issueItemDTO.getRemark());
 		issueItem.setIssueRequestVO(issueRequestVO);
-		InwardVO inwardVO = new InwardVO(); 
+		InwardVO inwardVO = new InwardVO();
 		inwardVO.setIssueItemVO(issueItem);
 		issueItem.setInwardVO(inwardVO);
 		issueItem.setIssueItemStatus(EmitterConstant.ISSUE_REQUEST_STATUS_PENDING);
@@ -89,7 +91,7 @@ public class EmitterServiceImpl implements EmitterService {
 	}
 
 	private void getIssueRequestVOFromIssueRequestDTO(IssueRequestDTO issueRequestDTO, IssueRequestVO issueRequestVO) {
-		LocalDateTime currentDateTime=LocalDateTime.now();
+		LocalDateTime currentDateTime = LocalDateTime.now();
 		issueRequestVO.setDemandDate(issueRequestDTO.getDemandDate());
 		issueRequestVO.setFlowTo(issueRequestDTO.getFlowTo());
 		issueRequestVO.setIssueStatus(0);
@@ -98,7 +100,8 @@ public class EmitterServiceImpl implements EmitterService {
 		issueRequestVO.setRequestedDate(currentDateTime);
 		issueRequestVO.setOrgId(issueRequestDTO.getOrgId());
 		issueRequestVO.setEmitterId(issueRequestDTO.getEmitterId());
-		issueRequestVO.setTat(ChronoUnit.HOURS.between(currentDateTime,issueRequestDTO.getDemandDate().atStartOfDay()));
+		issueRequestVO
+				.setTat(ChronoUnit.HOURS.between(currentDateTime, issueRequestDTO.getDemandDate().atStartOfDay()));
 	}
 
 	@Override
@@ -149,14 +152,31 @@ public class EmitterServiceImpl implements EmitterService {
 	}
 
 	@Override
-	public IssueRequestVO updateIssueQty(Long issueRequestId, Long issueItemId, int issuedQty)
+	public IssueRequestVO issueRequestQtyApprovel(IssueRequestQtyApprovelDTO issueRequestQtyApprovelDTO)
 			throws ApplicationException {
-		IssueRequestVO issueRequestVO = issueRequestRepo.findById(issueRequestId)
+		IssueRequestVO issueRequestVO = issueRequestRepo.findById(issueRequestQtyApprovelDTO.getIssueRequestId())
 				.orElseThrow(() -> new ApplicationException("Invalid issueRequest information."));
-		issueRequestVO.getIssueItemVO().stream().filter(item -> item.getId() == issueItemId).forEach(item -> {
-			item.setIssuedQty(issuedQty);
-			item.setIssueItemStatus(getItemStatus(issuedQty, item.getKitQty()));
-		});
+		issueRequestVO.getIssueItemVO().stream()
+				.filter(item -> item.getId() == issueRequestQtyApprovelDTO.getIssueItemId()).forEach(item -> {
+					List<IssueRequestApprovedVO> issueRequestApprovedVO = item.getIssueRequestApprovedVO();
+					IssueRequestApprovedVO issueRequestApproved = new IssueRequestApprovedVO();
+					issueRequestApproved.setApprovedDate(LocalDateTime.now());
+					issueRequestApproved.setApprovedId(issueRequestQtyApprovelDTO.getApprovedId());
+					issueRequestApproved.setApproverName(issueRequestQtyApprovelDTO.getApproverName());
+					issueRequestApproved.setIssueItemVO(item);
+					issueRequestApproved.setQuantity(issueRequestQtyApprovelDTO.getIssuedQty());
+					int qty = issueRequestApprovedVO.stream().mapToInt(IssueRequestApprovedVO::getQuantity).sum()
+							+ issueRequestQtyApprovelDTO.getIssuedQty();
+					int ct = issueRequestApprovedVO.size() == 0 && qty == item.getKitQty() ? 0 : 1;
+					issueRequestApproved.setIrApprovedId(
+							new StringBuilder(Long.toString(issueRequestQtyApprovelDTO.getIssueRequestId())).append("-")
+									.append(issueRequestQtyApprovelDTO.getIssueItemId()).append("-")
+									.append(issueRequestApprovedVO.size() + ct).toString());
+					item.setIssuedQty(qty);
+					item.setIssueItemStatus(getItemStatus(qty, item.getKitQty()));
+					issueRequestApprovedVO.add(issueRequestApproved);
+					item.setIssueRequestApprovedVO(issueRequestApprovedVO);
+				});
 		if (issueRequestVO.getIssueItemVO().stream()
 				.allMatch(flag -> flag.getIssueItemStatus() > EmitterConstant.ISSUE_REQUEST_ITEM_STATUS_INPROGRESS)) {
 			issueRequestVO.setIssueStatus(EmitterConstant.ISSUE_REQUEST_STATUS_ISSUED);
@@ -183,6 +203,7 @@ public class EmitterServiceImpl implements EmitterService {
 		}
 		return status;
 	}
+
 	// emitter inward
 	public List<EmitterInwardVO> getAllEmitterInward(Long orgId) {
 		List<EmitterInwardVO> emitterInwardVO = new ArrayList<>();
