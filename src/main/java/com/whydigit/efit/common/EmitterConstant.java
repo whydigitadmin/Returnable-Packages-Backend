@@ -11,8 +11,8 @@ public class EmitterConstant {
 	public static final int ISSUE_REQUEST_ITEM_STATUS_INPROGRESS=1;
 	public static final int ISSUE_REQUEST_ITEM_STATUS_ISSUED_ALL=2;
 	public static final int ISSUE_REQUEST_ITEM_STATUS_ISSUED_PARTIAL=3;
-	public static final String UPDATE_ISSUE_QTY_SUCCESS_MESSAGE = "Issue request quantity updated successfully.";
-	public static final String UPDATE_ISSUE_QTY_FAILED_MESSAGE = "Issue request quantity updated failed.";
+	public static final String ISSUE_REQUEST_QTY_APPROVEL_SUCCESS_MESSAGE = "Issue request quantity approved successfully.";
+	public static final String ISSUE_REQUEST_QTY_APPROVEL_FAILED_MESSAGE = "Issue request quantity approved failed.";
 	public static final int ISSUE_REQUEST_STATUS_PENDING=0;
 	public static final int ISSUE_REQUEST_STATUS_INPROGRESS=1;
 	public static final int ISSUE_REQUEST_STATUS_ISSUED=2;

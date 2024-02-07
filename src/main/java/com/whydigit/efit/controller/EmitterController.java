@@ -27,6 +27,7 @@ import com.whydigit.efit.common.EmitterConstant;
 import com.whydigit.efit.common.UserConstants;
 import com.whydigit.efit.dto.EmitterAddressDTO;
 import com.whydigit.efit.dto.IssueRequestDTO;
+import com.whydigit.efit.dto.IssueRequestQtyApprovelDTO;
 import com.whydigit.efit.dto.ResponseDTO;
 import com.whydigit.efit.entity.EmitterInwardVO;
 import com.whydigit.efit.entity.EmitterOutwardVO;
@@ -122,28 +123,29 @@ public class EmitterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
-	@GetMapping("/updateIssueQty")
-	public  ResponseEntity<ResponseDTO>updateIssueQty(@RequestParam Long issueRequestId,@RequestParam Long issueItemId,@RequestParam int issuedQty)
-			 {
-		String methodName = "updateIssueQty()";
+	@PostMapping("/issueRequestQtyApprovel")
+	public ResponseEntity<ResponseDTO> issueRequestQtyApprovel(
+			@RequestBody IssueRequestQtyApprovelDTO issueRequestQtyApprovelDTO) {
+		String methodName = "issueRequestQtyApprovel()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
-	ResponseDTO responseDTO = null;
+		ResponseDTO responseDTO = null;
 		IssueRequestVO issueRequestVO = new IssueRequestVO();
 		try {
-			issueRequestVO = emitterService.updateIssueQty(issueRequestId,issueItemId,issuedQty);
+			issueRequestVO = emitterService.issueRequestQtyApprovel(issueRequestQtyApprovelDTO);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(CommonConstant.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
 		}
 		if (StringUtils.isBlank(errorMsg)) {
-			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, EmitterConstant.UPDATE_ISSUE_QTY_SUCCESS_MESSAGE);
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE,
+					EmitterConstant.ISSUE_REQUEST_QTY_APPROVEL_SUCCESS_MESSAGE);
 			responseObjectsMap.put(EmitterConstant.ISSUE_REQUEST_VO, issueRequestVO);
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} else {
 			responseDTO = createServiceResponseError(responseObjectsMap,
-					EmitterConstant.UPDATE_ISSUE_QTY_FAILED_MESSAGE, errorMsg);
+					EmitterConstant.ISSUE_REQUEST_QTY_APPROVEL_FAILED_MESSAGE, errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
@@ -392,4 +394,28 @@ public class EmitterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
+	
+//	@PostMapping("/emitterInward")
+//	public ResponseEntity<ResponseDTO> create(@RequestBody EmitterInwardVO emitterInwardVO) {
+//		String methodName = "createEmitterInward()";
+//		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+//		String errorMsg = null;
+//		Map<String, Object> responseObjectsMap = new HashMap<>();
+//		ResponseDTO responseDTO = null;
+//		try {
+//			EmitterInwardVO createdEmitterInwardVO = emitterService.createEmitterInward(emitterInwardVO);
+//			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "EmitterInward created successfully");
+//			responseObjectsMap.put("emitterInwardVO", createdEmitterInwardVO);
+//			responseDTO = createServiceResponse(responseObjectsMap);
+//		} catch (Exception e) {
+//			errorMsg = e.getMessage();
+//			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+//			responseDTO = createServiceResponseError(responseObjectsMap, "EmitterInward creation failed", errorMsg);
+//		}
+//		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+//		return ResponseEntity.ok().body(responseDTO);
+//	}
+//	
+	
+	
 }
