@@ -28,6 +28,7 @@ import com.whydigit.efit.dto.Role;
 import com.whydigit.efit.entity.EmitterInwardVO;
 import com.whydigit.efit.entity.EmitterOutwardVO;
 import com.whydigit.efit.entity.FlowVO;
+import com.whydigit.efit.entity.InwardVO;
 import com.whydigit.efit.entity.IssueItemVO;
 import com.whydigit.efit.entity.IssueRequestVO;
 import com.whydigit.efit.exception.ApplicationException;
@@ -56,7 +57,7 @@ public class EmitterServiceImpl implements EmitterService {
 	public IssueRequestVO createIssueRequest(IssueRequestDTO issueRequestDTO) throws ApplicationException {
 		IssueRequestVO issueRequestVO = new IssueRequestVO();
 		List<IssueItemVO> issueItemVO = new ArrayList<>();
-		FlowVO flowVO = flowRepo.findById(null)
+		FlowVO flowVO = flowRepo.findById(issueRequestDTO.getFlowTo())
 				.orElseThrow(() -> new ApplicationException("Invalid flow. Please try again."));
 		getIssueRequestVOFromIssueRequestDTO(issueRequestDTO, issueRequestVO);
 		for (IssueItemDTO issueItemDTO : issueRequestDTO.getIssueItemDTO()) {
@@ -80,6 +81,9 @@ public class EmitterServiceImpl implements EmitterService {
 		issueItem.setPartQty(issueItemDTO.getPartQty());
 		issueItem.setRemark(issueItemDTO.getRemark());
 		issueItem.setIssueRequestVO(issueRequestVO);
+		InwardVO inwardVO = new InwardVO(); 
+		inwardVO.setIssueItemVO(issueItem);
+		issueItem.setInwardVO(inwardVO);
 		issueItem.setIssueItemStatus(EmitterConstant.ISSUE_REQUEST_STATUS_PENDING);
 		issueItem.setIssuedQty(0);
 	}

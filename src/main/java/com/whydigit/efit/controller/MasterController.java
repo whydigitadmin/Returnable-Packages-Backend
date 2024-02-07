@@ -440,7 +440,7 @@ public class MasterController extends BaseController {
 	}
 
 	@GetMapping("/flow/{id}")
-	public ResponseEntity<ResponseDTO> getFlowById(@PathVariable int id) {
+	public ResponseEntity<ResponseDTO> getFlowById(@PathVariable long id) {
 		String methodName = "getFlowById()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -513,7 +513,7 @@ public class MasterController extends BaseController {
 	}
 
 	@DeleteMapping("/flow/{id}")
-	public ResponseEntity<ResponseDTO> deleteFlow(@PathVariable int id) {
+	public ResponseEntity<ResponseDTO> deleteFlow(@PathVariable long id) {
 		String methodName = "deleteFlow()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
