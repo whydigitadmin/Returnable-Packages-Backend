@@ -1,6 +1,7 @@
 package com.whydigit.efit.service;
 
 import java.io.InputStreamReader;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -19,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.opencsv.CSVReader;
 import com.whydigit.efit.common.CommonConstant;
+import com.whydigit.efit.common.MasterConstant;
 import com.whydigit.efit.dto.FlowDTO;
 import com.whydigit.efit.dto.KitAssetDTO;
 import com.whydigit.efit.dto.KitDTO;
@@ -26,6 +28,7 @@ import com.whydigit.efit.dto.KitResponseDTO;
 import com.whydigit.efit.entity.AddressVO;
 import com.whydigit.efit.entity.AssetCategoryVO;
 import com.whydigit.efit.entity.AssetGroupVO;
+import com.whydigit.efit.entity.AssetItemVO;
 import com.whydigit.efit.entity.AssetVO;
 import com.whydigit.efit.entity.CustomersVO;
 import com.whydigit.efit.entity.FlowDetailVO;
@@ -105,6 +108,19 @@ public class MasterServiceImpl implements MasterService {
 
 	@Override
 	public AssetVO createAsset(AssetVO assetVO) {
+		List<AssetItemVO> assetItemVO = new ArrayList<>();
+		long skuId = assetVO.getSkuFrom();
+		while (skuId <= assetVO.getSkuTo()) {
+			AssetItemVO assetItem = new AssetItemVO();
+			assetItem.setAssetVO(assetVO);
+			assetItem.setCreatedDateTime(LocalDateTime.now());
+			assetItem.setAssetName(assetVO.getAssetName());
+			assetItem.setSkuId(new StringBuilder(assetVO.getAssetCodeId()).append("-").append(skuId).toString());
+			assetItem.setStatus(MasterConstant.ASSET_ITEM_STATUS_INSTOCK);
+			assetItemVO.add(assetItem);
+			skuId++;
+		}
+		assetVO.setAssetItemVO(assetItemVO);
 		return assetRepo.save(assetVO);
 	}
 
@@ -228,9 +244,8 @@ public class MasterServiceImpl implements MasterService {
 			LOGGER.info("Successfully Received Flow BY EmitterId : {}", emitterId);
 			flowVO = flowRepo.findByEmitterId(emitterId);
 		} else if (ObjectUtils.isNotEmpty(orgId) && (ObjectUtils.isNotEmpty(emitterId))) {
-			LOGGER.info("Successfully Received Flow BY EmitterId : {} orgId : {}", emitterId,
-					orgId);
-			flowVO = flowRepo.findByOrgIdAndEmitterId( orgId,emitterId);
+			LOGGER.info("Successfully Received Flow BY EmitterId : {} orgId : {}", emitterId, orgId);
+			flowVO = flowRepo.findByOrgIdAndEmitterId(orgId, emitterId);
 		} else {
 			LOGGER.info("Successfully Received Flow Information For All OrgId.");
 			flowVO = flowRepo.findAll();
@@ -557,23 +572,23 @@ public class MasterServiceImpl implements MasterService {
 // kit
 	@Override
 	public List<KitResponseDTO> getAllKit(Long orgId) {
-		List<KitResponseDTO> kitResponseDTO=new ArrayList<>(); 
-		List<KitVO> kitVO=new ArrayList<>();		
-		if(ObjectUtils.isEmpty(orgId)) {	
-			LOGGER.info("Get All kit information.",orgId);
-			kitVO= kitRepo.findAll();
-		}else {
-			LOGGER.info("Get All kit information by orgID : {}",orgId);
-			kitVO =kitRepo.findByOrgId(orgId);
+		List<KitResponseDTO> kitResponseDTO = new ArrayList<>();
+		List<KitVO> kitVO = new ArrayList<>();
+		if (ObjectUtils.isEmpty(orgId)) {
+			LOGGER.info("Get All kit information.", orgId);
+			kitVO = kitRepo.findAll();
+		} else {
+			LOGGER.info("Get All kit information by orgID : {}", orgId);
+			kitVO = kitRepo.findByOrgId(orgId);
 		}
-		kitResponseDTO=kitVO.stream().map(kit ->{
-			KitResponseDTO KitResponse=new KitResponseDTO();
+		kitResponseDTO = kitVO.stream().map(kit -> {
+			KitResponseDTO KitResponse = new KitResponseDTO();
 			KitResponse.setId(kit.getId());
 			KitResponse.setOrgId(kit.getOrgId());
 			KitResponse.setPartId(kit.getPartId());
 			KitResponse.setPartQty(kit.getPartQty());
 			Map<String, List<KitAssetVO>> kitAssetVOByCategory = kit.getKitAssetVO().stream()
-			            .collect(Collectors.groupingBy(KitAssetVO::getAssetCategory));
+					.collect(Collectors.groupingBy(KitAssetVO::getAssetCategory));
 			KitResponse.setKitAssetCategory(kitAssetVOByCategory);
 			return KitResponse;
 		}).collect(Collectors.toList());
@@ -588,7 +603,7 @@ public class MasterServiceImpl implements MasterService {
 
 	@Override
 	public KitVO createkit(KitDTO kitDTO) throws ApplicationException {
-		if(kitRepo.existsById(kitDTO.getId())) {
+		if (kitRepo.existsById(kitDTO.getId())) {
 			throw new ApplicationException("Kit code already exist. Please try with new kit code.");
 		}
 		List<KitAssetVO> kitAssetVO = new ArrayList<>();
