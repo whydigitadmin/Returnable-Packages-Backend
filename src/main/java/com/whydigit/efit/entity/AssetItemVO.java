@@ -1,5 +1,6 @@
-
 package com.whydigit.efit.entity;
+
+import java.time.LocalDateTime;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -18,32 +19,24 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "manufacturer_product")
+@Table(name = "asset_item")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ManufacturerProductVO {
+public class AssetItemVO {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
-	private long orgId;
-	private String assetCategory;
+	private Long id;
+	private String skuId;
 	private String assetName;
-	private String brand;
-	private String warranty;
-	private String sellingPrice;
-	private String leadTime;
-	private String maintananceFrequency;
-	private String notes;
-	private boolean active;
-//	@ManyToOne
-//	@JsonBackReference
-//	@JoinColumn(name="manufacture_id")
-//	private ManufacturerVO manufacturerVO;
-	
-	
-	
+	private int status;
+	private LocalDateTime createdDateTime;
+	@ManyToOne
+	@JsonBackReference
+	@JoinColumn(name = "asset_id")
+	private AssetVO assetVO;
+
 	@Embedded
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
 }

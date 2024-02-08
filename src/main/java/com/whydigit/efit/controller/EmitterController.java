@@ -151,7 +151,7 @@ public class EmitterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
-	//emitter inward
+	// emitter inward
 	@GetMapping("/emitterInward")
 	public ResponseEntity<ResponseDTO> getAllEmitterInward(@RequestParam(required = false) Long orgId) {
 		String methodName = "getAllEmitterInward()";
@@ -383,7 +383,7 @@ public class EmitterController extends BaseController {
 		ResponseDTO responseDTO = null;
 		try {
 			emitterService.deleteEmitterOutward(id);
-			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "EmitterOutward deleted successfully");
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "EmitterOut0w00 ard deleted successfully");
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
@@ -394,28 +394,4 @@ public class EmitterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
-	
-//	@PostMapping("/emitterInward")
-//	public ResponseEntity<ResponseDTO> create(@RequestBody EmitterInwardVO emitterInwardVO) {
-//		String methodName = "createEmitterInward()";
-//		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
-//		String errorMsg = null;
-//		Map<String, Object> responseObjectsMap = new HashMap<>();
-//		ResponseDTO responseDTO = null;
-//		try {
-//			EmitterInwardVO createdEmitterInwardVO = emitterService.createEmitterInward(emitterInwardVO);
-//			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "EmitterInward created successfully");
-//			responseObjectsMap.put("emitterInwardVO", createdEmitterInwardVO);
-//			responseDTO = createServiceResponse(responseObjectsMap);
-//		} catch (Exception e) {
-//			errorMsg = e.getMessage();
-//			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-//			responseDTO = createServiceResponseError(responseObjectsMap, "EmitterInward creation failed", errorMsg);
-//		}
-//		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
-//		return ResponseEntity.ok().body(responseDTO);
-//	}
-//	
-	
-	
 }
