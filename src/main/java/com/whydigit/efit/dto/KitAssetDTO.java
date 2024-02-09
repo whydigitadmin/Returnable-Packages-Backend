@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class KitAssetDTO {
 	private String assetCategory;
+	private long assetCodeId;
 	private String assetName;
 	private String quantity;
 	
