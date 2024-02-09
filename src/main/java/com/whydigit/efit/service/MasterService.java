@@ -1,6 +1,7 @@
 package com.whydigit.efit.service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.web.multipart.MultipartFile;
@@ -143,4 +144,6 @@ public interface MasterService {
 	Optional<KitVO> updatedKit(KitVO kitVO);
 
 	void deleteKit(String id);
+
+	Map<String, List<CustomersVO>> getCustomersList(Long orgId);
 }
