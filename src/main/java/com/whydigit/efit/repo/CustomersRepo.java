@@ -15,6 +15,8 @@ public interface CustomersRepo extends JpaRepository<CustomersVO, Integer> {
 	@Query(value = "select a from CustomersVO a Where a.orgId=?1")
 	List<CustomersVO> getAllCustomersByOrgId(Long orgId);
 
+	List<CustomersVO> findByOrgId(Long orgId);
+
 }
 
 

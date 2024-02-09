@@ -4,10 +4,12 @@ import java.io.InputStreamReader;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.ObjectUtils;
@@ -20,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.opencsv.CSVReader;
 import com.whydigit.efit.common.CommonConstant;
+import com.whydigit.efit.common.CustomerConstant;
 import com.whydigit.efit.common.MasterConstant;
 import com.whydigit.efit.dto.FlowDTO;
 import com.whydigit.efit.dto.KitAssetDTO;
@@ -55,6 +58,8 @@ import com.whydigit.efit.repo.UnitRepo;
 import com.whydigit.efit.repo.VenderAddressRepo;
 import com.whydigit.efit.repo.VenderRepo;
 import com.whydigit.efit.repo.WarehouseLocationRepo;
+
+import io.jsonwebtoken.lang.Collections;
 
 @Service
 public class MasterServiceImpl implements MasterService {
@@ -188,7 +193,6 @@ public class MasterServiceImpl implements MasterService {
 	@Override
 	public void deleteAssetGroup(int id) {
 		assetRepo.deleteById(id);
-
 	}
 
 	@Override
@@ -207,6 +211,7 @@ public class MasterServiceImpl implements MasterService {
 	@Override
 	public Optional<CustomersVO> getCustomersById(int id) {
 		return customersRepo.findById(id);
+
 	}
 
 	@Override
@@ -597,7 +602,6 @@ public class MasterServiceImpl implements MasterService {
 
 	@Override
 	public Optional<KitVO> getKitById(String id) {
-		// TODO Auto-generated method stub
 		return kitRepo.findById(id);
 	}
 
@@ -629,5 +633,22 @@ public class MasterServiceImpl implements MasterService {
 	public void deleteKit(String id) {
 		kitRepo.deleteById(id);
 
+	}
+
+	@Override
+	public Map<String, List<CustomersVO>> CustomersType(Long orgId) {
+		List<CustomersVO> customersVO = customersRepo.findByOrgId(orgId);
+		Map<String, List<CustomersVO>> customers = new HashMap<>();
+		List<CustomersVO> emitterCustomersVO = customersVO.stream()
+				.filter(c -> c.getCustomerType() == CustomerConstant.CUSTOMER_TYPE_EMITTER
+						|| c.getCustomerType() == CustomerConstant.CUSTOMER_TYPE_EMITTER_AND_RECEIVER)
+				.collect(Collectors.toList());
+		List<CustomersVO> receiverCustomersVO = customersVO.stream()
+				.filter(c -> c.getCustomerType() == CustomerConstant.CUSTOMER_TYPE_RECEIVER
+						|| c.getCustomerType() == CustomerConstant.CUSTOMER_TYPE_EMITTER_AND_RECEIVER)
+				.collect(Collectors.toList());
+		customers.put("emitterCustomersVO", emitterCustomersVO);
+		customers.put("receiverCustomersVO", receiverCustomersVO);
+		return customers;
 	}
 }

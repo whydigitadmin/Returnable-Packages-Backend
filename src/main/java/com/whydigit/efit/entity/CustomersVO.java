@@ -14,7 +14,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name="customer")
+@Table(name = "customer")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -25,6 +25,7 @@ public class CustomersVO {
 	private int id;
 	private long orgId;
 	private String firstName;
+	private int customerType;
 	private String lastName;
 	private String customerOrgName;
 	private String customerCode;
@@ -40,7 +41,7 @@ public class CustomersVO {
 	private String accountName;
 	private String branch;
 	private String ifscCode;
-	
+
 	@Embedded
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
 }

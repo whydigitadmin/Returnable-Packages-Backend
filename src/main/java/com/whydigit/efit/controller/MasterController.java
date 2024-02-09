@@ -160,7 +160,7 @@ public class MasterController extends BaseController {
 		ResponseDTO responseDTO = null;
 		List<AssetGroupVO> assetGroupVO = new ArrayList<>();
 		try {
-			assetGroupVO = masterService.getAllAssetGroup(orgId,assetCategory);
+			assetGroupVO = masterService.getAllAssetGroup(orgId, assetCategory);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
@@ -323,6 +323,32 @@ public class MasterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
+	
+	@GetMapping("/getCustomersList")
+	public ResponseEntity<ResponseDTO> getCustomersType(@RequestParam Long orgId) {
+		String methodName = "getCustomersType()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		Map<String, List<CustomersVO>> customersVO = null;
+		try {
+			customersVO = masterService.CustomersType(orgId);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "CustomersType Get Successfully");
+			responseObjectsMap.put("customersVO", customersVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "CustomersType Get Failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+	
 
 	@PostMapping("/customers")
 	public ResponseEntity<ResponseDTO> createCustomer(@RequestBody CustomersVO customersVO) {

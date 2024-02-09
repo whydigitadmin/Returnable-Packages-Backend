@@ -1,6 +1,8 @@
 
 package com.whydigit.efit.entity;
 
+import java.util.List;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -38,9 +40,9 @@ public class ManufacturerVO {
 	private String productionCapacity;
 	private String notes;
 	private boolean active;
-//	@JsonManagedReference
-//	@OneToMany(mappedBy = "manufacturerVO",cascade = CascadeType.ALL)
-//    private ManufacturerProductVO manufacturerProductVO;
+	@JsonManagedReference
+	@OneToMany(mappedBy = "manufacturerVO",cascade = CascadeType.ALL)
+    private List <ManufacturerProductVO> manufacturerProductVO;
 	@Embedded
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
 }
