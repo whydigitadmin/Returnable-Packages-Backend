@@ -146,4 +146,6 @@ public interface MasterService {
 	void deleteKit(String id);
 
 	Map<String, List<CustomersVO>> CustomersType(Long orgId);
+
+	Map<String, Map<String, List<AssetGroupVO>>> getAssetGroupByCategoryType(Long orgId);
 }
