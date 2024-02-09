@@ -651,4 +651,18 @@ public class MasterServiceImpl implements MasterService {
 		customers.put("receiverCustomersVO", receiverCustomersVO);
 		return customers;
 	}
+
+	@Override
+	public Map<String, Map<String, List<AssetGroupVO>>> getAssetGroupByCategoryType(Long orgId) {
+		List<AssetGroupVO> assetGroupVO = new ArrayList<>();
+		if (ObjectUtils.isNotEmpty(orgId)) {
+			LOGGER.info("Successfully Received  AssetGroupInformation BY OrgId : {}", orgId);
+			assetGroupVO = assetGroupRepo.getAllAssetGroupByOrgId(orgId);
+		} else {
+			LOGGER.info("Successfully Received  AssetGroupInformation For All OrgId.");
+			assetGroupVO = assetGroupRepo.findAll();
+		}
+		return assetGroupVO.stream().collect(Collectors.groupingBy(AssetGroupVO::getAssetCategory,
+				Collectors.groupingBy(AssetGroupVO::getAssetName)));
+	}
 }
