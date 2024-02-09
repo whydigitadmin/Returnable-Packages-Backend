@@ -325,25 +325,25 @@ public class MasterController extends BaseController {
 	}
 	
 	@GetMapping("/getCustomersList")
-	public ResponseEntity<ResponseDTO> getCustomersList(@RequestParam Long orgId) {
-		String methodName = "getCustomersList()";
+	public ResponseEntity<ResponseDTO> getCustomersType(@RequestParam Long orgId) {
+		String methodName = "getCustomersType()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
 		Map<String, List<CustomersVO>> customersVO = null;
 		try {
-			customersVO = masterService.getCustomersList(orgId);
+			customersVO = masterService.CustomersType(orgId);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
 		}
 		if (StringUtils.isEmpty(errorMsg)) {
-			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "CustomersList Get Successfully");
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "CustomersType Get Successfully");
 			responseObjectsMap.put("customersVO", customersVO);
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} else {
-			responseDTO = createServiceResponseError(responseObjectsMap, "CustomersList Get Failed", errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "CustomersType Get Failed", errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);

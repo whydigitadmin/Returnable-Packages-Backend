@@ -145,5 +145,5 @@ public interface MasterService {
 
 	void deleteKit(String id);
 
-	Map<String, List<CustomersVO>> getCustomersList(Long orgId);
+	Map<String, List<CustomersVO>> CustomersType(Long orgId);
 }

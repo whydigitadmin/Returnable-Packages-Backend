@@ -636,7 +636,7 @@ public class MasterServiceImpl implements MasterService {
 	}
 
 	@Override
-	public Map<String, List<CustomersVO>> getCustomersList(Long orgId) {
+	public Map<String, List<CustomersVO>> CustomersType(Long orgId) {
 		List<CustomersVO> customersVO = customersRepo.findByOrgId(orgId);
 		Map<String, List<CustomersVO>> customers = new HashMap<>();
 		List<CustomersVO> emitterCustomersVO = customersVO.stream()
