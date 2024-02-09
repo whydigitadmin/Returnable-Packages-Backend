@@ -612,10 +612,11 @@ public class MasterServiceImpl implements MasterService {
 		}
 		List<KitAssetVO> kitAssetVO = new ArrayList<>();
 		KitVO kitVO = KitVO.builder().id(kitDTO.getId()).orgId(kitDTO.getOrgId()).partId(kitDTO.getPartId())
-				.partQty(kitDTO.getPartQty()).kitAssetVO(kitAssetVO).build();
+				.partQty(kitDTO.getPartQty()).partName(kitDTO.getPartName()).kitAssetVO(kitAssetVO).build();
 		for (KitAssetDTO kitAsset : kitDTO.getKitAssetDTO()) {
 			kitAssetVO.add(KitAssetVO.builder().assetCategory(kitAsset.getAssetCategory())
-					.assetName(kitAsset.getAssetName()).quantity(kitAsset.getQuantity()).kitVO(kitVO).build());
+					.assetCodeId(kitAsset.getAssetCodeId()).assetName(kitAsset.getAssetName())
+					.quantity(kitAsset.getQuantity()).kitVO(kitVO).build());
 		}
 		return kitRepo.save(kitVO);
 	}

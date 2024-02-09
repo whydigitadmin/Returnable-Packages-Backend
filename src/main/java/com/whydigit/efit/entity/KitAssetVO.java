@@ -26,6 +26,7 @@ public class KitAssetVO {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 	private String assetCategory;
+	private long assetCodeId;
 	private String assetName;
 	private String quantity;
 	@ManyToOne
