@@ -3,6 +3,7 @@ package com.whydigit.efit.repo;
 
 import java.util.List;
 
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -17,4 +18,6 @@ public interface AssetGroupRepo extends JpaRepository<AssetGroupVO, String> {
 	List<AssetGroupVO> findByAssetCategory(String assetCategory);
 
 	List<AssetGroupVO> findByOrgIdAndAssetCategory(Long orgId, String assetCategory);
+
+	List<AssetGroupVO> findAll(Specification<AssetGroupVO> specification);
 }

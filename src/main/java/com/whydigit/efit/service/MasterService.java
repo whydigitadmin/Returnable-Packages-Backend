@@ -36,7 +36,7 @@ public interface MasterService {
 
 	void deleteAsset(int id);
 
-	List<AssetGroupVO> getAllAssetGroup(Long orgId, String assetCategory);
+	Map<String, Object> getAllAssetGroup(Long orgId, String assetCategory, String assetName);
 
 	Optional<AssetGroupVO> getAssetGroupById(String id);
 
