@@ -9,14 +9,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
+
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -58,8 +63,6 @@ import com.whydigit.efit.repo.UnitRepo;
 import com.whydigit.efit.repo.VenderAddressRepo;
 import com.whydigit.efit.repo.VenderRepo;
 import com.whydigit.efit.repo.WarehouseLocationRepo;
-
-import io.jsonwebtoken.lang.Collections;
 
 @Service
 public class MasterServiceImpl implements MasterService {
@@ -145,23 +148,31 @@ public class MasterServiceImpl implements MasterService {
 	}
 
 	@Override
-	public List<AssetGroupVO> getAllAssetGroup(Long orgId, String assetCategory) {
-		List<AssetGroupVO> assetGroupVO = new ArrayList<>();
-		if (ObjectUtils.isNotEmpty(orgId) && ObjectUtils.isEmpty(assetCategory)) {
-			LOGGER.info("Successfully Received  AssetGroupInformation BY OrgId : {}", orgId);
-			assetGroupVO = assetGroupRepo.getAllAssetGroupByOrgId(orgId);
-		} else if (ObjectUtils.isEmpty(orgId) && ObjectUtils.isNotEmpty(assetCategory)) {
-			LOGGER.info("Successfully Received  AssetGroupInformation BY AssetCategory : {}", assetCategory);
-			assetGroupVO = assetGroupRepo.findByAssetCategory(assetCategory);
-		} else if (ObjectUtils.isNotEmpty(orgId) && ObjectUtils.isNotEmpty(assetCategory)) {
-			LOGGER.info("Successfully Received  AssetGroupInformation BY OrgId : {} , AssetCategory : {}", orgId,
-					assetCategory);
-			assetGroupVO = assetGroupRepo.findByOrgIdAndAssetCategory(orgId, assetCategory);
-		} else {
-			LOGGER.info("Successfully Received  AssetGroupInformation For All OrgId.");
-			assetGroupVO = assetGroupRepo.findAll();
-		}
-		return assetGroupVO;
+	public Map<String, Object> getAllAssetGroup(Long orgId, String assetCategory, String assetName) {
+		Map<String, Object> assetGroup = new HashMap<>();
+		List<AssetGroupVO> assetGroupVO = assetGroupRepo.findAll(new Specification<AssetGroupVO>() {
+			@Override
+			public Predicate toPredicate(Root<AssetGroupVO> root, CriteriaQuery<?> query,
+					CriteriaBuilder criteriaBuilder) {
+				List<Predicate> predicates = new ArrayList<>();
+				if (ObjectUtils.isNotEmpty(orgId)) {
+					predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("orgId"), orgId)));
+				}
+				if (StringUtils.isNotBlank(assetCategory)) {
+					predicates
+							.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("assetCategory"), assetCategory)));
+				}
+				if (StringUtils.isNotBlank(assetName)) {
+					predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("assetName"), assetName)));
+				}
+				return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
+			}
+		});
+		assetGroup.put("assetGroupVO", assetGroupVO);
+		assetGroup.put("assetCategory", assetGroupVO.stream().map(AssetGroupVO::getAssetCategory).distinct().toList());
+		assetGroup.put("assetName", assetGroupVO.stream().map(AssetGroupVO::getAssetName).distinct().toList());
+		assetGroup.put("assetCodeId", assetGroupVO.stream().map(AssetGroupVO::getAssetCodeId).distinct().toList());
+		return assetGroup;
 	}
 
 	@Override
