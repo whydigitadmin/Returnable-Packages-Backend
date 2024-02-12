@@ -37,6 +37,7 @@ import com.whydigit.efit.exception.ApplicationException;
 import com.whydigit.efit.repo.EmitterInwardRepo;
 import com.whydigit.efit.repo.EmitterOutwardRepo;
 import com.whydigit.efit.repo.FlowRepo;
+import com.whydigit.efit.repo.IssueItemRepo;
 import com.whydigit.efit.repo.IssueRequestRepo;
 import com.whydigit.efit.repo.UserRepo;
 
@@ -51,6 +52,8 @@ public class EmitterServiceImpl implements EmitterService {
 	EmitterInwardRepo emitterInwardRepo;
 	@Autowired
 	EmitterOutwardRepo emitterOutwardRepo;
+	@Autowired
+	IssueItemRepo issueItemRepo;
 
 	@Autowired
 	FlowRepo flowRepo;
@@ -277,5 +280,32 @@ public class EmitterServiceImpl implements EmitterService {
 	@Override
 	public void deleteEmitterOutward(int id) {
 		emitterOutwardRepo.deleteById(id);
+	}
+
+	@Override
+	public void cancelIssueRequest(Long issueRequestId, Long issueRequestItemId) throws ApplicationException {
+		if (ObjectUtils.isNotEmpty(issueRequestItemId)) {
+			LOGGER.info("Cancel Issue Requested By IssueRequestItemId : {}", issueRequestItemId);
+			if (issueItemRepo.cancelIssueRequestByIssueRequestItemId(issueRequestItemId,
+					EmitterConstant.ISSUE_REQUEST_ITEM_STATUS_CANCELLED) < 1) {
+				throw new ApplicationException("Failed To Cancel The Issue Requst Item");
+			}
+			if (issueRequestRepo.cancelIssueRequestByIssueRequestId(issueRequestId,
+					EmitterConstant.ISSUE_REQUEST_STATUS_CANCELLED) < 1) {
+				throw new ApplicationException("Failed To Cancel The Issue Requst");
+			}
+		} else if (ObjectUtils.isNotEmpty(issueRequestId)) {
+			LOGGER.info("Cancel Issue Requested By IssueRequestId : {}", issueRequestId);
+			if (issueItemRepo.cancelIssueRequestByIssueRequestId(issueRequestId,
+					EmitterConstant.ISSUE_REQUEST_ITEM_STATUS_CANCELLED) < 1) {
+				throw new ApplicationException("Failed To Cancel The Issue Requst");
+			}
+			if (issueRequestRepo.cancelIssueRequestByIssueRequestId(issueRequestId,
+					EmitterConstant.ISSUE_REQUEST_STATUS_CANCELLED) < 1) {
+				throw new ApplicationException("Failed To Cancel The Issue Requst");
+			}
+		} else {
+			throw new ApplicationException("Invalid cancel issue request. Failed To Cancel The Issue Requst.");
+		}
 	}
 }

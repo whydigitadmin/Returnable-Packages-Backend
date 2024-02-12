@@ -43,6 +43,5 @@ public class IssueRequestVO {
 	@OneToMany(mappedBy = "issueRequestVO", cascade = CascadeType.ALL, orphanRemoval = true)
 	@JsonManagedReference
 	private List<IssueItemVO> issueItemVO = new ArrayList<>();
-	
-	
+
 }

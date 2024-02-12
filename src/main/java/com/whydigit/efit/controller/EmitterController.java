@@ -97,6 +97,31 @@ public class EmitterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
+	@GetMapping("/cancelIssueRequest")
+	public ResponseEntity<ResponseDTO> CancelIssueRequest(@RequestParam(required = false) Long issueRequestId,@RequestParam(required = false)
+			Long issueRequestItemId ) {
+		String methodName = "CancelIssueRequest()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		try {
+			 emitterService.cancelIssueRequest(issueRequestId, issueRequestItemId);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(CommonConstant.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, EmitterConstant.ISSUE_REQUEST_CANCEL_SUCCESS_MESSAGE);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap,
+					EmitterConstant.ISSUE_REQUEST_CANCEL_FAILED_MESSAGE, errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+	
 	@GetMapping("/getEmitterAddress")
 	public ResponseEntity<ResponseDTO> getEmitterAddress(@RequestParam(required = false) Long orgId) {
 		String methodName = "getEmitterAddress()";

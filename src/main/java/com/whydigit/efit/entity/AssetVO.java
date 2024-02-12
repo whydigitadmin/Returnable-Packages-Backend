@@ -32,7 +32,7 @@ public class AssetVO {
 	private long orgId;
 	private String assetCodeId;
 	private String assetName;
-	private String AssetId;
+	private String assetId;
 	private boolean active;
 	private float length;
 	private float breath;

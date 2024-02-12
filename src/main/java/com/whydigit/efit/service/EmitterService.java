@@ -48,4 +48,6 @@ public interface EmitterService {
 
 	IssueRequestVO issueRequestQtyApprovel(IssueRequestQtyApprovelDTO issueRequestQtyApprovelDTO) throws ApplicationException;
 
+	void cancelIssueRequest(Long issueRequestId, Long issueRequestItemId) throws ApplicationException;
+
 }
