@@ -41,6 +41,16 @@ public class CustomersVO {
 	private String accountName;
 	private String branch;
 	private String ifscCode;
+	private String gstRegStatus;
+	private String gstNo;
+	private String street1;
+	private String street2;
+	private String state;
+	private String city;
+	private String pincode;
+	private String contactName;
+	private String phoneNumber;
+	private boolean isPrimary;
 
 	@Embedded
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
