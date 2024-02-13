@@ -170,9 +170,12 @@ public class MasterServiceImpl implements MasterService {
 			}
 		});
 		assetGroup.put("assetGroupVO", assetGroupVO);
-		assetGroup.put("assetCategory", assetGroupVO.stream().map(AssetGroupVO::getAssetCategory).distinct().toList());
-		assetGroup.put("assetName", assetGroupVO.stream().map(AssetGroupVO::getAssetName).distinct().toList());
-		assetGroup.put("assetCodeId", assetGroupVO.stream().map(AssetGroupVO::getAssetCodeId).distinct().toList());
+		assetGroup.put("assetCategory",
+				assetGroupVO.stream().map(AssetGroupVO::getAssetCategory).distinct().collect(Collectors.toList()));
+		assetGroup.put("assetName",
+				assetGroupVO.stream().map(AssetGroupVO::getAssetName).distinct().collect(Collectors.toList()));
+		assetGroup.put("assetCodeId",
+				assetGroupVO.stream().map(AssetGroupVO::getAssetCodeId).distinct().collect(Collectors.toList()));
 		return assetGroup;
 	}
 
