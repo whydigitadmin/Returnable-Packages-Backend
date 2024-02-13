@@ -149,7 +149,8 @@ public class MasterServiceImpl implements MasterService {
 	}
 
 	@Override
-	public Map<String, Object> getAllAssetGroup(Long orgId, String assetCategory, String assetName) {
+	public Map<String, Object> getAllAssetGroup(Long orgId, String assetCategory, String assetName,
+			String assetCodeId) {
 		Map<String, Object> assetGroup = new HashMap<>();
 		List<AssetGroupVO> assetGroupVO = assetGroupRepo.findAll(new Specification<AssetGroupVO>() {
 			@Override
@@ -165,6 +166,10 @@ public class MasterServiceImpl implements MasterService {
 				}
 				if (StringUtils.isNotBlank(assetName)) {
 					predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("assetName"), assetName)));
+				}
+				if (StringUtils.isNotBlank(assetCodeId)) {
+					predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("assetCodeId"), assetCodeId)));
+					assetGroup.put("skuLatestCount", assetRepo.getLatestSkuByAssetCodeId(assetCodeId));
 				}
 				return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
 			}

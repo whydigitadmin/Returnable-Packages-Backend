@@ -149,15 +149,16 @@ public class MasterController extends BaseController {
 
 	@GetMapping("/assetGroup")
 	public ResponseEntity<ResponseDTO> getAllAssetGroup(@RequestParam(required = false) Long orgId,
-			@RequestParam(required = false) String assetCategory,@RequestParam(required = false) String assetName) {
+			@RequestParam(required = false) String assetCategory, @RequestParam(required = false) String assetName,
+			@RequestParam(required = false) String assetCodeId) {
 		String methodName = "getAllAssetGroup()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
-		ResponseDTO responseDTO = null; 
+		ResponseDTO responseDTO = null;
 		Map<String, Object> assetGroupVO = new HashMap<>();
 		try {
-			assetGroupVO = masterService.getAllAssetGroup(orgId, assetCategory, assetName);
+			assetGroupVO = masterService.getAllAssetGroup(orgId, assetCategory, assetName, assetCodeId);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);

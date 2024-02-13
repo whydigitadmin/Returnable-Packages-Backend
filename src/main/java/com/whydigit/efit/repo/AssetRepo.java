@@ -14,6 +14,7 @@ public interface AssetRepo extends JpaRepository<AssetVO, Integer> {
 	@Query(value = "select a from AssetVO a Where a.orgId=?1")
 	List<AssetVO> getAllAssetByOrgId(Long orgId);
 
-	
+	@Query(value = "SELECT IFNULL((SELECT sku_to FROM asset WHERE asset_code_id = ? ORDER BY id DESC LIMIT 1), 0) AS sku_to",nativeQuery = true)
+	long getLatestSkuByAssetCodeId(String assetCodeId);
 
 }
