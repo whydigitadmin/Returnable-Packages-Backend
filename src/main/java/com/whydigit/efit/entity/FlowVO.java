@@ -30,6 +30,7 @@ public class FlowVO {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 	private long orgId;
+	private String receiverId;
 	private String flowName;
 	private String emitter;
 	private long emitterId;
