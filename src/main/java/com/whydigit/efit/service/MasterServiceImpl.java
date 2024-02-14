@@ -12,8 +12,12 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Tuple;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
@@ -96,7 +100,9 @@ public class MasterServiceImpl implements MasterService {
 	VenderAddressRepo venderAddressRepo;
 	@Autowired
 	KitRepo kitRepo;
-
+    @PersistenceContext
+    private EntityManager entityManager;
+    
 	@Override
 	public List<AssetVO> getAllAsset(Long orgId) {
 		List<AssetVO> assetVO = new ArrayList<>();
@@ -149,8 +155,8 @@ public class MasterServiceImpl implements MasterService {
 	}
 
 	@Override
-	public Map<String, Object> getAllAssetGroup(Long orgId, String assetCategory, String assetName,
-			String assetCodeId) {
+	public Map<String, Object> getAllAssetGroup(Long orgId, String assetCategory, String assetName, String assetCodeId,
+			String manufacturer) {
 		Map<String, Object> assetGroup = new HashMap<>();
 		List<AssetGroupVO> assetGroupVO = assetGroupRepo.findAll(new Specification<AssetGroupVO>() {
 			@Override
@@ -174,6 +180,12 @@ public class MasterServiceImpl implements MasterService {
 				return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
 			}
 		});
+		List<Tuple> tuple = findManufacturerProductsByCriteria(orgId, assetCategory, assetName, assetCodeId,
+				manufacturer);
+		assetGroup.put("beand", tuple.stream().map(t -> t.get(0, ManufacturerProductVO.class).getBrand()).distinct()
+				.collect(Collectors.toList()));
+		assetGroup.put("company", tuple.stream().map(t -> t.get(1, ManufacturerVO.class).getCompany()).distinct()
+				.collect(Collectors.toList()));
 		assetGroup.put("assetGroupVO", assetGroupVO);
 		assetGroup.put("assetCategory",
 				assetGroupVO.stream().map(AssetGroupVO::getAssetCategory).distinct().collect(Collectors.toList()));
@@ -184,6 +196,33 @@ public class MasterServiceImpl implements MasterService {
 		return assetGroup;
 	}
 
+	private List<Tuple> findManufacturerProductsByCriteria(Long orgId, String assetCodeId, String assetCategory,
+			String assetName, String manufacturer) {
+		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+		CriteriaQuery<Tuple> cq = cb.createTupleQuery();
+		Root<ManufacturerProductVO> root = cq.from(ManufacturerProductVO.class);
+		Join<ManufacturerProductVO, ManufacturerVO> manufacturerJoin = root.join("manufacturerVO");
+		List<Predicate> predicates = new ArrayList<>();
+		if (ObjectUtils.isNotEmpty(orgId)) {
+			predicates.add(cb.equal(root.get("orgId"), orgId));
+		}
+		if (StringUtils.isNotBlank(assetCategory)) {
+			predicates.add(cb.equal(root.get("assetCategory"), assetCategory));
+		}
+		if (StringUtils.isNotBlank(assetName)) {
+			predicates.add(cb.equal(root.get("assetName"), assetName));
+		}
+		if (StringUtils.isNotBlank(assetCodeId)) {
+			predicates.add(cb.equal(root.get("assetCodeId"), assetCodeId));
+		}
+		if (StringUtils.isNotBlank(manufacturer)) {
+			predicates.add(cb.equal(manufacturerJoin.get("company"), manufacturer));
+		}
+		cq.multiselect(root, manufacturerJoin);
+		cq.where(cb.and(predicates.toArray(new Predicate[0])));
+		return entityManager.createQuery(cq).getResultList();
+	}
+	
 	@Override
 	public Optional<AssetGroupVO> getAssetGroupById(String id) {
 		return assetGroupRepo.findById(id);
