@@ -54,4 +54,9 @@ public class UserVO {
 	@Embedded
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
 	private Date accountRemovedDate;
+	@ManyToOne
+	@JoinColumn(name = "emitter_id")
+	private CustomersVO customersVO;
+	
+	
 }

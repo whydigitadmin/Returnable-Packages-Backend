@@ -48,7 +48,7 @@ public interface MasterService {
 
 	List<CustomersVO> getAllCustomers(Long orgId);
 
-	Optional<CustomersVO> getCustomersById(int id);
+	Optional<CustomersVO> getCustomersById(Long id);
 
 	CustomersVO createCustomers(CustomersVO customersVO);
 
@@ -56,7 +56,7 @@ public interface MasterService {
 
 	Optional<CustomersVO> updateCustomers(CustomersVO customersVO);
 
-	void deleteCustomers(int id);
+	void deleteCustomers(Long id);
 
 	List<FlowVO> getAllFlow(Long orgId,Long emitterId);
 

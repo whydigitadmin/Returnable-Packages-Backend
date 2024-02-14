@@ -26,12 +26,14 @@ import com.whydigit.efit.dto.ResetPasswordFormDTO;
 import com.whydigit.efit.dto.Role;
 import com.whydigit.efit.dto.UserAddressDTO;
 import com.whydigit.efit.dto.UserResponseDTO;
+import com.whydigit.efit.entity.CustomersVO;
 import com.whydigit.efit.entity.OrganizationVO;
 import com.whydigit.efit.entity.TokenVO;
 import com.whydigit.efit.entity.UserAddressVO;
 import com.whydigit.efit.entity.UserVO;
 import com.whydigit.efit.exception.ApplicationException;
 import com.whydigit.efit.repo.AccessRightsRepo;
+import com.whydigit.efit.repo.CustomersRepo;
 import com.whydigit.efit.repo.OrganizationRepo;
 import com.whydigit.efit.repo.TokenRepo;
 import com.whydigit.efit.repo.UserActionRepo;
@@ -70,6 +72,9 @@ public class AuthServiceImpl implements AuthService {
 	
 	@Autowired
     AccessRightsRepo accessRightsRepo;
+	@Autowired
+	CustomersRepo customersRepo;
+	
 	@Transactional
 	@Override
 	public void signup(CreateOrganizationFormDTO createOrganizationFormDTO) {
@@ -172,6 +177,7 @@ public class AuthServiceImpl implements AuthService {
 		}
 		UserResponseDTO userResponseDTO = mapUserVOToDTO(userVO);
 		TokenVO tokenVO = tokenProvider.createToken(userVO.getUserId(), loginRequest.getUserName());
+		userResponseDTO.setCustomersVO(userVO.getCustomersVO());
 		userResponseDTO.setToken(tokenVO.getToken());
 		userResponseDTO.setTokenId(tokenVO.getId());		
 		userResponseDTO.setAccessRightsVO(accessRightsRepo.findById(userVO.getAccessRightsRoleId()).orElse(null));
@@ -339,6 +345,11 @@ public class AuthServiceImpl implements AuthService {
 		userVO.setOrganizationVO(organizationRepo.findById(createUserFormDTO.getOrgId())
 				.orElseThrow(() -> new ApplicationException("No orginaization found.")));
 		userVO.setUserAddressVO(userAddressRepo.save(getAddressVOFromCreateUserFormDTO(createUserFormDTO)));
+		if(ObjectUtils.isNotEmpty(createUserFormDTO.getEmitterId()))
+		{
+			CustomersVO customersVO=customersRepo.findById(createUserFormDTO.getEmitterId()).orElse(null) ;
+			userVO.setCustomersVO(customersVO);
+		}
 		userRepo.save(userVO);
 		userService.createUserAction(userVO.getEmail(), userVO.getUserId(), UserConstants.USER_ACTION_ADD_ACCOUNT);
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);

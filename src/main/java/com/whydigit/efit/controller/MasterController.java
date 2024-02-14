@@ -322,7 +322,7 @@ public class MasterController extends BaseController {
 	}
 
 	@GetMapping("/customers/{id}")
-	public ResponseEntity<ResponseDTO> getCustomersById(@PathVariable int id) {
+	public ResponseEntity<ResponseDTO> getCustomersById(@PathVariable Long id) {
 		String methodName = "getCustomersById()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -442,7 +442,7 @@ public class MasterController extends BaseController {
 	}
 
 	@DeleteMapping("/customers/{id}")
-	public ResponseEntity<ResponseDTO> deleteCustomers(@PathVariable int id) {
+	public ResponseEntity<ResponseDTO> deleteCustomers(@PathVariable Long id) {
 		String methodName = "deleteAssetGroup()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
