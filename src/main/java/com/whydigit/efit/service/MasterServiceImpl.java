@@ -182,7 +182,7 @@ public class MasterServiceImpl implements MasterService {
 		});
 		List<Tuple> tuple = findManufacturerProductsByCriteria(orgId, assetCategory, assetName, assetCodeId,
 				manufacturer);
-		assetGroup.put("beand", tuple.stream().map(t -> t.get(0, ManufacturerProductVO.class).getBrand()).distinct()
+		assetGroup.put("brand", tuple.stream().map(t -> t.get(0, ManufacturerProductVO.class).getBrand()).distinct()
 				.collect(Collectors.toList()));
 		assetGroup.put("company", tuple.stream().map(t -> t.get(1, ManufacturerVO.class).getCompany()).distinct()
 				.collect(Collectors.toList()));
