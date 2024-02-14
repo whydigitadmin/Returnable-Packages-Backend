@@ -28,7 +28,7 @@ public class ManufacturerProductVO {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	private long orgId;
-//	private String assetCodeId;
+	private String assetCodeId;
 	private String assetCategory;
 	private String assetName;
 	private String brand;
