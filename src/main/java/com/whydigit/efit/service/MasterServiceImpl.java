@@ -229,7 +229,7 @@ public class MasterServiceImpl implements MasterService {
 	}
 
 	@Override
-	public Optional<CustomersVO> getCustomersById(int id) {
+	public Optional<CustomersVO> getCustomersById(Long id) {
 		return customersRepo.findById(id);
 
 	}
@@ -254,7 +254,7 @@ public class MasterServiceImpl implements MasterService {
 	}
 
 	@Override
-	public void deleteCustomers(int id) {
+	public void deleteCustomers(Long id) {
 		customersRepo.deleteById(id);
 
 	}
