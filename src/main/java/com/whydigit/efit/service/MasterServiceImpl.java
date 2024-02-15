@@ -196,8 +196,8 @@ public class MasterServiceImpl implements MasterService {
 		return assetGroup;
 	}
 
-	private List<Tuple> findManufacturerProductsByCriteria(Long orgId, String assetCodeId, String assetCategory,
-			String assetName, String manufacturer) {
+	private List<Tuple> findManufacturerProductsByCriteria(Long orgId, String assetCategory, String assetName, String assetCodeId,
+			String manufacturer) {
 		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 		CriteriaQuery<Tuple> cq = cb.createTupleQuery();
 		Root<ManufacturerProductVO> root = cq.from(ManufacturerProductVO.class);
