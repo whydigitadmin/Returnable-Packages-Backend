@@ -22,9 +22,6 @@ public class KitVO {
 	@Id
 	private String id;
 	private long orgId;
-	private String partId;
-	private String partName;
-	private String partQty;
 	@OneToMany(mappedBy = "kitVO", cascade = CascadeType.ALL)
 	@JsonManagedReference
 	List<KitAssetVO> kitAssetVO;

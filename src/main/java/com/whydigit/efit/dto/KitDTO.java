@@ -13,8 +13,5 @@ import lombok.NoArgsConstructor;
 public class KitDTO {
 	private String id;
 	private long orgId;
-	private String partId;
-	private String partName;
-	private String partQty;
 	private List<KitAssetDTO> kitAssetDTO;
 }
