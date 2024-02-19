@@ -28,7 +28,7 @@ public class KitAssetVO {
 	private String assetCategory;
 	private String assetCodeId;
 	private String assetName;
-	private long quantity;
+	private long partQuantity;
 	@ManyToOne
 	@JoinColumn(name = "kit_id")
 	@JsonBackReference

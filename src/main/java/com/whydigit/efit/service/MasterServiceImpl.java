@@ -649,8 +649,6 @@ public class MasterServiceImpl implements MasterService {
 			KitResponseDTO KitResponse = new KitResponseDTO();
 			KitResponse.setId(kit.getId());
 			KitResponse.setOrgId(kit.getOrgId());
-			KitResponse.setPartId(kit.getPartId());
-			KitResponse.setPartQty(kit.getPartQty());
 			Map<String, List<KitAssetVO>> kitAssetVOByCategory = kit.getKitAssetVO().stream()
 					.collect(Collectors.groupingBy(KitAssetVO::getAssetCategory));
 			KitResponse.setKitAssetCategory(kitAssetVOByCategory);
@@ -670,12 +668,12 @@ public class MasterServiceImpl implements MasterService {
 			throw new ApplicationException("Kit code already exist. Please try with new kit code.");
 		}
 		List<KitAssetVO> kitAssetVO = new ArrayList<>();
-		KitVO kitVO = KitVO.builder().id(kitDTO.getId()).orgId(kitDTO.getOrgId()).partId(kitDTO.getPartId())
-				.partQty(kitDTO.getPartQty()).partName(kitDTO.getPartName()).kitAssetVO(kitAssetVO).build();
+		KitVO kitVO = KitVO.builder().id(kitDTO.getId()).orgId(kitDTO.getOrgId())
+			.kitAssetVO(kitAssetVO).build();
 		for (KitAssetDTO kitAsset : kitDTO.getKitAssetDTO()) {
 			kitAssetVO.add(KitAssetVO.builder().assetCategory(kitAsset.getAssetCategory())
 					.assetCodeId(kitAsset.getAssetCodeId()).assetName(kitAsset.getAssetName())
-					.quantity(kitAsset.getQuantity()).kitVO(kitVO).build());
+					.partQuantity(kitAsset.getPartQuantity()).kitVO(kitVO).build());
 		}
 		return kitRepo.save(kitVO);
 	}
