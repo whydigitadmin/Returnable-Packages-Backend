@@ -5,37 +5,31 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.whydigit.efit.dto.CreatedUpdatedDate;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "kit_asset")
+@Table(name = "customers_address_details")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class KitAssetVO {
+public class CustomersAddressVO {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long id;
-	private String assetCategory;
-	private String assetCodeId;
-	private String assetName;
-	private long quantity;
-	private long partQuantity;
-	@ManyToOne
-	@JoinColumn(name = "kit_id")
-	@JsonBackReference
-	private KitVO kitVO;
+	private Long id;
+	private String gstRegistrationStatus;
+	private String street1;
+	private String street2;
+	private String pinCode;
+	private String phoneNumber;
+	private String gstNumber;
+	private String city;
+	private String contactName;
 	@Embedded
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
 }

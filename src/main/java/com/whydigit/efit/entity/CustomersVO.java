@@ -50,6 +50,7 @@ public class CustomersVO {
 	private String pincode;
 	private String contactName;
 	private String phoneNumber;
+	private String unit;
 	private boolean isPrimary;
 
 	@Embedded
