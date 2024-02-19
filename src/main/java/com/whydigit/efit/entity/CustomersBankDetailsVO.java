@@ -14,23 +14,19 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "bs_customer_Info")
+@Table(name = "customers_bank_details")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CustomerInfoVO {
-
+public class CustomersBankDetailsVO {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
-	private String customerName;
-	private String city;
-	private String address;
-	private String manager;
-	private String email;
-	private String contactNo;
-	private String creator;
-	private Boolean active;
-    @Embedded
+	private Long id;
+	private String bank;
+	private String accountName;
+	private String ifscCode;
+	private String branch;
+	private Long accountNo;
+	@Embedded
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
 }

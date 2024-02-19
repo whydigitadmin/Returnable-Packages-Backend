@@ -672,7 +672,7 @@ public class MasterServiceImpl implements MasterService {
 			.kitAssetVO(kitAssetVO).build();
 		for (KitAssetDTO kitAsset : kitDTO.getKitAssetDTO()) {
 			kitAssetVO.add(KitAssetVO.builder().assetCategory(kitAsset.getAssetCategory())
-					.assetCodeId(kitAsset.getAssetCodeId()).assetName(kitAsset.getAssetName())
+					.assetCodeId(kitAsset.getAssetCodeId()).assetName(kitAsset.getAssetName()).quantity(kitAsset.getQuantity())
 					.partQuantity(kitAsset.getPartQuantity()).kitVO(kitVO).build());
 		}
 		return kitRepo.save(kitVO);

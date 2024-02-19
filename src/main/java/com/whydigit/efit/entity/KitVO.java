@@ -1,12 +1,17 @@
 package com.whydigit.efit.entity;
 
 import java.util.List;
+
 import javax.persistence.CascadeType;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.whydigit.efit.dto.CreatedUpdatedDate;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,5 +30,6 @@ public class KitVO {
 	@OneToMany(mappedBy = "kitVO", cascade = CascadeType.ALL)
 	@JsonManagedReference
 	List<KitAssetVO> kitAssetVO;
-
+	@Embedded
+	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
 }
