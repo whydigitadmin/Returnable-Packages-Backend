@@ -26,9 +26,9 @@ public class KitAssetVO {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 	private String assetCategory;
-	private long assetCodeId;
+	private String assetCodeId;
 	private String assetName;
-	private String quantity;
+	private long quantity;
 	@ManyToOne
 	@JoinColumn(name = "kit_id")
 	@JsonBackReference
