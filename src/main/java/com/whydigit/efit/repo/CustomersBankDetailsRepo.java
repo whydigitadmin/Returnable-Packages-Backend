@@ -4,6 +4,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.whydigit.efit.entity.CustomersBankDetailsVO;
 
-public interface CustomersBankDetailsRepo  extends JpaRepository<CustomersBankDetailsVO, Long>{
+public interface CustomersBankDetailsRepo extends JpaRepository<CustomersBankDetailsVO, Long> {
 
 }
