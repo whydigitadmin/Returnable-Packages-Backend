@@ -11,10 +11,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.whydigit.efit.dto.BasicDetailDTO;
+import com.whydigit.efit.dto.LogisticsDTO;
+import com.whydigit.efit.dto.PackingDetailDTO;
+import com.whydigit.efit.dto.StockDetailDTO;
 import com.whydigit.efit.entity.BasicDetailVO;
 import com.whydigit.efit.entity.LogisticsVO;
 import com.whydigit.efit.entity.PackingDetailVO;
 import com.whydigit.efit.entity.StockDetailVO;
+import com.whydigit.efit.exception.ApplicationException;
 import com.whydigit.efit.repo.BasicDetailRepo;
 import com.whydigit.efit.repo.LogisticsRepo;
 import com.whydigit.efit.repo.PackingDetailRepo;
@@ -67,12 +72,26 @@ public class PartStudyServiceImpl implements PartStudyService {
 	}
 
 	@Override
-	public Optional<BasicDetailVO> updateBasicDetail(BasicDetailVO basicDetailVO) {
-		if (basicDetailRepo.existsById(basicDetailVO.getPartStudyId())) {
-			return Optional.of(basicDetailRepo.save(basicDetailVO));
-		} else {
-			return Optional.empty();
-		}
+	public BasicDetailVO updateBasicDetail(BasicDetailDTO basicDetailDTO) throws ApplicationException {
+		BasicDetailVO basicDetailVO = new BasicDetailVO();
+		basicDetailVO = basicDetailRepo.findById(basicDetailDTO.getRefPsId())
+				.orElseThrow(() -> new ApplicationException("Invalid  basicDetail details"));
+		basicDetailVO.setRefPsId(basicDetailDTO.getRefPsId());
+		basicDetailVO.setPartStudyId(basicDetailDTO.getPartStudyId());
+		basicDetailVO.setOrgId(basicDetailDTO.getOrgId());
+		basicDetailVO.setPartStudyDate(basicDetailDTO.getPartStudyDate());
+		basicDetailVO.setEmitterId(basicDetailDTO.getEmitterId());
+		basicDetailVO.setReceiverId(basicDetailDTO.getReceiverId());
+		basicDetailVO.setPartName(basicDetailDTO.getPartName());
+		basicDetailVO.setPartNumber(basicDetailDTO.getPartNumber());
+		basicDetailVO.setWeight(basicDetailDTO.getWeight());
+		basicDetailVO.setWeightUnit(basicDetailDTO.getWeightUnit());
+		basicDetailVO.setPartVolume(basicDetailDTO.getPartVolume());
+		basicDetailVO.setHighestVolume(basicDetailDTO.getHighestVolume());
+		basicDetailVO.setLowestVolume(basicDetailDTO.getLowestVolume());
+
+		return basicDetailRepo.save(basicDetailVO);
+
 	}
 
 	@Override
@@ -105,12 +124,37 @@ public class PartStudyServiceImpl implements PartStudyService {
 	}
 
 	@Override
-	public Optional<PackingDetailVO> updatePackingDetail(PackingDetailVO packingDetailVO) {
-		if (packingDetailRepo.existsById(packingDetailVO.getPartStudyId())) {
-			return Optional.of(packingDetailRepo.save(packingDetailVO));
-		} else {
-			return Optional.empty();
-		}
+	public PackingDetailVO updatePackingDetail(PackingDetailDTO packingDetailDTO) throws ApplicationException {
+		PackingDetailVO packingDetailVO = new PackingDetailVO();
+		packingDetailVO = packingDetailRepo.findById(packingDetailDTO.getRefPsId())
+				.orElseThrow(() -> new ApplicationException("Invalid packing details"));
+		packingDetailVO.setRefPsId(packingDetailDTO.getRefPsId());
+		packingDetailVO.setOrgId(packingDetailDTO.getOrgId());
+		packingDetailVO.setPartStudyId(packingDetailDTO.getPartStudyId());
+		packingDetailVO.setPartDimension(packingDetailDTO.getPartDimension());
+		packingDetailVO.setLength(packingDetailDTO.getLength());
+		packingDetailVO.setBreath(packingDetailDTO.getBreath());
+		packingDetailVO.setHeight(packingDetailDTO.getHeight());
+		packingDetailVO.setPartUnit(packingDetailDTO.getPartUnit());
+		packingDetailVO.setPartDrawing(packingDetailDTO.getPartDrawing());
+		packingDetailVO.setExistingPart(packingDetailDTO.getExistingPart());
+		packingDetailVO.setCurrentPackingStudy(packingDetailDTO.getCurrentPackingStudy());
+		packingDetailVO.setCurrentPackingChallenges(packingDetailDTO.getCurrentPackingChallenges());
+		packingDetailVO.setNoOfParts(packingDetailDTO.getNoOfParts());
+		packingDetailVO.setPartSensitive(packingDetailDTO.getPartSensitive());
+		packingDetailVO.setGreasy(packingDetailDTO.getGreasy());
+		packingDetailVO.setPartOrientation(packingDetailDTO.getPartOrientation());
+		packingDetailVO.setMultiPartInSingleUnit(packingDetailDTO.getMultiPartInSingleUnit());
+		packingDetailVO.setStacking(packingDetailDTO.getStacking());
+		packingDetailVO.setNesting(packingDetailDTO.getNesting());
+		packingDetailVO.setRemarks(packingDetailDTO.getRemarks());
+		packingDetailVO.setPartDrawing(packingDetailDTO.getPartDrawing());
+		packingDetailVO.setApprovedPackingTechnicalDrawing(packingDetailDTO.getApprovedPackingTechnicalDrawing());
+		packingDetailVO.setApprovedCommercialContract(packingDetailDTO.getApprovedCommercialContract());
+		packingDetailVO.setActive(packingDetailDTO.getActive());
+		packingDetailVO.setPartImage(packingDetailDTO.getPartImage());
+		return packingDetailRepo.save(packingDetailVO);
+
 	}
 
 	@Override
@@ -143,12 +187,18 @@ public class PartStudyServiceImpl implements PartStudyService {
 	}
 
 	@Override
-	public Optional<LogisticsVO> updateLogistics(LogisticsVO logisticsVO) {
-		if (logisticRepo.existsById(logisticsVO.getPartStudyId())) {
-			return Optional.of(logisticRepo.save(logisticsVO));
-		} else {
-			return Optional.empty();
-		}
+	public LogisticsVO updateLogistics(LogisticsDTO logisticsDTO) throws ApplicationException {
+		LogisticsVO logisticsVO = new LogisticsVO();
+		logisticsVO = logisticRepo.findById(logisticsDTO.getRefPsId())
+				.orElseThrow(() -> new ApplicationException("Invalid logistics details"));
+		logisticsVO.setRefPsId(logisticsDTO.getRefPsId());
+		logisticsVO.setPartStudyId(logisticsDTO.getPartStudyId());
+		logisticsVO.setOrgId(logisticsDTO.getOrgId());
+		logisticsVO.setAvgLotSize(logisticsDTO.getAvgLotSize());
+		logisticsVO.setDispatchFrequency(logisticsDTO.getDispatchFrequency());
+		logisticsVO.setDiapatchTo(logisticsDTO.getDiapatchTo());
+		logisticsVO.setTranspotationTo(logisticsDTO.getTranspotationTo());
+		return logisticRepo.save(logisticsVO);
 	}
 
 	@Override
@@ -180,12 +230,22 @@ public class PartStudyServiceImpl implements PartStudyService {
 	}
 
 	@Override
-	public Optional<StockDetailVO> updateStockDetail(StockDetailVO stockDetailVO) {
-		if (stockDetailRepo.existsById(stockDetailVO.getPartStudyId())) {
-			return Optional.of(stockDetailRepo.save(stockDetailVO));
-		} else {
-			return Optional.empty();
-		}
+	public StockDetailVO updateStockDetail(StockDetailDTO stockDetailDTO) throws ApplicationException {
+		StockDetailVO stockDetailVO = new StockDetailVO();
+		stockDetailVO = stockDetailRepo.findById(stockDetailDTO.getRefPsId())
+				.orElseThrow(() -> new ApplicationException("Invalid stockdetails details"));
+		stockDetailVO.setPartStudyId(stockDetailVO.getPartStudyId());
+		stockDetailVO.setRefPsId(stockDetailVO.getRefPsId());
+		stockDetailVO.setOrgId(stockDetailVO.getOrgId());
+		stockDetailVO.setEmitterStoreDays(stockDetailVO.getEmitterStoreDays());
+		stockDetailVO.setEmitterLineDays(stockDetailVO.getEmitterLineDays());
+		stockDetailVO.setInTransitDays(stockDetailVO.getInTransitDays());
+		stockDetailVO.setEndUserLineStorageDays(stockDetailVO.getEndUserLineStorageDays());
+		stockDetailVO.setEndUserManufacturingLineDays(stockDetailVO.getEndUserManufacturingLineDays());
+		stockDetailVO.setOtherStorageDays(stockDetailVO.getOtherStorageDays());
+		stockDetailVO.setTotalCycleTime(stockDetailVO.getTotalCycleTime());
+		stockDetailVO.setEmptyPackagingReverseDays(stockDetailVO.getEmptyPackagingReverseDays());
+		return stockDetailRepo.save(stockDetailVO);
 	}
 
 	@Override

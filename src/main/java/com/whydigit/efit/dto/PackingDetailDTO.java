@@ -1,33 +1,16 @@
-
-package com.whydigit.efit.entity;
-
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
-import javax.persistence.MapsId;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.whydigit.efit.dto.CreatedUpdatedDate;
+package com.whydigit.efit.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity
-@Table(name = "ps_packing_detail")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class PackingDetailVO {
-
-	@Id
+public class PackingDetailDTO {
+	private long orgId;
 	private Long refPsId;
 	private String partStudyId;
-	private long orgId;
 	private int partDimension;
 	private int length;
 	private int breath;
@@ -49,16 +32,4 @@ public class PackingDetailVO {
 	private String approvedCommercialContract;
 	private Boolean active;
 	private byte[] partImage;
-
-	@Lob
-	private byte[] existingPackingImage;
-
-	@JsonBackReference
-	@OneToOne
-	@MapsId
-    @JoinColumn(name = "refPsId")
-	private BasicDetailVO basicDetailVO;
-
-	@Embedded
-	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
 }

@@ -28,7 +28,8 @@ public class BasicDetailVO {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long partStudyId;
+	private Long refPsId;
+	private String partStudyId;
 	private long orgId;
 	private LocalDate partStudyDate;
 	private String emitterId;
@@ -43,7 +44,7 @@ public class BasicDetailVO {
 
 	@Embedded
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
-	
+
 	@JsonManagedReference
 	@OneToOne(mappedBy = "basicDetailVO", cascade = CascadeType.ALL)
 	private PackingDetailVO packingDetailVO;
