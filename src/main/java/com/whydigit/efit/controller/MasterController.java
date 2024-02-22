@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.validation.Valid;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +33,8 @@ import com.whydigit.efit.entity.AddressVO;
 import com.whydigit.efit.entity.AssetCategoryVO;
 import com.whydigit.efit.entity.AssetGroupVO;
 import com.whydigit.efit.entity.AssetVO;
+import com.whydigit.efit.entity.CustomersAddressVO;
+import com.whydigit.efit.entity.CustomersBankDetailsVO;
 import com.whydigit.efit.entity.CustomersVO;
 import com.whydigit.efit.entity.FlowVO;
 import com.whydigit.efit.entity.KitVO;
@@ -347,7 +351,7 @@ public class MasterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-	
+
 	@GetMapping("/getCustomersList")
 	public ResponseEntity<ResponseDTO> getCustomersType(@RequestParam Long orgId) {
 		String methodName = "getCustomersType()";
@@ -372,7 +376,6 @@ public class MasterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-	
 
 	@PostMapping("/customers")
 	public ResponseEntity<ResponseDTO> createCustomer(@RequestBody CustomersVO customersVO) {
@@ -437,6 +440,106 @@ public class MasterController extends BaseController {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
 			responseDTO = createServiceResponseError(responseObjectsMap, "Customers" + " update failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
+	@PutMapping("/updateCustomersAddress")
+	public ResponseEntity<ResponseDTO> updateCustomersAddress(@RequestBody CustomersAddressVO customersAddressVO) {
+		String methodName = "updateCustomersAddress()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		try {
+			CustomersAddressVO updatedCustomersAddressVO = masterService.updateCustomersAddress(customersAddressVO)
+					.orElse(null);
+			if (updatedCustomersAddressVO != null) {
+				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Customers Address updated successfully");
+				responseObjectsMap.put("customersAddressVO", updatedCustomersAddressVO);
+				responseDTO = createServiceResponse(responseObjectsMap);
+			} else {
+				errorMsg = "Customers not found for ID: " + customersAddressVO.getId();
+				responseDTO = createServiceResponseError(responseObjectsMap, "Customers Address update failed",
+						errorMsg);
+			}
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "Customers Address" + " update failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
+	@PutMapping("/updateCustomersBankDetails")
+	public ResponseEntity<ResponseDTO> updateCustomersBankDetails(
+			@RequestBody CustomersBankDetailsVO customersBankDetailsVO) {
+		String methodName = "updateCustomersBankDetails()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		try {
+			CustomersBankDetailsVO updatedCustomersBankDetailsVO = masterService
+					.updateCustomersBankDetails(customersBankDetailsVO).orElse(null);
+			if (updatedCustomersBankDetailsVO != null) {
+				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Customers Bank Details updated successfully");
+				responseObjectsMap.put("customersBankDetailsVO", updatedCustomersBankDetailsVO);
+				responseDTO = createServiceResponse(responseObjectsMap);
+			} else {
+				errorMsg = "Customers not found for ID: " + customersBankDetailsVO.getId();
+				responseDTO = createServiceResponseError(responseObjectsMap, "Customers BankDetails update failed",
+						errorMsg);
+			}
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "Customers Bank Details" + " update failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
+	@DeleteMapping("/CustomersBankDetails/{id}")
+	public ResponseEntity<ResponseDTO> deleteCustomersBankDetails(@PathVariable Long id) {
+		String methodName = "deleteCustomersBankDetails()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		try {
+			masterService.deleteCustomersBankDetails(id);
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Customers BankDetails deleted successfully");
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "Customers BankDetails deleted failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
+	@DeleteMapping("/CustomersAddress/{id}")
+	public ResponseEntity<ResponseDTO> deleteCustomersAddress(@PathVariable Long id) {
+		String methodName = "deleteCustomersAddress()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		try {
+			masterService.deleteCustomersAddress(id);
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Customers Address deleted successfully");
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "Customers Address deleted failed", errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);

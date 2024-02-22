@@ -24,7 +24,8 @@ import lombok.NoArgsConstructor;
 public class LogisticsVO {
 
 	@Id
-	private long partStudyId;
+	private Long refPsId;
+	private String partStudyId;
 	private Long orgId;
 	private String avgLotSize;
 	private String dispatchFrequency;
@@ -34,7 +35,7 @@ public class LogisticsVO {
 	@JsonBackReference
 	@OneToOne
 	@MapsId
-    @JoinColumn(name = "partStudyId")
+	@JoinColumn(name = "refPsId")
 	private BasicDetailVO basicDetailVO;
 
 	@Embedded

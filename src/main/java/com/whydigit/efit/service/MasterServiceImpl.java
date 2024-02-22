@@ -43,6 +43,8 @@ import com.whydigit.efit.entity.AssetCategoryVO;
 import com.whydigit.efit.entity.AssetGroupVO;
 import com.whydigit.efit.entity.AssetItemVO;
 import com.whydigit.efit.entity.AssetVO;
+import com.whydigit.efit.entity.CustomersAddressVO;
+import com.whydigit.efit.entity.CustomersBankDetailsVO;
 import com.whydigit.efit.entity.CustomersVO;
 import com.whydigit.efit.entity.FlowDetailVO;
 import com.whydigit.efit.entity.FlowVO;
@@ -59,6 +61,8 @@ import com.whydigit.efit.repo.AddressRepo;
 import com.whydigit.efit.repo.AssetCategoryRepo;
 import com.whydigit.efit.repo.AssetGroupRepo;
 import com.whydigit.efit.repo.AssetRepo;
+import com.whydigit.efit.repo.CustomersAddressRepo;
+import com.whydigit.efit.repo.CustomersBankDetailsRepo;
 import com.whydigit.efit.repo.CustomersRepo;
 import com.whydigit.efit.repo.FlowRepo;
 import com.whydigit.efit.repo.KitRepo;
@@ -100,9 +104,15 @@ public class MasterServiceImpl implements MasterService {
 	VenderAddressRepo venderAddressRepo;
 	@Autowired
 	KitRepo kitRepo;
-    @PersistenceContext
-    private EntityManager entityManager;
-    
+	@PersistenceContext
+	private EntityManager entityManager;
+
+	@Autowired
+	CustomersAddressRepo customersAddressRepo;
+
+	@Autowired
+	CustomersBankDetailsRepo CustomersBankDetailsRepo;
+
 	@Override
 	public List<AssetVO> getAllAsset(Long orgId) {
 		List<AssetVO> assetVO = new ArrayList<>();
@@ -196,8 +206,8 @@ public class MasterServiceImpl implements MasterService {
 		return assetGroup;
 	}
 
-	private List<Tuple> findManufacturerProductsByCriteria(Long orgId, String assetCategory, String assetName, String assetCodeId,
-			String manufacturer) {
+	private List<Tuple> findManufacturerProductsByCriteria(Long orgId, String assetCategory, String assetName,
+			String assetCodeId, String manufacturer) {
 		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 		CriteriaQuery<Tuple> cq = cb.createTupleQuery();
 		Root<ManufacturerProductVO> root = cq.from(ManufacturerProductVO.class);
@@ -222,7 +232,7 @@ public class MasterServiceImpl implements MasterService {
 		cq.where(cb.and(predicates.toArray(new Predicate[0])));
 		return entityManager.createQuery(cq).getResultList();
 	}
-	
+
 	@Override
 	public Optional<AssetGroupVO> getAssetGroupById(String id) {
 		return assetGroupRepo.findById(id);
@@ -275,6 +285,8 @@ public class MasterServiceImpl implements MasterService {
 
 	@Override
 	public CustomersVO createCustomers(CustomersVO customersVO) {
+		customersVO.getCustomersAddressVO().get(0).setDefault(true);
+		customersVO.getCustomersBankDetailsVO().get(0).setDefault(true);
 		return customersRepo.save(customersVO);
 	}
 
@@ -668,12 +680,11 @@ public class MasterServiceImpl implements MasterService {
 			throw new ApplicationException("Kit code already exist. Please try with new kit code.");
 		}
 		List<KitAssetVO> kitAssetVO = new ArrayList<>();
-		KitVO kitVO = KitVO.builder().id(kitDTO.getId()).orgId(kitDTO.getOrgId())
-			.kitAssetVO(kitAssetVO).build();
+		KitVO kitVO = KitVO.builder().id(kitDTO.getId()).orgId(kitDTO.getOrgId()).kitAssetVO(kitAssetVO).build();
 		for (KitAssetDTO kitAsset : kitDTO.getKitAssetDTO()) {
 			kitAssetVO.add(KitAssetVO.builder().assetCategory(kitAsset.getAssetCategory())
-					.assetCodeId(kitAsset.getAssetCodeId()).assetName(kitAsset.getAssetName()).quantity(kitAsset.getQuantity())
-					.partQuantity(kitAsset.getPartQuantity()).kitVO(kitVO).build());
+					.assetCodeId(kitAsset.getAssetCodeId()).assetName(kitAsset.getAssetName())
+					.quantity(kitAsset.getQuantity()).partQuantity(kitAsset.getPartQuantity()).kitVO(kitVO).build());
 		}
 		return kitRepo.save(kitVO);
 	}
@@ -722,5 +733,34 @@ public class MasterServiceImpl implements MasterService {
 		}
 		return assetGroupVO.stream().collect(Collectors.groupingBy(AssetGroupVO::getAssetCategory,
 				Collectors.groupingBy(AssetGroupVO::getAssetName)));
+	}
+
+	@Override
+	public Optional<CustomersAddressVO> updateCustomersAddress(CustomersAddressVO customersAddressVO) {
+		if (customersAddressRepo.existsById(customersAddressVO.getId())) {
+			return Optional.of(customersAddressRepo.save(customersAddressVO));
+		} else {
+			return Optional.empty();
+		}
+	}
+
+	@Override
+	public void deleteCustomersAddress(Long id) {
+		customersAddressRepo.deleteById(id);
+	}
+
+	@Override
+	public Optional<CustomersBankDetailsVO> updateCustomersBankDetails(CustomersBankDetailsVO customersBankDetailsVO) {
+		if (CustomersBankDetailsRepo.existsById(customersBankDetailsVO.getId())) {
+			return Optional.of(CustomersBankDetailsRepo.save(customersBankDetailsVO));
+		} else {
+			return Optional.empty();
+		}
+	}
+
+	@Override
+	public void deleteCustomersBankDetails(Long id) {
+		CustomersBankDetailsRepo.deleteById(id);
+
 	}
 }

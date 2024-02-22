@@ -8,10 +8,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.whydigit.efit.dto.CreatedUpdatedDate;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,7 +21,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class StockDetailVO {
 	@Id
-	private long partStudyId;
+	private Long refPsId;
+	private String partStudyId;
 	private long orgId;
 	private String emitterStoreDays;
 	private String emitterLineDays;
@@ -37,9 +36,10 @@ public class StockDetailVO {
 	@JsonBackReference
 	@OneToOne
 	@MapsId
-    @JoinColumn(name = "partStudyId")
+	@JoinColumn(name = "refPsId")
 	private BasicDetailVO basicDetailVO;
-	
+
 	@Embedded
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
+
 }

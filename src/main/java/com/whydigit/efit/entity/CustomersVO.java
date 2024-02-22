@@ -1,12 +1,17 @@
 package com.whydigit.efit.entity;
 
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.whydigit.efit.dto.CreatedUpdatedDate;
 
 import lombok.AllArgsConstructor;
@@ -24,35 +29,28 @@ public class CustomersVO {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private long orgId;
-	private String firstName;
 	private int customerType;
-	private String lastName;
-	private String customerOrgName;
+	private String entityLegalName;
+	private String email;
 	private String customerCode;
 	private String displayName;
-	private String Email;
-	private String phone;
+	private long phoneNumber;
 	private String sop;
 	private String document;
 	private boolean customerActivatePortal;
 	private boolean active;
-	private String bankName;
-	private String accountNO;
-	private String accountName;
-	private String branch;
-	private String ifscCode;
-	private String gstRegStatus;
-	private String gstNo;
-	private String street1;
-	private String street2;
-	private String state;
-	private String city;
-	private String pincode;
-	private String contactName;
-	private String phoneNumber;
 	private String unit;
 	private boolean isPrimary;
 
+	@OneToMany(mappedBy = "customersVO", cascade = CascadeType.ALL)
+	@JsonManagedReference
+	List<CustomersAddressVO> customersAddressVO;
+
+	@OneToMany(mappedBy = "customersVO", cascade = CascadeType.ALL)
+	@JsonManagedReference
+	List<CustomersBankDetailsVO> customersBankDetailsVO;
+
 	@Embedded
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
+
 }

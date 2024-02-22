@@ -13,6 +13,8 @@ import com.whydigit.efit.entity.AddressVO;
 import com.whydigit.efit.entity.AssetCategoryVO;
 import com.whydigit.efit.entity.AssetGroupVO;
 import com.whydigit.efit.entity.AssetVO;
+import com.whydigit.efit.entity.CustomersAddressVO;
+import com.whydigit.efit.entity.CustomersBankDetailsVO;
 import com.whydigit.efit.entity.CustomersVO;
 import com.whydigit.efit.entity.FlowVO;
 import com.whydigit.efit.entity.KitVO;
@@ -38,7 +40,7 @@ public interface MasterService {
 
 	Map<String, Object> getAllAssetGroup(Long orgId, String assetCategory, String assetName, String assetCodeId,
 			String manufacturer);
-	
+
 	Optional<AssetGroupVO> getAssetGroupById(String id);
 
 	AssetGroupVO createAssetGroup(AssetGroupVO assetGroupVO) throws ApplicationException;
@@ -46,6 +48,8 @@ public interface MasterService {
 	Optional<AssetGroupVO> updateAssetGroup(AssetGroupVO assetGroupVO);
 
 	void deleteAssetGroup(int id);
+
+	// CUstomers
 
 	List<CustomersVO> getAllCustomers(Long orgId);
 
@@ -57,9 +61,19 @@ public interface MasterService {
 
 	Optional<CustomersVO> updateCustomers(CustomersVO customersVO);
 
-	void deleteCustomers(Long id);
+	Optional<CustomersBankDetailsVO> updateCustomersBankDetails(CustomersBankDetailsVO customersBankDetailsVO);
 
-	List<FlowVO> getAllFlow(Long orgId,Long emitterId);
+	void deleteCustomers(Long id);
+	
+	void deleteCustomersBankDetails(Long id);
+
+	Optional<CustomersAddressVO> updateCustomersAddress(CustomersAddressVO customersAddressVO);
+
+	void deleteCustomersAddress(Long id);
+
+	// FLOW
+
+	List<FlowVO> getAllFlow(Long orgId, Long emitterId);
 
 	Optional<FlowVO> getFlowById(long id);
 
