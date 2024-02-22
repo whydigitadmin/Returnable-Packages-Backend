@@ -1,16 +1,21 @@
 
 package com.whydigit.efit.entity;
 
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.MapsId;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.whydigit.efit.dto.CreatedUpdatedDate;
 
 import lombok.AllArgsConstructor;
@@ -58,6 +63,10 @@ public class PackingDetailVO {
 	@MapsId
     @JoinColumn(name = "refPsId")
 	private BasicDetailVO basicDetailVO;
+	@JsonManagedReference
+	@OneToMany(mappedBy = "packingDetailVO",cascade = CascadeType.ALL)
+	private List<ApprovedPackageDrawingVO> approvedPackageDrawingVO;
+	
 
 	@Embedded
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
