@@ -56,7 +56,7 @@ public interface PartStudyService {
 
 	void deleteStockDetail(Long id);
 
-	List<StockDetailVO> generatePartStudyId(String refPsId);
+	boolean generatePartStudyId(String refPsId);
 
 	Map<String, Object> searchPartStudyId(Long emitterId, Long receiverId, Long orgId, Boolean completeStatus);
 

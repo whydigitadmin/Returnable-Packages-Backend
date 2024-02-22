@@ -532,16 +532,15 @@ public class PartStudyController extends BaseController {
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
-		List<StockDetailVO> stockDetailVO = new ArrayList<>();
+		boolean status =false;
 		try {
-			stockDetailVO = partStudyService.generatePartStudyId(refPsId);
+			status = partStudyService.generatePartStudyId(refPsId);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
 		}
 		if (StringUtils.isBlank(errorMsg)) {
 			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Generate PartStudyId information get successfully");
-			responseObjectsMap.put("stockDetailVO", stockDetailVO);
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} else {
 			responseDTO = createServiceResponseError(responseObjectsMap, "Generate PartStudyId information information receive failed",
