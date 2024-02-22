@@ -1,6 +1,7 @@
 package com.whydigit.efit.service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import com.whydigit.efit.dto.BasicDetailDTO;
@@ -54,5 +55,9 @@ public interface PartStudyService {
 	StockDetailVO updateStockDetail(StockDetailDTO stockDetailDTO) throws ApplicationException;
 
 	void deleteStockDetail(Long id);
+
+	List<StockDetailVO> generatePartStudyId(String refPsId);
+
+	Map<String, Object> searchPartStudyId(Long emitterId, Long receiverId, Long orgId, Boolean completeStatus);
 
 }

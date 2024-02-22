@@ -524,5 +524,61 @@ public class PartStudyController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
+	
+	@GetMapping("/generatePartStudyId")
+	public ResponseEntity<ResponseDTO> generatePartStudyId(@RequestParam(required = false) String refPsId) {
+		String methodName = "generatePartStudyId()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<StockDetailVO> stockDetailVO = new ArrayList<>();
+		try {
+			stockDetailVO = partStudyService.generatePartStudyId(refPsId);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Generate PartStudyId information get successfully");
+			responseObjectsMap.put("stockDetailVO", stockDetailVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "Generate PartStudyId information information receive failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+	
+	@GetMapping("/searchPartStudyId")
+	public ResponseEntity<ResponseDTO> searchPartStudyId(@RequestParam(required = false) Long emitterId,
+			@RequestParam(required = false) Long receiverId,@RequestParam(required = false) Long orgId,
+			@RequestParam(required = false) Boolean completeStatus){
+			
+		String methodName = "searchPartStudyId()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		Map<String, Object> assetGroupVO = new HashMap<>();
+		try {
+			assetGroupVO = partStudyService.searchPartStudyId(emitterId, receiverId, orgId, completeStatus);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Search partStudyId information get successfully");
+			responseObjectsMap.put("assetGroupVO", assetGroupVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "Search partStudyId information receive failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
 
+	
 }

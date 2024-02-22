@@ -2,19 +2,29 @@
 package com.whydigit.efit.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
 import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.whydigit.efit.dto.BasicDetailDTO;
 import com.whydigit.efit.dto.LogisticsDTO;
 import com.whydigit.efit.dto.PackingDetailDTO;
 import com.whydigit.efit.dto.StockDetailDTO;
+import com.whydigit.efit.entity.AssetGroupVO;
 import com.whydigit.efit.entity.BasicDetailVO;
 import com.whydigit.efit.entity.LogisticsVO;
 import com.whydigit.efit.entity.PackingDetailVO;
@@ -253,4 +263,43 @@ public class PartStudyServiceImpl implements PartStudyService {
 		stockDetailRepo.deleteById(id);
 	}
 
-}
+	@Override
+	public List<StockDetailVO> generatePartStudyId(String refPsId) {
+		if (StringUtils.isNotBlank(refPsId)) {
+			LOGGER.info("Successfully Received  Generate PartStudy Id Information BY RefPsId : {}", refPsId);
+			basicDetailVO = basicDetailRepo.generatePartStudyId(refPsId);
+		} else {
+			LOGGER.info("Successfully Received  BasicDetail Information For All OrgId.");
+			basicDetailVO = basicDetailRepo.findAll();
+		}
+		return basicDetailVO;
+	}
+
+	@Override
+	public Map<String, Object> searchPartStudyId(Long emitterId, Long receiverId, Long orgId, Boolean completeStatus) {
+		Map<String, Object> assetGroup = new HashMap<>();
+		List<AssetGroupVO> assetGroupVO = assetGroupRepo.findAll(new Specification<AssetGroupVO>() {
+			@Override
+			public Predicate toPredicate(Root<AssetGroupVO> root, CriteriaQuery<?> query,
+					CriteriaBuilder criteriaBuilder) {
+				List<Predicate> predicates = new ArrayList<>();
+				if (ObjectUtils.isNotEmpty(orgId)) {
+					predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("orgId"), orgId)));
+				}
+				if (StringUtils.isNotBlank(completeStatus)) {
+					predicates
+							.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("completeStatus"), completeStatus)));
+				}
+				if (ObjectUtils.isNotEmpty(emitterId)) {
+					predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("emitterId"), emitterId)));
+				}
+				if (ObjectUtils.isNotEmpty(receiverId)) {
+					predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("receiverId"), receiverId)));
+				}
+				return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
+			}
+		});
+	}
+	}
+
+
