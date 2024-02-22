@@ -264,41 +264,43 @@ public class PartStudyServiceImpl implements PartStudyService {
 	}
 
 	@Override
-	public List<StockDetailVO> generatePartStudyId(String refPsId) {
+	public boolean generatePartStudyId(String refPsId) {
+		boolean status=false;
 		if (StringUtils.isNotBlank(refPsId)) {
 			LOGGER.info("Successfully Received  Generate PartStudy Id Information BY RefPsId : {}", refPsId);
-			basicDetailVO = basicDetailRepo.generatePartStudyId(refPsId);
+//			basicDetailVO = basicDetailRepo.generatePartStudyId(refPsId);
 		} else {
 			LOGGER.info("Successfully Received  BasicDetail Information For All OrgId.");
-			basicDetailVO = basicDetailRepo.findAll();
+//			basicDetailVO = basicDetailRepo.findAll();
 		}
-		return basicDetailVO;
+		return status;
 	}
 
 	@Override
 	public Map<String, Object> searchPartStudyId(Long emitterId, Long receiverId, Long orgId, Boolean completeStatus) {
-		Map<String, Object> assetGroup = new HashMap<>();
-		List<AssetGroupVO> assetGroupVO = assetGroupRepo.findAll(new Specification<AssetGroupVO>() {
-			@Override
-			public Predicate toPredicate(Root<AssetGroupVO> root, CriteriaQuery<?> query,
-					CriteriaBuilder criteriaBuilder) {
-				List<Predicate> predicates = new ArrayList<>();
-				if (ObjectUtils.isNotEmpty(orgId)) {
-					predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("orgId"), orgId)));
-				}
-				if (StringUtils.isNotBlank(completeStatus)) {
-					predicates
-							.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("completeStatus"), completeStatus)));
-				}
-				if (ObjectUtils.isNotEmpty(emitterId)) {
-					predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("emitterId"), emitterId)));
-				}
-				if (ObjectUtils.isNotEmpty(receiverId)) {
-					predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("receiverId"), receiverId)));
-				}
-				return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
-			}
-		});
+//		Map<String, Object> assetGroup = new HashMap<>();
+//		List<AssetGroupVO> assetGroupVO = assetGroupRepo.findAll(new Specification<AssetGroupVO>() {
+//			@Override
+//			public Predicate toPredicate(Root<AssetGroupVO> root, CriteriaQuery<?> query,
+//					CriteriaBuilder criteriaBuilder) {
+//				List<Predicate> predicates = new ArrayList<>();
+//				if (ObjectUtils.isNotEmpty(orgId)) {
+//					predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("orgId"), orgId)));
+//				}
+//				if (StringUtils.isNotBlank(completeStatus)) {
+//					predicates
+//							.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("completeStatus"), completeStatus)));
+//				}
+//				if (ObjectUtils.isNotEmpty(emitterId)) {
+//					predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("emitterId"), emitterId)));
+//				}
+//				if (ObjectUtils.isNotEmpty(receiverId)) {
+//					predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("receiverId"), receiverId)));
+//				}
+//				return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
+//			}
+//		});
+		return null;
 	}
 	}
 
