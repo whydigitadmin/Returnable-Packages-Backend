@@ -20,7 +20,7 @@ public interface PartStudyService {
 
 	Optional<BasicDetailVO> getBasicDetailById(Long id);
 
-	BasicDetailVO createBasicDetail(BasicDetailVO basicDetailVO);
+	BasicDetailVO createBasicDetail(BasicDetailDTO basicDetailDTO);
 
 	BasicDetailVO updateBasicDetail(BasicDetailDTO basicDetailDTO) throws ApplicationException;
 

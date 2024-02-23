@@ -30,8 +30,6 @@ public class LogisticsVO {
 	private String avgLotSize;
 	private String dispatchFrequency;
 	private String diapatchTo;
-	private String transpotationTo;
-
 	@JsonBackReference
 	@OneToOne
 	@MapsId

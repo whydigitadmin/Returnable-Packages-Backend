@@ -8,7 +8,6 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
 import javax.persistence.MapsId;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -32,31 +31,25 @@ public class PackingDetailVO {
 	@Id
 	private Long refPsId;
 	private String partStudyId;
-	private long orgId;
-	private int partDimension;
-	private int length;
-	private int breath;
-	private int height;
+	private Long orgId;
+	private Float length;
+	private Float breath;
+	private Float height;
 	private String partUnit;
 	private String existingPart;
-	private String currentPackingStudy;
 	private String currentPackingChallenges;
-	private String noOfParts;
+	private String partsPerPackaging;
 	private String partSensitive;
-	private String greasy;
+	private String partGreasy;
 	private String partOrientation;
 	private String multiPartInSingleUnit;
 	private String stacking;
 	private String nesting;
 	private String remarks;
+	private String partImage;
+	private String existingPackingImage;
 	private String partDrawing;
-	private String approvedPackingTechnicalDrawing;
 	private String approvedCommercialContract;
-	private Boolean active;
-	private byte[] partImage;
-
-	@Lob
-	private byte[] existingPackingImage;
 
 	@JsonBackReference
 	@OneToOne
