@@ -21,7 +21,8 @@ public class CommonConstant {
 	public static final String ACTION_CREATE = "create";
 	public static final String ACTION_UPDATE = "update";
 	public static final String ERROR_MSG_METHOD_NAME = "MethodName : {} Error : {}";
+    public static final String UNDERSCORE = "_";
+    public static final String FORWARD_SLASH = "/";
 
-			
 
 }

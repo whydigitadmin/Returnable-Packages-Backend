@@ -1,41 +1,46 @@
 
 package com.whydigit.efit.service;
 
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.domain.Specification;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.whydigit.efit.common.CommonConstant;
 import com.whydigit.efit.dto.BasicDetailDTO;
 import com.whydigit.efit.dto.LogisticsDTO;
+import com.whydigit.efit.dto.PDAttachmentType;
 import com.whydigit.efit.dto.PackingDetailDTO;
 import com.whydigit.efit.dto.StockDetailDTO;
 import com.whydigit.efit.entity.ApprovedPackageDrawingVO;
-import com.whydigit.efit.entity.AssetGroupVO;
 import com.whydigit.efit.entity.BasicDetailVO;
 import com.whydigit.efit.entity.LogisticsVO;
+import com.whydigit.efit.entity.PDAttachmentVO;
 import com.whydigit.efit.entity.PackingDetailVO;
 import com.whydigit.efit.entity.StockDetailVO;
 import com.whydigit.efit.exception.ApplicationException;
 import com.whydigit.efit.repo.BasicDetailRepo;
 import com.whydigit.efit.repo.LogisticsRepo;
+import com.whydigit.efit.repo.PDAttachmentRepo;
 import com.whydigit.efit.repo.PackingDetailRepo;
 import com.whydigit.efit.repo.StockDetailRepo;
+import com.whydigit.efit.util.CommonUtils;
 
 @Service
 public class PartStudyServiceImpl implements PartStudyService {
@@ -48,6 +53,10 @@ public class PartStudyServiceImpl implements PartStudyService {
 	LogisticsRepo logisticRepo;
 	@Autowired
 	StockDetailRepo stockDetailRepo;
+	@Autowired
+	Environment env;
+	@Autowired
+	PDAttachmentRepo pdAttachmentRepo; 
 	public static final Logger LOGGER = LoggerFactory.getLogger(PartStudyServiceImpl.class);
 
 	@Override
@@ -64,8 +73,14 @@ public class PartStudyServiceImpl implements PartStudyService {
 	}
 
 	@Override
-	public Optional<BasicDetailVO> getBasicDetailById(Long id) {
-		return basicDetailRepo.findById(id);
+	public BasicDetailVO getBasicDetailById(Long id) throws ApplicationException {
+		BasicDetailVO basicDetailVO = basicDetailRepo.findById(id)
+				.orElseThrow(() -> new ApplicationException("BasicDetail not found"));
+		PackingDetailVO packingDetailVO = basicDetailVO.getPackingDetailVO();
+		List<PDAttachmentVO> pdAttachmentVO = getPDAttachment(id);
+		setAttachmentToPackageDetailVO(packingDetailVO, pdAttachmentVO);
+		basicDetailVO.setPackingDetailVO(packingDetailVO);
+		return basicDetailVO;
 	}
 
 	@Override
@@ -127,8 +142,27 @@ public class PartStudyServiceImpl implements PartStudyService {
 	}
 
 	@Override
-	public Optional<PackingDetailVO> getPackingDetailById(Long id) {
-		return packingDetailRepo.findById(id);
+	public PackingDetailVO getPackingDetailById(Long id) throws ApplicationException {
+		PackingDetailVO packingDetailVO = packingDetailRepo.findById(id)
+				.orElseThrow(() -> new ApplicationException("PackingDetail not found."));
+		List<PDAttachmentVO> pdAttachmentVO = getPDAttachment(id);
+		setAttachmentToPackageDetailVO(packingDetailVO, pdAttachmentVO);
+		return packingDetailVO;
+	}
+
+	private void setAttachmentToPackageDetailVO(PackingDetailVO packingDetailVO, List<PDAttachmentVO> pdAttachmentVO) {
+		packingDetailVO.setPartImage(
+				pdAttachmentVO.stream().filter(pa -> pa.getType().equalsIgnoreCase(PDAttachmentType.PART_IMAGE.name()))
+						.collect(Collectors.toList()));
+		packingDetailVO.setExistingPackingImage(pdAttachmentVO.stream()
+				.filter(pa -> pa.getType().equalsIgnoreCase(PDAttachmentType.EXISTING_PACKING_IMAGE.name()))
+				.collect(Collectors.toList()));
+		packingDetailVO.setPartDrawing(pdAttachmentVO.stream()
+				.filter(pa -> pa.getType().equalsIgnoreCase(PDAttachmentType.PART_DRAWING.name()))
+				.collect(Collectors.toList()));
+		packingDetailVO.setApprovedCommercialContract(pdAttachmentVO.stream()
+				.filter(pa -> pa.getType().equalsIgnoreCase(PDAttachmentType.APPROVED_COMMERCIAL_CONTRACT.name()))
+				.collect(Collectors.toList()));
 	}
 
 	@Override
@@ -308,6 +342,63 @@ public class PartStudyServiceImpl implements PartStudyService {
 //		});
 		return null;
 	}
+
+	@Override
+	public void saveAttachments(MultipartFile[] files, PDAttachmentType type, Long refPsId)
+			throws ApplicationException {
+		if (files == null || files.length == 0 || StringUtils.isEmpty(type.name()) || ObjectUtils.isEmpty(refPsId)) {
+			throw new ApplicationException("Invalid Attachment Information.");
+		}
+		String psDirPath = env.getProperty("part.study.attachment.dir");
+		String uploadDirPath = new StringBuilder(psDirPath).append("/").append(refPsId).toString();
+		File uploadDir = new File(uploadDirPath);
+		if (!uploadDir.exists()) {
+			uploadDir.mkdirs();
+		}
+		String date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd_MM_YYYY_HH_mm_ss"));
+		int fileCount = 0;
+		StringBuilder approvedPDFileName = new StringBuilder();
+		PackingDetailVO packingDetailVO = packingDetailRepo.findById(refPsId)
+				.orElseThrow(() -> new ApplicationException("PackingDetail not found."));
+		for (MultipartFile file : files) {
+			if (!file.isEmpty()) {
+				try {
+					String fileName = constructUniqueFileName(file.getOriginalFilename(), type.name(), fileCount, date);
+					Path savePath = Paths.get(uploadDirPath, fileName);
+					file.transferTo(savePath);
+					String attFileName = new StringBuilder(CommonConstant.FORWARD_SLASH).append(type)
+							.append(CommonConstant.FORWARD_SLASH).append(fileName).toString();
+					if (type.name().equalsIgnoreCase(PDAttachmentType.APPROVED_PACKAGE_DRAWING.name())) {
+						approvedPDFileName.append(attFileName).append(",");
+					} else {
+						pdAttachmentRepo.save(PDAttachmentVO.builder().fileName(attFileName).type(type.name())
+								.refPsId(refPsId).build());
+					}
+				} catch (Exception e) {
+					LOGGER.error("Failed to save the file: {} Error : {}", file.getOriginalFilename(), e.getMessage());
+				}
+			}
+			fileCount++;
+		}
+		if (type.name().equalsIgnoreCase(PDAttachmentType.APPROVED_PACKAGE_DRAWING.name())) {
+			List<ApprovedPackageDrawingVO> approvedPackageDrawingVO = packingDetailVO.getApprovedPackageDrawingVO();
+			ApprovedPackageDrawingVO approvedPackageDrawing = new ApprovedPackageDrawingVO();
+			approvedPackageDrawing.setFileName(CommonUtils.trimLastCharacter(approvedPDFileName.toString()));
+			approvedPackageDrawing.setPackingDetailVO(packingDetailVO);
+			approvedPackageDrawing.setRejectStatus(false);
+			approvedPackageDrawingVO.add(approvedPackageDrawing);
+			packingDetailVO.setApprovedPackageDrawingVO(approvedPackageDrawingVO);
+			packingDetailRepo.save(packingDetailVO);
+		}
 	}
 
+	private String constructUniqueFileName(String originalFilename, String type, int fileCount, String date) {
+		String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
+		return new StringBuilder(type).append(CommonConstant.UNDERSCORE).append(date).append(CommonConstant.UNDERSCORE)
+				.append(fileCount).append(extension).toString();
+	}
 
+	private List<PDAttachmentVO> getPDAttachment(long refPsId) {
+		return pdAttachmentRepo.findByRefPsId(refPsId);
+	}
+	}

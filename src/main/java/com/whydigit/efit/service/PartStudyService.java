@@ -4,8 +4,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.whydigit.efit.dto.BasicDetailDTO;
 import com.whydigit.efit.dto.LogisticsDTO;
+import com.whydigit.efit.dto.PDAttachmentType;
 import com.whydigit.efit.dto.PackingDetailDTO;
 import com.whydigit.efit.dto.StockDetailDTO;
 import com.whydigit.efit.entity.BasicDetailVO;
@@ -18,7 +21,7 @@ public interface PartStudyService {
 
 	List<BasicDetailVO> getAllBasicDetail(Long orgId);
 
-	Optional<BasicDetailVO> getBasicDetailById(Long id);
+	BasicDetailVO getBasicDetailById(Long id) throws ApplicationException;
 
 	BasicDetailVO createBasicDetail(BasicDetailDTO basicDetailDTO);
 
@@ -28,7 +31,7 @@ public interface PartStudyService {
 
 	List<PackingDetailVO> getAllpackingDetail(Long orgId);
 
-	Optional<PackingDetailVO> getPackingDetailById(Long id);
+	PackingDetailVO getPackingDetailById(Long id) throws ApplicationException;
 
 	PackingDetailVO createPackingDetail(PackingDetailVO packingDetailVO);
 
@@ -59,5 +62,7 @@ public interface PartStudyService {
 	boolean generatePartStudyId(String refPsId);
 
 	Map<String, Object> searchPartStudyId(Long emitterId, Long receiverId, Long orgId, Boolean completeStatus);
+
+	void saveAttachments(MultipartFile[] files, PDAttachmentType type, Long refPsId) throws ApplicationException;
 
 }
