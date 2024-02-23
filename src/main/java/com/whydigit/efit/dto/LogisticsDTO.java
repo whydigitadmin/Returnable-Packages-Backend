@@ -9,10 +9,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class LogisticsDTO {
 	private Long refPsId;
-	private String partStudyId;
 	private Long orgId;
 	private String avgLotSize;
 	private String dispatchFrequency;
 	private String diapatchTo;
-	private String transpotationTo;
 }

@@ -97,14 +97,14 @@ public class PartStudyController extends BaseController {
 	}
 
 	@PostMapping("/basicDetails")
-	public ResponseEntity<ResponseDTO> createBasicDetail(@RequestBody BasicDetailVO basicDetailVO) {
+	public ResponseEntity<ResponseDTO> createBasicDetail(@RequestBody BasicDetailDTO basicDetailDTO) {
 		String methodName = "createBasicDetail()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
 		try {
-			BasicDetailVO createdBasicDetailVO = partStudyService.createBasicDetail(basicDetailVO);
+			BasicDetailVO createdBasicDetailVO = partStudyService.createBasicDetail(basicDetailDTO);
 			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "BasicDetail created successfully");
 			responseObjectsMap.put("basicDetailVO", createdBasicDetailVO);
 			responseDTO = createServiceResponse(responseObjectsMap);
@@ -131,7 +131,7 @@ public class PartStudyController extends BaseController {
 				responseObjectsMap.put("basicDetailVO", updatedBasicDetailVO);
 				responseDTO = createServiceResponse(responseObjectsMap);
 			} else {
-				errorMsg = "BasicDetail not found for ID: " + basicDetailDTO.getPartStudyId();
+				errorMsg = "BasicDetail not found for ID: " + basicDetailDTO.getRefPsId();
 				responseDTO = createServiceResponseError(responseObjectsMap, "BasicDetail update failed", errorMsg);
 			}
 		} catch (Exception e) {
@@ -217,26 +217,6 @@ public class PartStudyController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
-	@PostMapping("/packageDetail")
-	public ResponseEntity<ResponseDTO> createPackingDetail(@RequestBody PackingDetailVO packingDetailVO) {
-		String methodName = "createPackingDetail()";
-		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
-		String errorMsg = null;
-		Map<String, Object> responseObjectsMap = new HashMap<>();
-		ResponseDTO responseDTO = null;
-		try {
-			PackingDetailVO createdPackingDetailVO = partStudyService.createPackingDetail(packingDetailVO);
-			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "PackingDetail created successfully");
-			responseObjectsMap.put("packingDetailVO", createdPackingDetailVO);
-			responseDTO = createServiceResponse(responseObjectsMap);
-		} catch (Exception e) {
-			errorMsg = e.getMessage();
-			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-			responseDTO = createServiceResponseError(responseObjectsMap, "PackingDetail creation failed", errorMsg);
-		}
-		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
-		return ResponseEntity.ok().body(responseDTO);
-	}
 
 	@PutMapping("/packageDetail")
 	public ResponseEntity<ResponseDTO> updatePackingDetail(@RequestBody PackingDetailDTO packingDetailDTO) {
@@ -252,7 +232,7 @@ public class PartStudyController extends BaseController {
 				responseObjectsMap.put("packingDetailVO", updatedPackingDetailVO);
 				responseDTO = createServiceResponse(responseObjectsMap);
 			} else {
-				errorMsg = "PackingDetail not found for ID: " + packingDetailDTO.getPartStudyId();
+				errorMsg = "PackingDetail not found for ID: " + packingDetailDTO.getRefPsId();
 				responseDTO = createServiceResponseError(responseObjectsMap, "PackingDetail update failed", errorMsg);
 			}
 		} catch (Exception e) {
@@ -337,27 +317,6 @@ public class PartStudyController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
-	@PostMapping("/logistics")
-	public ResponseEntity<ResponseDTO> createLogistics(@RequestBody LogisticsVO logisticsVO) {
-		String methodName = "createLogistics()";
-		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
-		String errorMsg = null;
-		Map<String, Object> responseObjectsMap = new HashMap<>();
-		ResponseDTO responseDTO = null;
-		try {
-			LogisticsVO createdLogisticsVO = partStudyService.createLogistics(logisticsVO);
-			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Logistics created successfully");
-			responseObjectsMap.put("logisticsVO", createdLogisticsVO);
-			responseDTO = createServiceResponse(responseObjectsMap);
-		} catch (Exception e) {
-			errorMsg = e.getMessage();
-			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-			responseDTO = createServiceResponseError(responseObjectsMap, "Logistics creation failed", errorMsg);
-		}
-		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
-		return ResponseEntity.ok().body(responseDTO);
-	}
-
 	@PutMapping("/logistics")
 	public ResponseEntity<ResponseDTO> updateLogistics(@RequestBody LogisticsDTO logisticsDTO) {
 		String methodName = "updateLogistics()";
@@ -372,7 +331,7 @@ public class PartStudyController extends BaseController {
 				responseObjectsMap.put("logisticsVO", updatedLogisticsVO);
 				responseDTO = createServiceResponse(responseObjectsMap);
 			} else {
-				errorMsg = "Logistics not found for ID: " + logisticsDTO.getPartStudyId();
+				errorMsg = "Logistics not found for ID: " + logisticsDTO.getRefPsId();
 				responseDTO = createServiceResponseError(responseObjectsMap, "Logistics update failed", errorMsg);
 			}
 		} catch (Exception e) {
@@ -458,27 +417,6 @@ public class PartStudyController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
-	@PostMapping("/stockDetail")
-	public ResponseEntity<ResponseDTO> createStockDetail(@RequestBody StockDetailVO stockDetailVO) {
-		String methodName = "createStockDetail()";
-		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
-		String errorMsg = null;
-		Map<String, Object> responseObjectsMap = new HashMap<>();
-		ResponseDTO responseDTO = null;
-		try {
-			StockDetailVO createdStockDetailVO = partStudyService.createStockDetail(stockDetailVO);
-			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "StockDetail created successfully");
-			responseObjectsMap.put("stockDetailVO", createdStockDetailVO);
-			responseDTO = createServiceResponse(responseObjectsMap);
-		} catch (Exception e) {
-			errorMsg = e.getMessage();
-			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-			responseDTO = createServiceResponseError(responseObjectsMap, "StockDetail creation failed", errorMsg);
-		}
-		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
-		return ResponseEntity.ok().body(responseDTO);
-	}
-
 	@PutMapping("/stockDetail")
 	public ResponseEntity<ResponseDTO> updateStockDetail(@RequestBody StockDetailDTO stockDetailDTO) {
 		String methodName = "updateStockDetail()";
@@ -493,7 +431,7 @@ public class PartStudyController extends BaseController {
 				responseObjectsMap.put("stockDetailVO", updatedStockDetailVO);
 				responseDTO = createServiceResponse(responseObjectsMap);
 			} else {
-				errorMsg = "StockDetail not found for ID: " + stockDetailDTO.getPartStudyId();
+				errorMsg = "StockDetail not found for ID: " + stockDetailDTO.getRefPsId();
 				responseDTO = createServiceResponseError(responseObjectsMap, "StockDetail update failed", errorMsg);
 			}
 		} catch (Exception e) {

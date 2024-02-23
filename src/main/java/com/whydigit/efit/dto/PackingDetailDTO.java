@@ -8,28 +8,20 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PackingDetailDTO {
-	private long orgId;
+	private Long orgId;
 	private Long refPsId;
-	private String partStudyId;
-	private int partDimension;
-	private int length;
-	private int breath;
-	private int height;
+	private Float length;
+	private Float breath;
+	private Float height;
 	private String partUnit;
 	private String existingPart;
-	private String currentPackingStudy;
 	private String currentPackingChallenges;
-	private String noOfParts;
+	private String partsPerPackaging;
 	private String partSensitive;
-	private String greasy;
+	private String partGreasy;
 	private String partOrientation;
 	private String multiPartInSingleUnit;
 	private String stacking;
 	private String nesting;
 	private String remarks;
-	private String partDrawing;
-	private String approvedPackingTechnicalDrawing;
-	private String approvedCommercialContract;
-	private Boolean active;
-	private byte[] partImage;
 }

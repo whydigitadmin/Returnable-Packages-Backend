@@ -17,7 +17,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "aprv_pkg_drawg")
+@Table(name = "ps_aprove_pkg_drawing")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -27,12 +27,10 @@ public class ApprovedPackageDrawingVO {
 	private Long id;
 	private String fileName;
 	private Boolean status;
-
 	@JsonBackReference
 	@ManyToOne
-	@JoinColumn(name = "aprv_pkg_drawg_id")
+	@JoinColumn(name = "pkg_ref_ps_id")
 	private PackingDetailVO packingDetailVO;
-
 	@Embedded
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
 

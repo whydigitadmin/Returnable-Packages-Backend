@@ -12,14 +12,13 @@ import lombok.NoArgsConstructor;
 public class BasicDetailDTO {
 
 	private Long refPsId;
-	private String partStudyId;
-	private long orgId;
+	private Long orgId;
 	private LocalDate partStudyDate;
-	private String emitterId;
-	private String receiverId;
+	private Long emitterId;
+	private Long receiverId;
 	private String partName;
 	private String partNumber;
-	private float weight;
+	private Float weight;
 	private String weightUnit;
 	private String partVolume;
 	private String highestVolume;

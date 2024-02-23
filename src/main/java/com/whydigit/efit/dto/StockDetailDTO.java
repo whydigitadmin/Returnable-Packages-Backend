@@ -9,14 +9,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class StockDetailDTO {
 	private Long refPsId;
-	private String partStudyId;
-	private long orgId;
-	private String emitterStoreDays;
-	private String emitterLineDays;
-	private String inTransitDays;
-	private String endUserLineStorageDays;
-	private String endUserManufacturingLineDays;
-	private String otherStorageDays;
-	private String totalCycleTime;
-	private String emptyPackagingReverseDays;
+	private Long orgId;
+	private Integer emitterStoreDays;
+	private Integer emitterLineDays;
+	private Integer inTransitDays;
+	private Integer receiverLineStorageDays;
+	private Integer receiverManufacturingLineDays;
+	private Integer otherStorageDays;
+	private Integer reverseLogisticsDay;
+	private Integer totalCycleTime;
 }
