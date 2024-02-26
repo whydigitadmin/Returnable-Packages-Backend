@@ -5,32 +5,37 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.whydigit.efit.dto.CreatedUpdatedDate;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "bs_customer_Info")
+@Table(name = "kit_asset")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CustomerInfoVO {
-
+@Builder
+public class KitAssetVO {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
-	private String customerName;
-	private String city;
-	private String address;
-	private String manager;
-	private String email;
-	private String contactNo;
-	private String creator;
-	private Boolean active;
-    @Embedded
+	private long id;
+	private String assetCategory;
+	private String assetCodeId;
+	private String assetName;
+	private long quantity;
+	private long partQuantity;
+	@ManyToOne
+	@JoinColumn(name = "kit_id")
+	@JsonBackReference
+	private KitVO kitVO;
+	@Embedded
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
 }

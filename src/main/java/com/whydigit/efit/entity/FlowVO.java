@@ -1,5 +1,4 @@
 package com.whydigit.efit.entity;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -8,7 +7,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -30,10 +28,13 @@ public class FlowVO {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
+	private long id;
+	private long orgId;
+	private String receiverId;
 	private String flowName;
-	private String flowInfo;
-	private String flowType;
+	private String emitter;
+	private long emitterId;
+	private String receiver;
 	private String orgin;
 	private String destination;
     private boolean active;

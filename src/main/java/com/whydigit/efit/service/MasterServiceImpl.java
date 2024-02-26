@@ -1,35 +1,62 @@
+
 package com.whydigit.efit.service;
 
 import java.io.InputStreamReader;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Tuple;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.opencsv.CSVReader;
 import com.whydigit.efit.common.CommonConstant;
-import com.whydigit.efit.controller.MasterController;
+import com.whydigit.efit.common.CustomerConstant;
+import com.whydigit.efit.common.MasterConstant;
+import com.whydigit.efit.dto.CustomersAddressDTO;
+import com.whydigit.efit.dto.CustomersBankDetailsDTO;
+import com.whydigit.efit.dto.CustomersDTO;
 import com.whydigit.efit.dto.FlowDTO;
+import com.whydigit.efit.dto.KitAssetDTO;
+import com.whydigit.efit.dto.KitDTO;
+import com.whydigit.efit.dto.KitResponseDTO;
 import com.whydigit.efit.entity.AddressVO;
 import com.whydigit.efit.entity.AssetCategoryVO;
 import com.whydigit.efit.entity.AssetGroupVO;
+import com.whydigit.efit.entity.AssetItemVO;
 import com.whydigit.efit.entity.AssetVO;
+import com.whydigit.efit.entity.CustomersAddressVO;
+import com.whydigit.efit.entity.CustomersBankDetailsVO;
 import com.whydigit.efit.entity.CustomersVO;
 import com.whydigit.efit.entity.FlowDetailVO;
 import com.whydigit.efit.entity.FlowVO;
+import com.whydigit.efit.entity.KitAssetVO;
+import com.whydigit.efit.entity.KitVO;
 import com.whydigit.efit.entity.ManufacturerProductVO;
 import com.whydigit.efit.entity.ManufacturerVO;
 import com.whydigit.efit.entity.UnitVO;
+import com.whydigit.efit.entity.VenderAddressVO;
 import com.whydigit.efit.entity.VenderVO;
 import com.whydigit.efit.entity.WarehouseLocationVO;
 import com.whydigit.efit.exception.ApplicationException;
@@ -37,11 +64,15 @@ import com.whydigit.efit.repo.AddressRepo;
 import com.whydigit.efit.repo.AssetCategoryRepo;
 import com.whydigit.efit.repo.AssetGroupRepo;
 import com.whydigit.efit.repo.AssetRepo;
+import com.whydigit.efit.repo.CustomersAddressRepo;
+import com.whydigit.efit.repo.CustomersBankDetailsRepo;
 import com.whydigit.efit.repo.CustomersRepo;
 import com.whydigit.efit.repo.FlowRepo;
+import com.whydigit.efit.repo.KitRepo;
 import com.whydigit.efit.repo.ManufacturerProductRepo;
 import com.whydigit.efit.repo.ManufacturerRepo;
 import com.whydigit.efit.repo.UnitRepo;
+import com.whydigit.efit.repo.VenderAddressRepo;
 import com.whydigit.efit.repo.VenderRepo;
 import com.whydigit.efit.repo.WarehouseLocationRepo;
 
@@ -68,16 +99,37 @@ public class MasterServiceImpl implements MasterService {
 	ManufacturerProductRepo manufacturerProductRepo;
 	@Autowired
 	AssetCategoryRepo assetCategoryRepo;
-
 	@Autowired
 	UnitRepo unitRepo;
-
 	@Autowired
 	WarehouseLocationRepo warehouseLocationRepo;
+	@Autowired
+	VenderAddressRepo venderAddressRepo;
+	@Autowired
+	KitRepo kitRepo;
+	@PersistenceContext
+	private EntityManager entityManager;
+
+	@Autowired
+	CustomersAddressRepo customersAddressRepo;
+
+	@Autowired
+	CustomersBankDetailsRepo CustomersBankDetailsRepo;
+	
+	@Autowired
+	CustomersBankDetailsRepo customersBankDetailsRepo;
 
 	@Override
-	public List<AssetVO> getAllAsset() {
-		return assetRepo.findAll();
+	public List<AssetVO> getAllAsset(Long orgId) {
+		List<AssetVO> assetVO = new ArrayList<>();
+		if (ObjectUtils.isNotEmpty(orgId)) {
+			LOGGER.info("Successfully Received  AssetInformation BY OrgId : {}", orgId);
+			assetVO = assetRepo.getAllAssetByOrgId(orgId);
+		} else {
+			LOGGER.info("Successfully Received  AssetInformation For All OrgId.");
+			assetVO = assetRepo.findAll();
+		}
+		return assetVO;
 	}
 
 	@Override
@@ -87,6 +139,19 @@ public class MasterServiceImpl implements MasterService {
 
 	@Override
 	public AssetVO createAsset(AssetVO assetVO) {
+		List<AssetItemVO> assetItemVO = new ArrayList<>();
+		long skuId = assetVO.getSkuFrom();
+		while (skuId <= assetVO.getSkuTo()) {
+			AssetItemVO assetItem = new AssetItemVO();
+			assetItem.setAssetVO(assetVO);
+			assetItem.setCreatedDateTime(LocalDateTime.now());
+			assetItem.setAssetName(assetVO.getAssetName());
+			assetItem.setSkuId(new StringBuilder(assetVO.getAssetCodeId()).append("-").append(skuId).toString());
+			assetItem.setStatus(MasterConstant.ASSET_ITEM_STATUS_INSTOCK);
+			assetItemVO.add(assetItem);
+			skuId++;
+		}
+		assetVO.setAssetItemVO(assetItemVO);
 		return assetRepo.save(assetVO);
 	}
 
@@ -106,8 +171,72 @@ public class MasterServiceImpl implements MasterService {
 	}
 
 	@Override
-	public List<AssetGroupVO> getAllAssetGroup() {
-		return assetGroupRepo.findAll();
+	public Map<String, Object> getAllAssetGroup(Long orgId, String assetCategory, String assetName, String assetCodeId,
+			String manufacturer) {
+		Map<String, Object> assetGroup = new HashMap<>();
+		List<AssetGroupVO> assetGroupVO = assetGroupRepo.findAll(new Specification<AssetGroupVO>() {
+			@Override
+			public Predicate toPredicate(Root<AssetGroupVO> root, CriteriaQuery<?> query,
+					CriteriaBuilder criteriaBuilder) {
+				List<Predicate> predicates = new ArrayList<>();
+				if (ObjectUtils.isNotEmpty(orgId)) {
+					predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("orgId"), orgId)));
+				}
+				if (StringUtils.isNotBlank(assetCategory)) {
+					predicates
+							.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("assetCategory"), assetCategory)));
+				}
+				if (StringUtils.isNotBlank(assetName)) {
+					predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("assetName"), assetName)));
+				}
+				if (StringUtils.isNotBlank(assetCodeId)) {
+					predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("assetCodeId"), assetCodeId)));
+					assetGroup.put("skuLatestCount", assetRepo.getLatestSkuByAssetCodeId(assetCodeId));
+				}
+				return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
+			}
+		});
+		List<Tuple> tuple = findManufacturerProductsByCriteria(orgId, assetCategory, assetName, assetCodeId,
+				manufacturer);
+		assetGroup.put("brand", tuple.stream().map(t -> t.get(0, ManufacturerProductVO.class).getBrand()).distinct()
+				.collect(Collectors.toList()));
+		assetGroup.put("company", tuple.stream().map(t -> t.get(1, ManufacturerVO.class).getCompany()).distinct()
+				.collect(Collectors.toList()));
+		assetGroup.put("assetGroupVO", assetGroupVO);
+		assetGroup.put("assetCategory",
+				assetGroupVO.stream().map(AssetGroupVO::getAssetCategory).distinct().collect(Collectors.toList()));
+		assetGroup.put("assetName",
+				assetGroupVO.stream().map(AssetGroupVO::getAssetName).distinct().collect(Collectors.toList()));
+		assetGroup.put("assetCodeId",
+				assetGroupVO.stream().map(AssetGroupVO::getAssetCodeId).distinct().collect(Collectors.toList()));
+		return assetGroup;
+	}
+
+	private List<Tuple> findManufacturerProductsByCriteria(Long orgId, String assetCategory, String assetName,
+			String assetCodeId, String manufacturer) {
+		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+		CriteriaQuery<Tuple> cq = cb.createTupleQuery();
+		Root<ManufacturerProductVO> root = cq.from(ManufacturerProductVO.class);
+		Join<ManufacturerProductVO, ManufacturerVO> manufacturerJoin = root.join("manufacturerVO");
+		List<Predicate> predicates = new ArrayList<>();
+		if (ObjectUtils.isNotEmpty(orgId)) {
+			predicates.add(cb.equal(root.get("orgId"), orgId));
+		}
+		if (StringUtils.isNotBlank(assetCategory)) {
+			predicates.add(cb.equal(root.get("assetCategory"), assetCategory));
+		}
+		if (StringUtils.isNotBlank(assetName)) {
+			predicates.add(cb.equal(root.get("assetName"), assetName));
+		}
+		if (StringUtils.isNotBlank(assetCodeId)) {
+			predicates.add(cb.equal(root.get("assetCodeId"), assetCodeId));
+		}
+		if (StringUtils.isNotBlank(manufacturer)) {
+			predicates.add(cb.equal(manufacturerJoin.get("company"), manufacturer));
+		}
+		cq.multiselect(root, manufacturerJoin);
+		cq.where(cb.and(predicates.toArray(new Predicate[0])));
+		return entityManager.createQuery(cq).getResultList();
 	}
 
 	@Override
@@ -117,8 +246,8 @@ public class MasterServiceImpl implements MasterService {
 
 	@Override
 	public AssetGroupVO createAssetGroup(AssetGroupVO assetGroupVO) throws ApplicationException {
-		if (ObjectUtils.isNotEmpty(assetGroupVO) && StringUtils.isNotBlank(assetGroupVO.getId())) {
-			if (assetGroupRepo.existsById(assetGroupVO.getId())) {
+		if (ObjectUtils.isNotEmpty(assetGroupVO) && StringUtils.isNotBlank(assetGroupVO.getAssetCodeId())) {
+			if (assetGroupRepo.existsById(assetGroupVO.getAssetCodeId())) {
 				throw new ApplicationException("AssetGroup already exist. Please try another one.");
 			}
 			return assetGroupRepo.save(assetGroupVO);
@@ -129,7 +258,7 @@ public class MasterServiceImpl implements MasterService {
 
 	@Override
 	public Optional<AssetGroupVO> updateAssetGroup(AssetGroupVO assetGroupVO) {
-		if (assetGroupRepo.existsById(assetGroupVO.getId())) {
+		if (assetGroupRepo.existsById(assetGroupVO.getAssetCodeId())) {
 			return Optional.of(assetGroupRepo.save(assetGroupVO));
 		} else {
 			return Optional.empty();
@@ -139,22 +268,44 @@ public class MasterServiceImpl implements MasterService {
 	@Override
 	public void deleteAssetGroup(int id) {
 		assetRepo.deleteById(id);
-
 	}
 
 	@Override
-	public List<CustomersVO> getAllCustomers() {
-		return customersRepo.findAll();
+	public List<CustomersVO> getAllCustomers(Long orgId) {
+		List<CustomersVO> customersVO = new ArrayList<>();
+		if (ObjectUtils.isNotEmpty(orgId)) {
+			LOGGER.info("Successfully Received  CustomerInformation BY OrgId : {}", orgId);
+			customersVO = customersRepo.getAllCustomersByOrgId(orgId);
+		} else {
+			LOGGER.info("Successfully Received  CustomerInformation For All OrgId.");
+			customersVO = customersRepo.findAll();
+		}
+		return customersVO;
 	}
 
 	@Override
-	public Optional<CustomersVO> getCustomersById(int id) {
+	public Optional<CustomersVO> getCustomersById(Long id) {
 		return customersRepo.findById(id);
+
 	}
 
 	@Override
-	public CustomersVO createCustomers(CustomersVO customersVO) {
+	public CustomersVO createCustomers(CustomersDTO customersDTO) {
+		CustomersVO customersVO= new CustomersVO();
+		getCustomersVOFromCustomersDTO(customersDTO,customersVO);
 		return customersRepo.save(customersVO);
+	}
+
+	private void getCustomersVOFromCustomersDTO(CustomersDTO customersDTO, CustomersVO customersVO) {
+		customersVO.setOrgId(customersDTO.getOrgId());
+		customersVO.setCustomerType(customersDTO.getCustomerType());
+		customersVO.setEntityLegalName(customersDTO.getEntityLegalName());
+		customersVO.setEmail(customersDTO.getEmail());
+		customersVO.setCustomerCode(customersDTO.getCustomerCode());
+		customersVO.setDisplayName(customersDTO.getDisplayName());
+		customersVO.setPhoneNumber(customersDTO.getPhoneNumber());
+		customersVO.setCustomerActivatePortal(customersDTO.isCustomerActivatePortal());
+		customersVO.setActive(customersDTO.isActive());
 	}
 
 	@Override
@@ -163,27 +314,44 @@ public class MasterServiceImpl implements MasterService {
 	}
 
 	@Override
-	public Optional<CustomersVO> updateCustomers(CustomersVO customersVO) {
-		if (customersRepo.existsById(customersVO.getId())) {
-			return Optional.of(customersRepo.save(customersVO));
+	public CustomersVO updateCustomers(CustomersDTO customersDTO) throws ApplicationException {
+		CustomersVO customersVO = new CustomersVO();
+		if (ObjectUtils.isNotEmpty(customersDTO) && ObjectUtils.isNotEmpty(customersDTO.getId())) {
+			customersVO = customersRepo.findById(customersDTO.getId())
+					.orElseThrow(() -> new ApplicationException("Customer information not found."));
 		} else {
-			return Optional.empty();
+			throw new ApplicationException("Invalid customer information");
 		}
+		getCustomersVOFromCustomersDTO(customersDTO, customersVO);
+		return customersRepo.save(customersVO);
 	}
 
 	@Override
-	public void deleteCustomers(int id) {
+	public void deleteCustomers(Long id) {
 		customersRepo.deleteById(id);
-
 	}
 
 	@Override
-	public List<FlowVO> getAllFlow() {
-		return flowRepo.findAll();
+	public List<FlowVO> getAllFlow(Long orgId, Long emitterId) {
+		List<FlowVO> flowVO = new ArrayList<>();
+		if (ObjectUtils.isNotEmpty(orgId) && (ObjectUtils.isEmpty(emitterId))) {
+			LOGGER.info("Successfully Received Flow BY OrgId : {}", orgId);
+			flowVO = flowRepo.findByOrgId(orgId);
+		} else if (ObjectUtils.isEmpty(orgId) && (ObjectUtils.isNotEmpty(emitterId))) {
+			LOGGER.info("Successfully Received Flow BY EmitterId : {}", emitterId);
+			flowVO = flowRepo.findByEmitterId(emitterId);
+		} else if (ObjectUtils.isNotEmpty(orgId) && (ObjectUtils.isNotEmpty(emitterId))) {
+			LOGGER.info("Successfully Received Flow BY EmitterId : {} orgId : {}", emitterId, orgId);
+			flowVO = flowRepo.findByOrgIdAndEmitterId(orgId, emitterId);
+		} else {
+			LOGGER.info("Successfully Received Flow Information For All OrgId.");
+			flowVO = flowRepo.findAll();
+		}
+		return flowVO;
 	}
 
 	@Override
-	public Optional<FlowVO> getFlowById(int id) {
+	public Optional<FlowVO> getFlowById(long id) {
 		return flowRepo.findById(id);
 	}
 
@@ -196,14 +364,15 @@ public class MasterServiceImpl implements MasterService {
 	private FlowVO createFlowVOByFlowDTO(FlowDTO flowDTO) {
 		List<FlowDetailVO> flowDetailVOList = new ArrayList<>();
 		FlowVO flowVO = FlowVO.builder().active(flowDTO.isActive()).orgin(flowDTO.getOrgin())
-				.flowInfo(flowDTO.getFlowInfo()).flowName(flowDTO.getFlowName()).flowType(flowDTO.getFlowType())
-				.flowDetailVO(flowDetailVOList).build();
+				.receiver(flowDTO.getReceiver()).flowName(flowDTO.getFlowName()).emitter(flowDTO.getEmitter())
+				.receiverId(flowDTO.getReceiverId()).emitterId(flowDTO.getEmitterId())
+				.destination(flowDTO.getDestination()).orgId(flowDTO.getOrgId()).flowDetailVO(flowDetailVOList).build();
+
 		flowDetailVOList = flowDTO.getFlowDetailDTO().stream()
 				.map(fdDTO -> FlowDetailVO.builder().active(fdDTO.isActive()).cycleTime(fdDTO.getCycleTime())
-						.dhr(fdDTO.getDhr()).fixedRentalCharge(fdDTO.getFixedRentalCharge()).flowVO(flowVO)
-						.itemGroup(fdDTO.getItemGroup()).issueCharge(fdDTO.getIssueCharge())
-						.productToPack(fdDTO.getProductToPack()).quantity(fdDTO.getQuantity())
-						.rentalTerm(fdDTO.getRentalTerm()).returnCharge(fdDTO.getReturnCharge()).build())
+						.emitterId(fdDTO.getEmitterId()).partName(fdDTO.getPartName()).kitName(fdDTO.getKitName())
+						.emitter(flowDTO.getEmitter()).subReceiver(fdDTO.getSubReceiver())
+						.partNumber(fdDTO.getPartNumber()).build())
 				.collect(Collectors.toList());
 		flowVO.setFlowDetailVO(flowDetailVOList);
 		return flowVO;
@@ -219,14 +388,22 @@ public class MasterServiceImpl implements MasterService {
 	}
 
 	@Override
-	public void deleteFlow(int id) {
+	public void deleteFlow(long id) {
 		flowRepo.deleteById(id);
 
 	}
 
 	@Override
-	public List<VenderVO> getAllVender() {
-		return venderRepo.findAll();
+	public List<VenderVO> getAllVender(Long orgId) {
+		List<VenderVO> venderVO = new ArrayList<>();
+		if (ObjectUtils.isNotEmpty(orgId)) {
+			LOGGER.info("Successfully Received  VenderInformation BY OrgId : {}", orgId);
+			venderVO = venderRepo.getAllVenderByOrgId(orgId);
+		} else {
+			LOGGER.info("Successfully Received  VenderInformation For All OrgId.");
+			venderVO = venderRepo.findAll();
+		}
+		return venderVO;
 	}
 
 	@Override
@@ -255,8 +432,16 @@ public class MasterServiceImpl implements MasterService {
 	}
 
 	@Override
-	public List<ManufacturerVO> getAllManufacturer() {
-		return manufacturerRepo.findAll();
+	public List<ManufacturerVO> getAllManufacturer(Long orgId) {
+		List<ManufacturerVO> manufacturerVO = new ArrayList<>();
+		if (ObjectUtils.isNotEmpty(orgId)) {
+			LOGGER.info("Successfully Received  ManufacturerInformation BY OrgId : {}", orgId);
+			manufacturerVO = manufacturerRepo.getAllManufacturerByOrgId(orgId);
+		} else {
+			LOGGER.info("Successfully Received  VenderInformation For All OrgId.");
+			manufacturerVO = manufacturerRepo.findAll();
+		}
+		return manufacturerVO;
 	}
 
 	@Override
@@ -285,8 +470,16 @@ public class MasterServiceImpl implements MasterService {
 	}
 
 	@Override
-	public List<ManufacturerProductVO> getAllManufacturerProduct() {
-		return manufacturerProductRepo.findAll();
+	public List<ManufacturerProductVO> getAllManufacturerProduct(Long orgId) {
+		List<ManufacturerProductVO> manufacturerProductVO = new ArrayList<>();
+		if (ObjectUtils.isNotEmpty(orgId)) {
+			LOGGER.info("Successfully Received   Manufacturer Product Information BY OrgId : {}", orgId);
+			manufacturerProductVO = manufacturerProductRepo.getAllManufacturerProduct(orgId);
+		} else {
+			LOGGER.info("Successfully Received  Manufacturer Product Information For All OrgId.");
+			manufacturerProductVO = manufacturerProductRepo.findAll();
+		}
+		return manufacturerProductVO;
 	}
 
 	@Override
@@ -295,8 +488,23 @@ public class MasterServiceImpl implements MasterService {
 	}
 
 	@Override
-	public List<AssetCategoryVO> getAllAssetCategory() {
-		return assetCategoryRepo.findAll();
+	public List<AssetCategoryVO> getAllAssetCategory(Long orgId, String assetCategoryName) {
+		List<AssetCategoryVO> assetCategoryVO = new ArrayList<>();
+		if (ObjectUtils.isNotEmpty(orgId) && (ObjectUtils.isEmpty(assetCategoryName))) {
+			LOGGER.info("Successfully Received AssetCategory BY OrgId : {}", orgId);
+			assetCategoryVO = assetCategoryRepo.getAllAssetCategory(orgId);
+		} else if (ObjectUtils.isEmpty(orgId) && (ObjectUtils.isNotEmpty(assetCategoryName))) {
+			LOGGER.info("Successfully Received AssetCategory BY AssetCategoryName : {}", assetCategoryName);
+			assetCategoryVO = assetCategoryRepo.findByAssetCategory(assetCategoryName);
+		} else if (ObjectUtils.isNotEmpty(orgId) && (ObjectUtils.isNotEmpty(assetCategoryName))) {
+			LOGGER.info("Successfully Received AssetCategory BY AssetCategoryName : {} orgId : {}", assetCategoryName,
+					orgId);
+			assetCategoryVO = assetCategoryRepo.findByAssetCategoryAndOrgId(assetCategoryName, orgId);
+		} else {
+			LOGGER.info("Successfully Received AssetCategory Information For All OrgId.");
+			assetCategoryVO = assetCategoryRepo.findAll();
+		}
+		return assetCategoryVO;
 	}
 
 	@Override
@@ -307,8 +515,16 @@ public class MasterServiceImpl implements MasterService {
 	// Unit
 
 	@Override
-	public List<UnitVO> getAllUnit() {
-		return unitRepo.findAll();
+	public List<UnitVO> getAllUnit(Long orgId) {
+		List<UnitVO> unitVO = new ArrayList<>();
+		if (ObjectUtils.isNotEmpty(orgId)) {
+			LOGGER.info("Successfully Received Unit BY OrgId : {}", orgId);
+			unitVO = unitRepo.getAllUnit(orgId);
+		} else {
+			LOGGER.info("Successfully Received Unit Information For All OrgId.");
+			unitVO = unitRepo.findAll();
+		}
+		return unitVO;
 	}
 
 	@Override
@@ -333,9 +549,16 @@ public class MasterServiceImpl implements MasterService {
 	// Warehouse Location
 
 	@Override
-	public List<WarehouseLocationVO> getAllWarehouseLocation() {
-		// TODO Auto-generated method stub
-		return warehouseLocationRepo.findAll();
+	public List<WarehouseLocationVO> getAllWarehouseLocation(Long orgId) {
+		List<WarehouseLocationVO> warehouseLocationVO = new ArrayList<>();
+		if (ObjectUtils.isNotEmpty(orgId)) {
+			LOGGER.info("Successfully Received WarehouseLocation BY OrgId : {}", orgId);
+			warehouseLocationVO = warehouseLocationRepo.getAllWarehouseLocation(orgId);
+		} else {
+			LOGGER.info("Successfully Received WarehouseLocation Information For All OrgId.");
+			warehouseLocationVO = warehouseLocationRepo.findAll();
+		}
+		return warehouseLocationVO;
 	}
 
 	@Override
@@ -402,7 +625,7 @@ public class MasterServiceImpl implements MasterService {
 			if (assetGroupRepo.existsById(csvLine[0])) {
 				return null;
 			}
-			return AssetGroupVO.builder().id(csvLine[0]).assetCode(csvLine[1]).assetCategory(csvLine[2])
+			return AssetGroupVO.builder().assetCodeId(csvLine[0]).assetName(csvLine[1]).assetCategory(csvLine[2])
 					.active(Boolean.parseBoolean(csvLine[3])).length(Float.parseFloat(csvLine[4]))
 					.breath(Float.parseFloat(csvLine[5])).height(Float.parseFloat(csvLine[6])).dimUnit(csvLine[7])
 					.build();
@@ -410,5 +633,205 @@ public class MasterServiceImpl implements MasterService {
 			LOGGER.error("Error processing CSV line: {}", Arrays.toString(csvLine), e);
 			return null;
 		}
+	}
+
+	// venderAddress
+
+	@Override
+	public List<VenderAddressVO> getAllVenderAddress() {
+		return venderAddressRepo.findAll();
+	}
+
+	@Override
+	public Optional<VenderAddressVO> getVenderAddressById(int id) {
+		return venderAddressRepo.findById(id);
+	}
+
+	@Override
+	public VenderAddressVO createVenderAddress(VenderAddressVO venderAddressVO) {
+		return venderAddressRepo.save(venderAddressVO);
+	}
+
+	@Override
+	public Optional<VenderAddressVO> updateVenderAddress(VenderAddressVO venderAddressVO) {
+		if (venderAddressRepo.existsById(venderAddressVO.getId())) {
+			return Optional.of(venderAddressRepo.save(venderAddressVO));
+		} else {
+			return Optional.empty();
+		}
+	}
+
+	@Override
+	public void deleteVenderAddress(int id) {
+		venderAddressRepo.deleteById(id);
+	}
+
+// kit
+	@Override
+	public List<KitResponseDTO> getAllKit(Long orgId) {
+		List<KitResponseDTO> kitResponseDTO = new ArrayList<>();
+		List<KitVO> kitVO = new ArrayList<>();
+		if (ObjectUtils.isEmpty(orgId)) {
+			LOGGER.info("Get All kit information.", orgId);
+			kitVO = kitRepo.findAll();
+		} else {
+			LOGGER.info("Get All kit information by orgID : {}", orgId);
+			kitVO = kitRepo.findByOrgId(orgId);
+		}
+		kitResponseDTO = kitVO.stream().map(kit -> {
+			KitResponseDTO KitResponse = new KitResponseDTO();
+			KitResponse.setId(kit.getId());
+			KitResponse.setOrgId(kit.getOrgId());
+			Map<String, List<KitAssetVO>> kitAssetVOByCategory = kit.getKitAssetVO().stream()
+					.collect(Collectors.groupingBy(KitAssetVO::getAssetCategory));
+			KitResponse.setKitAssetCategory(kitAssetVOByCategory);
+			return KitResponse;
+		}).collect(Collectors.toList());
+		return kitResponseDTO;
+	}
+
+	@Override
+	public Optional<KitVO> getKitById(String id) {
+		return kitRepo.findById(id);
+	}
+
+	@Override
+	public KitVO createkit(KitDTO kitDTO) throws ApplicationException {
+		if (kitRepo.existsById(kitDTO.getId())) {
+			throw new ApplicationException("Kit code already exist. Please try with new kit code.");
+		}
+		List<KitAssetVO> kitAssetVO = new ArrayList<>();
+		KitVO kitVO = KitVO.builder().id(kitDTO.getId()).orgId(kitDTO.getOrgId()).kitAssetVO(kitAssetVO).build();
+		for (KitAssetDTO kitAsset : kitDTO.getKitAssetDTO()) {
+			kitAssetVO.add(KitAssetVO.builder().assetCategory(kitAsset.getAssetCategory())
+					.assetCodeId(kitAsset.getAssetCodeId()).assetName(kitAsset.getAssetName())
+					.quantity(kitAsset.getQuantity()).partQuantity(kitAsset.getPartQuantity()).kitVO(kitVO).build());
+		}
+		return kitRepo.save(kitVO);
+	}
+
+	@Override
+	public Optional<KitVO> updatedKit(KitVO kitVO) {
+		if (kitRepo.existsById(kitVO.getId())) {
+			return Optional.of(kitRepo.save(kitVO));
+		} else {
+			return Optional.empty();
+		}
+	}
+
+	@Override
+	public void deleteKit(String id) {
+		kitRepo.deleteById(id);
+
+	}
+
+	@Override
+	public Map<String, List<CustomersVO>> CustomersType(Long orgId) {
+		List<CustomersVO> customersVO = customersRepo.findByOrgId(orgId);
+		Map<String, List<CustomersVO>> customers = new HashMap<>();
+		List<CustomersVO> emitterCustomersVO = customersVO.stream()
+				.filter(c -> c.getCustomerType() == CustomerConstant.CUSTOMER_TYPE_EMITTER
+						|| c.getCustomerType() == CustomerConstant.CUSTOMER_TYPE_EMITTER_AND_RECEIVER)
+				.collect(Collectors.toList());
+		List<CustomersVO> receiverCustomersVO = customersVO.stream()
+				.filter(c -> c.getCustomerType() == CustomerConstant.CUSTOMER_TYPE_RECEIVER
+						|| c.getCustomerType() == CustomerConstant.CUSTOMER_TYPE_EMITTER_AND_RECEIVER)
+				.collect(Collectors.toList());
+		customers.put("emitterCustomersVO", emitterCustomersVO);
+		customers.put("receiverCustomersVO", receiverCustomersVO);
+		return customers;
+	}
+
+	@Override
+	public Map<String, Map<String, List<AssetGroupVO>>> getAssetGroupByCategoryType(Long orgId) {
+		List<AssetGroupVO> assetGroupVO = new ArrayList<>();
+		if (ObjectUtils.isNotEmpty(orgId)) {
+			LOGGER.info("Successfully Received  AssetGroupInformation BY OrgId : {}", orgId);
+			assetGroupVO = assetGroupRepo.getAllAssetGroupByOrgId(orgId);
+		} else {
+			LOGGER.info("Successfully Received  AssetGroupInformation For All OrgId.");
+			assetGroupVO = assetGroupRepo.findAll();
+		}
+		return assetGroupVO.stream().collect(Collectors.groupingBy(AssetGroupVO::getAssetCategory,
+				Collectors.groupingBy(AssetGroupVO::getAssetName)));
+	}
+
+	@Override
+	public CustomersAddressVO createUpdateCustomersAddress(CustomersAddressDTO customersAddressDTO)
+			throws ApplicationException {
+		CustomersAddressVO customersAddressVO = new CustomersAddressVO();
+		if (ObjectUtils.isNotEmpty(customersAddressDTO) && ObjectUtils.isNotEmpty(customersAddressDTO.getId())
+				&& ObjectUtils.isNotEmpty(customersAddressDTO.getCustomerId())) {
+			CustomersVO customersVO = customersRepo.findById(customersAddressDTO.getCustomerId())
+					.orElseThrow(() -> new ApplicationException("Customer information not found."));
+			customersAddressVO = customersAddressRepo.findById(customersAddressDTO.getId())
+					.orElseThrow(() -> new ApplicationException("Customer Address information not found."));
+			customersAddressVO.setCustomersVO(customersVO);
+		} else {
+			throw new ApplicationException("Invalid customer address information.");
+		}
+		getCustomersAddressVOFromCustomersAddressDTO(customersAddressDTO, customersAddressVO);
+		return customersAddressRepo.save(customersAddressVO);
+	}
+
+	private void getCustomersAddressVOFromCustomersAddressDTO(CustomersAddressDTO customersAddressDTO,
+			CustomersAddressVO customersAddressVO) {
+		customersAddressVO.setGstRegistrationStatus(customersAddressDTO.getGstRegistrationStatus());
+		customersAddressVO.setStreet1(customersAddressDTO.getStreet1());
+		customersAddressVO.setStreet2(customersAddressDTO.getStreet2());
+		customersAddressVO.setPinCode(customersAddressDTO.getPinCode());
+		customersAddressVO.setPhoneNumber(customersAddressDTO.getPhoneNumber());
+		customersAddressVO.setGstNumber(customersAddressDTO.getGstNumber());
+		customersAddressVO.setCity(customersAddressDTO.getCity());
+		customersAddressVO.setContactName(customersAddressDTO.getContactName());
+		customersAddressVO.setState(customersAddressDTO.getState());
+		customersAddressVO.setEmail(customersAddressDTO.getEmail());
+		customersAddressVO.setDesignation(customersAddressDTO.getDesignation());
+	}
+
+	@Override
+	public void deleteCustomersAddress(Long id) {
+		customersAddressRepo.deleteById(id);
+	}
+
+	@Override
+	public CustomersBankDetailsVO createUpdateBankDetails(CustomersBankDetailsDTO customersBankDetailsDTO)
+			throws ApplicationException {
+		CustomersBankDetailsVO customersBankDetailsVO = new CustomersBankDetailsVO();
+		CustomersVO customersVO = new CustomersVO();
+		if (ObjectUtils.isNotEmpty(customersBankDetailsDTO) && ObjectUtils.isNotEmpty(customersBankDetailsDTO.getId())
+				&& ObjectUtils.isNotEmpty(customersBankDetailsDTO.getCustomerId())) {
+			customersVO = customersRepo.findById(customersBankDetailsDTO.getCustomerId())
+					.orElseThrow(() -> new ApplicationException("Customer information not found."));
+			customersBankDetailsVO = customersBankDetailsRepo.findById(customersBankDetailsDTO.getId())
+					.orElseThrow(() -> new ApplicationException("Customer bank information not found."));
+			customersBankDetailsVO.setCustomersVO(customersVO);
+		} else {
+			throw new ApplicationException("Invalid customer bank information.");
+		}
+		getCustomersBankDetailsVOFromCustomersBankDetailsDTO(customersBankDetailsDTO, customersBankDetailsVO);
+		if (customersVO.getCustomersBankDetailsVO().isEmpty()) {
+			customersBankDetailsVO.setDefault(true);
+		} else {
+			if (customersBankDetailsDTO.isDefault()) {
+				customersBankDetailsVO.setDefault(customersBankDetailsDTO.isDefault());
+				customersBankDetailsRepo.updateDefaultAddress(customersBankDetailsDTO.getId());
+			}
+		}
+		return customersBankDetailsRepo.save(customersBankDetailsVO);
+	}
+
+	private void getCustomersBankDetailsVOFromCustomersBankDetailsDTO(CustomersBankDetailsDTO customersBankDetailsDTO,
+			CustomersBankDetailsVO customersBankDetailsVO) {
+		customersBankDetailsVO.setBank(customersBankDetailsDTO.getBank());		
+		customersBankDetailsVO.setAccountName(customersBankDetailsDTO.getAccountName());		
+		customersBankDetailsVO.setIfscCode(customersBankDetailsDTO.getIfscCode());		
+		customersBankDetailsVO.setBranch(customersBankDetailsDTO.getBranch());		
+		customersBankDetailsVO.setAccountNo(customersBankDetailsDTO.getAccountNo());			
+	}
+
+	@Override
+	public void deleteCustomersBankDetails(Long id) {
+		CustomersBankDetailsRepo.deleteById(id);
 	}
 }

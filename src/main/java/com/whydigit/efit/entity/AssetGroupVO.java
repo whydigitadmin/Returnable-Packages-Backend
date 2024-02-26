@@ -22,10 +22,12 @@ import lombok.NoArgsConstructor;
 @Builder
 public class AssetGroupVO {
 	@Id
-	@NotEmpty(message = "Asset group id is required")
-	private String id;
-	@NotEmpty(message = "AssetCode is required")
-	private String assetCode;	
+	@NotEmpty(message = "Asset Code id is required")
+	private String assetCodeId;
+	@NotNull(message = "Organisation Id is required")
+	private long orgId;
+	@NotEmpty(message = "Asset Name is required")
+	private String assetName;
 	@NotEmpty(message = "AssetCategory is required")
 	private String assetCategory;
 	private boolean active;

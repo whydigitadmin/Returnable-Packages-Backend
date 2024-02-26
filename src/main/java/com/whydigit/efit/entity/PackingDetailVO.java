@@ -1,14 +1,21 @@
 
 package com.whydigit.efit.entity;
 
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Lob;
+import javax.persistence.JoinColumn;
+import javax.persistence.MapsId;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.whydigit.efit.dto.CreatedUpdatedDate;
 
 import lombok.AllArgsConstructor;
@@ -23,32 +30,43 @@ import lombok.NoArgsConstructor;
 public class PackingDetailVO {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
-	private int partDimension;
+	private Long refPsId;
+	private String partStudyId;
+	private Long orgId;
+	private Float length;
+	private Float breath;
+	private Float height;
 	private String partUnit;
 	private String existingPart;
-	private String currentPackingStudy;
 	private String currentPackingChallenges;
-	private String noOfParts;
+	private String partsPerPackaging;
 	private String partSensitive;
-	private String greasy;
+	private String partGreasy;
 	private String partOrientation;
-	private String multiPartInSingleSocket;
+	private String multiPartInSingleUnit;
 	private String stacking;
 	private String nesting;
 	private String remarks;
-	private String partDrawing;
-	private String approvedPackingTechnicalDrawing;
-	private String approvedCommercialContract;
-	 @Lob
-	    private byte[] partImage;
-	 
-	 @Lob
-	    private byte[] existingPackingImage;
+//	private List<PDAttachmentVO> pdAttachmentVO;
+	@Transient
+	private List<PDAttachmentVO> partImage;
+	@Transient
+	private List<PDAttachmentVO> existingPackingImage;
+	@Transient
+	private List<PDAttachmentVO> partDrawing;
+	@Transient
+	private List<PDAttachmentVO> approvedCommercialContract;
+
+	@JsonBackReference
+	@OneToOne
+	@MapsId
+    @JoinColumn(name = "refPsId")
+	private BasicDetailVO basicDetailVO;
+	@JsonManagedReference
+	@OneToMany(mappedBy = "packingDetailVO",cascade = CascadeType.ALL)
+	private List<ApprovedPackageDrawingVO> approvedPackageDrawingVO;
 	
-	
-	private Boolean active;
+
 	@Embedded
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
 }

@@ -33,8 +33,14 @@ public class SecurityConfig {
 						"/**/*.html", "/**/*.css", "/**/*.js")
 				.permitAll()
 				.antMatchers("/v2/api-docs", "/configuration/ui", "/swagger-resources/**", "/configuration/security",
-						"/swagger-ui.html", "/swagger-ui/*", "/api/user/signup", "/api/user/login", "/api/user/logout",
-						"/api/user/getRefreshToken", "/api/basicSetting/companyInfo" ,"/api/warehouse/view", "/api/master/asset", "/api/warehouse/view/{id}","/api/usersdetails/view","/api/DcVendor/view",  "/api/master/**", "​/api​/master​/addAddress" ,"/api/DcVendor/view/{id}")
+						"/swagger-ui.html", "/swagger-ui/*", "/api/auth/signup", "/api/auth/login", "/api/auth/logout",
+						"/api/auth/getRefreshToken", "/api/basicSetting/companyInfo", "/api/warehouse/view",
+						"/api/master/asset", "/api/warehouse/view/{id}", "/api/usersdetails/view", "/api/DcVendor/view",
+						"/api/master/**", "​/api​/master​/addAddress", "/api/DcVendor/view/{id}",
+						"/api/partStudy/basicDetails", "/api/partStudy/basicDetails/{id}",
+						"/api/partStudy/packageDetail", "/api/partStudy/packageDetail/{id}", "/api/partStudy/logistics",
+						"/api/partStudy/logistics/{id}", "/api/partStudy/**",
+						"/api/partStudy/stockDetail/{id}","/api/emitter/createIssueRequest","/api/emitter/*","/api/auth/createUser")
 				.permitAll().antMatchers("/api/**").hasAnyRole("USER", "GUEST_USER").anyRequest().authenticated();
 
 		http.addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);

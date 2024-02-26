@@ -32,7 +32,6 @@ import com.whydigit.efit.entity.LocalCurrencyVO;
 import com.whydigit.efit.entity.StateVO;
 import com.whydigit.efit.service.BasicMasterService;
 
-
 @RestController
 @CrossOrigin
 @RequestMapping("/api/basicMaster")
@@ -283,8 +282,6 @@ public class BasicMasterController extends BaseController {
 
 //	state
 
-
-
 	@GetMapping("/state")
 	public ResponseEntity<ResponseDTO> getAllStates() {
 		String methodName = "getAllStates()";
@@ -304,38 +301,11 @@ public class BasicMasterController extends BaseController {
 			responseObjectsMap.put("stateVO", stateVO);
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} else {
-			responseDTO = createServiceResponseError(responseObjectsMap, "states information receive failed",
-					errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "states information receive failed", errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-//
-//	@GetMapping("/state/{id}")
-//	public ResponseEntity<ResponseDTO> getStateById(@PathVariable int id) {
-//		String methodName = "getStateById()";
-//		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
-//		String errorMsg = null;
-//		Map<String, Object> responseObjectsMap = new HashMap<>();
-//		ResponseDTO responseDTO = null;
-//		StateVO stateVO = null;
-//		try {
-//			stateVO = basicMasterService.getStateById(id).orElse(null);
-//		} catch (Exception e) {
-//			errorMsg = e.getMessage();
-//			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-//		}
-//		if (StringUtils.isEmpty(errorMsg)) {
-//			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "states found by ID");
-//			responseObjectsMap.put("stateVO", stateVO);
-//			responseDTO = createServiceResponse(responseObjectsMap);
-//		} else {
-//			errorMsg = "Countries not found for ID: " + id;
-//			responseDTO = createServiceResponseError(responseObjectsMap, "states not found", errorMsg);
-//		}
-//		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
-//		return ResponseEntity.ok().body(responseDTO);
-//	}
 
 	@PostMapping("/state")
 	public ResponseEntity<ResponseDTO> createState(@RequestBody StateVO stateVO) {
@@ -404,8 +374,6 @@ public class BasicMasterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
-
-
 //	employee
 
 	@GetMapping("/employee")
@@ -454,8 +422,7 @@ public class BasicMasterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-	
-	
+
 	@PutMapping("/employee")
 	public ResponseEntity<ResponseDTO> updateEmployee(@RequestBody EmployeeVO employeeVO) {
 		String methodName = "updateEmployee()";
@@ -482,7 +449,6 @@ public class BasicMasterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
-
 	@DeleteMapping("/employee/{id}")
 	public ResponseEntity<ResponseDTO> deleteEmployee(@PathVariable int id) {
 		String methodName = "deleteEmployee()";
@@ -502,8 +468,6 @@ public class BasicMasterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-
-
 
 //	city
 
@@ -526,8 +490,7 @@ public class BasicMasterController extends BaseController {
 			responseObjectsMap.put("cityVO", cityVO);
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} else {
-			responseDTO = createServiceResponseError(responseObjectsMap, "city information receive failed",
-					errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "city information receive failed", errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
@@ -553,8 +516,6 @@ public class BasicMasterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-	
-	
 
 	@PutMapping("/city")
 	public ResponseEntity<ResponseDTO> updateCity(@RequestBody CityVO cityVO) {
@@ -651,7 +612,6 @@ public class BasicMasterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
-
 	@PutMapping("/financial")
 	public ResponseEntity<ResponseDTO> updateFinancialYearVO(@RequestBody FinancialYearVO financialYearVO) {
 		String methodName = "updateFinancialYear()";
@@ -660,7 +620,8 @@ public class BasicMasterController extends BaseController {
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
 		try {
-			FinancialYearVO updatedFinancialYearVO = basicMasterService.updateFinancialYear(financialYearVO).orElse(null);
+			FinancialYearVO updatedFinancialYearVO = basicMasterService.updateFinancialYear(financialYearVO)
+					.orElse(null);
 			if (updatedFinancialYearVO != null) {
 				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "FinancialYear updated successfully");
 				responseObjectsMap.put("financialYearVO", updatedFinancialYearVO);
@@ -697,9 +658,9 @@ public class BasicMasterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-	
+
 //	countryList
-	
+
 	@GetMapping("/countryList")
 	public ResponseEntity<ResponseDTO> getAllCountryList() {
 		String methodName = "getAllCountryList()";
@@ -818,7 +779,7 @@ public class BasicMasterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-	
+
 //	Financial
 
 	@GetMapping("/currencyMaster")
@@ -862,12 +823,12 @@ public class BasicMasterController extends BaseController {
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-			responseDTO = createServiceResponseError(responseObjectsMap, "CurrencyMaster Year creation failed", errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "CurrencyMaster Year creation failed",
+					errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-
 
 	@PutMapping("/currencyMaster")
 	public ResponseEntity<ResponseDTO> updateCurrencyMasterVO(@RequestBody CurrencyMasterVO currencyMasterVO) {
@@ -877,7 +838,8 @@ public class BasicMasterController extends BaseController {
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
 		try {
-			CurrencyMasterVO updatedCurrencyMasterVO = basicMasterService.updateCurrencyMaster(currencyMasterVO).orElse(null);
+			CurrencyMasterVO updatedCurrencyMasterVO = basicMasterService.updateCurrencyMaster(currencyMasterVO)
+					.orElse(null);
 			if (updatedCurrencyMasterVO != null) {
 				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "CurrencyMasterVO updated successfully");
 				responseObjectsMap.put("currencyMasterVO", updatedCurrencyMasterVO);
