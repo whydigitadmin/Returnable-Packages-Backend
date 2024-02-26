@@ -6,6 +6,9 @@ import java.util.Optional;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.whydigit.efit.dto.CustomersAddressDTO;
+import com.whydigit.efit.dto.CustomersBankDetailsDTO;
+import com.whydigit.efit.dto.CustomersDTO;
 import com.whydigit.efit.dto.FlowDTO;
 import com.whydigit.efit.dto.KitDTO;
 import com.whydigit.efit.dto.KitResponseDTO;
@@ -55,19 +58,19 @@ public interface MasterService {
 
 	Optional<CustomersVO> getCustomersById(Long id);
 
-	CustomersVO createCustomers(CustomersVO customersVO);
+	CustomersVO createCustomers(CustomersDTO customersDTO);
 
 	AddressVO createAddress(AddressVO addressVO);
 
-	Optional<CustomersVO> updateCustomers(CustomersVO customersVO);
+	CustomersVO updateCustomers(CustomersDTO customersDTO) throws ApplicationException;
 
-	Optional<CustomersBankDetailsVO> updateCustomersBankDetails(CustomersBankDetailsVO customersBankDetailsVO);
+	CustomersBankDetailsVO createUpdateBankDetails(CustomersBankDetailsDTO customersBankDetailsDTO) throws ApplicationException;
 
 	void deleteCustomers(Long id);
 	
 	void deleteCustomersBankDetails(Long id);
 
-	Optional<CustomersAddressVO> updateCustomersAddress(CustomersAddressVO customersAddressVO);
+	CustomersAddressVO createUpdateCustomersAddress(CustomersAddressDTO customersAddressDTO) throws ApplicationException;
 
 	void deleteCustomersAddress(Long id);
 

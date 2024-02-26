@@ -34,6 +34,9 @@ import com.opencsv.CSVReader;
 import com.whydigit.efit.common.CommonConstant;
 import com.whydigit.efit.common.CustomerConstant;
 import com.whydigit.efit.common.MasterConstant;
+import com.whydigit.efit.dto.CustomersAddressDTO;
+import com.whydigit.efit.dto.CustomersBankDetailsDTO;
+import com.whydigit.efit.dto.CustomersDTO;
 import com.whydigit.efit.dto.FlowDTO;
 import com.whydigit.efit.dto.KitAssetDTO;
 import com.whydigit.efit.dto.KitDTO;
@@ -112,6 +115,9 @@ public class MasterServiceImpl implements MasterService {
 
 	@Autowired
 	CustomersBankDetailsRepo CustomersBankDetailsRepo;
+	
+	@Autowired
+	CustomersBankDetailsRepo customersBankDetailsRepo;
 
 	@Override
 	public List<AssetVO> getAllAsset(Long orgId) {
@@ -284,10 +290,22 @@ public class MasterServiceImpl implements MasterService {
 	}
 
 	@Override
-	public CustomersVO createCustomers(CustomersVO customersVO) {
-		customersVO.getCustomersAddressVO().get(0).setDefault(true);
-		customersVO.getCustomersBankDetailsVO().get(0).setDefault(true);
+	public CustomersVO createCustomers(CustomersDTO customersDTO) {
+		CustomersVO customersVO= new CustomersVO();
+		getCustomersVOFromCustomersDTO(customersDTO,customersVO);
 		return customersRepo.save(customersVO);
+	}
+
+	private void getCustomersVOFromCustomersDTO(CustomersDTO customersDTO, CustomersVO customersVO) {
+		customersVO.setOrgId(customersDTO.getOrgId());
+		customersVO.setCustomerType(customersDTO.getCustomerType());
+		customersVO.setEntityLegalName(customersDTO.getEntityLegalName());
+		customersVO.setEmail(customersDTO.getEmail());
+		customersVO.setCustomerCode(customersDTO.getCustomerCode());
+		customersVO.setDisplayName(customersDTO.getDisplayName());
+		customersVO.setPhoneNumber(customersDTO.getPhoneNumber());
+		customersVO.setCustomerActivatePortal(customersDTO.isCustomerActivatePortal());
+		customersVO.setActive(customersDTO.isActive());
 	}
 
 	@Override
@@ -296,18 +314,21 @@ public class MasterServiceImpl implements MasterService {
 	}
 
 	@Override
-	public Optional<CustomersVO> updateCustomers(CustomersVO customersVO) {
-		if (customersRepo.existsById(customersVO.getId())) {
-			return Optional.of(customersRepo.save(customersVO));
+	public CustomersVO updateCustomers(CustomersDTO customersDTO) throws ApplicationException {
+		CustomersVO customersVO = new CustomersVO();
+		if (ObjectUtils.isNotEmpty(customersDTO) && ObjectUtils.isNotEmpty(customersDTO.getId())) {
+			customersVO = customersRepo.findById(customersDTO.getId())
+					.orElseThrow(() -> new ApplicationException("Customer information not found."));
 		} else {
-			return Optional.empty();
+			throw new ApplicationException("Invalid customer information");
 		}
+		getCustomersVOFromCustomersDTO(customersDTO, customersVO);
+		return customersRepo.save(customersVO);
 	}
 
 	@Override
 	public void deleteCustomers(Long id) {
 		customersRepo.deleteById(id);
-
 	}
 
 	@Override
@@ -736,12 +757,36 @@ public class MasterServiceImpl implements MasterService {
 	}
 
 	@Override
-	public Optional<CustomersAddressVO> updateCustomersAddress(CustomersAddressVO customersAddressVO) {
-		if (customersAddressRepo.existsById(customersAddressVO.getId())) {
-			return Optional.of(customersAddressRepo.save(customersAddressVO));
+	public CustomersAddressVO createUpdateCustomersAddress(CustomersAddressDTO customersAddressDTO)
+			throws ApplicationException {
+		CustomersAddressVO customersAddressVO = new CustomersAddressVO();
+		if (ObjectUtils.isNotEmpty(customersAddressDTO) && ObjectUtils.isNotEmpty(customersAddressDTO.getId())
+				&& ObjectUtils.isNotEmpty(customersAddressDTO.getCustomerId())) {
+			CustomersVO customersVO = customersRepo.findById(customersAddressDTO.getCustomerId())
+					.orElseThrow(() -> new ApplicationException("Customer information not found."));
+			customersAddressVO = customersAddressRepo.findById(customersAddressDTO.getId())
+					.orElseThrow(() -> new ApplicationException("Customer Address information not found."));
+			customersAddressVO.setCustomersVO(customersVO);
 		} else {
-			return Optional.empty();
+			throw new ApplicationException("Invalid customer address information.");
 		}
+		getCustomersAddressVOFromCustomersAddressDTO(customersAddressDTO, customersAddressVO);
+		return customersAddressRepo.save(customersAddressVO);
+	}
+
+	private void getCustomersAddressVOFromCustomersAddressDTO(CustomersAddressDTO customersAddressDTO,
+			CustomersAddressVO customersAddressVO) {
+		customersAddressVO.setGstRegistrationStatus(customersAddressDTO.getGstRegistrationStatus());
+		customersAddressVO.setStreet1(customersAddressDTO.getStreet1());
+		customersAddressVO.setStreet2(customersAddressDTO.getStreet2());
+		customersAddressVO.setPinCode(customersAddressDTO.getPinCode());
+		customersAddressVO.setPhoneNumber(customersAddressDTO.getPhoneNumber());
+		customersAddressVO.setGstNumber(customersAddressDTO.getGstNumber());
+		customersAddressVO.setCity(customersAddressDTO.getCity());
+		customersAddressVO.setContactName(customersAddressDTO.getContactName());
+		customersAddressVO.setState(customersAddressDTO.getState());
+		customersAddressVO.setEmail(customersAddressDTO.getEmail());
+		customersAddressVO.setDesignation(customersAddressDTO.getDesignation());
 	}
 
 	@Override
@@ -750,17 +795,43 @@ public class MasterServiceImpl implements MasterService {
 	}
 
 	@Override
-	public Optional<CustomersBankDetailsVO> updateCustomersBankDetails(CustomersBankDetailsVO customersBankDetailsVO) {
-		if (CustomersBankDetailsRepo.existsById(customersBankDetailsVO.getId())) {
-			return Optional.of(CustomersBankDetailsRepo.save(customersBankDetailsVO));
+	public CustomersBankDetailsVO createUpdateBankDetails(CustomersBankDetailsDTO customersBankDetailsDTO)
+			throws ApplicationException {
+		CustomersBankDetailsVO customersBankDetailsVO = new CustomersBankDetailsVO();
+		CustomersVO customersVO = new CustomersVO();
+		if (ObjectUtils.isNotEmpty(customersBankDetailsDTO) && ObjectUtils.isNotEmpty(customersBankDetailsDTO.getId())
+				&& ObjectUtils.isNotEmpty(customersBankDetailsDTO.getCustomerId())) {
+			customersVO = customersRepo.findById(customersBankDetailsDTO.getCustomerId())
+					.orElseThrow(() -> new ApplicationException("Customer information not found."));
+			customersBankDetailsVO = customersBankDetailsRepo.findById(customersBankDetailsDTO.getId())
+					.orElseThrow(() -> new ApplicationException("Customer bank information not found."));
+			customersBankDetailsVO.setCustomersVO(customersVO);
 		} else {
-			return Optional.empty();
+			throw new ApplicationException("Invalid customer bank information.");
 		}
+		getCustomersBankDetailsVOFromCustomersBankDetailsDTO(customersBankDetailsDTO, customersBankDetailsVO);
+		if (customersVO.getCustomersBankDetailsVO().isEmpty()) {
+			customersBankDetailsVO.setDefault(true);
+		} else {
+			if (customersBankDetailsDTO.isDefault()) {
+				customersBankDetailsVO.setDefault(customersBankDetailsDTO.isDefault());
+				customersBankDetailsRepo.updateDefaultAddress(customersBankDetailsDTO.getId());
+			}
+		}
+		return customersBankDetailsRepo.save(customersBankDetailsVO);
+	}
+
+	private void getCustomersBankDetailsVOFromCustomersBankDetailsDTO(CustomersBankDetailsDTO customersBankDetailsDTO,
+			CustomersBankDetailsVO customersBankDetailsVO) {
+		customersBankDetailsVO.setBank(customersBankDetailsDTO.getBank());		
+		customersBankDetailsVO.setAccountName(customersBankDetailsDTO.getAccountName());		
+		customersBankDetailsVO.setIfscCode(customersBankDetailsDTO.getIfscCode());		
+		customersBankDetailsVO.setBranch(customersBankDetailsDTO.getBranch());		
+		customersBankDetailsVO.setAccountNo(customersBankDetailsDTO.getAccountNo());			
 	}
 
 	@Override
 	public void deleteCustomersBankDetails(Long id) {
 		CustomersBankDetailsRepo.deleteById(id);
-
 	}
 }

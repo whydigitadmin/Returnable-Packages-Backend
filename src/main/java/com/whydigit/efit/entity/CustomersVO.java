@@ -39,8 +39,6 @@ public class CustomersVO {
 	private String document;
 	private boolean customerActivatePortal;
 	private boolean active;
-	private String unit;
-	private boolean isPrimary;
 
 	@OneToMany(mappedBy = "customersVO", cascade = CascadeType.ALL)
 	@JsonManagedReference

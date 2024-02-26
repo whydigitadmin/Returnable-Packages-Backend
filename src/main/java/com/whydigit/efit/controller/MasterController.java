@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.validation.Valid;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +26,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import com.whydigit.efit.common.CommonConstant;
 import com.whydigit.efit.common.UserConstants;
+import com.whydigit.efit.dto.CustomersAddressDTO;
+import com.whydigit.efit.dto.CustomersBankDetailsDTO;
+import com.whydigit.efit.dto.CustomersDTO;
 import com.whydigit.efit.dto.FlowDTO;
 import com.whydigit.efit.dto.KitDTO;
 import com.whydigit.efit.dto.KitResponseDTO;
@@ -378,14 +382,14 @@ public class MasterController extends BaseController {
 	}
 
 	@PostMapping("/customers")
-	public ResponseEntity<ResponseDTO> createCustomer(@RequestBody CustomersVO customersVO) {
+	public ResponseEntity<ResponseDTO> createCustomer(@RequestBody CustomersDTO customersDTO) {
 		String methodName = "createCustomer()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
 		try {
-			CustomersVO createdCustomersVO = masterService.createCustomers(customersVO);
+			CustomersVO createdCustomersVO = masterService.createCustomers(customersDTO);
 			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Customers created successfully");
 			responseObjectsMap.put("customersVO", createdCustomersVO);
 			responseDTO = createServiceResponse(responseObjectsMap);
@@ -420,20 +424,20 @@ public class MasterController extends BaseController {
 	}
 
 	@PutMapping("/customers")
-	public ResponseEntity<ResponseDTO> updateCustomers(@RequestBody CustomersVO customersVO) {
+	public ResponseEntity<ResponseDTO> updateCustomers(@RequestBody CustomersDTO customersDTO) {
 		String methodName = "updateAssetGroup()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
 		try {
-			CustomersVO updatedCustomersVO = masterService.updateCustomers(customersVO).orElse(null);
+			CustomersVO updatedCustomersVO = masterService.updateCustomers(customersDTO);
 			if (updatedCustomersVO != null) {
 				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Customers updated successfully");
 				responseObjectsMap.put("customersVO", updatedCustomersVO);
 				responseDTO = createServiceResponse(responseObjectsMap);
 			} else {
-				errorMsg = "Customers not found for ID: " + customersVO.getId();
+				errorMsg = "Customers not found for ID: " + customersDTO.getId();
 				responseDTO = createServiceResponseError(responseObjectsMap, "Customers update failed", errorMsg);
 			}
 		} catch (Exception e) {
@@ -445,53 +449,56 @@ public class MasterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
-	@PutMapping("/updateCustomersAddress")
-	public ResponseEntity<ResponseDTO> updateCustomersAddress(@RequestBody CustomersAddressVO customersAddressVO) {
+	@PostMapping("/customersAddress")
+	public ResponseEntity<ResponseDTO> createUpdateCustomersAddress(
+			@RequestBody CustomersAddressDTO customersAddressDTO) {
 		String methodName = "updateCustomersAddress()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
+		String action = StringUtils.EMPTY;
 		try {
-			CustomersAddressVO updatedCustomersAddressVO = masterService.updateCustomersAddress(customersAddressVO)
-					.orElse(null);
-			if (updatedCustomersAddressVO != null) {
-				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Customers Address updated successfully");
-				responseObjectsMap.put("customersAddressVO", updatedCustomersAddressVO);
+			action = ObjectUtils.isEmpty(customersAddressDTO.getId()) ? "create" : "update";
+			CustomersAddressVO customersCustomersAddressVO = masterService
+					.createUpdateCustomersAddress(customersAddressDTO);
+			if (customersCustomersAddressVO != null) {
+				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Customers Address " + action + " successfully");
+				responseObjectsMap.put("customersAddressVO", customersCustomersAddressVO);
 				responseDTO = createServiceResponse(responseObjectsMap);
 			} else {
-				errorMsg = "Customers not found for ID: " + customersAddressVO.getId();
-				responseDTO = createServiceResponseError(responseObjectsMap, "Customers Address update failed",
+				responseDTO = createServiceResponseError(responseObjectsMap, "Customers Address " + action + " failed",
 						errorMsg);
 			}
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-			responseDTO = createServiceResponseError(responseObjectsMap, "Customers Address" + " update failed",
+			responseDTO = createServiceResponseError(responseObjectsMap, "Customers Address " + action + " failed",
 					errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
-	@PutMapping("/updateCustomersBankDetails")
-	public ResponseEntity<ResponseDTO> updateCustomersBankDetails(
-			@RequestBody CustomersBankDetailsVO customersBankDetailsVO) {
+	@PostMapping("/customersBankDetails")
+	public ResponseEntity<ResponseDTO> createUpdateBankDetails(
+			@RequestBody CustomersBankDetailsDTO customersBankDetailsDTO) {
 		String methodName = "updateCustomersBankDetails()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
+		String action = StringUtils.EMPTY;
 		try {
-			CustomersBankDetailsVO updatedCustomersBankDetailsVO = masterService
-					.updateCustomersBankDetails(customersBankDetailsVO).orElse(null);
-			if (updatedCustomersBankDetailsVO != null) {
-				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Customers Bank Details updated successfully");
-				responseObjectsMap.put("customersBankDetailsVO", updatedCustomersBankDetailsVO);
+			action = ObjectUtils.isEmpty(customersBankDetailsDTO.getId()) ? "create" : "update";
+			CustomersBankDetailsVO customersBankDetailsVO = masterService
+					.createUpdateBankDetails(customersBankDetailsDTO);
+			if (customersBankDetailsVO != null) {
+				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Customers Bank Details "+action+" successfully");
+				responseObjectsMap.put("customersBankDetailsVO", customersBankDetailsVO);
 				responseDTO = createServiceResponse(responseObjectsMap);
 			} else {
-				errorMsg = "Customers not found for ID: " + customersBankDetailsVO.getId();
-				responseDTO = createServiceResponseError(responseObjectsMap, "Customers BankDetails update failed",
+				responseDTO = createServiceResponseError(responseObjectsMap, "Customers BankDetails "+action+" failed",
 						errorMsg);
 			}
 		} catch (Exception e) {
