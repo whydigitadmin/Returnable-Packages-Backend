@@ -20,11 +20,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.whydigit.efit.common.CommonConstant;
 import com.whydigit.efit.common.UserConstants;
 import com.whydigit.efit.dto.BasicDetailDTO;
 import com.whydigit.efit.dto.LogisticsDTO;
+import com.whydigit.efit.dto.PDAttachmentType;
 import com.whydigit.efit.dto.PackingDetailDTO;
 import com.whydigit.efit.dto.ResponseDTO;
 import com.whydigit.efit.dto.StockDetailDTO;
@@ -79,7 +81,7 @@ public class PartStudyController extends BaseController {
 		ResponseDTO responseDTO = null;
 		BasicDetailVO basicDetailVO = null;
 		try {
-			basicDetailVO = partStudyService.getBasicDetailById(id).orElse(null);
+			basicDetailVO = partStudyService.getBasicDetailById(id);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
@@ -200,7 +202,7 @@ public class PartStudyController extends BaseController {
 		ResponseDTO responseDTO = null;
 		PackingDetailVO packingDetailVO = null;
 		try {
-			packingDetailVO = partStudyService.getPackingDetailById(id).orElse(null);
+			packingDetailVO = partStudyService.getPackingDetailById(id);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
@@ -218,7 +220,7 @@ public class PartStudyController extends BaseController {
 	}
 
 
-	@PutMapping("/packageDetail")
+	@PutMapping("/updatePackingDetail")
 	public ResponseEntity<ResponseDTO> updatePackingDetail(@RequestBody PackingDetailDTO packingDetailDTO) {
 		String methodName = "updatePackingDetail()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
@@ -239,6 +241,30 @@ public class PartStudyController extends BaseController {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
 			responseDTO = createServiceResponseError(responseObjectsMap, "PackingDetail update failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+	
+	@PostMapping("/saveAttachments")
+	public ResponseEntity<ResponseDTO> saveAttachments(@RequestParam MultipartFile[] files, @RequestParam PDAttachmentType type, @RequestParam Long refPsId){			
+		String methodName = "saveAttachments()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		try {
+	     partStudyService.saveAttachments(files,type,refPsId);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, new StringBuilder(type.name()).append(" attachments saved successfully").toString());
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, new StringBuilder(type.name()).append(" attachments saved failed. please try Again.").toString(),
+					errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
@@ -491,8 +517,7 @@ public class PartStudyController extends BaseController {
 	@GetMapping("/searchPartStudyId")
 	public ResponseEntity<ResponseDTO> searchPartStudyId(@RequestParam(required = false) Long emitterId,
 			@RequestParam(required = false) Long receiverId,@RequestParam(required = false) Long orgId,
-			@RequestParam(required = false) Boolean completeStatus){
-			
+			@RequestParam(required = false) Boolean completeStatus){			
 		String methodName = "searchPartStudyId()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -516,6 +541,5 @@ public class PartStudyController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-
 	
 }

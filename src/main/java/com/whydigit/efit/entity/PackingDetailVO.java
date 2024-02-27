@@ -12,6 +12,7 @@ import javax.persistence.MapsId;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -46,10 +47,15 @@ public class PackingDetailVO {
 	private String stacking;
 	private String nesting;
 	private String remarks;
-	private String partImage;
-	private String existingPackingImage;
-	private String partDrawing;
-	private String approvedCommercialContract;
+//	private List<PDAttachmentVO> pdAttachmentVO;
+	@Transient
+	private List<PDAttachmentVO> partImage;
+	@Transient
+	private List<PDAttachmentVO> existingPackingImage;
+	@Transient
+	private List<PDAttachmentVO> partDrawing;
+	@Transient
+	private List<PDAttachmentVO> approvedCommercialContract;
 
 	@JsonBackReference
 	@OneToOne

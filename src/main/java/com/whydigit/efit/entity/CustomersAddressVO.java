@@ -33,8 +33,9 @@ public class CustomersAddressVO {
 	private String gstNumber;
 	private String city;
 	private String contactName;
-	private boolean isDefault;
-
+    private String state;
+    private String email;
+    private String designation;
 	@ManyToOne
 	@JoinColumn(name = "customers_id")
 	@JsonBackReference

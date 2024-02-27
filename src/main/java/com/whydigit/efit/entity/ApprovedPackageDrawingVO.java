@@ -26,7 +26,7 @@ public class ApprovedPackageDrawingVO {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private String fileName;
-	private Boolean status;
+	private boolean rejectStatus;
 	@JsonBackReference
 	@ManyToOne
 	@JoinColumn(name = "pkg_ref_ps_id")
