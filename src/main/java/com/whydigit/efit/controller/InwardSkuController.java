@@ -1,4 +1,5 @@
 package com.whydigit.efit.controller;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,7 +26,6 @@ import com.whydigit.efit.common.UserConstants;
 import com.whydigit.efit.dto.InwardSkuDTO;
 import com.whydigit.efit.dto.ResponseDTO;
 import com.whydigit.efit.entity.InwardSkuVO;
-import com.whydigit.efit.entity.LocalCurrencyVO;
 import com.whydigit.efit.service.InwardSkuService;
 
 @RestController
@@ -53,11 +53,11 @@ public class InwardSkuController extends BaseController {
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
 		}
 		if (StringUtils.isBlank(errorMsg)) {
-			responseObjectsMap.put(InwardSkuConstant.STRING_MESSAGE, "inwardSkuVO information get successfully");
+			responseObjectsMap.put(InwardSkuConstant.STRING_MESSAGE, "inwardSku information get successfully");
 			responseObjectsMap.put("inwardSku", inwardSkuVO);
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} else {
-			responseDTO = createServiceResponseError(responseObjectsMap, "inwardSkuVO information receive failed",
+			responseDTO = createServiceResponseError(responseObjectsMap, "inwardSku information receive failed",
 					errorMsg);
 		}
 		LOGGER.debug(InwardSkuConstant.ENDING_METHOD, methodName);
@@ -79,12 +79,12 @@ public class InwardSkuController extends BaseController {
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
 		}
 		if (StringUtils.isEmpty(errorMsg)) {
-			responseObjectsMap.put(InwardSkuConstant.STRING_MESSAGE, "inwardSkuVO found by ID");
+			responseObjectsMap.put(InwardSkuConstant.STRING_MESSAGE, "inwardSku found by ID");
 			responseObjectsMap.put("inwardSku", inwardSkuVO);
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} else {
-			errorMsg = "LocalCurrency not found for ID: " + id;
-			responseDTO = createServiceResponseError(responseObjectsMap, "inwardSkuVO not found", errorMsg);
+			errorMsg = "inwardSku not found for ID: " + id;
+			responseDTO = createServiceResponseError(responseObjectsMap, "inwardSku not found", errorMsg);
 		}
 		LOGGER.debug(InwardSkuConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
@@ -99,13 +99,13 @@ public class InwardSkuController extends BaseController {
 		ResponseDTO responseDTO = null;
 		try {
 			InwardSkuVO createdInwardSkuVO = InwardSkuService.createInwardSku(InwardSkuDTO);
-			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "inwardSkuVO created successfully");
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "inwardSku created successfully");
 			responseObjectsMap.put("InwardSku", createdInwardSkuVO);
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(InwardSkuConstant.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-			responseDTO = createServiceResponseError(responseObjectsMap, "inwardSkuVO creation failed", errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "inwardSku creation failed", errorMsg);
 		}
 		LOGGER.debug(InwardSkuConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
@@ -119,23 +119,23 @@ public class InwardSkuController extends BaseController {
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
 		try {
-			Optional<InwardSkuVO> optionalUpdatedInwardSkuVO = Optional.ofNullable(InwardSkuService.updateInwardSku(InwardSkuDTO));
+			Optional<InwardSkuVO> optionalUpdatedInwardSkuVO = Optional
+					.ofNullable(InwardSkuService.updateInwardSku(InwardSkuDTO));
 			InwardSkuVO updatedInwardSkuVO = optionalUpdatedInwardSkuVO.orElse(null);
 			if (updatedInwardSkuVO != null) {
-				responseObjectsMap.put(InwardSkuConstant.STRING_MESSAGE, "inwardSkuVO updated successfully");
+				responseObjectsMap.put(InwardSkuConstant.STRING_MESSAGE, "inwardSku updated successfully");
 				responseObjectsMap.put("inwardSkuVO", updatedInwardSkuVO);
 				responseDTO = createServiceResponse(responseObjectsMap);
 			} else {
 				errorMsg = "inwardSkuVO not found for ID: " + InwardSkuDTO.getId();
-				responseDTO = createServiceResponseError(responseObjectsMap, "inwardSkuVO update failed", errorMsg);
+				responseDTO = createServiceResponseError(responseObjectsMap, "inwardSku update failed", errorMsg);
 			}
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(InwardSkuConstant.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-			responseDTO = createServiceResponseError(responseObjectsMap, "inwardSkuVO update failed", errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "inwardSku update failed", errorMsg);
 		}
 		LOGGER.debug(InwardSkuConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
 }
-

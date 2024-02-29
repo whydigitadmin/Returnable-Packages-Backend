@@ -288,6 +288,16 @@ public class MasterServiceImpl implements MasterService {
 		return customersRepo.findById(id);
 
 	}
+	
+	@Override
+	public List<CustomersAddressVO> getCustomerAddressByCustomerId(Long customerId) {
+		List<CustomersAddressVO> customersAddressVO = new ArrayList<>();
+
+		customersAddressVO = customersAddressRepo.getCustomerAddressByCustomerId(customerId);
+
+		return customersAddressVO;
+	}
+	
 
 	@Override
 	public CustomersVO createCustomers(CustomersDTO customersDTO) {
@@ -834,4 +844,6 @@ public class MasterServiceImpl implements MasterService {
 	public void deleteCustomersBankDetails(Long id) {
 		CustomersBankDetailsRepo.deleteById(id);
 	}
+
+	
 }

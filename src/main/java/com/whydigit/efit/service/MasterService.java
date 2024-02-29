@@ -73,6 +73,8 @@ public interface MasterService {
 	CustomersAddressVO createUpdateCustomersAddress(CustomersAddressDTO customersAddressDTO) throws ApplicationException;
 
 	void deleteCustomersAddress(Long id);
+	
+	List<CustomersAddressVO> getCustomerAddressByCustomerId(Long customerId);
 
 	// FLOW
 
@@ -166,5 +168,7 @@ public interface MasterService {
 	Map<String, List<CustomersVO>> CustomersType(Long orgId);
 
 	Map<String, Map<String, List<AssetGroupVO>>> getAssetGroupByCategoryType(Long orgId);
+
+	
 
 }

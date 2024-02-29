@@ -329,6 +329,32 @@ public class MasterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
+	
+	@GetMapping("/getAddressByCustomerId")
+	public ResponseEntity<ResponseDTO> getCustomerAddressByCustomerId(@RequestParam(required = false) Long customerId) {
+		String methodName = "getCustomerAddressByCustomerId()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<CustomersAddressVO> customersAddressVO = new ArrayList<>();
+		try {
+			customersAddressVO = masterService.getCustomerAddressByCustomerId(customerId);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, " Customer address get successfully");
+			responseObjectsMap.put("CustomersAddress", customersAddressVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "Customer address get failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
 
 	@GetMapping("/customers/{id}")
 	public ResponseEntity<ResponseDTO> getCustomersById(@PathVariable Long id) {
@@ -402,7 +428,7 @@ public class MasterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
-	@PostMapping("/addAddress")
+	@PutMapping("/addAddress")
 	public ResponseEntity<ResponseDTO> createAddress(@RequestBody AddressVO addressVO) {
 		String methodName = "createAddress()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
