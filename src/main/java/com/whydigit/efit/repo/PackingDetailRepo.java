@@ -13,4 +13,5 @@ import com.whydigit.efit.entity.PackingDetailVO;
 public interface PackingDetailRepo extends JpaRepository<PackingDetailVO, Long> {
 	@Query(value = "select a from PackingDetailVO a Where a.orgId=?1")
 	List<PackingDetailVO> getpackingDetailByOrgId(Long orgId);
+
 }

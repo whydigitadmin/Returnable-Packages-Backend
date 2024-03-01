@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
 import com.whydigit.efit.common.CommonConstant;
 import com.whydigit.efit.common.UserConstants;
 import com.whydigit.efit.dto.CustomersAddressDTO;
@@ -33,7 +34,6 @@ import com.whydigit.efit.dto.FlowDTO;
 import com.whydigit.efit.dto.KitDTO;
 import com.whydigit.efit.dto.KitResponseDTO;
 import com.whydigit.efit.dto.ResponseDTO;
-import com.whydigit.efit.entity.AddressVO;
 import com.whydigit.efit.entity.AssetCategoryVO;
 import com.whydigit.efit.entity.AssetGroupVO;
 import com.whydigit.efit.entity.AssetVO;
@@ -329,7 +329,7 @@ public class MasterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-	
+
 	@GetMapping("/getAddressByCustomerId")
 	public ResponseEntity<ResponseDTO> getCustomerAddressByCustomerId(@RequestParam(required = false) Long customerId) {
 		String methodName = "getCustomerAddressByCustomerId()";
@@ -349,8 +349,7 @@ public class MasterController extends BaseController {
 			responseObjectsMap.put("CustomersAddress", customersAddressVO);
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} else {
-			responseDTO = createServiceResponseError(responseObjectsMap, "Customer address get failed",
-					errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "Customer address get failed", errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
@@ -428,27 +427,6 @@ public class MasterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
-	@PutMapping("/addAddress")
-	public ResponseEntity<ResponseDTO> createAddress(@RequestBody AddressVO addressVO) {
-		String methodName = "createAddress()";
-		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
-		String errorMsg = null;
-		Map<String, Object> responseObjectsMap = new HashMap<>();
-		ResponseDTO responseDTO = null;
-		try {
-			AddressVO createdAddressVO = masterService.createAddress(addressVO);
-			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Address created successfully");
-			responseObjectsMap.put("addressVO", createdAddressVO);
-			responseDTO = createServiceResponse(responseObjectsMap);
-		} catch (Exception e) {
-			errorMsg = e.getMessage();
-			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-			responseDTO = createServiceResponseError(responseObjectsMap, "Address creation failed", errorMsg);
-		}
-		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
-		return ResponseEntity.ok().body(responseDTO);
-	}
-
 	@PutMapping("/customers")
 	public ResponseEntity<ResponseDTO> updateCustomers(@RequestBody CustomersDTO customersDTO) {
 		String methodName = "updateAssetGroup()";
@@ -520,12 +498,13 @@ public class MasterController extends BaseController {
 			CustomersBankDetailsVO customersBankDetailsVO = masterService
 					.createUpdateBankDetails(customersBankDetailsDTO);
 			if (customersBankDetailsVO != null) {
-				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Customers Bank Details "+action+" successfully");
+				responseObjectsMap.put(CommonConstant.STRING_MESSAGE,
+						"Customers Bank Details " + action + " successfully");
 				responseObjectsMap.put("customersBankDetailsVO", customersBankDetailsVO);
 				responseDTO = createServiceResponse(responseObjectsMap);
 			} else {
-				responseDTO = createServiceResponseError(responseObjectsMap, "Customers BankDetails "+action+" failed",
-						errorMsg);
+				responseDTO = createServiceResponseError(responseObjectsMap,
+						"Customers BankDetails " + action + " failed", errorMsg);
 			}
 		} catch (Exception e) {
 			errorMsg = e.getMessage();

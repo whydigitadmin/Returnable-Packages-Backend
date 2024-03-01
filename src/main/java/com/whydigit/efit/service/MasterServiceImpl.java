@@ -41,7 +41,6 @@ import com.whydigit.efit.dto.FlowDTO;
 import com.whydigit.efit.dto.KitAssetDTO;
 import com.whydigit.efit.dto.KitDTO;
 import com.whydigit.efit.dto.KitResponseDTO;
-import com.whydigit.efit.entity.AddressVO;
 import com.whydigit.efit.entity.AssetCategoryVO;
 import com.whydigit.efit.entity.AssetGroupVO;
 import com.whydigit.efit.entity.AssetItemVO;
@@ -60,7 +59,6 @@ import com.whydigit.efit.entity.VenderAddressVO;
 import com.whydigit.efit.entity.VenderVO;
 import com.whydigit.efit.entity.WarehouseLocationVO;
 import com.whydigit.efit.exception.ApplicationException;
-import com.whydigit.efit.repo.AddressRepo;
 import com.whydigit.efit.repo.AssetCategoryRepo;
 import com.whydigit.efit.repo.AssetGroupRepo;
 import com.whydigit.efit.repo.AssetRepo;
@@ -92,8 +90,6 @@ public class MasterServiceImpl implements MasterService {
 	@Autowired
 	VenderRepo venderRepo;
 	@Autowired
-	AddressRepo addressRepo;
-	@Autowired
 	ManufacturerRepo manufacturerRepo;
 	@Autowired
 	ManufacturerProductRepo manufacturerProductRepo;
@@ -115,7 +111,7 @@ public class MasterServiceImpl implements MasterService {
 
 	@Autowired
 	CustomersBankDetailsRepo CustomersBankDetailsRepo;
-	
+
 	@Autowired
 	CustomersBankDetailsRepo customersBankDetailsRepo;
 
@@ -288,7 +284,7 @@ public class MasterServiceImpl implements MasterService {
 		return customersRepo.findById(id);
 
 	}
-	
+
 	@Override
 	public List<CustomersAddressVO> getCustomerAddressByCustomerId(Long customerId) {
 		List<CustomersAddressVO> customersAddressVO = new ArrayList<>();
@@ -297,12 +293,11 @@ public class MasterServiceImpl implements MasterService {
 
 		return customersAddressVO;
 	}
-	
 
 	@Override
 	public CustomersVO createCustomers(CustomersDTO customersDTO) {
-		CustomersVO customersVO= new CustomersVO();
-		getCustomersVOFromCustomersDTO(customersDTO,customersVO);
+		CustomersVO customersVO = new CustomersVO();
+		getCustomersVOFromCustomersDTO(customersDTO, customersVO);
 		return customersRepo.save(customersVO);
 	}
 
@@ -318,10 +313,10 @@ public class MasterServiceImpl implements MasterService {
 		customersVO.setActive(customersDTO.isActive());
 	}
 
-	@Override
-	public AddressVO createAddress(AddressVO addressVO) {
-		return addressRepo.save(addressVO);
-	}
+//	@Override
+//	public AddressVO createAddress(AddressVO addressVO) {
+//		return addressRepo.save(addressVO);
+//	}
 
 	@Override
 	public CustomersVO updateCustomers(CustomersDTO customersDTO) throws ApplicationException {
@@ -833,11 +828,11 @@ public class MasterServiceImpl implements MasterService {
 
 	private void getCustomersBankDetailsVOFromCustomersBankDetailsDTO(CustomersBankDetailsDTO customersBankDetailsDTO,
 			CustomersBankDetailsVO customersBankDetailsVO) {
-		customersBankDetailsVO.setBank(customersBankDetailsDTO.getBank());		
-		customersBankDetailsVO.setAccountName(customersBankDetailsDTO.getAccountName());		
-		customersBankDetailsVO.setIfscCode(customersBankDetailsDTO.getIfscCode());		
-		customersBankDetailsVO.setBranch(customersBankDetailsDTO.getBranch());		
-		customersBankDetailsVO.setAccountNo(customersBankDetailsDTO.getAccountNo());			
+		customersBankDetailsVO.setBank(customersBankDetailsDTO.getBank());
+		customersBankDetailsVO.setAccountName(customersBankDetailsDTO.getAccountName());
+		customersBankDetailsVO.setIfscCode(customersBankDetailsDTO.getIfscCode());
+		customersBankDetailsVO.setBranch(customersBankDetailsDTO.getBranch());
+		customersBankDetailsVO.setAccountNo(customersBankDetailsDTO.getAccountNo());
 	}
 
 	@Override
@@ -845,5 +840,4 @@ public class MasterServiceImpl implements MasterService {
 		CustomersBankDetailsRepo.deleteById(id);
 	}
 
-	
 }
