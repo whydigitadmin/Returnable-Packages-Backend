@@ -789,12 +789,14 @@ public class MasterServiceImpl implements MasterService {
 	public CustomersAddressVO createUpdateCustomersAddress(CustomersAddressDTO customersAddressDTO)
 			throws ApplicationException {
 		CustomersAddressVO customersAddressVO = new CustomersAddressVO();
-		if (ObjectUtils.isNotEmpty(customersAddressDTO) && ObjectUtils.isNotEmpty(customersAddressDTO.getId())
+		if (ObjectUtils.isNotEmpty(customersAddressDTO)
 				&& ObjectUtils.isNotEmpty(customersAddressDTO.getCustomerId())) {
 			CustomersVO customersVO = customersRepo.findById(customersAddressDTO.getCustomerId())
 					.orElseThrow(() -> new ApplicationException("Customer information not found."));
-			customersAddressVO = customersAddressRepo.findById(customersAddressDTO.getId())
-					.orElseThrow(() -> new ApplicationException("Customer Address information not found."));
+			if (ObjectUtils.isNotEmpty(customersAddressDTO.getId())) {
+				customersAddressVO = customersAddressRepo.findById(customersAddressDTO.getId())
+						.orElseThrow(() -> new ApplicationException("Customer Address information not found."));
+			}
 			customersAddressVO.setCustomersVO(customersVO);
 		} else {
 			throw new ApplicationException("Invalid customer address information.");
@@ -828,12 +830,14 @@ public class MasterServiceImpl implements MasterService {
 			throws ApplicationException {
 		CustomersBankDetailsVO customersBankDetailsVO = new CustomersBankDetailsVO();
 		CustomersVO customersVO = new CustomersVO();
-		if (ObjectUtils.isNotEmpty(customersBankDetailsDTO) && ObjectUtils.isNotEmpty(customersBankDetailsDTO.getId())
+		if (ObjectUtils.isNotEmpty(customersBankDetailsDTO)
 				&& ObjectUtils.isNotEmpty(customersBankDetailsDTO.getCustomerId())) {
 			customersVO = customersRepo.findById(customersBankDetailsDTO.getCustomerId())
 					.orElseThrow(() -> new ApplicationException("Customer information not found."));
-			customersBankDetailsVO = customersBankDetailsRepo.findById(customersBankDetailsDTO.getId())
-					.orElseThrow(() -> new ApplicationException("Customer bank information not found."));
+			if (ObjectUtils.isNotEmpty(customersBankDetailsDTO.getId())) {
+				customersBankDetailsVO = customersBankDetailsRepo.findById(customersBankDetailsDTO.getId())
+						.orElseThrow(() -> new ApplicationException("Customer bank information not found."));
+			}
 			customersBankDetailsVO.setCustomersVO(customersVO);
 		} else {
 			throw new ApplicationException("Invalid customer bank information.");
