@@ -363,7 +363,7 @@ public class PartStudyServiceImpl implements PartStudyService {
 		for (MultipartFile file : files) {
 			if (!file.isEmpty()) {
 				try {
-					String fileName = constructUniqueFileName(file.getOriginalFilename(), type.name(), fileCount, date);
+					String fileName = CommonUtils.constructUniqueFileName(file.getOriginalFilename(), type.name(), fileCount, date);
 					Path savePath = Paths.get(uploadDirPath, fileName);
 					file.transferTo(savePath);
 					String attFileName = new StringBuilder(CommonConstant.FORWARD_SLASH).append(type)
@@ -390,12 +390,6 @@ public class PartStudyServiceImpl implements PartStudyService {
 			packingDetailVO.setApprovedPackageDrawingVO(approvedPackageDrawingVO);
 			packingDetailRepo.save(packingDetailVO);
 		}
-	}
-
-	private String constructUniqueFileName(String originalFilename, String type, int fileCount, String date) {
-		String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
-		return new StringBuilder(type).append(CommonConstant.UNDERSCORE).append(date).append(CommonConstant.UNDERSCORE)
-				.append(fileCount).append(extension).toString();
 	}
 
 	private List<PDAttachmentVO> getPDAttachment(long refPsId) {

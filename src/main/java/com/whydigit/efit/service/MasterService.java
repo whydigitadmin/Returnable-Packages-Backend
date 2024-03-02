@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.whydigit.efit.dto.CustomerAttachmentType;
 import com.whydigit.efit.dto.CustomersAddressDTO;
 import com.whydigit.efit.dto.CustomersBankDetailsDTO;
 import com.whydigit.efit.dto.CustomersDTO;
@@ -56,7 +57,7 @@ public interface MasterService {
 
 	List<CustomersVO> getAllCustomers(Long orgId);
 
-	Optional<CustomersVO> getCustomersById(Long id);
+	CustomersVO getCustomersById(Long id) throws ApplicationException;
 
 	CustomersVO createCustomers(CustomersDTO customersDTO);
 
@@ -166,5 +167,8 @@ public interface MasterService {
 	Map<String, List<CustomersVO>> CustomersType(Long orgId);
 
 	Map<String, Map<String, List<AssetGroupVO>>> getAssetGroupByCategoryType(Long orgId);
+
+	void uploadCustomerAttachmentDoc(MultipartFile[] files, CustomerAttachmentType type, Long customerId)
+			throws ApplicationException;
 
 }

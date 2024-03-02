@@ -1,8 +1,12 @@
 
 package com.whydigit.efit.service;
 
+import java.io.File;
 import java.io.InputStreamReader;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -26,6 +30,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,6 +39,7 @@ import com.opencsv.CSVReader;
 import com.whydigit.efit.common.CommonConstant;
 import com.whydigit.efit.common.CustomerConstant;
 import com.whydigit.efit.common.MasterConstant;
+import com.whydigit.efit.dto.CustomerAttachmentType;
 import com.whydigit.efit.dto.CustomersAddressDTO;
 import com.whydigit.efit.dto.CustomersBankDetailsDTO;
 import com.whydigit.efit.dto.CustomersDTO;
@@ -46,6 +52,7 @@ import com.whydigit.efit.entity.AssetCategoryVO;
 import com.whydigit.efit.entity.AssetGroupVO;
 import com.whydigit.efit.entity.AssetItemVO;
 import com.whydigit.efit.entity.AssetVO;
+import com.whydigit.efit.entity.CustomerAttachmentVO;
 import com.whydigit.efit.entity.CustomersAddressVO;
 import com.whydigit.efit.entity.CustomersBankDetailsVO;
 import com.whydigit.efit.entity.CustomersVO;
@@ -55,6 +62,7 @@ import com.whydigit.efit.entity.KitAssetVO;
 import com.whydigit.efit.entity.KitVO;
 import com.whydigit.efit.entity.ManufacturerProductVO;
 import com.whydigit.efit.entity.ManufacturerVO;
+import com.whydigit.efit.entity.PDAttachmentVO;
 import com.whydigit.efit.entity.UnitVO;
 import com.whydigit.efit.entity.VenderAddressVO;
 import com.whydigit.efit.entity.VenderVO;
@@ -64,6 +72,7 @@ import com.whydigit.efit.repo.AddressRepo;
 import com.whydigit.efit.repo.AssetCategoryRepo;
 import com.whydigit.efit.repo.AssetGroupRepo;
 import com.whydigit.efit.repo.AssetRepo;
+import com.whydigit.efit.repo.CustomerAttachmentRepo;
 import com.whydigit.efit.repo.CustomersAddressRepo;
 import com.whydigit.efit.repo.CustomersBankDetailsRepo;
 import com.whydigit.efit.repo.CustomersRepo;
@@ -75,6 +84,7 @@ import com.whydigit.efit.repo.UnitRepo;
 import com.whydigit.efit.repo.VenderAddressRepo;
 import com.whydigit.efit.repo.VenderRepo;
 import com.whydigit.efit.repo.WarehouseLocationRepo;
+import com.whydigit.efit.util.CommonUtils;
 
 @Service
 public class MasterServiceImpl implements MasterService {
@@ -119,6 +129,12 @@ public class MasterServiceImpl implements MasterService {
 	@Autowired
 	CustomersBankDetailsRepo customersBankDetailsRepo;
 
+	@Autowired
+    Environment env;
+
+	@Autowired
+	CustomerAttachmentRepo customerAttachmentRepo;
+	
 	@Override
 	public List<AssetVO> getAllAsset(Long orgId) {
 		List<AssetVO> assetVO = new ArrayList<>();
@@ -284,9 +300,17 @@ public class MasterServiceImpl implements MasterService {
 	}
 
 	@Override
-	public Optional<CustomersVO> getCustomersById(Long id) {
-		return customersRepo.findById(id);
-
+	public CustomersVO getCustomersById(Long id) throws ApplicationException {
+		CustomersVO customersVO = customersRepo.findById(id)
+				.orElseThrow(() -> new ApplicationException("Customer not found."));
+		List<CustomerAttachmentVO> customerAttachmentVO = customerAttachmentRepo.findByCustomerId(id);
+		customersVO.setSop(customerAttachmentVO.stream()
+				.filter(ca -> ca.getType().equalsIgnoreCase(CustomerAttachmentType.SOP.name()))
+				.collect(Collectors.toList()));
+		customersVO.setDocument(customerAttachmentVO.stream()
+				.filter(ca -> ca.getType().equalsIgnoreCase(CustomerAttachmentType.DOC.name()))
+				.collect(Collectors.toList()));
+		return customersVO;
 	}
 
 	@Override
@@ -833,5 +857,38 @@ public class MasterServiceImpl implements MasterService {
 	@Override
 	public void deleteCustomersBankDetails(Long id) {
 		CustomersBankDetailsRepo.deleteById(id);
+	}
+
+	@Override
+	public void uploadCustomerAttachmentDoc(MultipartFile[] files, CustomerAttachmentType type, Long customerId)
+			throws ApplicationException {
+		if (files == null || files.length == 0 || StringUtils.isEmpty(type.name()) || ObjectUtils.isEmpty(customerId)) {
+			throw new ApplicationException("Invalid customerId Attachment Information.");
+		}
+		String customerDirPath = env.getProperty("customer.attachment.dir");
+		String uploadDirPath = new StringBuilder(customerDirPath).append("/").append(customerId).toString();
+		File uploadDir = new File(uploadDirPath);
+		if (!uploadDir.exists()) {
+			uploadDir.mkdirs();
+		}
+		String date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd_MM_YYYY_HH_mm_ss"));
+		int fileCount = 0;
+		for (MultipartFile file : files) {
+			if (!file.isEmpty()) {
+				try {
+					String fileName = CommonUtils.constructUniqueFileName(file.getOriginalFilename(), type.name(),
+							fileCount, date);
+					Path savePath = Paths.get(uploadDirPath, fileName);
+					file.transferTo(savePath);
+					String attFileName = new StringBuilder(CommonConstant.FORWARD_SLASH).append(type)
+							.append(CommonConstant.FORWARD_SLASH).append(fileName).toString();
+					customerAttachmentRepo.save(CustomerAttachmentVO.builder().fileName(attFileName).type(type.name())
+							.customerId(customerId).build());
+				} catch (Exception e) {
+					LOGGER.error("Failed to save the file: {} Error : {}", file.getOriginalFilename(), e.getMessage());
+				}
+			}
+			fileCount++;
+		}      
 	}
 }
