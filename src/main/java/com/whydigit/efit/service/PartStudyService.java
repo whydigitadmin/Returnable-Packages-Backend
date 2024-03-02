@@ -61,7 +61,7 @@ public interface PartStudyService {
 
 	boolean generatePartStudyId(String refPsId);
 
-	Map<String, Object> searchPartStudyId(Long emitterId, Long receiverId, Long orgId, Boolean completeStatus);
+	 Map<String, Object> searchPartStudyById(Long emitterId, Long refPsId, Long orgId, String partName,String partNumber);
 
 	void saveAttachments(MultipartFile[] files, PDAttachmentType type, Long refPsId) throws ApplicationException;
 

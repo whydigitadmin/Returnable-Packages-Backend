@@ -13,7 +13,6 @@ import com.whydigit.efit.dto.CustomersDTO;
 import com.whydigit.efit.dto.FlowDTO;
 import com.whydigit.efit.dto.KitDTO;
 import com.whydigit.efit.dto.KitResponseDTO;
-import com.whydigit.efit.entity.AddressVO;
 import com.whydigit.efit.entity.AssetCategoryVO;
 import com.whydigit.efit.entity.AssetGroupVO;
 import com.whydigit.efit.entity.AssetVO;
@@ -61,19 +60,21 @@ public interface MasterService {
 
 	CustomersVO createCustomers(CustomersDTO customersDTO);
 
-	AddressVO createAddress(AddressVO addressVO);
-
 	CustomersVO updateCustomers(CustomersDTO customersDTO) throws ApplicationException;
 
-	CustomersBankDetailsVO createUpdateBankDetails(CustomersBankDetailsDTO customersBankDetailsDTO) throws ApplicationException;
+	CustomersBankDetailsVO createUpdateBankDetails(CustomersBankDetailsDTO customersBankDetailsDTO)
+			throws ApplicationException;
 
 	void deleteCustomers(Long id);
-	
+
 	void deleteCustomersBankDetails(Long id);
 
-	CustomersAddressVO createUpdateCustomersAddress(CustomersAddressDTO customersAddressDTO) throws ApplicationException;
+	CustomersAddressVO createUpdateCustomersAddress(CustomersAddressDTO customersAddressDTO)
+			throws ApplicationException;
 
 	void deleteCustomersAddress(Long id);
+
+	List<CustomersAddressVO> getCustomerAddressByCustomerId(Long customerId);
 
 	// FLOW
 

@@ -8,10 +8,16 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -19,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -317,30 +324,34 @@ public class PartStudyServiceImpl implements PartStudyService {
 	}
 
 	@Override
-	public Map<String, Object> searchPartStudyId(Long emitterId, Long receiverId, Long orgId, Boolean completeStatus) {
-//		Map<String, Object> assetGroup = new HashMap<>();
-//		List<AssetGroupVO> assetGroupVO = assetGroupRepo.findAll(new Specification<AssetGroupVO>() {
-//			@Override
-//			public Predicate toPredicate(Root<AssetGroupVO> root, CriteriaQuery<?> query,
-//					CriteriaBuilder criteriaBuilder) {
-//				List<Predicate> predicates = new ArrayList<>();
-//				if (ObjectUtils.isNotEmpty(orgId)) {
-//					predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("orgId"), orgId)));
-//				}
-//				if (StringUtils.isNotBlank(completeStatus)) {
-//					predicates
-//							.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("completeStatus"), completeStatus)));
-//				}
-//				if (ObjectUtils.isNotEmpty(emitterId)) {
-//					predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("emitterId"), emitterId)));
-//				}
-//				if (ObjectUtils.isNotEmpty(receiverId)) {
-//					predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("receiverId"), receiverId)));
-//				}
-//				return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
-//			}
-//		});
-		return null;
+	public Map<String, Object> searchPartStudyById(Long emitterId, Long refPsId, Long orgId, String partName,
+			String partNumber) {
+		Map<String, Object> basicDetail = new HashMap<>();
+		List<BasicDetailVO> basicDetailVO = basicDetailRepo.findAll(new Specification<BasicDetailVO>() {
+			@Override
+			public Predicate toPredicate(Root<BasicDetailVO> root, CriteriaQuery<?> query,
+					CriteriaBuilder criteriaBuilder) {
+				List<Predicate> predicates = new ArrayList<>();
+				if (ObjectUtils.isNotEmpty(orgId)) {
+					predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("orgId"), orgId)));
+				}
+				if (ObjectUtils.isNotEmpty(emitterId)) {
+					predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("emitterId"), emitterId)));
+				}
+				if (StringUtils.isNotBlank(partName)) {
+					predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("partName"), partName)));
+				}
+				if (StringUtils.isNotBlank(partNumber)) {
+					predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("partNumber"), partNumber)));
+				}
+				if (ObjectUtils.isNotEmpty(refPsId)) {
+					predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("refPsId"), refPsId)));
+				}
+				return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
+			}
+		});
+		basicDetail.put("basicDetailVO", basicDetailVO);
+		return basicDetail;
 	}
 
 	@Override
@@ -363,7 +374,8 @@ public class PartStudyServiceImpl implements PartStudyService {
 		for (MultipartFile file : files) {
 			if (!file.isEmpty()) {
 				try {
-					String fileName = CommonUtils.constructUniqueFileName(file.getOriginalFilename(), type.name(), fileCount, date);
+					String fileName = CommonUtils.constructUniqueFileName(file.getOriginalFilename(), type.name(),
+							fileCount, date);
 					Path savePath = Paths.get(uploadDirPath, fileName);
 					file.transferTo(savePath);
 					String attFileName = new StringBuilder(CommonConstant.FORWARD_SLASH).append(type)
@@ -377,22 +389,28 @@ public class PartStudyServiceImpl implements PartStudyService {
 				} catch (Exception e) {
 					LOGGER.error("Failed to save the file: {} Error : {}", file.getOriginalFilename(), e.getMessage());
 				}
+				fileCount++;
 			}
-			fileCount++;
+			if (type.name().equalsIgnoreCase(PDAttachmentType.APPROVED_PACKAGE_DRAWING.name())) {
+				List<ApprovedPackageDrawingVO> approvedPackageDrawingVO = packingDetailVO.getApprovedPackageDrawingVO();
+				ApprovedPackageDrawingVO approvedPackageDrawing = new ApprovedPackageDrawingVO();
+				approvedPackageDrawing.setFileName(CommonUtils.trimLastCharacter(approvedPDFileName.toString()));
+				approvedPackageDrawing.setPackingDetailVO(packingDetailVO);
+				approvedPackageDrawing.setRejectStatus(false);
+				approvedPackageDrawingVO.add(approvedPackageDrawing);
+				packingDetailVO.setApprovedPackageDrawingVO(approvedPackageDrawingVO);
+				packingDetailRepo.save(packingDetailVO);
+			}
 		}
-		if (type.name().equalsIgnoreCase(PDAttachmentType.APPROVED_PACKAGE_DRAWING.name())) {
-			List<ApprovedPackageDrawingVO> approvedPackageDrawingVO = packingDetailVO.getApprovedPackageDrawingVO();
-			ApprovedPackageDrawingVO approvedPackageDrawing = new ApprovedPackageDrawingVO();
-			approvedPackageDrawing.setFileName(CommonUtils.trimLastCharacter(approvedPDFileName.toString()));
-			approvedPackageDrawing.setPackingDetailVO(packingDetailVO);
-			approvedPackageDrawing.setRejectStatus(false);
-			approvedPackageDrawingVO.add(approvedPackageDrawing);
-			packingDetailVO.setApprovedPackageDrawingVO(approvedPackageDrawingVO);
-			packingDetailRepo.save(packingDetailVO);
-		}
+	}
+	
+	private String constructUniqueFileName(String originalFilename, String type, int fileCount, String date) {
+		String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
+		return new StringBuilder(type).append(CommonConstant.UNDERSCORE).append(date).append(CommonConstant.UNDERSCORE)
+				.append(fileCount).append(extension).toString();
 	}
 
 	private List<PDAttachmentVO> getPDAttachment(long refPsId) {
 		return pdAttachmentRepo.findByRefPsId(refPsId);
 	}
-	}
+}

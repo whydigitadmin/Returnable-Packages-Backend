@@ -1,5 +1,7 @@
 package com.whydigit.efit.entity;
 
+import java.time.LocalDateTime;
+
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -15,32 +17,29 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "customer_address")
+@Table(name = "inwardsku_details")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class AddressVO {
-
+public class InwardSkuVO {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
-	private String gstRegStatus;
-	private String gstNo;
-	private String street1;
-	private String street2;
-	private String state;
-	private String city;
-	private String pincode;
-	private String contactName;
-	private String phoneNumber;
-	// private String addressType;
-	private boolean isPrimary;
-   // @JsonManagedReference
-   //@OneToMany(mappedBy="flowVO",cascade = CascadeType.ALL)
-   //private List<FlowDetailVO> flowDetailVO;
+	private Long Id;
+	private Long retManifestNo;
+	private LocalDateTime rmDate;
+	private String kitNo;
+	private String flowName;
+	private String transporter;
+	private String wayBillNo;
+	private Long dehireQty;
+	private Long netRecdQty;
+	private Long repair;
+	private Long scrap;
+	private Long tat;
+	private String partName;
+	private String partNo;
 
 	@Embedded
-	@Builder.Default
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
 }

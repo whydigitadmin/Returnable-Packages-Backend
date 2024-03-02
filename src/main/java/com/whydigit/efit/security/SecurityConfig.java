@@ -37,9 +37,9 @@ public class SecurityConfig {
 						"/api/auth/getRefreshToken", "/api/basicSetting/companyInfo", "/api/warehouse/view",
 						"/api/master/asset", "/api/warehouse/view/{id}", "/api/usersdetails/view", "/api/DcVendor/view",
 						"/api/master/**", "​/api​/master​/addAddress", "/api/DcVendor/view/{id}",
-						"/api/partStudy/basicDetails", "/api/partStudy/basicDetails/{id}",
+						"/api/partStudy/basicDetails", "/api/partStudy/d}/searchPartStudyById",
 						"/api/partStudy/packageDetail", "/api/partStudy/packageDetail/{id}", "/api/partStudy/logistics",
-						"/api/partStudy/logistics/{id}", "/api/partStudy/**",
+						"/api/partStudy/logistics/{id}", "/api/partStudy/**","/api/inwardSku/**",
 						"/api/partStudy/stockDetail/{id}","/api/emitter/createIssueRequest","/api/emitter/*","/api/auth/createUser")
 				.permitAll().antMatchers("/api/**").hasAnyRole("USER", "GUEST_USER").anyRequest().authenticated();
 

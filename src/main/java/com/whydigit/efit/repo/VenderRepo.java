@@ -14,4 +14,6 @@ public interface VenderRepo extends JpaRepository<VenderVO, Integer> {
 	@Query(value = "select a from VenderVO a Where a.orgId=?1")
 	List<VenderVO> getAllVenderByOrgId(Long orgId);
 
+	
+
 }
