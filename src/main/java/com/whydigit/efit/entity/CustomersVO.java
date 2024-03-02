@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.whydigit.efit.dto.CreatedUpdatedDate;
@@ -35,10 +36,12 @@ public class CustomersVO {
 	private String customerCode;
 	private String displayName;
 	private long phoneNumber;
-	private String sop;
-	private String document;
 	private boolean customerActivatePortal;
 	private boolean active;
+	@Transient
+	private List<CustomerAttachmentVO> sop;
+	@Transient
+	private List<CustomerAttachmentVO> document;
 
 	@OneToMany(mappedBy = "customersVO", cascade = CascadeType.ALL)
 	@JsonManagedReference

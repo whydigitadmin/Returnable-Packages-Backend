@@ -27,6 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.whydigit.efit.common.CommonConstant;
 import com.whydigit.efit.common.UserConstants;
+import com.whydigit.efit.dto.CustomerAttachmentType;
 import com.whydigit.efit.dto.CustomersAddressDTO;
 import com.whydigit.efit.dto.CustomersBankDetailsDTO;
 import com.whydigit.efit.dto.CustomersDTO;
@@ -364,7 +365,7 @@ public class MasterController extends BaseController {
 		ResponseDTO responseDTO = null;
 		CustomersVO customersVO = null;
 		try {
-			customersVO = masterService.getCustomersById(id).orElse(null);
+			customersVO = masterService.getCustomersById(id);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
@@ -427,6 +428,28 @@ public class MasterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
+	@PostMapping("/customersAttachmentDoc")
+	public ResponseEntity<ResponseDTO> uploadCustomerAttachmentDoc(@RequestParam MultipartFile[] files,
+			CustomerAttachmentType type, @RequestParam Long customerId) {
+		String methodName = "uploadCustomerAttachmentDoc()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		try {
+			masterService.uploadCustomerAttachmentDoc(files, type, customerId);
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Customers attachment upload successfully");
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap,
+					"Customers attachment upload failed. Please try again.", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
 	@PutMapping("/customers")
 	public ResponseEntity<ResponseDTO> updateCustomers(@RequestBody CustomersDTO customersDTO) {
 		String methodName = "updateAssetGroup()";
@@ -453,6 +476,7 @@ public class MasterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
+	
 	@PostMapping("/customersAddress")
 	public ResponseEntity<ResponseDTO> createUpdateCustomersAddress(
 			@RequestBody CustomersAddressDTO customersAddressDTO) {

@@ -47,7 +47,6 @@ public class PackingDetailVO {
 	private String stacking;
 	private String nesting;
 	private String remarks;
-//	private List<PDAttachmentVO> pdAttachmentVO;
 	@Transient
 	private List<PDAttachmentVO> partImage;
 	@Transient

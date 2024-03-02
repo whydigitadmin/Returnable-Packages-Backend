@@ -324,19 +324,19 @@ public class PartStudyServiceImpl implements PartStudyService {
 	}
 
 	@Override
-	public Map<String, Object> searchPartStudyById(Long emitterId, Long refPsId, Long orgId, String partName,String partNumber) {
+	public Map<String, Object> searchPartStudyById(Long emitterId, Long refPsId, Long orgId, String partName,
+			String partNumber) {
 		Map<String, Object> basicDetail = new HashMap<>();
 		List<BasicDetailVO> basicDetailVO = basicDetailRepo.findAll(new Specification<BasicDetailVO>() {
-//			@Override
-		    public Predicate toPredicate(Root<BasicDetailVO> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
-
+			@Override
+			public Predicate toPredicate(Root<BasicDetailVO> root, CriteriaQuery<?> query,
+					CriteriaBuilder criteriaBuilder) {
 				List<Predicate> predicates = new ArrayList<>();
 				if (ObjectUtils.isNotEmpty(orgId)) {
 					predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("orgId"), orgId)));
 				}
 				if (ObjectUtils.isNotEmpty(emitterId)) {
-					predicates
-							.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("emitterId"), emitterId)));
+					predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("emitterId"), emitterId)));
 				}
 				if (StringUtils.isNotBlank(partName)) {
 					predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("partName"), partName)));
@@ -348,71 +348,69 @@ public class PartStudyServiceImpl implements PartStudyService {
 					predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("refPsId"), refPsId)));
 				}
 				return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
-				
 			}
 		});
 		basicDetail.put("basicDetailVO", basicDetailVO);
 		return basicDetail;
-
 	}
 
-      
-@Override
-public void saveAttachments(MultipartFile[] files, PDAttachmentType type, Long refPsId)
-		throws ApplicationException {
-	if (files == null || files.length == 0 || StringUtils.isEmpty(type.name()) || ObjectUtils.isEmpty(refPsId)) {
-		throw new ApplicationException("Invalid Attachment Information.");
-	}
-	String psDirPath = env.getProperty("part.study.attachment.dir");
-	String uploadDirPath = new StringBuilder(psDirPath).append("/").append(refPsId).toString();
-	File uploadDir = new File(uploadDirPath);
-	if (!uploadDir.exists()) {
-		uploadDir.mkdirs();
-	}
-	String date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd_MM_YYYY_HH_mm_ss"));
-	int fileCount = 0;
-	StringBuilder approvedPDFileName = new StringBuilder();
-	PackingDetailVO packingDetailVO = packingDetailRepo.findById(refPsId)
-			.orElseThrow(() -> new ApplicationException("PackingDetail not found."));
-	for (MultipartFile file : files) {
-		if (!file.isEmpty()) {
-			try {
-				String fileName = constructUniqueFileName(file.getOriginalFilename(), type.name(), fileCount, date);
-				Path savePath = Paths.get(uploadDirPath, fileName);
-				file.transferTo(savePath);
-				String attFileName = new StringBuilder(CommonConstant.FORWARD_SLASH).append(type)
-						.append(CommonConstant.FORWARD_SLASH).append(fileName).toString();
-				if (type.name().equalsIgnoreCase(PDAttachmentType.APPROVED_PACKAGE_DRAWING.name())) {
-					approvedPDFileName.append(attFileName).append(",");
-				} else {
-					pdAttachmentRepo.save(PDAttachmentVO.builder().fileName(attFileName).type(type.name())
-							.refPsId(refPsId).build());
+	@Override
+	public void saveAttachments(MultipartFile[] files, PDAttachmentType type, Long refPsId)
+			throws ApplicationException {
+		if (files == null || files.length == 0 || StringUtils.isEmpty(type.name()) || ObjectUtils.isEmpty(refPsId)) {
+			throw new ApplicationException("Invalid Attachment Information.");
+		}
+		String psDirPath = env.getProperty("part.study.attachment.dir");
+		String uploadDirPath = new StringBuilder(psDirPath).append("/").append(refPsId).toString();
+		File uploadDir = new File(uploadDirPath);
+		if (!uploadDir.exists()) {
+			uploadDir.mkdirs();
+		}
+		String date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd_MM_YYYY_HH_mm_ss"));
+		int fileCount = 0;
+		StringBuilder approvedPDFileName = new StringBuilder();
+		PackingDetailVO packingDetailVO = packingDetailRepo.findById(refPsId)
+				.orElseThrow(() -> new ApplicationException("PackingDetail not found."));
+		for (MultipartFile file : files) {
+			if (!file.isEmpty()) {
+				try {
+					String fileName = CommonUtils.constructUniqueFileName(file.getOriginalFilename(), type.name(),
+							fileCount, date);
+					Path savePath = Paths.get(uploadDirPath, fileName);
+					file.transferTo(savePath);
+					String attFileName = new StringBuilder(CommonConstant.FORWARD_SLASH).append(type)
+							.append(CommonConstant.FORWARD_SLASH).append(fileName).toString();
+					if (type.name().equalsIgnoreCase(PDAttachmentType.APPROVED_PACKAGE_DRAWING.name())) {
+						approvedPDFileName.append(attFileName).append(",");
+					} else {
+						pdAttachmentRepo.save(PDAttachmentVO.builder().fileName(attFileName).type(type.name())
+								.refPsId(refPsId).build());
+					}
+				} catch (Exception e) {
+					LOGGER.error("Failed to save the file: {} Error : {}", file.getOriginalFilename(), e.getMessage());
 				}
-			} catch (Exception e) {
-				LOGGER.error("Failed to save the file: {} Error : {}", file.getOriginalFilename(), e.getMessage());
+				fileCount++;
+			}
+			if (type.name().equalsIgnoreCase(PDAttachmentType.APPROVED_PACKAGE_DRAWING.name())) {
+				List<ApprovedPackageDrawingVO> approvedPackageDrawingVO = packingDetailVO.getApprovedPackageDrawingVO();
+				ApprovedPackageDrawingVO approvedPackageDrawing = new ApprovedPackageDrawingVO();
+				approvedPackageDrawing.setFileName(CommonUtils.trimLastCharacter(approvedPDFileName.toString()));
+				approvedPackageDrawing.setPackingDetailVO(packingDetailVO);
+				approvedPackageDrawing.setRejectStatus(false);
+				approvedPackageDrawingVO.add(approvedPackageDrawing);
+				packingDetailVO.setApprovedPackageDrawingVO(approvedPackageDrawingVO);
+				packingDetailRepo.save(packingDetailVO);
 			}
 		}
-		fileCount++;
 	}
-	if (type.name().equalsIgnoreCase(PDAttachmentType.APPROVED_PACKAGE_DRAWING.name())) {
-		List<ApprovedPackageDrawingVO> approvedPackageDrawingVO = packingDetailVO.getApprovedPackageDrawingVO();
-		ApprovedPackageDrawingVO approvedPackageDrawing = new ApprovedPackageDrawingVO();
-		approvedPackageDrawing.setFileName(CommonUtils.trimLastCharacter(approvedPDFileName.toString()));
-		approvedPackageDrawing.setPackingDetailVO(packingDetailVO);
-		approvedPackageDrawing.setRejectStatus(false);
-		approvedPackageDrawingVO.add(approvedPackageDrawing);
-		packingDetailVO.setApprovedPackageDrawingVO(approvedPackageDrawingVO);
-		packingDetailRepo.save(packingDetailVO);
+	
+	private String constructUniqueFileName(String originalFilename, String type, int fileCount, String date) {
+		String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
+		return new StringBuilder(type).append(CommonConstant.UNDERSCORE).append(date).append(CommonConstant.UNDERSCORE)
+				.append(fileCount).append(extension).toString();
 	}
-}
 
-private String constructUniqueFileName(String originalFilename, String type, int fileCount, String date) {
-	String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
-	return new StringBuilder(type).append(CommonConstant.UNDERSCORE).append(date).append(CommonConstant.UNDERSCORE)
-			.append(fileCount).append(extension).toString();
-}
-
-private List<PDAttachmentVO> getPDAttachment(long refPsId) {
-	return pdAttachmentRepo.findByRefPsId(refPsId);
-}
+	private List<PDAttachmentVO> getPDAttachment(long refPsId) {
+		return pdAttachmentRepo.findByRefPsId(refPsId);
+	}
 }
