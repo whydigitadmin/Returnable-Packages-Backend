@@ -37,12 +37,14 @@ import com.whydigit.efit.dto.PackingDetailDTO;
 import com.whydigit.efit.dto.StockDetailDTO;
 import com.whydigit.efit.entity.ApprovedPackageDrawingVO;
 import com.whydigit.efit.entity.BasicDetailVO;
+import com.whydigit.efit.entity.CustomersVO;
 import com.whydigit.efit.entity.LogisticsVO;
 import com.whydigit.efit.entity.PDAttachmentVO;
 import com.whydigit.efit.entity.PackingDetailVO;
 import com.whydigit.efit.entity.StockDetailVO;
 import com.whydigit.efit.exception.ApplicationException;
 import com.whydigit.efit.repo.BasicDetailRepo;
+import com.whydigit.efit.repo.CustomersRepo;
 import com.whydigit.efit.repo.LogisticsRepo;
 import com.whydigit.efit.repo.PDAttachmentRepo;
 import com.whydigit.efit.repo.PackingDetailRepo;
@@ -64,6 +66,9 @@ public class PartStudyServiceImpl implements PartStudyService {
 	Environment env;
 	@Autowired
 	PDAttachmentRepo pdAttachmentRepo; 
+	@Autowired
+	CustomersRepo customersRepo;
+	
 	public static final Logger LOGGER = LoggerFactory.getLogger(PartStudyServiceImpl.class);
 
 	@Override
@@ -350,7 +355,17 @@ public class PartStudyServiceImpl implements PartStudyService {
 				return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
 			}
 		});
+		List<Long> emitterIds = basicDetailVO.stream().map(BasicDetailVO::getEmitterId).distinct()
+				.collect(Collectors.toList());
 		basicDetail.put("basicDetailVO", basicDetailVO);
+		basicDetail.put("emitter", customersRepo.findAllById(emitterIds).stream()
+				.collect(Collectors.toMap(CustomersVO::getDisplayName, CustomersVO::getId)));
+		basicDetail.put("partName",
+				basicDetailVO.stream().map(BasicDetailVO::getPartName).distinct().collect(Collectors.toList()));
+		basicDetail.put("partNumber",
+				basicDetailVO.stream().map(BasicDetailVO::getPartNumber).distinct().collect(Collectors.toList()));
+		basicDetail.put("partStudyId",
+				basicDetailVO.stream().map(BasicDetailVO::getRefPsId).distinct().collect(Collectors.toList()));
 		return basicDetail;
 	}
 
