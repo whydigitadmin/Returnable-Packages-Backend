@@ -329,7 +329,7 @@ public class PartStudyServiceImpl implements PartStudyService {
 	}
 
 	@Override
-	public Map<String, Object> searchPartStudyById(Long emitterId, Long refPsId, Long orgId, String partName,
+	public Map<String, Object> searchPartStudy(Long emitterId, Long refPsId, Long orgId, String partName,
 			String partNumber) {
 		Map<String, Object> basicDetail = new HashMap<>();
 		List<BasicDetailVO> basicDetailVO = basicDetailRepo.findAll(new Specification<BasicDetailVO>() {
