@@ -515,17 +515,17 @@ public class PartStudyController extends BaseController {
 	}
 	
 	@GetMapping("/searchPartStudyById")
-	public ResponseEntity<ResponseDTO> searchPartStudyById(@RequestParam(required = false) Long emitterId,
+	public ResponseEntity<ResponseDTO> searchPartStudy(@RequestParam(required = false) Long emitterId,
 			@RequestParam(required = false) Long refPsId,@RequestParam(required = false) Long orgId,
 			@RequestParam(required = false) String partName,@RequestParam(required = false) String partNumber){			
-		String methodName = "searchPartStudyById()";
+		String methodName = "searchPartStudy()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
 		Map<String, Object> basicDetailVO = new HashMap<>();
 		try {      
-			basicDetailVO = partStudyService.searchPartStudyById(emitterId, refPsId, orgId, partName,partNumber);
+			basicDetailVO = partStudyService.searchPartStudy(emitterId, refPsId, orgId, partName,partNumber);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
