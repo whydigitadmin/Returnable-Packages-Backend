@@ -17,6 +17,8 @@ public interface CustomersRepo extends JpaRepository<CustomersVO, Long> {
 
 	List<CustomersVO> findByOrgId(Long orgId);
 
+	
+
 }
 
 

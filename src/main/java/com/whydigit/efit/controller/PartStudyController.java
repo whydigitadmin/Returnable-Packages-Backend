@@ -514,28 +514,28 @@ public class PartStudyController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 	
-	@GetMapping("/searchPartStudyId")
-	public ResponseEntity<ResponseDTO> searchPartStudyId(@RequestParam(required = false) Long emitterId,
-			@RequestParam(required = false) Long receiverId,@RequestParam(required = false) Long orgId,
-			@RequestParam(required = false) Boolean completeStatus){			
-		String methodName = "searchPartStudyId()";
+	@GetMapping("/searchPartStudyById")
+	public ResponseEntity<ResponseDTO> searchPartStudyById(@RequestParam(required = false) Long emitterId,
+			@RequestParam(required = false) Long refPsId,@RequestParam(required = false) Long orgId,
+			@RequestParam(required = false) String partName,@RequestParam(required = false) String partNumber){			
+		String methodName = "searchPartStudyById()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
-		Map<String, Object> assetGroupVO = new HashMap<>();
-		try {
-			assetGroupVO = partStudyService.searchPartStudyId(emitterId, receiverId, orgId, completeStatus);
+		Map<String, Object> basicDetailVO = new HashMap<>();
+		try {      
+			basicDetailVO = partStudyService.searchPartStudyById(emitterId, refPsId, orgId, partName,partNumber);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
 		}
 		if (StringUtils.isBlank(errorMsg)) {
-			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Search partStudyId information get successfully");
-			responseObjectsMap.put("assetGroupVO", assetGroupVO);
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "partStudyId information get successfully");
+			responseObjectsMap.put("basicDetailVO", basicDetailVO);
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} else {
-			responseDTO = createServiceResponseError(responseObjectsMap, "Search partStudyId information receive failed",
+			responseDTO = createServiceResponseError(responseObjectsMap, "partStudyId information receive failed",
 					errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
