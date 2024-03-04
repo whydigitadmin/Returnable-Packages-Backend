@@ -23,6 +23,7 @@ public class WarehouseVO {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int warehouseCode;
+	private long orgId;
 	private String warehouseName;
 	private String storageMapping;
 	private String country;
@@ -32,6 +33,7 @@ public class WarehouseVO {
 	private String address;
 	private String gst;
 	private String locationType;
+	private String warehouseLocation;
 	private String document;
 	private boolean active;
 		

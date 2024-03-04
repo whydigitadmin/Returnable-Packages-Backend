@@ -2,8 +2,10 @@ package com.whydigit.efit.controller;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.whydigit.efit.common.CommonConstant;
@@ -61,6 +64,44 @@ public class WarehouseController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 
+	}
+
+	@GetMapping("/getWarehouseLocationByOrgID")
+	public ResponseEntity<ResponseDTO> getWarehouseLocationByOrgID(@RequestParam (required = false) Long orgId) {
+		String methodName = "getWarehouseLocationByOrgID()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		Set <Object[]> warehousevo = new HashSet <>();
+		try {
+			warehousevo = warehouseService.getWarehouseLocationByOrgID(orgId);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			List<Map<String, String>> location=getWarehouseLocation(warehousevo);
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Warehouse location information get successfully");
+			responseObjectsMap.put("WarehouseLocation", location);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "Warehouse location information receive failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+
+	}
+
+	private List<Map<String, String>> getWarehouseLocation(Set<Object[]> warehousevo) {
+		List<Map<String, String>> location=new ArrayList<>();
+		for(Object[]w : warehousevo) {
+			Map<String, String> warehouse=new HashMap<>();
+			warehouse.put("Location", w[0].toString());
+			location.add(warehouse);
+		}
+		return location;
 	}
 
 	@PostMapping("/view")
