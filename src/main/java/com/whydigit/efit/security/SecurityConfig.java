@@ -34,9 +34,11 @@ public class SecurityConfig {
 				.permitAll()
 				.antMatchers("/v2/api-docs", "/configuration/ui", "/swagger-resources/**", "/configuration/security",
 						"/swagger-ui.html", "/swagger-ui/*", "/api/auth/signup", "/api/auth/login", "/api/auth/logout",
-						"/api/auth/getRefreshToken", "/api/basicSetting/companyInfo", "/api/warehouse/view",
+						"/api/auth/getRefreshToken", "/api/basicSetting/companyInfo", "/api/warehouse/updateWarehose",
 						"/api/master/asset", "/api/warehouse/view/{id}", "/api/usersdetails/view", "/api/DcVendor/view",
-						"/api/master/**", "​/api​/master​/addAddress", "/api/DcVendor/view/{id}","/api/warehouse/getWarehouseLocationByOrgID",
+						"/api/master/**", "​/api​/master​/addAddress", "/api/DcVendor/view/{id}",
+						"/api/warehouse/getWarehouseLocationByOrgID","/api/warehouse/updateCreateWarehouse",
+						"/api/warehouse/view",
 						"/api/partStudy/basicDetails", "/api/partStudy/d}/searchPartStudyById",
 						"/api/partStudy/packageDetail", "/api/partStudy/packageDetail/{id}", "/api/partStudy/logistics",
 						"/api/partStudy/logistics/{id}", "/api/partStudy/**","/api/inwardSku/**",

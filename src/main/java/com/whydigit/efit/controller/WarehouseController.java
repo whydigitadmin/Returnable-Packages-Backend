@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.validation.Valid;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.whydigit.efit.common.CommonConstant;
 import com.whydigit.efit.common.UserConstants;
 import com.whydigit.efit.dto.ResponseDTO;
+import com.whydigit.efit.dto.WarehouseDTO;
 import com.whydigit.efit.entity.WarehouseVO;
 import com.whydigit.efit.service.WarehouseService;
 
@@ -67,13 +70,13 @@ public class WarehouseController extends BaseController {
 	}
 
 	@GetMapping("/getWarehouseLocationByOrgID")
-	public ResponseEntity<ResponseDTO> getWarehouseLocationByOrgID(@RequestParam (required = false) Long orgId) {
+	public ResponseEntity<ResponseDTO> getWarehouseLocationByOrgID(@RequestParam(required = false) Long orgId) {
 		String methodName = "getWarehouseLocationByOrgID()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
-		Set <Object[]> warehousevo = new HashSet <>();
+		Set<Object[]> warehousevo = new HashSet<>();
 		try {
 			warehousevo = warehouseService.getWarehouseLocationByOrgID(orgId);
 		} catch (Exception e) {
@@ -81,13 +84,13 @@ public class WarehouseController extends BaseController {
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
 		}
 		if (StringUtils.isBlank(errorMsg)) {
-			List<Map<String, String>> location=getWarehouseLocation(warehousevo);
+			List<Map<String, String>> location = getWarehouseLocation(warehousevo);
 			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Warehouse location information get successfully");
 			responseObjectsMap.put("WarehouseLocation", location);
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} else {
-			responseDTO = createServiceResponseError(responseObjectsMap, "Warehouse location information receive failed",
-					errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap,
+					"Warehouse location information receive failed", errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
@@ -95,9 +98,9 @@ public class WarehouseController extends BaseController {
 	}
 
 	private List<Map<String, String>> getWarehouseLocation(Set<Object[]> warehousevo) {
-		List<Map<String, String>> location=new ArrayList<>();
-		for(Object[]w : warehousevo) {
-			Map<String, String> warehouse=new HashMap<>();
+		List<Map<String, String>> location = new ArrayList<>();
+		for (Object[] w : warehousevo) {
+			Map<String, String> warehouse = new HashMap<>();
 			warehouse.put("Location", w[0].toString());
 			location.add(warehouse);
 		}
@@ -140,7 +143,7 @@ public class WarehouseController extends BaseController {
 				responseObjectsMap.put("WarehouseVO", updateWarehousevo);
 				responseDTO = createServiceResponse(responseObjectsMap);
 			} else {
-				errorMsg = "Warehouse not found for ID: " + warehousevo.getId();
+				errorMsg = "Warehouse not found for ID: " + warehousevo.getWarehouseId();
 				responseDTO = createServiceResponseError(responseObjectsMap, "Warehouse update failed", errorMsg);
 			}
 		} catch (Exception e) {
@@ -153,7 +156,7 @@ public class WarehouseController extends BaseController {
 	}
 
 	@DeleteMapping("/view/{id}")
-	public ResponseEntity<ResponseDTO> deleteWarehouse(@PathVariable int id) {
+	public ResponseEntity<ResponseDTO> deleteWarehouse(@PathVariable Long id) {
 		String methodName = "deleteWarehouse()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -167,6 +170,32 @@ public class WarehouseController extends BaseController {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
 			responseDTO = createServiceResponseError(responseObjectsMap, "Warehouse deletion failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
+	@PutMapping("/updateCreateWarehouse")
+	public ResponseEntity<ResponseDTO> updateCreateWarehouse(@Valid @RequestBody WarehouseDTO warehouseDTO) {
+		String methodName = "updateCreateWarehouse()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		try {
+			WarehouseVO updatedWarehouseVO = warehouseService.updateCreateWarehouse(warehouseDTO);
+			if (updatedWarehouseVO != null) {
+				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Warehouse updated successfully");
+				responseObjectsMap.put("updatedWarehouse", updatedWarehouseVO);
+				responseDTO = createServiceResponse(responseObjectsMap);
+			} else {
+				errorMsg = "Warehouse not found for ID: " + warehouseDTO.getWarehouseId();
+				responseDTO = createServiceResponseError(responseObjectsMap, "Warehouse update failed", errorMsg);
+			}
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "Warehouse update failed", errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);

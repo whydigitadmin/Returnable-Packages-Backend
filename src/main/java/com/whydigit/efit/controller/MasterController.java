@@ -48,7 +48,6 @@ import com.whydigit.efit.entity.ManufacturerVO;
 import com.whydigit.efit.entity.UnitVO;
 import com.whydigit.efit.entity.VenderAddressVO;
 import com.whydigit.efit.entity.VenderVO;
-import com.whydigit.efit.entity.WarehouseLocationVO;
 import com.whydigit.efit.service.MasterService;
 
 @CrossOrigin
@@ -371,7 +370,7 @@ public class MasterController extends BaseController {
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
 		}
 		if (StringUtils.isEmpty(errorMsg)) {
-			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "AssetGroup found by ID");
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Customers found by ID");
 			responseObjectsMap.put("customersVO", customersVO);
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} else {

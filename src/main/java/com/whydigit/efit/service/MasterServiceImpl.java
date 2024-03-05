@@ -61,11 +61,9 @@ import com.whydigit.efit.entity.KitAssetVO;
 import com.whydigit.efit.entity.KitVO;
 import com.whydigit.efit.entity.ManufacturerProductVO;
 import com.whydigit.efit.entity.ManufacturerVO;
-import com.whydigit.efit.entity.PDAttachmentVO;
 import com.whydigit.efit.entity.UnitVO;
 import com.whydigit.efit.entity.VenderAddressVO;
 import com.whydigit.efit.entity.VenderVO;
-import com.whydigit.efit.entity.WarehouseLocationVO;
 import com.whydigit.efit.exception.ApplicationException;
 import com.whydigit.efit.repo.AssetCategoryRepo;
 import com.whydigit.efit.repo.AssetGroupRepo;
@@ -81,7 +79,6 @@ import com.whydigit.efit.repo.ManufacturerRepo;
 import com.whydigit.efit.repo.UnitRepo;
 import com.whydigit.efit.repo.VenderAddressRepo;
 import com.whydigit.efit.repo.VenderRepo;
-import com.whydigit.efit.repo.WarehouseLocationRepo;
 import com.whydigit.efit.util.CommonUtils;
 
 @Service
@@ -107,8 +104,6 @@ public class MasterServiceImpl implements MasterService {
 	AssetCategoryRepo assetCategoryRepo;
 	@Autowired
 	UnitRepo unitRepo;
-	@Autowired
-	WarehouseLocationRepo warehouseLocationRepo;
 	@Autowired
 	VenderAddressRepo venderAddressRepo;
 	@Autowired

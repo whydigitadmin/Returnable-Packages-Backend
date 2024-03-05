@@ -20,7 +20,7 @@ public class CreateUserFormDTO {
 	private Long emitterId;
 	private String userName;
 	private Long[] accesaddId;
-
+	private Long[] accesWarehouse;
 
 	@NotBlank(message = "Email is required")
 	@Size(max = 30)
