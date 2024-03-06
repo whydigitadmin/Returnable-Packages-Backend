@@ -48,7 +48,6 @@ import com.whydigit.efit.entity.ManufacturerVO;
 import com.whydigit.efit.entity.UnitVO;
 import com.whydigit.efit.entity.VenderAddressVO;
 import com.whydigit.efit.entity.VenderVO;
-import com.whydigit.efit.entity.WarehouseLocationVO;
 import com.whydigit.efit.service.MasterService;
 
 @CrossOrigin
@@ -371,7 +370,7 @@ public class MasterController extends BaseController {
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
 		}
 		if (StringUtils.isEmpty(errorMsg)) {
-			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "AssetGroup found by ID");
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Customers found by ID");
 			responseObjectsMap.put("customersVO", customersVO);
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} else {
@@ -476,7 +475,6 @@ public class MasterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
-	
 	@PostMapping("/customersAddress")
 	public ResponseEntity<ResponseDTO> createUpdateCustomersAddress(
 			@RequestBody CustomersAddressDTO customersAddressDTO) {
@@ -1171,130 +1169,6 @@ public class MasterController extends BaseController {
 		try {
 			masterService.deleteUnit(id);
 			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Unit deleted successfully");
-			responseDTO = createServiceResponse(responseObjectsMap);
-		} catch (Exception e) {
-			errorMsg = e.getMessage();
-			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-			responseDTO = createServiceResponseError(responseObjectsMap, " deletion failed", errorMsg);
-		}
-		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
-		return ResponseEntity.ok().body(responseDTO);
-	}
-
-	// Controller
-	// Warehouse Location
-
-	@GetMapping("/warehouselocation")
-	public ResponseEntity<ResponseDTO> getAllWarehouseLocation(@RequestParam(required = false) Long orgId) {
-		String methodName = "getAllWarehouseLocation()";
-		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
-		String errorMsg = null;
-		Map<String, Object> responseObjectsMap = new HashMap<>();
-		ResponseDTO responseDTO = null;
-		List<WarehouseLocationVO> warehouseloactionVO = new ArrayList<>();
-		try {
-			warehouseloactionVO = masterService.getAllWarehouseLocation(orgId);
-		} catch (Exception e) {
-			errorMsg = e.getMessage();
-			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-		}
-		if (StringUtils.isBlank(errorMsg)) {
-			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Unit information get successfully");
-			responseObjectsMap.put("warehouseloactionVO", warehouseloactionVO);
-			responseDTO = createServiceResponse(responseObjectsMap);
-		} else {
-			responseDTO = createServiceResponseError(responseObjectsMap, "Unit information receive failed", errorMsg);
-		}
-		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
-		return ResponseEntity.ok().body(responseDTO);
-	}
-
-	@GetMapping("/warehouselocation/{id}")
-	public ResponseEntity<ResponseDTO> getWarehouseLocationById(@PathVariable int id) {
-		String methodName = "getWarehouseLocationById()";
-		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
-		String errorMsg = null;
-		Map<String, Object> responseObjectsMap = new HashMap<>();
-		ResponseDTO responseDTO = null;
-		WarehouseLocationVO warehouselocationVO = null;
-		try {
-			warehouselocationVO = masterService.getWarehouseLocationById(id).orElse(null);
-		} catch (Exception e) {
-			errorMsg = e.getMessage();
-			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-		}
-		if (StringUtils.isEmpty(errorMsg)) {
-			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "WarehouseLocationVO found by ID");
-			responseObjectsMap.put("warehouselocationVO", warehouselocationVO);
-			responseDTO = createServiceResponse(responseObjectsMap);
-		} else {
-			errorMsg = "UnitName not found for ID: " + id;
-			responseDTO = createServiceResponseError(responseObjectsMap, "UnitName not found", errorMsg);
-		}
-		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
-		return ResponseEntity.ok().body(responseDTO);
-	}
-
-	@PostMapping("/warehouselocation")
-	public ResponseEntity<ResponseDTO> createWarehouseLocation(@RequestBody WarehouseLocationVO warehouselocationVO) {
-		String methodName = "createWarehouseLocation()";
-		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
-		String errorMsg = null;
-		Map<String, Object> responseObjectsMap = new HashMap<>();
-		ResponseDTO responseDTO = null;
-		try {
-			WarehouseLocationVO createdWarehouseLocationVO = (WarehouseLocationVO) masterService
-					.createWarehouseLocation(warehouselocationVO);
-			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "WarehouseLocation created successfully");
-			responseObjectsMap.put("warehouselocationVo", createdWarehouseLocationVO);
-			responseDTO = createServiceResponse(responseObjectsMap);
-		} catch (Exception e) {
-			errorMsg = e.getMessage();
-			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-			responseDTO = createServiceResponseError(responseObjectsMap, "UnitName creation failed", errorMsg);
-		}
-		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
-		return ResponseEntity.ok().body(responseDTO);
-	}
-
-	@PutMapping("/warehouselocation")
-	public ResponseEntity<ResponseDTO> updateWarehouseLocation(@RequestBody WarehouseLocationVO warehouselocationVO) {
-		String methodName = "updateWarehouseLocation()";
-		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
-		String errorMsg = null;
-		Map<String, Object> responseObjectsMap = new HashMap<>();
-		ResponseDTO responseDTO = null;
-		try {
-			WarehouseLocationVO updatedWarehouseLocationVO = masterService.updateWarehouseLocation(warehouselocationVO)
-					.orElse(null);
-			if (updatedWarehouseLocationVO != null) {
-				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "WarehouseLocation updated successfully");
-				responseObjectsMap.put("warehouselocationVO", updatedWarehouseLocationVO);
-				responseDTO = createServiceResponse(responseObjectsMap);
-			} else {
-				errorMsg = "WarehouseLocation not found for ID: " + warehouselocationVO.getId();
-				responseDTO = createServiceResponseError(responseObjectsMap, "WarehouseLocation update failed",
-						errorMsg);
-			}
-		} catch (Exception e) {
-			errorMsg = e.getMessage();
-			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-			responseDTO = createServiceResponseError(responseObjectsMap, "UnitName" + " update failed", errorMsg);
-		}
-		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
-		return ResponseEntity.ok().body(responseDTO);
-	}
-
-	@DeleteMapping("/warehouselocation/{id}")
-	public ResponseEntity<ResponseDTO> deleteWarehouseLocation(@PathVariable int id) {
-		String methodName = "deleteWarehouseLocation()";
-		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
-		String errorMsg = null;
-		Map<String, Object> responseObjectsMap = new HashMap<>();
-		ResponseDTO responseDTO = null;
-		try {
-			masterService.deleteWarehouseLocation(id);
-			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "WarehouseLocationdeleted successfully");
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();

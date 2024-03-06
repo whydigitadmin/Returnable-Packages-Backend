@@ -26,7 +26,6 @@ import com.whydigit.efit.entity.ManufacturerVO;
 import com.whydigit.efit.entity.UnitVO;
 import com.whydigit.efit.entity.VenderAddressVO;
 import com.whydigit.efit.entity.VenderVO;
-import com.whydigit.efit.entity.WarehouseLocationVO;
 import com.whydigit.efit.exception.ApplicationException;
 
 public interface MasterService {
@@ -128,20 +127,6 @@ public interface MasterService {
 
 	void deleteUnit(int id);
 
-//warehouse location
-
-	List<WarehouseLocationVO> getAllWarehouseLocation(Long orgId);
-
-	Optional<WarehouseLocationVO> getWarehouseLocationById(int id);
-
-	WarehouseLocationVO createWarehouseLocation(WarehouseLocationVO warehouselocationVO);
-
-	Optional<WarehouseLocationVO> updateWarehouseLocation(WarehouseLocationVO warehouselocationVO);
-
-	void deleteWarehouseLocation(int id);
-
-	List<AssetGroupVO> createAssetGroupByCSV(MultipartFile assetFile) throws ApplicationException;
-
 //venderAddress
 
 	List<VenderAddressVO> getAllVenderAddress();
@@ -171,5 +156,7 @@ public interface MasterService {
 
 	void uploadCustomerAttachmentDoc(MultipartFile[] files, CustomerAttachmentType type, Long customerId)
 			throws ApplicationException;
+
+	List<AssetGroupVO> createAssetGroupByCSV(MultipartFile assetFile) throws ApplicationException;
 
 }
