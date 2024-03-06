@@ -81,4 +81,10 @@ public class WarehouseServiceImpl implements WarehouseService {
 				.append(warehouseDTO.getUnit().toUpperCase()).toString());
 	}
 
+	@Override
+	public Optional<WarehouseVO> getWarehouseById(Long id) {
+		// TODO Auto-generated method stub
+		return warehouseRepo.findById(id);
+	}
+
 }
