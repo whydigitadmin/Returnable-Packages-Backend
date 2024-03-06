@@ -101,32 +101,11 @@ public class WarehouseController extends BaseController {
 		List<Map<String, String>> location = new ArrayList<>();
 		for (Object[] w : warehousevo) {
 			Map<String, String> warehouse = new HashMap<>();
-			warehouse.put("Location", w[0].toString());
+			warehouse.put("warehouseId", w[1].toString());
+			warehouse.put("warehouseLocation", w[0].toString());
 			location.add(warehouse);
 		}
 		return location;
-	}
-
-	@PostMapping("/view")
-	public ResponseEntity<ResponseDTO> createWarehouseVO(@RequestBody WarehouseVO warehousevo) {
-		String methodName = "createWarehouseVO()";
-		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
-		String errorMsg = null;
-		Map<String, Object> responseObjectsMap = new HashMap<>();
-		ResponseDTO responseDTO = null;
-		try {
-			WarehouseVO warehouse = warehouseService.createWarehouseVO(warehousevo);
-			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Warehouse created successfully");
-			responseObjectsMap.put("WarehouseVO", warehouse);
-			responseDTO = createServiceResponse(responseObjectsMap);
-		} catch (Exception e) {
-			errorMsg = e.getMessage();
-			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-			responseDTO = createServiceResponseError(responseObjectsMap, "Warehouse creation failed", errorMsg);
-		}
-		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
-		return ResponseEntity.ok().body(responseDTO);
-
 	}
 
 	@PutMapping("/view")

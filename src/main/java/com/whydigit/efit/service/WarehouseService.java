@@ -14,8 +14,6 @@ public interface WarehouseService {
 
 	Optional<WarehouseVO> getById(Long id);
 
-//	WarehouseVO createWarehouseVO(WarehouseVO warehousevo);
-
 	Optional<WarehouseVO> updateWarehouseVo(WarehouseVO warehouse);
 
 	void deleteWarehouse(Long id);
@@ -23,7 +21,5 @@ public interface WarehouseService {
 	Set<Object[]> getWarehouseLocationByOrgID(Long orgId);
 
 	WarehouseVO updateCreateWarehouse(WarehouseDTO warehouseDTO) throws ApplicationException;
-
-	WarehouseVO createWarehouseVO(WarehouseVO warehousevo);
 
 }
