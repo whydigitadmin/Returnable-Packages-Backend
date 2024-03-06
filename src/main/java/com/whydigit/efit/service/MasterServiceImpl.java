@@ -61,11 +61,9 @@ import com.whydigit.efit.entity.KitAssetVO;
 import com.whydigit.efit.entity.KitVO;
 import com.whydigit.efit.entity.ManufacturerProductVO;
 import com.whydigit.efit.entity.ManufacturerVO;
-import com.whydigit.efit.entity.PDAttachmentVO;
 import com.whydigit.efit.entity.UnitVO;
 import com.whydigit.efit.entity.VenderAddressVO;
 import com.whydigit.efit.entity.VenderVO;
-import com.whydigit.efit.entity.WarehouseLocationVO;
 import com.whydigit.efit.exception.ApplicationException;
 import com.whydigit.efit.repo.AssetCategoryRepo;
 import com.whydigit.efit.repo.AssetGroupRepo;
@@ -81,7 +79,6 @@ import com.whydigit.efit.repo.ManufacturerRepo;
 import com.whydigit.efit.repo.UnitRepo;
 import com.whydigit.efit.repo.VenderAddressRepo;
 import com.whydigit.efit.repo.VenderRepo;
-import com.whydigit.efit.repo.WarehouseLocationRepo;
 import com.whydigit.efit.util.CommonUtils;
 
 @Service
@@ -108,8 +105,6 @@ public class MasterServiceImpl implements MasterService {
 	@Autowired
 	UnitRepo unitRepo;
 	@Autowired
-	WarehouseLocationRepo warehouseLocationRepo;
-	@Autowired
 	VenderAddressRepo venderAddressRepo;
 	@Autowired
 	KitRepo kitRepo;
@@ -126,11 +121,11 @@ public class MasterServiceImpl implements MasterService {
 	CustomersBankDetailsRepo customersBankDetailsRepo;
 
 	@Autowired
-    Environment env;
+	Environment env;
 
 	@Autowired
 	CustomerAttachmentRepo customerAttachmentRepo;
-	
+
 	@Override
 	public List<AssetVO> getAllAsset(Long orgId) {
 		List<AssetVO> assetVO = new ArrayList<>();
@@ -575,50 +570,6 @@ public class MasterServiceImpl implements MasterService {
 		}
 	}
 
-	// Warehouse Location
-
-	@Override
-	public List<WarehouseLocationVO> getAllWarehouseLocation(Long orgId) {
-		List<WarehouseLocationVO> warehouseLocationVO = new ArrayList<>();
-		if (ObjectUtils.isNotEmpty(orgId)) {
-			LOGGER.info("Successfully Received WarehouseLocation BY OrgId : {}", orgId);
-			warehouseLocationVO = warehouseLocationRepo.getAllWarehouseLocation(orgId);
-		} else {
-			LOGGER.info("Successfully Received WarehouseLocation Information For All OrgId.");
-			warehouseLocationVO = warehouseLocationRepo.findAll();
-		}
-		return warehouseLocationVO;
-	}
-
-	@Override
-	public Optional<WarehouseLocationVO> getWarehouseLocationById(int id) {
-		// TODO Auto-generated method stub
-		return warehouseLocationRepo.findById(id);
-	}
-
-	@Override
-	public WarehouseLocationVO createWarehouseLocation(WarehouseLocationVO warehouselocationVO) {
-		// TODO Auto-generated method stub
-		return warehouseLocationRepo.save(warehouselocationVO);
-	}
-
-	@Override
-	public Optional<WarehouseLocationVO> updateWarehouseLocation(WarehouseLocationVO warehouselocationVO) {
-		// TODO Auto-generated method stub
-		if (warehouseLocationRepo.existsById(warehouselocationVO.getId())) {
-			return Optional.of(warehouseLocationRepo.save(warehouselocationVO));
-		} else {
-			return Optional.empty();
-		}
-	}
-
-	@Override
-	public void deleteWarehouseLocation(int id) {
-		// TODO Auto-generated method stub
-		warehouseLocationRepo.deleteById(id);
-
-	}
-
 	@Override
 	public void deleteUnit(int id) {
 		// TODO Auto-generated method stub
@@ -898,6 +849,6 @@ public class MasterServiceImpl implements MasterService {
 				}
 			}
 			fileCount++;
-		}      
+		}
 	}
 }

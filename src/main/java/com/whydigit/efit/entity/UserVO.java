@@ -40,6 +40,9 @@ public class UserVO {
 	private String userName;
 	private String password;
 	private boolean loginStatus;
+	private String accesaddId;
+	private String accesWarehouse;
+
 	private boolean isActive;
 	private LocalDateTime lastLogin;
 	@Enumerated(EnumType.STRING)
