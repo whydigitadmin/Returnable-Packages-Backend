@@ -22,4 +22,6 @@ public interface WarehouseService {
 
 	WarehouseVO updateCreateWarehouse(WarehouseDTO warehouseDTO) throws ApplicationException;
 
+	Optional<WarehouseVO> getWarehouseById(Long id);
+
 }
