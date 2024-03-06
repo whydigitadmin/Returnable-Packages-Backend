@@ -31,7 +31,7 @@ public class WarehouseVO {
 	private String state;
 	private String pincode;
 	private String unit;
-	private long code;
+	private String code;
 	private String city;
 	private String country;
 	private String gst;

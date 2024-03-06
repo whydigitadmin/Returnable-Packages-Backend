@@ -38,7 +38,7 @@ public class SecurityConfig {
 						"/api/master/asset", "/api/warehouse/view/{id}", "/api/usersdetails/view", "/api/DcVendor/view",
 						"/api/master/**", "​/api​/master​/addAddress", "/api/DcVendor/view/{id}",
 						"/api/warehouse/getWarehouseLocationByOrgID","/api/warehouse/updateCreateWarehouse",
-						"/api/warehouse/view",
+						"/api/warehouse/view","/api/warehouse/getWarehouseById/{id}",
 						"/api/partStudy/basicDetails", "/api/partStudy/d}/searchPartStudyById",
 						"/api/partStudy/packageDetail", "/api/partStudy/packageDetail/{id}", "/api/partStudy/logistics",
 						"/api/partStudy/logistics/{id}", "/api/partStudy/**","/api/inwardSku/**",

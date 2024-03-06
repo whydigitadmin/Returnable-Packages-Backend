@@ -20,7 +20,7 @@ public class WarehouseDTO {
 	private String pincode;
 	@NotEmpty(message = "Unit is required")
 	private String unit;
-	private long code;
+	private String code;
 	private String city;
 	private String country;
 	private String gst;

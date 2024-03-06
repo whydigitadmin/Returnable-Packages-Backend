@@ -29,6 +29,7 @@ import com.whydigit.efit.common.CommonConstant;
 import com.whydigit.efit.common.UserConstants;
 import com.whydigit.efit.dto.ResponseDTO;
 import com.whydigit.efit.dto.WarehouseDTO;
+import com.whydigit.efit.entity.AssetGroupVO;
 import com.whydigit.efit.entity.WarehouseVO;
 import com.whydigit.efit.service.WarehouseService;
 
@@ -68,6 +69,33 @@ public class WarehouseController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 
 	}
+	
+	@GetMapping("/getWarehouseById/{id}")
+	public ResponseEntity<ResponseDTO> getWarehouseById(@PathVariable Long id) {
+		String methodName = "getWarehouseById()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		WarehouseVO warehouseVO = null;
+		try {
+			warehouseVO = warehouseService.getWarehouseById(id).orElse(null);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Warehouse found by ID");
+			responseObjectsMap.put("warehouse", warehouseVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			errorMsg = "Warehouse not found for ID: " + id;
+			responseDTO = createServiceResponseError(responseObjectsMap, "Warehouse not found", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
 
 	@GetMapping("/getWarehouseLocationByOrgID")
 	public ResponseEntity<ResponseDTO> getWarehouseLocationByOrgID(@RequestParam(required = false) Long orgId) {
