@@ -159,4 +159,6 @@ public interface MasterService {
 
 	List<AssetGroupVO> createAssetGroupByCSV(MultipartFile assetFile) throws ApplicationException;
 
+	List<FlowVO> getFlowByIds(String ids);
+
 }

@@ -718,6 +718,33 @@ public class MasterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
+	
+	@GetMapping("/flow/getFlowByIds")
+	public ResponseEntity<ResponseDTO> getFlowByIds(@RequestParam String ids) {
+		String methodName = "getFlowByIds()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<FlowVO> flowVO = new ArrayList<>();
+		try {
+			flowVO = masterService.getFlowByIds(ids);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "flow found by IDS");
+			responseObjectsMap.put("flowVO", flowVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			errorMsg = "Flow not found for ID: " + ids;
+			responseDTO = createServiceResponseError(responseObjectsMap, "Flow not found", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+	
 
 	// vendors
 
