@@ -40,8 +40,11 @@ public class UserVO {
 	private String userName;
 	private String password;
 	private boolean loginStatus;
-	private String accesaddId;
-	private String accesWarehouse;
+	private String accessaddId;
+	private String accessWarehouse;
+	private String accessFlowId;
+	private String pNum;
+
 
 	private boolean isActive;
 	private LocalDateTime lastLogin;
@@ -60,6 +63,5 @@ public class UserVO {
 	@ManyToOne
 	@JoinColumn(name = "emitter_id")
 	private CustomersVO customersVO;
-	
-	
+
 }

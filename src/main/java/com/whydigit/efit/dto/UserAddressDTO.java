@@ -15,4 +15,5 @@ public class UserAddressDTO {
 	private String country;
 	private String state;
 	private String pin;
+
 }

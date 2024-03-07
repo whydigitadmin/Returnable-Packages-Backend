@@ -83,7 +83,6 @@ public class WarehouseServiceImpl implements WarehouseService {
 
 	@Override
 	public Optional<WarehouseVO> getWarehouseById(Long id) {
-		// TODO Auto-generated method stub
 		return warehouseRepo.findById(id);
 	}
 
