@@ -366,7 +366,7 @@ public class AuthServiceImpl implements AuthService {
 		userVO.setUserName(createUserFormDTO.getUserName());
 		userVO.setEmail(createUserFormDTO.getEmail());
 		userVO.setAccessRightsRoleId(createUserFormDTO.getAccessRightsRoleId());
-		userVO.setPNum(createUserFormDTO.getPNum());
+		userVO.setPNo(createUserFormDTO.getPNo());
 		try {
 			userVO.setPassword(encoder.encode(CryptoUtils.getDecrypt(createUserFormDTO.getPassword())));
 		} catch (Exception e) {

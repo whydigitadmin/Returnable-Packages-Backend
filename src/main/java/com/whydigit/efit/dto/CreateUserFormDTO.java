@@ -22,7 +22,7 @@ public class CreateUserFormDTO {
 	private Long[] accessaddId;
 	private Long[] accessWarehouse;
 	private Long[] accessFlowId;
-	private String pNum;
+	private Long pNo;
 
 	@NotBlank(message = "Email is required")
 	@Size(max = 30)
