@@ -29,13 +29,10 @@ public class UserResponseDTO {
 	private boolean isActive;
 	@Enumerated(EnumType.STRING)
 	private Role role;
-	@Embedded
-	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
 	private Date accountRemovedDate;
 	private String token;
 	private String tokenId;
 	private LocalDateTime lastLogin;
 	private AccessRightsVO accessRightsVO;
 	private UserAddressVO userAddressVO;
-	private CustomersVO customersVO;
 }

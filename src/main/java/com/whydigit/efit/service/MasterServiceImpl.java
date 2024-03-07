@@ -852,6 +852,11 @@ public class MasterServiceImpl implements MasterService {
 		}
 	}
 
-	
+	@Override
+	public List<FlowVO> getFlowByIds(String ids) {
+		List<Long> flowIds = Arrays.stream(StringUtils.split(ids, ",")).map(Long::parseLong)
+				.collect(Collectors.toList());
+		return flowRepo.findAllById(flowIds);
+	}	
 }
           
