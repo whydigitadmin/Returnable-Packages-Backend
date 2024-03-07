@@ -182,7 +182,6 @@ public class AuthServiceImpl implements AuthService {
 		}
 		UserResponseDTO userResponseDTO = mapUserVOToDTO(userVO);
 		TokenVO tokenVO = tokenProvider.createToken(userVO.getUserId(), loginRequest.getUserName());
-		userResponseDTO.setCustomersVO(userVO.getCustomersVO());
 		userResponseDTO.setToken(tokenVO.getToken());
 		userResponseDTO.setTokenId(tokenVO.getId());
 		userResponseDTO.setAccessRightsVO(accessRightsRepo.findById(userVO.getAccessRightsRoleId()).orElse(null));
@@ -311,7 +310,6 @@ public class AuthServiceImpl implements AuthService {
 		userDTO.setLoginStatus(userVO.isLoginStatus());
 		userDTO.setActive(userVO.isActive());
 		userDTO.setRole(userVO.getRole());
-		userDTO.setCommonDate(userVO.getCommonDate());
 		userDTO.setAccountRemovedDate(userVO.getAccountRemovedDate());
 		userDTO.setLastLogin(userVO.getLastLogin());
 		userDTO.setUserAddressVO(userVO.getUserAddressVO());
