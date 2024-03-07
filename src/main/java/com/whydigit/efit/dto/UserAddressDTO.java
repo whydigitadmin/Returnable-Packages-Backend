@@ -14,6 +14,7 @@ public class UserAddressDTO {
 	private String address2;
 	private String country;
 	private String state;
-	private Long pin;
+	private String pin;
+	private String city;
 
 }
