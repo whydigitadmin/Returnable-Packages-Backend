@@ -373,12 +373,16 @@ public class AuthServiceImpl implements AuthService {
 			throw new ApplicationContextException(UserConstants.ERRROR_MSG_UNABLE_TO_ENCODE_USER_PASSWORD);
 		}
 
-		Long[] accesaddId = createUserFormDTO.getAccesaddId();
-		Long[] accesWarehouse = createUserFormDTO.getAccesWarehouse();
+		Long[] accessaddId = createUserFormDTO.getAccessaddId();
+		Long[] accessWarehouse = createUserFormDTO.getAccessWarehouse();
+		Long[] accessFlowId = createUserFormDTO.getAccessFlowId();
 
-		String addId = Arrays.stream(accesaddId).map(String::valueOf).collect(Collectors.joining(","));
-		String warehouse = Arrays.stream(accesWarehouse).map(String::valueOf).collect(Collectors.joining(","));
 
+		String addId = Arrays.stream(accessaddId).map(String::valueOf).collect(Collectors.joining(","));
+		String warehouse = Arrays.stream(accessWarehouse).map(String::valueOf).collect(Collectors.joining(","));
+		String flowId = Arrays.stream(accessFlowId).map(String::valueOf).collect(Collectors.joining(","));
+
+		
 		userVO.setRole(Role.ROLE_USER);
 		userVO.setActive(true);
 

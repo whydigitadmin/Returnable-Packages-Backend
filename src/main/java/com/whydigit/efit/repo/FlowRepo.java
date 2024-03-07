@@ -21,4 +21,6 @@ public interface FlowRepo extends JpaRepository<FlowVO, Long> {
 
 	List<FlowVO> findByOrgIdAndEmitterId(Long orgId, Long emitterId);
 
+	List<FlowVO> findById(String flowId);
+
 }
