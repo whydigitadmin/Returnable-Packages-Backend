@@ -43,6 +43,8 @@ public class UserVO {
 	private String accessaddId;
 	private String accessWarehouse;
 	private String accessFlowId;
+	private String pNum;
+
 
 	private boolean isActive;
 	private LocalDateTime lastLogin;
