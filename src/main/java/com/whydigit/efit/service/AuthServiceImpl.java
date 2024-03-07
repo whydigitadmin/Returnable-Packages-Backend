@@ -373,20 +373,17 @@ public class AuthServiceImpl implements AuthService {
 			LOGGER.error(e.getMessage());
 			throw new ApplicationContextException(UserConstants.ERRROR_MSG_UNABLE_TO_ENCODE_USER_PASSWORD);
 		}
-
-		Long[] accessaddId = createUserFormDTO.getAccessaddId();
-		Long[] accessWarehouse = createUserFormDTO.getAccessWarehouse();
-		Long[] accessFlowId = createUserFormDTO.getAccessFlowId();
-
-
-		String addId = Arrays.stream(accessaddId).map(String::valueOf).collect(Collectors.joining(","));
-		String warehouse = Arrays.stream(accessWarehouse).map(String::valueOf).collect(Collectors.joining(","));
-		String flowId = Arrays.stream(accessFlowId).map(String::valueOf).collect(Collectors.joining(","));
-
-		
-		userVO.setRole(Role.ROLE_USER);
+		String addIds = Arrays.stream(createUserFormDTO.getAccessaddId()).map(String::valueOf)
+				.collect(Collectors.joining(","));
+		String warehouseIds = Arrays.stream(createUserFormDTO.getAccessWarehouse()).map(String::valueOf)
+				.collect(Collectors.joining(","));
+		String flowIds = Arrays.stream(createUserFormDTO.getAccessFlowId()).map(String::valueOf)
+				.collect(Collectors.joining(","));
+		userVO.setAccessFlowId(flowIds);
+		userVO.setAccessaddId(addIds);
+		userVO.setAccessWarehouse(warehouseIds);
+		userVO.setRole(createUserFormDTO.getRole());
 		userVO.setActive(true);
-
 		return userVO;
 	}
 
