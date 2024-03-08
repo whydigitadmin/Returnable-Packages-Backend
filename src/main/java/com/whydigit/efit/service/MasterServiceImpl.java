@@ -82,6 +82,7 @@ import com.whydigit.efit.repo.KitRepo;
 import com.whydigit.efit.repo.ManufacturerProductRepo;
 import com.whydigit.efit.repo.ManufacturerRepo;
 import com.whydigit.efit.repo.UnitRepo;
+import com.whydigit.efit.repo.UserRepo;
 import com.whydigit.efit.repo.VendorAddressRepo;
 import com.whydigit.efit.repo.VendorBankDetailsRepo;
 import com.whydigit.efit.repo.VendorRepo;
@@ -135,6 +136,9 @@ public class MasterServiceImpl implements MasterService {
 
 	@Autowired
 	CustomerAttachmentRepo customerAttachmentRepo;
+	
+	@Autowired
+	UserRepo userRepo;
 
 	@Override
 	public List<AssetVO> getAllAsset(Long orgId) {
@@ -398,13 +402,13 @@ public class MasterServiceImpl implements MasterService {
 	private FlowVO createFlowVOByFlowDTO(FlowDTO flowDTO) {
 		List<FlowDetailVO> flowDetailVOList = new ArrayList<>();
 		FlowVO flowVO = FlowVO.builder().active(flowDTO.isActive()).orgin(flowDTO.getOrgin())
-				.flowName(flowDTO.getFlowName()).receiverId(flowDTO.getReceiverId()).emitterId(flowDTO.getEmitterId())
+				.flowName(flowDTO.getFlowName()).receiverId(flowDTO.getReceiverId())
 				.destination(flowDTO.getDestination()).orgId(flowDTO.getOrgId()).flowDetailVO(flowDetailVOList).build();
 
 		flowDetailVOList = flowDTO.getFlowDetailDTO().stream()
 				.map(fdDTO -> FlowDetailVO.builder().active(fdDTO.isActive()).cycleTime(fdDTO.getCycleTime())
-						 .partName(fdDTO.getPartName()).kitName(fdDTO.getKitName())
-						.partNumber(fdDTO.getPartNumber()).build())
+						.partName(fdDTO.getPartName()).kitName(fdDTO.getKitName()).partNumber(fdDTO.getPartNumber())
+						.build())
 
 				.collect(Collectors.toList());
 		flowVO.setFlowDetailVO(flowDetailVOList);
@@ -793,15 +797,7 @@ public class MasterServiceImpl implements MasterService {
 	}
 
 	@Override
-	public List<FlowVO> getFlowByIds(String ids) {
-		List<Long> flowIds = Arrays.stream(StringUtils.split(ids, ",")).map(Long::parseLong)
-				.collect(Collectors.toList());
-		return flowRepo.findAllById(flowIds);
-	}
-
-	@Override
 	public List<VendorVO> getAllVendor() {
-
 		return VendorRepo.findAll();
 	}
 
@@ -906,12 +902,12 @@ public class MasterServiceImpl implements MasterService {
 
 	private void getVendorBankDetailsVOFromVendorBankDetailsDTO(@Valid VendorBankDetailsDTO vendorBankDetailsDTO,
 			VendorBankDetailsVO vendorBankDetailsVO) {
-		vendorBankDetailsDTO.setOrgId(vendorBankDetailsDTO.getOrgId());
-		vendorBankDetailsDTO.setBank(vendorBankDetailsDTO.getBank());
-		vendorBankDetailsDTO.setDisplayName(vendorBankDetailsDTO.getDisplayName());
-		vendorBankDetailsDTO.setIfscCode(vendorBankDetailsDTO.getIfscCode());
-		vendorBankDetailsDTO.setAccountNum(vendorBankDetailsDTO.getAccountNum());
-		vendorBankDetailsDTO.setBranch(vendorBankDetailsDTO.getBranch());
+		vendorBankDetailsVO.setOrgId(vendorBankDetailsDTO.getOrgId());
+		vendorBankDetailsVO.setBank(vendorBankDetailsDTO.getBank());
+		vendorBankDetailsVO.setDisplayName(vendorBankDetailsDTO.getDisplayName());
+		vendorBankDetailsVO.setIfscCode(vendorBankDetailsDTO.getIfscCode());
+		vendorBankDetailsVO.setAccountNum(vendorBankDetailsDTO.getAccountNum());
+		vendorBankDetailsVO.setBranch(vendorBankDetailsDTO.getBranch());
 
 	}
 
@@ -925,4 +921,23 @@ public class MasterServiceImpl implements MasterService {
 		vendorBankDetailsRepo.deleteById(id);
 	}
 
+	@Override
+	public List<FlowVO> getFlowByUserId(long userId) throws ApplicationException {
+		String flowIds = userRepo.getFlowIdsByUserId(userId);
+		if (StringUtils.isBlank(flowIds)) {
+			throw new ApplicationException("Flow not found.");
+		}
+		return getFlowByIds(flowIds);
+	}
+
+	public List<FlowVO> getFlowByIds(String ids) throws ApplicationException {
+		List<Long> flowIds = Arrays.stream(StringUtils.split(ids, ",")).map(Long::parseLong)
+				.collect(Collectors.toList());
+		List<FlowVO> flowVO = flowRepo.findAllById(flowIds);
+		if (flowVO.isEmpty()) {
+			throw new ApplicationException("Flow not found.");
+		}
+		return flowVO;
+	}
+	
 }

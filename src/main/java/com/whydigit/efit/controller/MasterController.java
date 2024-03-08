@@ -723,26 +723,26 @@ public class MasterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
-	@GetMapping("/flow/getFlowByIds")
-	public ResponseEntity<ResponseDTO> getFlowByIds(@RequestParam String ids) {
-		String methodName = "getFlowByIds()";
+	@GetMapping("/flow/getFlowByUserId")
+	public ResponseEntity<ResponseDTO> getFlowByUserId(@RequestParam long userId) {
+		String methodName = "getFlowByUserId()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
 		List<FlowVO> flowVO = new ArrayList<>();
 		try {
-			flowVO = masterService.getFlowByIds(ids);
+			flowVO = masterService.getFlowByUserId(userId);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
 		}
 		if (StringUtils.isEmpty(errorMsg)) {
-			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "flow found by IDS");
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "flow found successfully.");
 			responseObjectsMap.put("flowVO", flowVO);
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} else {
-			errorMsg = "Flow not found for ID: " + ids;
+			errorMsg = "Flow not found for the user.";
 			responseDTO = createServiceResponseError(responseObjectsMap, "Flow not found", errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);

@@ -30,7 +30,7 @@ public class FlowDetailVO {
 	private long id;
 	private int orgId;
 	private String kitName;
-	private long  partNumber;
+	private String  partNumber;
 	private String emitter;
 	private long emitterId;
 	private String partName;
