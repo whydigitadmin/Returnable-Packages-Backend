@@ -110,7 +110,7 @@ public class WarehouseController extends BaseController {
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
 		}
 		if (StringUtils.isBlank(errorMsg)) {
-			List<Map<String, String>> location = getWarehouseLocation(warehousevo);
+			List<Map<String, Object>> location = getWarehouseLocation(warehousevo);
 			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Warehouse location information get successfully");
 			responseObjectsMap.put("WarehouseLocation", location);
 			responseDTO = createServiceResponse(responseObjectsMap);
@@ -123,11 +123,11 @@ public class WarehouseController extends BaseController {
 
 	}
 
-	private List<Map<String, String>> getWarehouseLocation(Set<Object[]> warehousevo) {
-		List<Map<String, String>> location = new ArrayList<>();
+	private List<Map<String, Object>> getWarehouseLocation(Set<Object[]> warehousevo) {
+		List<Map<String, Object>> location = new ArrayList<>();
 		for (Object[] w : warehousevo) {
-			Map<String, String> warehouse = new HashMap<>();
-			warehouse.put("warehouseId", w[1].toString());
+			Map<String, Object> warehouse = new HashMap<>();
+			warehouse.put("warehouseId", w[1]);
 			warehouse.put("warehouseLocation", w[0].toString());
 			location.add(warehouse);
 		}
