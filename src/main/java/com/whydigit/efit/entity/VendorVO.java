@@ -1,4 +1,5 @@
 package com.whydigit.efit.entity;
+
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -19,31 +20,34 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "flow")
+@Table(name = "vendor")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class FlowVO {
+public class VendorVO {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long id;
+	private Long id;
 	private long orgId;
-	private Long receiverId;
-	private String flowName;
-	private String emitter;
-	private long emitterId;
-	private String receiver;
-	private String orgin;
-	private String destination;
-    private boolean active;
-    
-    @JsonManagedReference
-	@OneToMany(mappedBy="flowVO",cascade = CascadeType.ALL)
-	private List<FlowDetailVO> flowDetailVO;
-    
-    @Embedded
-    @Builder.Default
-	private CreatedUpdatedDate commonDate=new CreatedUpdatedDate();
+	private String venderType;
+	private String displyName;
+	private String phoneNumber;
+	private String entityLegalName;
+	private String email;
+	private boolean venderActivePortal;
+	private boolean active;
+
+	@OneToMany(mappedBy = "vendorVO", cascade = CascadeType.ALL)
+	@JsonManagedReference
+	List<VendorBankDetailsVO> vendorBankDetailsVO;
+
+	@OneToMany(mappedBy = "vendorVO", cascade = CascadeType.ALL)
+	@JsonManagedReference
+	List<VendorAddressVO> vendorAddressVO;
+
+	@Embedded
+	private CreatedUpdatedDate commonDate;
+
 }
