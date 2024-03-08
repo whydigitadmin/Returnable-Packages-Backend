@@ -848,8 +848,8 @@ public class MasterServiceImpl implements MasterService {
 	public VendorAddressVO updateCreateVendorAddress(@Valid VendorAddressDTO vendorAddressDTO)
 	        throws ApplicationException {
 	    VendorAddressVO vendorAddressVO = new VendorAddressVO();
-	    if (ObjectUtils.isNotEmpty(vendorAddressDTO) && ObjectUtils.isNotEmpty(vendorAddressDTO.getId())) {
-	        VendorVO vendorVO = vendorRepo.findById(vendorAddressDTO.getId())
+	    if (ObjectUtils.isNotEmpty(vendorAddressDTO) && ObjectUtils.isNotEmpty(vendorAddressDTO.getVendorId())) {
+	        VendorVO vendorVO = vendorRepo.findById(vendorAddressDTO.getVendorId())
 	                .orElseThrow(() -> new ApplicationException("Vendor information not found."));
 
 	        if (ObjectUtils.isNotEmpty(vendorAddressDTO.getId())) {
@@ -895,9 +895,9 @@ public class MasterServiceImpl implements MasterService {
 			throws ApplicationException {
 		VendorBankDetailsVO vendorBankDetailsVO = new VendorBankDetailsVO();
 		if (ObjectUtils.isNotEmpty(vendorBankDetailsDTO)
-				&& ObjectUtils.isNotEmpty(vendorBankDetailsDTO.getId())) {
-			VendorVO vendorVO = vendorRepo.findById(vendorBankDetailsDTO.getId())
-					.orElseThrow(() -> new ApplicationException("Customer bank detail information not found."));
+				&& ObjectUtils.isNotEmpty(vendorBankDetailsDTO.getVendorId())) {
+			VendorVO vendorVO = vendorRepo.findById(vendorBankDetailsDTO.getVendorId())
+					.orElseThrow(() -> new ApplicationException("Customer information not found."));
 			if (ObjectUtils.isNotEmpty(vendorBankDetailsDTO.getId())) {
 				vendorBankDetailsVO = vendorBankDetailsRepo.findById(vendorBankDetailsDTO.getId())
 						.orElseThrow(() -> new ApplicationException("Customer bank detail information not found."));
