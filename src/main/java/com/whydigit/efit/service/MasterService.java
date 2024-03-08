@@ -146,8 +146,6 @@ public interface MasterService {
 
 	List<AssetGroupVO> createAssetGroupByCSV(MultipartFile assetFile) throws ApplicationException;
 
-	List<FlowVO> getFlowByIds(String ids);
-
 	// Vendor
 	List<VendorVO> getAllVendor();
 
@@ -171,5 +169,7 @@ public interface MasterService {
 	Optional<VendorBankDetailsVO> getVendorBankDetailsById(Long id);
 
 	void deletevendorBankDetails(Long id);
+
+	List<FlowVO> getFlowByUserId(long userId) throws ApplicationException;
 
 }

@@ -82,6 +82,7 @@ import com.whydigit.efit.repo.KitRepo;
 import com.whydigit.efit.repo.ManufacturerProductRepo;
 import com.whydigit.efit.repo.ManufacturerRepo;
 import com.whydigit.efit.repo.UnitRepo;
+import com.whydigit.efit.repo.UserRepo;
 import com.whydigit.efit.repo.VendorAddressRepo;
 import com.whydigit.efit.repo.VendorBankDetailsRepo;
 import com.whydigit.efit.repo.VendorRepo;
@@ -135,6 +136,9 @@ public class MasterServiceImpl implements MasterService {
 
 	@Autowired
 	CustomerAttachmentRepo customerAttachmentRepo;
+	
+	@Autowired
+	UserRepo userRepo;
 
 	@Override
 	public List<AssetVO> getAllAsset(Long orgId) {
@@ -793,15 +797,7 @@ public class MasterServiceImpl implements MasterService {
 	}
 
 	@Override
-	public List<FlowVO> getFlowByIds(String ids) {
-		List<Long> flowIds = Arrays.stream(StringUtils.split(ids, ",")).map(Long::parseLong)
-				.collect(Collectors.toList());
-		return flowRepo.findAllById(flowIds);
-	}
-
-	@Override
 	public List<VendorVO> getAllVendor() {
-
 		return VendorRepo.findAll();
 	}
 
@@ -925,4 +921,23 @@ public class MasterServiceImpl implements MasterService {
 		vendorBankDetailsRepo.deleteById(id);
 	}
 
+	@Override
+	public List<FlowVO> getFlowByUserId(long userId) throws ApplicationException {
+		String flowIds = userRepo.getFlowIdsByUserId(userId);
+		if (StringUtils.isBlank(flowIds)) {
+			throw new ApplicationException("Flow not found.");
+		}
+		return getFlowByIds(flowIds);
+	}
+
+	public List<FlowVO> getFlowByIds(String ids) throws ApplicationException {
+		List<Long> flowIds = Arrays.stream(StringUtils.split(ids, ",")).map(Long::parseLong)
+				.collect(Collectors.toList());
+		List<FlowVO> flowVO = flowRepo.findAllById(flowIds);
+		if (flowVO.isEmpty()) {
+			throw new ApplicationException("Flow not found.");
+		}
+		return flowVO;
+	}
+	
 }
