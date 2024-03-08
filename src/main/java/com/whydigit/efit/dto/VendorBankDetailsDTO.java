@@ -15,5 +15,6 @@ public class VendorBankDetailsDTO {
 	private String ifscCode;
 	private Long accountNum;
 	private String branch;
+	private Long vendorId;
 
 }
