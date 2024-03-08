@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 public class VendorAddressDTO {
 	private Long id;
 	private long orgId;
-//	private int venderId;
 	private String gstRegistrationStatus;
 	private String street1;
 	private String street2;
