@@ -398,13 +398,13 @@ public class MasterServiceImpl implements MasterService {
 	private FlowVO createFlowVOByFlowDTO(FlowDTO flowDTO) {
 		List<FlowDetailVO> flowDetailVOList = new ArrayList<>();
 		FlowVO flowVO = FlowVO.builder().active(flowDTO.isActive()).orgin(flowDTO.getOrgin())
-				.flowName(flowDTO.getFlowName()).receiverId(flowDTO.getReceiverId()).emitterId(flowDTO.getEmitterId())
+				.flowName(flowDTO.getFlowName()).receiverId(flowDTO.getReceiverId())
 				.destination(flowDTO.getDestination()).orgId(flowDTO.getOrgId()).flowDetailVO(flowDetailVOList).build();
 
 		flowDetailVOList = flowDTO.getFlowDetailDTO().stream()
 				.map(fdDTO -> FlowDetailVO.builder().active(fdDTO.isActive()).cycleTime(fdDTO.getCycleTime())
-						 .partName(fdDTO.getPartName()).kitName(fdDTO.getKitName())
-						.partNumber(fdDTO.getPartNumber()).build())
+						.partName(fdDTO.getPartName()).kitName(fdDTO.getKitName()).partNumber(fdDTO.getPartNumber())
+						.build())
 
 				.collect(Collectors.toList());
 		flowVO.setFlowDetailVO(flowDetailVOList);
@@ -906,12 +906,12 @@ public class MasterServiceImpl implements MasterService {
 
 	private void getVendorBankDetailsVOFromVendorBankDetailsDTO(@Valid VendorBankDetailsDTO vendorBankDetailsDTO,
 			VendorBankDetailsVO vendorBankDetailsVO) {
-		vendorBankDetailsDTO.setOrgId(vendorBankDetailsDTO.getOrgId());
-		vendorBankDetailsDTO.setBank(vendorBankDetailsDTO.getBank());
-		vendorBankDetailsDTO.setDisplayName(vendorBankDetailsDTO.getDisplayName());
-		vendorBankDetailsDTO.setIfscCode(vendorBankDetailsDTO.getIfscCode());
-		vendorBankDetailsDTO.setAccountNum(vendorBankDetailsDTO.getAccountNum());
-		vendorBankDetailsDTO.setBranch(vendorBankDetailsDTO.getBranch());
+		vendorBankDetailsVO.setOrgId(vendorBankDetailsDTO.getOrgId());
+		vendorBankDetailsVO.setBank(vendorBankDetailsDTO.getBank());
+		vendorBankDetailsVO.setDisplayName(vendorBankDetailsDTO.getDisplayName());
+		vendorBankDetailsVO.setIfscCode(vendorBankDetailsDTO.getIfscCode());
+		vendorBankDetailsVO.setAccountNum(vendorBankDetailsDTO.getAccountNum());
+		vendorBankDetailsVO.setBranch(vendorBankDetailsDTO.getBranch());
 
 	}
 
