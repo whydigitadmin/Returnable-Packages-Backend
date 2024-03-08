@@ -82,6 +82,7 @@ import com.whydigit.efit.repo.KitRepo;
 import com.whydigit.efit.repo.ManufacturerProductRepo;
 import com.whydigit.efit.repo.ManufacturerRepo;
 import com.whydigit.efit.repo.UnitRepo;
+import com.whydigit.efit.repo.UserRepo;
 import com.whydigit.efit.repo.VendorAddressRepo;
 import com.whydigit.efit.repo.VendorBankDetailsRepo;
 import com.whydigit.efit.repo.VendorRepo;
@@ -135,6 +136,9 @@ public class MasterServiceImpl implements MasterService {
 
 	@Autowired
 	CustomerAttachmentRepo customerAttachmentRepo;
+	
+	@Autowired
+	UserRepo userRepo;
 
 	@Override
 	public List<AssetVO> getAllAsset(Long orgId) {
@@ -788,15 +792,7 @@ public class MasterServiceImpl implements MasterService {
 	}
 
 	@Override
-	public List<FlowVO> getFlowByIds(String ids) {
-		List<Long> flowIds = Arrays.stream(StringUtils.split(ids, ",")).map(Long::parseLong)
-				.collect(Collectors.toList());
-		return flowRepo.findAllById(flowIds);
-	}
-
-	@Override
 	public List<VendorVO> getAllVendor() {
-
 		return VendorRepo.findAll();
 	}
 
@@ -850,12 +846,11 @@ public class MasterServiceImpl implements MasterService {
 
 	@Override
 	public VendorAddressVO updateCreateVendorAddress(@Valid VendorAddressDTO vendorAddressDTO)
-			throws ApplicationException {
-		VendorAddressVO vendorAddressVO = new VendorAddressVO();
-		if (ObjectUtils.isNotEmpty(vendorAddressDTO) && ObjectUtils.isNotEmpty(vendorAddressDTO.getId())) {
-			VendorVO vendorVO = vendorRepo.findById(vendorAddressDTO.getId())
-					.orElseThrow(() -> new ApplicationException("Vendor information not found."));
-
+	        throws ApplicationException {
+	    VendorAddressVO vendorAddressVO = new VendorAddressVO();
+	    if (ObjectUtils.isNotEmpty(vendorAddressDTO) && ObjectUtils.isNotEmpty(vendorAddressDTO.getVendorId())) {
+	        VendorVO vendorVO = vendorRepo.findById(vendorAddressDTO.getVendorId())
+	                .orElseThrow(() -> new ApplicationException("Vendor information not found."));
 			if (ObjectUtils.isNotEmpty(vendorAddressDTO.getId())) {
 				vendorAddressVO = vendorAddressRepo.findById(vendorAddressDTO.getId())
 						.orElseThrow(() -> new ApplicationException("Vendor Address information not found."));
@@ -899,9 +894,10 @@ public class MasterServiceImpl implements MasterService {
 	public VendorBankDetailsVO updateCreatevendorBankDetails(@Valid VendorBankDetailsDTO vendorBankDetailsDTO)
 			throws ApplicationException {
 		VendorBankDetailsVO vendorBankDetailsVO = new VendorBankDetailsVO();
-		if (ObjectUtils.isNotEmpty(vendorBankDetailsDTO) && ObjectUtils.isNotEmpty(vendorBankDetailsDTO.getId())) {
-			VendorVO vendorVO = vendorRepo.findById(vendorBankDetailsDTO.getId())
-					.orElseThrow(() -> new ApplicationException("Customer bank detail information not found."));
+		if (ObjectUtils.isNotEmpty(vendorBankDetailsDTO)
+				&& ObjectUtils.isNotEmpty(vendorBankDetailsDTO.getVendorId())) {
+			VendorVO vendorVO = vendorRepo.findById(vendorBankDetailsDTO.getVendorId())
+					.orElseThrow(() -> new ApplicationException("Customer information not found."));
 			if (ObjectUtils.isNotEmpty(vendorBankDetailsDTO.getId())) {
 				vendorBankDetailsVO = vendorBankDetailsRepo.findById(vendorBankDetailsDTO.getId())
 						.orElseThrow(() -> new ApplicationException("Customer bank detail information not found."));
@@ -935,4 +931,23 @@ public class MasterServiceImpl implements MasterService {
 		vendorBankDetailsRepo.deleteById(id);
 	}
 
+	@Override
+	public List<FlowVO> getFlowByUserId(long userId) throws ApplicationException {
+		String flowIds = userRepo.getFlowIdsByUserId(userId);
+		if (StringUtils.isBlank(flowIds)) {
+			throw new ApplicationException("Flow not found.");
+		}
+		return getFlowByIds(flowIds);
+	}
+
+	public List<FlowVO> getFlowByIds(String ids) throws ApplicationException {
+		List<Long> flowIds = Arrays.stream(StringUtils.split(ids, ",")).map(Long::parseLong)
+				.collect(Collectors.toList());
+		List<FlowVO> flowVO = flowRepo.findAllById(flowIds);
+		if (flowVO.isEmpty()) {
+			throw new ApplicationException("Flow not found.");
+		}
+		return flowVO;
+	}
+	
 }

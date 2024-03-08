@@ -21,4 +21,5 @@ public class VendorAddressDTO {
 	private String destination;
 	private long gstNumber;
 	private String eMail;
+	private Long vendorId;
 }
