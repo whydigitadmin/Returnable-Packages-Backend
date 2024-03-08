@@ -1,4 +1,4 @@
-package com.whydigit.efit.entity;
+																																																																																																																																																																																																																																																																											package com.whydigit.efit.entity;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;

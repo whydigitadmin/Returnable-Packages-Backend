@@ -342,11 +342,6 @@ public class MasterServiceImpl implements MasterService {
 		customersVO.setActive(customersDTO.isActive());
 	}
 
-//	@Override
-//	public AddressVO createAddress(AddressVO addressVO) {
-//		return addressRepo.save(addressVO);
-//	}
-
 	@Override
 	public CustomersVO updateCustomers(CustomersDTO customersDTO) throws ApplicationException {
 		CustomersVO customersVO = new CustomersVO();
@@ -855,19 +850,26 @@ public class MasterServiceImpl implements MasterService {
 
 	@Override
 	public VendorAddressVO updateCreateVendorAddress(@Valid VendorAddressDTO vendorAddressDTO)
-			throws ApplicationException {
-		VendorAddressVO vendorAddressVO = new VendorAddressVO();
-		if (ObjectUtils.isNotEmpty(vendorAddressDTO.getId())) {
-			vendorAddressVO = vendorAddressRepo.findById(vendorAddressDTO.getId())
-					.orElseThrow(() -> new ApplicationException("Invalid vendor details"));
-		}
-		getVendorVOFromVendorDTO(vendorAddressDTO, vendorAddressVO);
-		return vendorAddressRepo.save(vendorAddressVO);
+	        throws ApplicationException {
+	    VendorAddressVO vendorAddressVO = new VendorAddressVO();
+	    if (ObjectUtils.isNotEmpty(vendorAddressDTO) && ObjectUtils.isNotEmpty(vendorAddressDTO.getId())) {
+	        VendorVO vendorVO = vendorRepo.findById(vendorAddressDTO.getId())
+	                .orElseThrow(() -> new ApplicationException("Vendor information not found."));
+
+	        if (ObjectUtils.isNotEmpty(vendorAddressDTO.getId())) {
+	            vendorAddressVO = vendorAddressRepo.findById(vendorAddressDTO.getId())
+	                    .orElseThrow(() -> new ApplicationException("Vendor Address information not found."));
+	        }
+	        vendorAddressVO.setVendorVO(vendorVO); // Setting the VendorVO in VendorAddressVO
+	    } else {
+	        throw new ApplicationException("Invalid vendor address information.");
+	    }
+	    getVendorAddressVOFromVendorAddressDTO(vendorAddressDTO, vendorAddressVO);
+	    return vendorAddressRepo.save(vendorAddressVO);
 	}
 
-	private void getVendorVOFromVendorDTO(@Valid VendorAddressDTO vendorAddressDTO, VendorAddressVO vendorAddressVO) {
+	private void getVendorAddressVOFromVendorAddressDTO(@Valid VendorAddressDTO vendorAddressDTO, VendorAddressVO vendorAddressVO) {
 		vendorAddressVO.setOrgId(vendorAddressDTO.getOrgId());
-//		vendorAddressVO.setVenderId(vendorAddressDTO.getVenderId());
 		vendorAddressVO.setGstNumber(vendorAddressDTO.getGstNumber());
 		vendorAddressVO.setStreet1(vendorAddressDTO.getStreet1());
 		vendorAddressVO.setStreet2(vendorAddressDTO.getStreet2());
@@ -896,14 +898,21 @@ public class MasterServiceImpl implements MasterService {
 	public VendorBankDetailsVO updateCreatevendorBankDetails(@Valid VendorBankDetailsDTO vendorBankDetailsDTO)
 			throws ApplicationException {
 		VendorBankDetailsVO vendorBankDetailsVO = new VendorBankDetailsVO();
-		if (ObjectUtils.isNotEmpty(vendorBankDetailsDTO.getId())) {
-			vendorBankDetailsVO = vendorBankDetailsRepo.findById(vendorBankDetailsDTO.getId())
-					.orElseThrow(() -> new ApplicationException("Invalid vendor bank details"));
+		if (ObjectUtils.isNotEmpty(vendorBankDetailsDTO)
+				&& ObjectUtils.isNotEmpty(vendorBankDetailsDTO.getId())) {
+			VendorVO vendorVO = vendorRepo.findById(vendorBankDetailsDTO.getId())
+					.orElseThrow(() -> new ApplicationException("Customer bank detail information not found."));
+			if (ObjectUtils.isNotEmpty(vendorBankDetailsDTO.getId())) {
+				vendorBankDetailsVO = vendorBankDetailsRepo.findById(vendorBankDetailsDTO.getId())
+						.orElseThrow(() -> new ApplicationException("Customer bank detail information not found."));
+			}
+			vendorBankDetailsVO.setVendorVO(vendorVO);
+		} else {
+			throw new ApplicationException("Invalid vendor bank detail information.");
 		}
 		getVendorBankDetailsVOFromVendorBankDetailsDTO(vendorBankDetailsDTO, vendorBankDetailsVO);
 		return vendorBankDetailsRepo.save(vendorBankDetailsVO);
-	}
-
+	}	
 	private void getVendorBankDetailsVOFromVendorBankDetailsDTO(@Valid VendorBankDetailsDTO vendorBankDetailsDTO,
 			VendorBankDetailsVO vendorBankDetailsVO) {
 		vendorBankDetailsVO.setOrgId(vendorBankDetailsDTO.getOrgId());
