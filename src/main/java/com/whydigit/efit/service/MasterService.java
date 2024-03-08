@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import javax.validation.Valid;
+
 import org.springframework.web.multipart.MultipartFile;
 
 import com.whydigit.efit.dto.CustomerAttachmentType;
@@ -13,6 +15,10 @@ import com.whydigit.efit.dto.CustomersDTO;
 import com.whydigit.efit.dto.FlowDTO;
 import com.whydigit.efit.dto.KitDTO;
 import com.whydigit.efit.dto.KitResponseDTO;
+import com.whydigit.efit.dto.VendorAddressDTO;
+import com.whydigit.efit.dto.VendorBankDetailsDTO;
+import com.whydigit.efit.dto.VendorDTO;
+import com.whydigit.efit.dto.WarehouseDTO;
 import com.whydigit.efit.entity.AssetCategoryVO;
 import com.whydigit.efit.entity.AssetGroupVO;
 import com.whydigit.efit.entity.AssetVO;
@@ -24,8 +30,11 @@ import com.whydigit.efit.entity.KitVO;
 import com.whydigit.efit.entity.ManufacturerProductVO;
 import com.whydigit.efit.entity.ManufacturerVO;
 import com.whydigit.efit.entity.UnitVO;
-import com.whydigit.efit.entity.VenderAddressVO;
-import com.whydigit.efit.entity.VenderVO;
+import com.whydigit.efit.entity.VendorAddressVO;
+import com.whydigit.efit.entity.VendorBankDetailsVO;
+import com.whydigit.efit.entity.VendorVO;
+//import com.whydigit.efit.entity.VenderAddressVO;
+//import com.whydigit.efit.entity.VenderVO;
 import com.whydigit.efit.exception.ApplicationException;
 
 public interface MasterService {
@@ -87,16 +96,6 @@ public interface MasterService {
 
 	void deleteFlow(long id);
 
-	List<VenderVO> getAllVender(Long orgId);
-
-	Optional<VenderVO> getVenderById(int id);
-
-	VenderVO createVender(VenderVO venderVO);
-
-	Optional<VenderVO> updateVender(VenderVO venderVO);
-
-	void deleteVender(int id);
-
 	List<ManufacturerVO> getAllManufacturer(Long orgId);
 
 	Optional<ManufacturerVO> getManufacturerById(int id);
@@ -127,18 +126,6 @@ public interface MasterService {
 
 	void deleteUnit(int id);
 
-//venderAddress
-
-	List<VenderAddressVO> getAllVenderAddress();
-
-	Optional<VenderAddressVO> getVenderAddressById(int id);
-
-	VenderAddressVO createVenderAddress(VenderAddressVO venderAddressVO);
-
-	Optional<VenderAddressVO> updateVenderAddress(VenderAddressVO venderAddressVO);
-
-	void deleteVenderAddress(int id);
-
 	// Create Kit
 	List<KitResponseDTO> getAllKit(Long orgId);
 
@@ -160,5 +147,29 @@ public interface MasterService {
 	List<AssetGroupVO> createAssetGroupByCSV(MultipartFile assetFile) throws ApplicationException;
 
 	List<FlowVO> getFlowByIds(String ids);
+
+	// Vendor
+	List<VendorVO> getAllVendor();
+
+	Optional<VendorVO> getVendorById(Long id);
+
+	VendorVO updateCreateVendor(@Valid VendorDTO vendorDTO) throws ApplicationException;
+
+	List<VendorVO> getVendorByOrgId(Long orgId);
+
+	void deletevendor(long id);
+
+	VendorAddressVO updateCreateVendorAddress(@Valid VendorAddressDTO vendorAddressDTO) throws ApplicationException;
+
+	Optional<VendorAddressVO> getVendorAddressById(Long id);
+
+	void deletevendorAddress(Long id);
+
+	VendorBankDetailsVO updateCreatevendorBankDetails(@Valid VendorBankDetailsDTO vendorBankDetailsDTO)
+			throws ApplicationException;
+
+	Optional<VendorBankDetailsVO> getVendorBankDetailsById(Long id);
+
+	void deletevendorBankDetails(Long id);
 
 }

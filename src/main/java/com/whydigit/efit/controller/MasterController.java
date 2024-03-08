@@ -35,6 +35,9 @@ import com.whydigit.efit.dto.FlowDTO;
 import com.whydigit.efit.dto.KitDTO;
 import com.whydigit.efit.dto.KitResponseDTO;
 import com.whydigit.efit.dto.ResponseDTO;
+import com.whydigit.efit.dto.VendorAddressDTO;
+import com.whydigit.efit.dto.VendorBankDetailsDTO;
+import com.whydigit.efit.dto.VendorDTO;
 import com.whydigit.efit.entity.AssetCategoryVO;
 import com.whydigit.efit.entity.AssetGroupVO;
 import com.whydigit.efit.entity.AssetVO;
@@ -46,8 +49,9 @@ import com.whydigit.efit.entity.KitVO;
 import com.whydigit.efit.entity.ManufacturerProductVO;
 import com.whydigit.efit.entity.ManufacturerVO;
 import com.whydigit.efit.entity.UnitVO;
-import com.whydigit.efit.entity.VenderAddressVO;
-import com.whydigit.efit.entity.VenderVO;
+import com.whydigit.efit.entity.VendorAddressVO;
+import com.whydigit.efit.entity.VendorBankDetailsVO;
+import com.whydigit.efit.entity.VendorVO;
 import com.whydigit.efit.service.MasterService;
 
 @CrossOrigin
@@ -718,7 +722,7 @@ public class MasterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-	
+
 	@GetMapping("/flow/getFlowByIds")
 	public ResponseEntity<ResponseDTO> getFlowByIds(@RequestParam String ids) {
 		String methodName = "getFlowByIds()";
@@ -744,129 +748,279 @@ public class MasterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-	
 
-	// vendors
+	// Vendor
 
-	@GetMapping("/vender")
-	public ResponseEntity<ResponseDTO> getAllVender(@RequestParam(required = false) Long orgId) {
-		String methodName = "getAllVender()";
+	@GetMapping("/Vendor")
+	public ResponseEntity<ResponseDTO> getAllVendor() {
+		String methodName = "getAllVendor()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
-		List<VenderVO> venderVO = new ArrayList<>();
+		List<VendorVO> vendorVO = new ArrayList<>();
 		try {
-			venderVO = masterService.getAllVender(orgId);
+			vendorVO = masterService.getAllVendor();
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
 		}
 		if (StringUtils.isBlank(errorMsg)) {
-			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Vender information get successfully");
-			responseObjectsMap.put("venderVO", venderVO);
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Vendor information get successfully");
+			responseObjectsMap.put("vendorVO", vendorVO);
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} else {
-			responseDTO = createServiceResponseError(responseObjectsMap, "Vender information receive failed", errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "Vendor information receive failed", errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
-	@GetMapping("/vender/{id}")
-	public ResponseEntity<ResponseDTO> getVenderById(@PathVariable int id) {
-		String methodName = "getVenderById()";
+	@GetMapping("/Vendor/{id}")
+	public ResponseEntity<ResponseDTO> getVendorById(@PathVariable Long id) {
+		String methodName = "getVendorById()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
-		VenderVO venderVO = null;
+		VendorVO vendorVO = null;
 		try {
-			venderVO = masterService.getVenderById(id).orElse(null);
+			vendorVO = masterService.getVendorById(id).orElse(null);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
 		}
 		if (StringUtils.isEmpty(errorMsg)) {
-			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "VenderVO found by ID");
-			responseObjectsMap.put("venderVO", venderVO);
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Vendor found by ID");
+			responseObjectsMap.put("vendorVO", vendorVO);
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} else {
-			errorMsg = "Vender not found for ID: " + id;
-			responseDTO = createServiceResponseError(responseObjectsMap, "Vender not found", errorMsg);
+			errorMsg = "Manufacturer not found for ID: " + id;
+			responseDTO = createServiceResponseError(responseObjectsMap, "Vendor not found", errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
-	@PostMapping("/vender")
-	public ResponseEntity<ResponseDTO> createVender(@RequestBody VenderVO venderVO) {
-		String methodName = "createVender()";
+	@PutMapping("/Vendor")
+	public ResponseEntity<ResponseDTO> updateCreateVendor(@Valid @RequestBody VendorDTO vendorDTO) {
+		String methodName = "updateCreateVendor()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
 		try {
-			VenderVO createdVenderVO = masterService.createVender(venderVO);
-			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Vender created successfully");
-			responseObjectsMap.put("venderVO", createdVenderVO);
-			responseDTO = createServiceResponse(responseObjectsMap);
-		} catch (Exception e) {
-			errorMsg = e.getMessage();
-			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-			responseDTO = createServiceResponseError(responseObjectsMap, "Vender creation failed", errorMsg);
-		}
-		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
-		return ResponseEntity.ok().body(responseDTO);
-	}
-
-	@PutMapping("/vender")
-	public ResponseEntity<ResponseDTO> updateVendor(@RequestBody VenderVO venderVO) {
-		String methodName = "updateVender()";
-		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
-		String errorMsg = null;
-		Map<String, Object> responseObjectsMap = new HashMap<>();
-		ResponseDTO responseDTO = null;
-		try {
-			VenderVO updatedVenderVO = masterService.updateVender(venderVO).orElse(null);
-			if (updatedVenderVO != null) {
-				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Vender updated successfully");
-				responseObjectsMap.put("venderVO", updatedVenderVO);
+			VendorVO updatedVendorVO = masterService.updateCreateVendor(vendorDTO);
+			if (updatedVendorVO != null) {
+				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Vendor updated successfully");
+				responseObjectsMap.put("updatedVendorVO", updatedVendorVO);
 				responseDTO = createServiceResponse(responseObjectsMap);
 			} else {
-				errorMsg = "Flow not found for ID: " + venderVO.getId();
-				responseDTO = createServiceResponseError(responseObjectsMap, "Vender update failed", errorMsg);
+				errorMsg = "Vendor not found for ID: " + vendorDTO.getId();
+				responseDTO = createServiceResponseError(responseObjectsMap, "Vendor update failed", errorMsg);
 			}
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-			responseDTO = createServiceResponseError(responseObjectsMap, "Vender" + " update failed", errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "Vendor update failed", errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
-	@DeleteMapping("/vender/{id}")
-	public ResponseEntity<ResponseDTO> deleteVende(@PathVariable int id) {
-		String methodName = "deleteVender()";
+	@GetMapping("/getVendorByOrgId")
+	public ResponseEntity<ResponseDTO> getVendorByOrgId(@RequestParam Long orgId) {
+		String methodName = "getVendorByOrgId()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<VendorVO> vendorVO = new ArrayList<>();
+		try {
+			vendorVO = masterService.getVendorByOrgId(orgId);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Vendor found by IDS");
+			responseObjectsMap.put("vendorVO", vendorVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			errorMsg = "Flow not found for ID: " + orgId;
+			responseDTO = createServiceResponseError(responseObjectsMap, "Vendor not found", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
+	@DeleteMapping("/vendor/{id}")
+	public ResponseEntity<ResponseDTO> deletevendor(@PathVariable Long id) {
+		String methodName = "deletevendor()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
 		try {
-			masterService.deleteVender(id);
-			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Vender deleted successfully");
+			masterService.deletevendor(id);
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Vendor deleted successfully");
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-			responseDTO = createServiceResponseError(responseObjectsMap, "Vender deletion failed", errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "Vendor deletion failed", errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
-
+	}
+	
+	//VendorAddress
+	
+	@PutMapping("/vendorAddress")
+	public ResponseEntity<ResponseDTO> updateCreateVendorAddress(@Valid @RequestBody VendorAddressDTO vendorAddressDTO) {
+		String methodName = "updateCreateVendorAddress()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		try {
+			VendorAddressVO updatedVendorAddressVO = masterService.updateCreateVendorAddress(vendorAddressDTO);
+			if (updatedVendorAddressVO != null) {
+				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Vendor updated successfully");
+				responseObjectsMap.put("VendorAddressVO", updatedVendorAddressVO);
+				responseDTO = createServiceResponse(responseObjectsMap);
+			} else {
+				errorMsg = "Vendor not found for ID: " + vendorAddressDTO.getId();
+				responseDTO = createServiceResponseError(responseObjectsMap, "Vendor Address update failed", errorMsg);
+			}
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "Vendor Address update failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
 	}
 
+	@GetMapping("/vendorAddress/{id}")
+	public ResponseEntity<ResponseDTO> getVendorAddressById(@PathVariable Long id) {
+		String methodName = "getVendorAddressById()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		VendorAddressVO vendorAddressVO = null;
+		try {
+			vendorAddressVO = masterService.getVendorAddressById(id).orElse(null);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Vendor address found by ID");
+			responseObjectsMap.put("vendorAddressVO", vendorAddressVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			errorMsg = "Vendor address not found for ID: " + id;
+			responseDTO = createServiceResponseError(responseObjectsMap, "Vendor address not found", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+	
+	@DeleteMapping("/vendorAddress/{id}")
+	public ResponseEntity<ResponseDTO> deletevendorAddress(@PathVariable Long id) {
+		String methodName = "deletevendorAddress()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		try {
+			masterService.deletevendorAddress(id);
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "vendorAddress deleted successfully");
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "vendorAddress deletion failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+	
+	//VendorBankDetails
+	@PutMapping("/vendorBankDetails")
+	public ResponseEntity<ResponseDTO> updateCreatevendorBankDetails(@Valid @RequestBody VendorBankDetailsDTO vendorBankDetailsDTO) {
+		String methodName = "updateCreatevendorBankDetails()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		try {
+			VendorBankDetailsVO updatedVendorBankDetailsVO = masterService.updateCreatevendorBankDetails(vendorBankDetailsDTO);
+			if (updatedVendorBankDetailsVO != null) {
+				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Vendor updated successfully");
+				responseObjectsMap.put("updatedVendorBankDetailsVO", updatedVendorBankDetailsVO);
+				responseDTO = createServiceResponse(responseObjectsMap);
+			} else {
+				errorMsg = "Vendor bank details not found for ID: " + vendorBankDetailsDTO.getId();
+				responseDTO = createServiceResponseError(responseObjectsMap, "Vendor bank details update failed", errorMsg);
+			}
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "Vendor bank details update failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+	
+	@GetMapping("/vendorBankDetails/{id}")
+	public ResponseEntity<ResponseDTO> getVendorBankDetailsById(@PathVariable Long id) {
+		String methodName = "getVendorBankDetailsById()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		VendorBankDetailsVO vendorBankDetailsVO = null;
+		try {
+			vendorBankDetailsVO = masterService.getVendorBankDetailsById(id).orElse(null);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Vendor bank details found by ID");
+			responseObjectsMap.put("vendorBankDetailsVO", vendorBankDetailsVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			errorMsg = "Vendor bank details not found for ID: " + id;
+			responseDTO = createServiceResponseError(responseObjectsMap, "Vendor bank details not found", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+	
+	@DeleteMapping("/vendorBankDetails/{id}")
+	public ResponseEntity<ResponseDTO> deletevendorBankDetails(@PathVariable Long id) {
+		String methodName = "deletevendorBankDetails()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		try {
+			masterService.deletevendorBankDetails(id);
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Vendor BankDetails deleted successfully");
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "Vendor BankDetails deletion failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+	
 	// Manufacturer
 
 	@GetMapping("/manufacturer")
@@ -1227,125 +1381,7 @@ public class MasterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
-	// venderAddress
-	@GetMapping("/venderAddress")
-	public ResponseEntity<ResponseDTO> getAllVenderAddress() {
-		String methodName = "getAllVenderAddress()";
-		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
-		String errorMsg = null;
-		Map<String, Object> responseObjectsMap = new HashMap<>();
-		ResponseDTO responseDTO = null;
-		List<VenderAddressVO> venderAddressVO = new ArrayList<>();
-		try {
-			venderAddressVO = masterService.getAllVenderAddress();
-		} catch (Exception e) {
-			errorMsg = e.getMessage();
-			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-		}
-		if (StringUtils.isBlank(errorMsg)) {
-			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "VenderAddress information get successfully");
-			responseObjectsMap.put("VenderAddress", venderAddressVO);
-			responseDTO = createServiceResponse(responseObjectsMap);
-		} else {
-			responseDTO = createServiceResponseError(responseObjectsMap, "VenderAddress information receive failed",
-					errorMsg);
-		}
-		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
-		return ResponseEntity.ok().body(responseDTO);
-	}
 
-	@GetMapping("/venderAddress/{id}")
-	public ResponseEntity<ResponseDTO> getVenderAddressById(@PathVariable int id) {
-		String methodName = "getVenderAddressById()";
-		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
-		String errorMsg = null;
-		Map<String, Object> responseObjectsMap = new HashMap<>();
-		ResponseDTO responseDTO = null;
-		VenderAddressVO venderAddressVO = null;
-		try {
-			venderAddressVO = masterService.getVenderAddressById(id).orElse(null);
-		} catch (Exception e) {
-			errorMsg = e.getMessage();
-			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-		}
-		if (StringUtils.isEmpty(errorMsg)) {
-			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "VenderAddress found by ID");
-			responseObjectsMap.put("VenderAddress", venderAddressVO);
-			responseDTO = createServiceResponse(responseObjectsMap);
-		} else {
-			errorMsg = "VenderAddress not found for ID: " + id;
-			responseDTO = createServiceResponseError(responseObjectsMap, "VenderAddress not found", errorMsg);
-		}
-		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
-		return ResponseEntity.ok().body(responseDTO);
-	}
-
-	@PostMapping("/VenderAddress")
-	public ResponseEntity<ResponseDTO> createVenderAddress(@RequestBody VenderAddressVO venderAddressVO) {
-		String methodName = "createVenderAddress()";
-		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
-		String errorMsg = null;
-		Map<String, Object> responseObjectsMap = new HashMap<>();
-		ResponseDTO responseDTO = null;
-		try {
-			VenderAddressVO createdVenderAddress = masterService.createVenderAddress(venderAddressVO);
-			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "VenderAddress created successfully");
-			responseObjectsMap.put("VenderAddress", createdVenderAddress);
-			responseDTO = createServiceResponse(responseObjectsMap);
-		} catch (Exception e) {
-			errorMsg = e.getMessage();
-			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-			responseDTO = createServiceResponseError(responseObjectsMap, "VenderAddress creation failed", errorMsg);
-		}
-		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
-		return ResponseEntity.ok().body(responseDTO);
-	}
-
-	@PutMapping("/venderAddress")
-	public ResponseEntity<ResponseDTO> updateVenderAddress(@RequestBody VenderAddressVO venderAddressVO) {
-		String methodName = "updateVenderAddress()";
-		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
-		String errorMsg = null;
-		Map<String, Object> responseObjectsMap = new HashMap<>();
-		ResponseDTO responseDTO = null;
-		try {
-			VenderAddressVO updatedVenderAddress = masterService.updateVenderAddress(venderAddressVO).orElse(null);
-			if (updatedVenderAddress != null) {
-				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "VenderAddress updated successfully");
-				responseObjectsMap.put("venderAddress", updatedVenderAddress);
-				responseDTO = createServiceResponse(responseObjectsMap);
-			} else {
-				errorMsg = "VenderAddress not found for ID: " + venderAddressVO.getId();
-				responseDTO = createServiceResponseError(responseObjectsMap, "VenderAddress update failed", errorMsg);
-			}
-		} catch (Exception e) {
-			errorMsg = e.getMessage();
-			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-			responseDTO = createServiceResponseError(responseObjectsMap, "VenderAddress update failed", errorMsg);
-		}
-		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
-		return ResponseEntity.ok().body(responseDTO);
-	}
-
-	@DeleteMapping("/venderAddress/{id}")
-	public ResponseEntity<ResponseDTO> deleteVenderAddress(@PathVariable int id) {
-		String methodName = "deleteVenderAddress()";
-		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
-		String errorMsg = null;
-		Map<String, Object> responseObjectsMap = new HashMap<>();
-		ResponseDTO responseDTO = null;
-		try {
-			masterService.deleteVenderAddress(id);
-			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "VenderAddress deleted successfully");
-			responseDTO = createServiceResponse(responseObjectsMap);
-		} catch (Exception e) {
-			errorMsg = e.getMessage();
-			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-			responseDTO = createServiceResponseError(responseObjectsMap, "VenderAddress deletion failed", errorMsg);
-		}
-		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
-		return ResponseEntity.ok().body(responseDTO);
-	}
 
 	// Create KIT
 
