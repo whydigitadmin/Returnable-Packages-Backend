@@ -24,7 +24,7 @@ import lombok.NoArgsConstructor;
 public class VendorAddressVO {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long id;
+	private Long id;
 	private long orgId;
 	private String gstRegistrationStatus;
 	private String street1;
