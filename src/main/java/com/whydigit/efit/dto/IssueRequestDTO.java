@@ -16,7 +16,7 @@ public class IssueRequestDTO {
 	private long emitterId;
 	private long orgId;
 	private long reqAddressId;
-	private long flowTo;
+	private Long flowTo;
 	private LocalDate demandDate;
 	private String remark;
 	private List<IssueItemDTO> issueItemDTO = new ArrayList<>();

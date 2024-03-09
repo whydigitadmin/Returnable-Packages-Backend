@@ -397,7 +397,7 @@ public class MasterServiceImpl implements MasterService {
 	private FlowVO createFlowVOByFlowDTO(FlowDTO flowDTO) {
 		List<FlowDetailVO> flowDetailVOList = new ArrayList<>();
 		FlowVO flowVO = FlowVO.builder().active(flowDTO.isActive()).orgin(flowDTO.getOrgin())
-				.flowName(flowDTO.getFlowName()).receiverId(flowDTO.getReceiverId())
+				.flowName(flowDTO.getFlowName()).receiverId(flowDTO.getReceiverId()).emitter(flowDTO.getEmitter())
 				.destination(flowDTO.getDestination()).orgId(flowDTO.getOrgId()).flowDetailVO(flowDetailVOList).build();
 
 		flowDetailVOList = flowDTO.getFlowDetailDTO().stream()
@@ -897,10 +897,10 @@ public class MasterServiceImpl implements MasterService {
 		if (ObjectUtils.isNotEmpty(vendorBankDetailsDTO)
 				&& ObjectUtils.isNotEmpty(vendorBankDetailsDTO.getVendorId())) {
 			VendorVO vendorVO = vendorRepo.findById(vendorBankDetailsDTO.getVendorId())
-					.orElseThrow(() -> new ApplicationException("Customer information not found."));
+					.orElseThrow(() -> new ApplicationException("Vendor information not found."));
 			if (ObjectUtils.isNotEmpty(vendorBankDetailsDTO.getId())) {
 				vendorBankDetailsVO = vendorBankDetailsRepo.findById(vendorBankDetailsDTO.getId())
-						.orElseThrow(() -> new ApplicationException("Customer bank detail information not found."));
+						.orElseThrow(() -> new ApplicationException("Vendor bank detail information not found."));
 			}
 			vendorBankDetailsVO.setVendorVO(vendorVO);
 		} else {
