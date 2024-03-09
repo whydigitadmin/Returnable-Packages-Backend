@@ -372,12 +372,15 @@ public class AuthServiceImpl implements AuthService {
 			LOGGER.error(e.getMessage());
 			throw new ApplicationContextException(UserConstants.ERRROR_MSG_UNABLE_TO_ENCODE_USER_PASSWORD);
 		}
-		String addIds = Arrays.stream(createUserFormDTO.getAccessaddId()).map(String::valueOf)
-				.collect(Collectors.joining(","));
-		String warehouseIds = Arrays.stream(createUserFormDTO.getAccessWarehouse()).map(String::valueOf)
-				.collect(Collectors.joining(","));
-		String flowIds = Arrays.stream(createUserFormDTO.getAccessFlowId()).map(String::valueOf)
-				.collect(Collectors.joining(","));
+		String addIds = ObjectUtils.isNotEmpty(createUserFormDTO.getAccessaddId()) ? Arrays
+				.stream(createUserFormDTO.getAccessaddId()).map(String::valueOf).collect(Collectors.joining(","))
+				: StringUtils.EMPTY;
+		String warehouseIds = ObjectUtils.isNotEmpty(createUserFormDTO.getAccessWarehouse()) ? Arrays
+				.stream(createUserFormDTO.getAccessWarehouse()).map(String::valueOf).collect(Collectors.joining(","))
+				: StringUtils.EMPTY;
+		String flowIds = ObjectUtils.isNotEmpty(createUserFormDTO.getAccessFlowId()) ? Arrays
+				.stream(createUserFormDTO.getAccessFlowId()).map(String::valueOf).collect(Collectors.joining(","))
+				: StringUtils.EMPTY;
 		userVO.setAccessFlowId(flowIds);
 		userVO.setAccessaddId(addIds);
 		userVO.setAccessWarehouse(warehouseIds);
