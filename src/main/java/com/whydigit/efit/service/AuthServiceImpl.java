@@ -3,6 +3,7 @@ package com.whydigit.efit.service;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
@@ -383,6 +384,12 @@ public class AuthServiceImpl implements AuthService {
 		userVO.setRole(createUserFormDTO.getRole());
 		userVO.setActive(true);
 		return userVO;
+	}
+
+	@Override
+	public Optional<UserVO> getUserById(Long userId) {
+		
+		return userRepo.findById(userId);
 	}
 
 }
