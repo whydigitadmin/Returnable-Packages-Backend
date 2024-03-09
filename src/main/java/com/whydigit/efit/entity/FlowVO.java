@@ -38,6 +38,7 @@ public class FlowVO {
 	private String orgin;
 	private String destination;
     private boolean active;
+    private String warehouseLocation;
     
     @JsonManagedReference
 	@OneToMany(mappedBy="flowVO",cascade = CascadeType.ALL)
