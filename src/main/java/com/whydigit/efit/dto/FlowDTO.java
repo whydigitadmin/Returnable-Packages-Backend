@@ -23,6 +23,7 @@ public class FlowDTO {
 //	private String flowType;
 	private String orgin;
 	private String destination;
+    private String warehouseLocation;
 	private boolean active;
 	private List<FlowDetailDTO> flowDetailDTO;
 }
