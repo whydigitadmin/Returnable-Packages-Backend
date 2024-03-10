@@ -341,6 +341,16 @@ public class EmitterServiceImpl implements EmitterService {
 
 	@Override
 	public List<VwEmitterInwardVO> getVwEmtInwardByOrgIdAndEmtId(Long orgId, Long emitterId) {
-		return vwEmitterInwardRepo.findByOrgIdAndEmitter(orgId,emitterId);
+		return vwEmitterInwardRepo.findAllByOrgId(orgId,emitterId);
+	}
+	
+	@Override
+	public List<VwEmitterInwardVO> getVwEmtInwardByOrgIdAndEmtIdAndFlow(Long orgId, Long emitterId, Long flowid) {
+		return vwEmitterInwardRepo.findAllByOrgIdFlow(orgId,emitterId,flowid);
+	}
+	
+	@Override
+	public List<VwEmitterInwardVO> getVwEmtInwardByOrgIdAndWarehouse(Long orgId,Long warehouseid) {
+		return vwEmitterInwardRepo.findAllByOrgIdAndWarehosue(orgId,warehouseid);
 	}
 }

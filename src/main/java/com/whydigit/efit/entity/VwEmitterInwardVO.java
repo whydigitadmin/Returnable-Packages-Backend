@@ -17,21 +17,23 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class VwEmitterInwardVO {
 @Id
-private long requestID;
-private long orgId;
+private Long requestID;
+private Long orgId;
 private LocalDate requestedDate;
 private LocalDate demandDate;
-private long emitterId;
+private Long emitterId;
 private String flowTo;
+private Long warehouseLocationId;
+private String warehouseLocation;
 private String flowName;
-private long kitQty;
+private Long kitQty;
 private String partName;
-private long partQty;
+private int partQty;
 private LocalDate reachedDate;
-private long issueItemStatus;
-private long issuedQty;
-private long netQtyRecieved;
-private long returnQty;
+private Long issueItemStatus;
+private int issuedQty;
+private int netQtyRecieved;
+private int returnQty;
 private String status;
 
 
