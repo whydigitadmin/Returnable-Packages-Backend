@@ -8,10 +8,12 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import com.whydigit.efit.dto.EmitterAddressDTO;
+import com.whydigit.efit.dto.InwardDTO;
 import com.whydigit.efit.dto.IssueRequestDTO;
 import com.whydigit.efit.dto.IssueRequestQtyApprovelDTO;
 import com.whydigit.efit.entity.EmitterInwardVO;
 import com.whydigit.efit.entity.EmitterOutwardVO;
+import com.whydigit.efit.entity.InwardVO;
 import com.whydigit.efit.entity.IssueRequestVO;
 import com.whydigit.efit.exception.ApplicationException;
 
@@ -31,8 +33,6 @@ public interface EmitterService {
 
 	EmitterInwardVO createEmitterInward(EmitterInwardVO emitterInwardVO);
 
-	Optional<EmitterInwardVO> updateEmitterInward(EmitterInwardVO emitterInwardVO);
-
 	void deleteEmitterInward(int id);
 
 	// emitter outward
@@ -49,5 +49,7 @@ public interface EmitterService {
 	IssueRequestVO issueRequestQtyApprovel(IssueRequestQtyApprovelDTO issueRequestQtyApprovelDTO) throws ApplicationException;
 
 	void cancelIssueRequest(Long issueRequestId, Long issueRequestItemId) throws ApplicationException;
+
+	InwardVO updateEmitterInward(InwardDTO inwardDTO) throws ApplicationException;
 
 }

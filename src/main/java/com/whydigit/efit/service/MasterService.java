@@ -3,6 +3,7 @@ package com.whydigit.efit.service;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.validation.Valid;
 
@@ -171,5 +172,7 @@ public interface MasterService {
 	void deletevendorBankDetails(Long id);
 
 	List<FlowVO> getFlowByUserId(long userId) throws ApplicationException;
+
+	Set<Object[]> getFlowNameByOrgID(Long orgId, Long emitterId);
 
 }
