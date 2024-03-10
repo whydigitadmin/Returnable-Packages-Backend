@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import com.whydigit.efit.common.EmitterConstant;
 import com.whydigit.efit.dto.EmitterAddressDTO;
+import com.whydigit.efit.dto.InwardDTO;
 import com.whydigit.efit.dto.IssueItemDTO;
 import com.whydigit.efit.dto.IssueRequestDTO;
 import com.whydigit.efit.dto.IssueRequestQtyApprovelDTO;
@@ -37,6 +38,7 @@ import com.whydigit.efit.exception.ApplicationException;
 import com.whydigit.efit.repo.EmitterInwardRepo;
 import com.whydigit.efit.repo.EmitterOutwardRepo;
 import com.whydigit.efit.repo.FlowRepo;
+import com.whydigit.efit.repo.InwardRepo;
 import com.whydigit.efit.repo.IssueItemRepo;
 import com.whydigit.efit.repo.IssueRequestRepo;
 import com.whydigit.efit.repo.UserRepo;
@@ -54,6 +56,8 @@ public class EmitterServiceImpl implements EmitterService {
 	EmitterOutwardRepo emitterOutwardRepo;
 	@Autowired
 	IssueItemRepo issueItemRepo;
+	@Autowired
+	InwardRepo inwardRepo;
 
 	@Autowired
 	FlowRepo flowRepo;
@@ -80,7 +84,7 @@ public class EmitterServiceImpl implements EmitterService {
 	private void getIssueIemVOFromIssueRequestDTO(IssueItemDTO issueItemDTO, IssueRequestVO issueRequestVO,
 			IssueItemVO issueItem) {
 		issueItem.setIssueItemStatus(0);
-		issueItem.setKitNo(issueItemDTO.getKitNo());
+		issueItem.setKitName(issueItemDTO.getKitName());
 		issueItem.setKitQty(issueItemDTO.getKitQty());
 		issueItem.setPartNo(issueItemDTO.getPartNo());
 		issueItem.setPartQty(issueItemDTO.getPartQty());
@@ -231,12 +235,31 @@ public class EmitterServiceImpl implements EmitterService {
 	}
 
 	@Override
-	public Optional<EmitterInwardVO> updateEmitterInward(EmitterInwardVO emitterInwardVO) {
-		if (emitterInwardRepo.existsById(emitterInwardVO.getId())) {
-			return Optional.of(emitterInwardRepo.save(emitterInwardVO));
+	public InwardVO updateEmitterInward(InwardDTO inwardDTO) throws ApplicationException {
+		IssueItemVO issueItemVO=new IssueItemVO();
+		InwardVO inwardVO=new InwardVO();
+	    if (ObjectUtils.isNotEmpty(inwardDTO) && ObjectUtils.isNotEmpty(inwardDTO.getId())) {
+	    	inwardVO = inwardRepo.findById(inwardDTO.getId())
+	                .orElseThrow(() -> new ApplicationException("Emitter inward information not found."));
+			if (ObjectUtils.isNotEmpty(inwardDTO.getIssueItemId())) {
+				issueItemVO = issueItemRepo.findById(inwardDTO.getIssueItemId())
+						.orElseThrow(() -> new ApplicationException(" information not found."));
+			}
+			
 		} else {
-			return Optional.empty();
+			throw new ApplicationException("Invalid Emitter inward information.");
 		}
+	    inwardVO.setIssueItemVO(issueItemVO);    // Mapping
+	    getInwardVOFromInwardDTO(inwardDTO, inwardVO);
+		return inwardRepo.save(inwardVO);
+	}
+
+
+	private void getInwardVOFromInwardDTO(InwardDTO inwardDTO,
+			InwardVO inwardVO) {
+		inwardVO.setNetQtyRecieved(inwardDTO.getNetQtyRecieved());
+		inwardVO.setReturnQty(inwardDTO.getReturnQty());
+		inwardVO.setStatus(inwardDTO.getStatus());
 	}
 
 	@Override
@@ -245,6 +268,7 @@ public class EmitterServiceImpl implements EmitterService {
 
 	}
 
+	
 	// emitter outward
 	public List<EmitterOutwardVO> getAllEmitterOutward(Long orgId) {
 		List<EmitterOutwardVO> emitterOutwardVO = new ArrayList<>();

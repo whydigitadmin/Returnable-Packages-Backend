@@ -34,6 +34,7 @@ public class SecurityConfig {
 				.permitAll()
 				.antMatchers("/v2/api-docs", "/configuration/ui", "/swagger-resources/**", "/configuration/security",
 						"/swagger-ui.html", "/swagger-ui/*", "/api/auth/signup", "/api/auth/login", "/api/auth/logout",
+						"/api/auth/user/{userId}",
 						"/api/auth/getRefreshToken", "/api/basicSetting/companyInfo", "/api/warehouse/updateWarehose",
 						"/api/master/asset", "/api/warehouse/view/{id}", "/api/usersdetails/view", "/api/master/**",
 						"​/api​/master​/addAddress", "/api/warehouse/getWarehouseLocationByOrgID",
@@ -43,7 +44,7 @@ public class SecurityConfig {
 						"/api/partStudy/packageDetail/{id}", "/api/partStudy/logistics",
 						"/api/partStudy/logistics/{id}", "/api/partStudy/**", "/api/inwardSku/**",
 						"/api/partStudy/stockDetail/{id}", "/api/emitter/createIssueRequest", "/api/emitter/*",
-						"/api/auth/createUser", "/api/master/flow/getFlowByIds")
+						"/api/auth/createUser", "/api/master/flow/getFlowByIds","/api/master/getAllFlowName")
 				.permitAll().antMatchers("/api/**").hasAnyRole("USER", "GUEST_USER").anyRequest().authenticated();
 
 		http.addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);

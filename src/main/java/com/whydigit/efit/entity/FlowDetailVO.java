@@ -30,21 +30,13 @@ public class FlowDetailVO {
 	private long id;
 	private int orgId;
 	private String kitName;
-	private String  partNumber;
+	private String partNumber;
 	private String emitter;
 	private long emitterId;
 	private String partName;
 	private String cycleTime;
 	private String subReceiver;
 	private boolean active;
-//	private String itemGroup;
-//	private String productToPack;
-//	private int quantity;
-//	private String rentalTerm;
-//  private String fixedRentalCharge;
-//  private String dhr;
-//  private String issueCharge;
-//  private String returnCharge;
 
 	@JsonBackReference
 	@ManyToOne

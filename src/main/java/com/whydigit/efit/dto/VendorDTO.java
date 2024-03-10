@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class VendorDTO {
-	private long id;
+	private Long id;
 	private long orgId;
 	private String venderType;
 	private String displyName;

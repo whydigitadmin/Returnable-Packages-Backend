@@ -32,7 +32,7 @@ public class IssueRequestVO {
 	private long orgId;
 	private long emitterId;
 	private long reqAddressId;
-	private long flowTo;
+	private Long flowTo;
 	private String flowName;
 	private int totalIssueItem;
 	private long tat;

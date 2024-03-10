@@ -3,6 +3,7 @@ package com.whydigit.efit.service;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
@@ -371,18 +372,27 @@ public class AuthServiceImpl implements AuthService {
 			LOGGER.error(e.getMessage());
 			throw new ApplicationContextException(UserConstants.ERRROR_MSG_UNABLE_TO_ENCODE_USER_PASSWORD);
 		}
-		String addIds = Arrays.stream(createUserFormDTO.getAccessaddId()).map(String::valueOf)
-				.collect(Collectors.joining(","));
-		String warehouseIds = Arrays.stream(createUserFormDTO.getAccessWarehouse()).map(String::valueOf)
-				.collect(Collectors.joining(","));
-		String flowIds = Arrays.stream(createUserFormDTO.getAccessFlowId()).map(String::valueOf)
-				.collect(Collectors.joining(","));
+		String addIds = ObjectUtils.isNotEmpty(createUserFormDTO.getAccessaddId()) ? Arrays
+				.stream(createUserFormDTO.getAccessaddId()).map(String::valueOf).collect(Collectors.joining(","))
+				: StringUtils.EMPTY;
+		String warehouseIds = ObjectUtils.isNotEmpty(createUserFormDTO.getAccessWarehouse()) ? Arrays
+				.stream(createUserFormDTO.getAccessWarehouse()).map(String::valueOf).collect(Collectors.joining(","))
+				: StringUtils.EMPTY;
+		String flowIds = ObjectUtils.isNotEmpty(createUserFormDTO.getAccessFlowId()) ? Arrays
+				.stream(createUserFormDTO.getAccessFlowId()).map(String::valueOf).collect(Collectors.joining(","))
+				: StringUtils.EMPTY;
 		userVO.setAccessFlowId(flowIds);
 		userVO.setAccessaddId(addIds);
 		userVO.setAccessWarehouse(warehouseIds);
 		userVO.setRole(createUserFormDTO.getRole());
 		userVO.setActive(true);
 		return userVO;
+	}
+
+	@Override
+	public Optional<UserVO> getUserById(Long userId) {
+		
+		return userRepo.findById(userId);
 	}
 
 }

@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
@@ -390,21 +391,21 @@ public class MasterServiceImpl implements MasterService {
 
 	@Override
 	public FlowVO createFlow(FlowDTO flowDTO) {
+		
 		FlowVO flowVO = createFlowVOByFlowDTO(flowDTO);
+//		flowVO.setDublicateFlowName(flowDTO.getOrgId()+flowDTO.getFlowName());
 		return flowRepo.save(flowVO);
 	}
 
 	private FlowVO createFlowVOByFlowDTO(FlowDTO flowDTO) {
 		List<FlowDetailVO> flowDetailVOList = new ArrayList<>();
-		FlowVO flowVO = FlowVO.builder().active(flowDTO.isActive()).orgin(flowDTO.getOrgin())
-				.flowName(flowDTO.getFlowName()).receiverId(flowDTO.getReceiverId())
+		FlowVO flowVO = FlowVO.builder().active(flowDTO.isActive()).orgin(flowDTO.getOrgin()).warehouseLocation(flowDTO.getWarehouseLocation())
+				.flowName(flowDTO.getFlowName()).receiverId(flowDTO.getReceiverId()).emitterId(flowDTO.getEmitterId())
 				.destination(flowDTO.getDestination()).orgId(flowDTO.getOrgId()).flowDetailVO(flowDetailVOList).build();
-
 		flowDetailVOList = flowDTO.getFlowDetailDTO().stream()
 				.map(fdDTO -> FlowDetailVO.builder().active(fdDTO.isActive()).cycleTime(fdDTO.getCycleTime())
-						.partName(fdDTO.getPartName()).kitName(fdDTO.getKitName()).partNumber(fdDTO.getPartNumber())
+						.partName(fdDTO.getPartName()).kitName(fdDTO.getKitName()).partNumber(fdDTO.getPartNumber()).flowVO(flowVO)
 						.build())
-
 				.collect(Collectors.toList());
 		flowVO.setFlowDetailVO(flowDetailVOList);
 		return flowVO;
@@ -897,10 +898,10 @@ public class MasterServiceImpl implements MasterService {
 		if (ObjectUtils.isNotEmpty(vendorBankDetailsDTO)
 				&& ObjectUtils.isNotEmpty(vendorBankDetailsDTO.getVendorId())) {
 			VendorVO vendorVO = vendorRepo.findById(vendorBankDetailsDTO.getVendorId())
-					.orElseThrow(() -> new ApplicationException("Customer information not found."));
+					.orElseThrow(() -> new ApplicationException("Vendor information not found."));
 			if (ObjectUtils.isNotEmpty(vendorBankDetailsDTO.getId())) {
 				vendorBankDetailsVO = vendorBankDetailsRepo.findById(vendorBankDetailsDTO.getId())
-						.orElseThrow(() -> new ApplicationException("Customer bank detail information not found."));
+						.orElseThrow(() -> new ApplicationException("Vendor bank detail information not found."));
 			}
 			vendorBankDetailsVO.setVendorVO(vendorVO);
 		} else {
@@ -948,6 +949,11 @@ public class MasterServiceImpl implements MasterService {
 			throw new ApplicationException("Flow not found.");
 		}
 		return flowVO;
+	}
+
+	@Override
+	public Set<Object[]> getFlowNameByOrgID(Long orgId, Long emitterId) {
+		return flowRepo.getFlowNameByOrgID(orgId,emitterId);
 	}
 	
 }

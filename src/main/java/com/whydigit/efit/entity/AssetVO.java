@@ -37,6 +37,7 @@ public class AssetVO {
 	private float length;
 	private float breath;
 	private float height;
+	private int quantity;   
 	private String dimUnit;
 	private String manufacturer;
 	private float weight;
