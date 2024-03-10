@@ -393,7 +393,7 @@ public class MasterServiceImpl implements MasterService {
 	public FlowVO createFlow(FlowDTO flowDTO) {
 		
 		FlowVO flowVO = createFlowVOByFlowDTO(flowDTO);
-		flowVO.setDublicateFlowName(flowDTO.getOrgId()+flowDTO.getFlowName());
+//		flowVO.setDublicateFlowName(flowDTO.getOrgId()+flowDTO.getFlowName());
 		return flowRepo.save(flowVO);
 	}
 

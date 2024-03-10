@@ -40,9 +40,9 @@ public class FlowVO {
 	private String destination;
     private boolean active;
     private String warehouseLocation;
-//    @Column(unique = true)
-    private String dublicateFlowName;
-    
+//   @Column(unique = true)
+//    private String dublicateFlowName;
+  
     
     @JsonManagedReference
 	@OneToMany(mappedBy="flowVO",cascade = CascadeType.ALL)
