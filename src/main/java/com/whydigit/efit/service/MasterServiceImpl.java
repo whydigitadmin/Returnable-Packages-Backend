@@ -400,7 +400,7 @@ public class MasterServiceImpl implements MasterService {
 	private FlowVO createFlowVOByFlowDTO(FlowDTO flowDTO) {
 		List<FlowDetailVO> flowDetailVOList = new ArrayList<>();
 		FlowVO flowVO = FlowVO.builder().active(flowDTO.isActive()).orgin(flowDTO.getOrgin()).warehouseLocation(flowDTO.getWarehouseLocation())
-				.flowName(flowDTO.getFlowName()).receiverId(flowDTO.getReceiverId()).emitterId(flowDTO.getEmitterId())
+				.flowName(flowDTO.getFlowName()).receiverId(flowDTO.getReceiverId()).emitterId(flowDTO.getEmitterId()).emitter(flowDTO.getEmitter())
 				.destination(flowDTO.getDestination()).orgId(flowDTO.getOrgId()).flowDetailVO(flowDetailVOList).build();
 		flowDetailVOList = flowDTO.getFlowDetailDTO().stream()
 				.map(fdDTO -> FlowDetailVO.builder().active(fdDTO.isActive()).cycleTime(fdDTO.getCycleTime())
