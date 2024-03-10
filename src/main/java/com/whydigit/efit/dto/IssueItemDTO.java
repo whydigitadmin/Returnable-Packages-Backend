@@ -12,6 +12,7 @@ public class IssueItemDTO {
 	private String kitName;
 	private int kitQty;
 	private String partNo;
+	private String partName;
 	private int partQty;
 	private int issueItemStatus;
 	private String remark;

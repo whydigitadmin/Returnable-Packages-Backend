@@ -34,6 +34,7 @@ import com.whydigit.efit.entity.InwardVO;
 import com.whydigit.efit.entity.IssueItemVO;
 import com.whydigit.efit.entity.IssueRequestApprovedVO;
 import com.whydigit.efit.entity.IssueRequestVO;
+import com.whydigit.efit.entity.VwEmitterInwardVO;
 import com.whydigit.efit.exception.ApplicationException;
 import com.whydigit.efit.repo.EmitterInwardRepo;
 import com.whydigit.efit.repo.EmitterOutwardRepo;
@@ -42,6 +43,7 @@ import com.whydigit.efit.repo.InwardRepo;
 import com.whydigit.efit.repo.IssueItemRepo;
 import com.whydigit.efit.repo.IssueRequestRepo;
 import com.whydigit.efit.repo.UserRepo;
+import com.whydigit.efit.repo.VwEmitterInwardRepo;
 
 @Service
 public class EmitterServiceImpl implements EmitterService {
@@ -61,6 +63,10 @@ public class EmitterServiceImpl implements EmitterService {
 
 	@Autowired
 	FlowRepo flowRepo;
+	
+	@Autowired
+	VwEmitterInwardRepo vwEmitterInwardRepo;
+	
 
 	@Override
 	public IssueRequestVO createIssueRequest(IssueRequestDTO issueRequestDTO) throws ApplicationException {
@@ -331,5 +337,20 @@ public class EmitterServiceImpl implements EmitterService {
 		} else {
 			throw new ApplicationException("Invalid cancel issue request. Failed To Cancel The Issue Requst.");
 		}
+	}
+
+	@Override
+	public List<VwEmitterInwardVO> getVwEmtInwardByOrgIdAndEmtId(Long orgId, Long emitterId) {
+		return vwEmitterInwardRepo.findAllByOrgId(orgId,emitterId);
+	}
+	
+	@Override
+	public List<VwEmitterInwardVO> getVwEmtInwardByOrgIdAndEmtIdAndFlow(Long orgId, Long emitterId, Long flowid) {
+		return vwEmitterInwardRepo.findAllByOrgIdFlow(orgId,emitterId,flowid);
+	}
+	
+	@Override
+	public List<VwEmitterInwardVO> getVwEmtInwardByOrgIdAndWarehouse(Long orgId,Long warehouseid) {
+		return vwEmitterInwardRepo.findAllByOrgIdAndWarehosue(orgId,warehouseid);
 	}
 }

@@ -13,8 +13,10 @@ import com.whydigit.efit.dto.IssueRequestDTO;
 import com.whydigit.efit.dto.IssueRequestQtyApprovelDTO;
 import com.whydigit.efit.entity.EmitterInwardVO;
 import com.whydigit.efit.entity.EmitterOutwardVO;
+import com.whydigit.efit.entity.FlowVO;
 import com.whydigit.efit.entity.InwardVO;
 import com.whydigit.efit.entity.IssueRequestVO;
+import com.whydigit.efit.entity.VwEmitterInwardVO;
 import com.whydigit.efit.exception.ApplicationException;
 
 @Service
@@ -51,5 +53,11 @@ public interface EmitterService {
 	void cancelIssueRequest(Long issueRequestId, Long issueRequestItemId) throws ApplicationException;
 
 	InwardVO updateEmitterInward(InwardDTO inwardDTO) throws ApplicationException;
+
+	List<VwEmitterInwardVO> getVwEmtInwardByOrgIdAndEmtId(Long orgId, Long emitterId);
+
+	List<VwEmitterInwardVO> getVwEmtInwardByOrgIdAndEmtIdAndFlow(Long orgId, Long emitterId, Long flowid);
+
+	List<VwEmitterInwardVO> getVwEmtInwardByOrgIdAndWarehouse(Long orgId, Long warehouseid);
 
 }
