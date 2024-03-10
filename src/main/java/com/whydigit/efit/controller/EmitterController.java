@@ -32,8 +32,10 @@ import com.whydigit.efit.dto.IssueRequestQtyApprovelDTO;
 import com.whydigit.efit.dto.ResponseDTO;
 import com.whydigit.efit.entity.EmitterInwardVO;
 import com.whydigit.efit.entity.EmitterOutwardVO;
+import com.whydigit.efit.entity.FlowVO;
 import com.whydigit.efit.entity.InwardVO;
 import com.whydigit.efit.entity.IssueRequestVO;
+import com.whydigit.efit.entity.VwEmitterInwardVO;
 import com.whydigit.efit.service.EmitterService;
 
 @RestController
@@ -294,6 +296,33 @@ public class EmitterController extends BaseController {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
 			responseDTO = createServiceResponseError(responseObjectsMap, "EmitterInward deletion failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+	
+	@GetMapping("/getViewEmitter")
+	public ResponseEntity<ResponseDTO> getVwEmtInwardByOrgIdAndEmtId(@RequestParam(required = true) Long orgId,@RequestParam(required = true) Long emitterId
+			) {
+		String methodName = "getVwEmtInwardByOrgIdAndEmtId()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<VwEmitterInwardVO> ewEmitterInwardVO = new ArrayList<>();
+		try {
+			ewEmitterInwardVO = emitterService.getVwEmtInwardByOrgIdAndEmtId(orgId,emitterId);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Emitter inward found successfully.");
+			responseObjectsMap.put("ewEmitterInwardVO", ewEmitterInwardVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			errorMsg = "Emitter inward not found for the user.";
+			responseDTO = createServiceResponseError(responseObjectsMap, "Emitter inward not found", errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
