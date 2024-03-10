@@ -26,11 +26,13 @@ import com.whydigit.efit.common.CommonConstant;
 import com.whydigit.efit.common.EmitterConstant;
 import com.whydigit.efit.common.UserConstants;
 import com.whydigit.efit.dto.EmitterAddressDTO;
+import com.whydigit.efit.dto.InwardDTO;
 import com.whydigit.efit.dto.IssueRequestDTO;
 import com.whydigit.efit.dto.IssueRequestQtyApprovelDTO;
 import com.whydigit.efit.dto.ResponseDTO;
 import com.whydigit.efit.entity.EmitterInwardVO;
 import com.whydigit.efit.entity.EmitterOutwardVO;
+import com.whydigit.efit.entity.InwardVO;
 import com.whydigit.efit.entity.IssueRequestVO;
 import com.whydigit.efit.service.EmitterService;
 
@@ -252,26 +254,26 @@ public class EmitterController extends BaseController {
 	}
 
 	@PutMapping("/emitterInward")
-	public ResponseEntity<ResponseDTO> updateEmitterInward(@RequestBody EmitterInwardVO emitterInwardVO) {
+	public ResponseEntity<ResponseDTO> updateEmitterInward(@RequestBody InwardDTO inwardDTO) {
 		String methodName = "updateEmitterInward()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
 		try {
-			EmitterInwardVO updateEmitterInwardVO = emitterService.updateEmitterInward(emitterInwardVO).orElse(null);
-			if (updateEmitterInwardVO != null) {
-				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "EmitterInward updated successfully");
-				responseObjectsMap.put("emitterInwardVO", updateEmitterInwardVO);
+			InwardVO updateInwardVO = emitterService.updateEmitterInward(inwardDTO);
+			if (updateInwardVO != null) {
+				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Inward updated successfully");
+				responseObjectsMap.put("inwardVO", updateInwardVO);
 				responseDTO = createServiceResponse(responseObjectsMap);
 			} else {
-				errorMsg = "EmitterInward not found for ID: " + emitterInwardVO.getId();
-				responseDTO = createServiceResponseError(responseObjectsMap, "EmitterInward update failed", errorMsg);
+				errorMsg = "EmitterInward not found for ID: " + inwardDTO.getId();
+				responseDTO = createServiceResponseError(responseObjectsMap, "Inward update failed", errorMsg);
 			}
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-			responseDTO = createServiceResponseError(responseObjectsMap, "EmitterInward update failed", errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "Inward update failed", errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);

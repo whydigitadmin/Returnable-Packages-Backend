@@ -29,7 +29,7 @@ public class EmitterOutwardVO {
 	private String partName;
 	private String partQty;
 	private String kitNo;
-	private String kitQty;
+	private int kitQty;
 	private String balancedKit;
 	private String invoiceNo;
 	private String cycleTime;

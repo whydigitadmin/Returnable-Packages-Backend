@@ -2,6 +2,7 @@ package com.whydigit.efit.entity;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -39,6 +40,9 @@ public class FlowVO {
 	private String destination;
     private boolean active;
     private String warehouseLocation;
+    @Column(unique = true)
+    private String dublicateFlowName;
+    
     
     @JsonManagedReference
 	@OneToMany(mappedBy="flowVO",cascade = CascadeType.ALL)

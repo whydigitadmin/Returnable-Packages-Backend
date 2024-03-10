@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
@@ -390,7 +391,9 @@ public class MasterServiceImpl implements MasterService {
 
 	@Override
 	public FlowVO createFlow(FlowDTO flowDTO) {
+		
 		FlowVO flowVO = createFlowVOByFlowDTO(flowDTO);
+		flowVO.setDublicateFlowName(flowDTO.getOrgId()+flowDTO.getFlowName());
 		return flowRepo.save(flowVO);
 	}
 
@@ -946,6 +949,11 @@ public class MasterServiceImpl implements MasterService {
 			throw new ApplicationException("Flow not found.");
 		}
 		return flowVO;
+	}
+
+	@Override
+	public Set<Object[]> getFlowNameByOrgID(Long orgId, Long emitterId) {
+		return flowRepo.getFlowNameByOrgID(orgId,emitterId);
 	}
 	
 }
