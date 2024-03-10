@@ -356,9 +356,9 @@ public class EmitterController extends BaseController {
 	}
 	
 	@GetMapping("/getViewEmitterByWarehouse")
-	public ResponseEntity<ResponseDTO> getVwEmtInwardByOrgIdAndEmtIdAndWarehouse(@RequestParam(required = true) Long orgId,@RequestParam(required = true) Long warehouseid
+	public ResponseEntity<ResponseDTO> getVwEmtInwardByOrgIdAndWarehouse(@RequestParam(required = true) Long orgId,@RequestParam(required = true) Long warehouseid
 			) {
-		String methodName = "getVwEmtInwardByOrgIdAndEmtIdAndWarehouse()";
+		String methodName = "getVwEmtInwardByOrgIdAndWarehouse()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
