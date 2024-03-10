@@ -40,7 +40,7 @@ public class FlowVO {
 	private String destination;
     private boolean active;
     private String warehouseLocation;
-    @Column(unique = true)
+//    @Column(unique = true)
     private String dublicateFlowName;
     
     
