@@ -25,5 +25,7 @@ public class VwEmitterInwardDTO {
 	private long issuedQty;
 	private long netQtyRecieved;
 	private long returnQty;
+	private long issueItemInwardId;
+	private long itemId;
 	private String status;
 }
