@@ -29,11 +29,13 @@ import com.whydigit.efit.dto.InwardDTO;
 import com.whydigit.efit.dto.IssueItemDTO;
 import com.whydigit.efit.dto.IssueRequestDTO;
 import com.whydigit.efit.dto.IssueRequestQtyApprovelDTO;
+import com.whydigit.efit.dto.IssueRequestType;
 import com.whydigit.efit.dto.Role;
 import com.whydigit.efit.entity.AssetGroupVO;
 import com.whydigit.efit.entity.BasicDetailVO;
 import com.whydigit.efit.entity.EmitterInwardVO;
 import com.whydigit.efit.entity.EmitterOutwardVO;
+import com.whydigit.efit.entity.FlowDetailVO;
 import com.whydigit.efit.entity.FlowVO;
 import com.whydigit.efit.entity.InwardVO;
 import com.whydigit.efit.entity.IssueItemVO;
@@ -82,7 +84,23 @@ public class EmitterServiceImpl implements EmitterService {
 		getIssueRequestVOFromIssueRequestDTO(issueRequestDTO, issueRequestVO);
 		for (IssueItemDTO issueItemDTO : issueRequestDTO.getIssueItemDTO()) {
 			IssueItemVO issueItem = new IssueItemVO();
-			getIssueIemVOFromIssueRequestDTO(issueItemDTO, issueRequestVO, issueItem);
+			getIssueItemVOFromIssueRequestDTO(issueItemDTO, issueRequestVO, issueItem);
+			if (StringUtils.isBlank(issueRequestDTO.getIrType().name())) {
+				throw new ApplicationException("Invalid issue request type");
+			} else if (issueRequestDTO.getIrType().equals(IssueRequestType.IR_KIT)) {
+				FlowDetailVO flowDetailVO = flowVO.getFlowDetailVO().stream()
+						.filter(fd -> StringUtils.equalsIgnoreCase(fd.getKitName(), issueItemDTO.getKitName()))
+						.findFirst().orElseThrow(() -> new ApplicationException("Flow not Match with kit"));
+				issueItem.setPartName(flowDetailVO.getPartName());
+				issueItem.setPartNo(flowDetailVO.getPartNumber());
+			} else if (issueRequestDTO.getIrType().equals(IssueRequestType.IR_PART)) {
+				FlowDetailVO flowDetailVO = flowVO.getFlowDetailVO().stream()
+						.filter(fd -> StringUtils.equalsIgnoreCase(fd.getPartName(), issueItemDTO.getPartName()))
+						.findFirst().orElseThrow(() -> new ApplicationException("Flow not Match with part"));
+				issueItem.setKitName(flowDetailVO.getKitName());
+			} else {
+				throw new ApplicationException("Invalid issue request type");
+			}
 			issueItemVO.add(issueItem);
 		}
 		issueRequestVO.setFlowName(flowVO.getFlowName());
@@ -92,12 +110,13 @@ public class EmitterServiceImpl implements EmitterService {
 		return issueRequestVO;
 	}
 
-	private void getIssueIemVOFromIssueRequestDTO(IssueItemDTO issueItemDTO, IssueRequestVO issueRequestVO,
+	private void getIssueItemVOFromIssueRequestDTO(IssueItemDTO issueItemDTO, IssueRequestVO issueRequestVO,
 			IssueItemVO issueItem) {
 		issueItem.setIssueItemStatus(0);
 		issueItem.setKitName(issueItemDTO.getKitName());
 		issueItem.setKitQty(issueItemDTO.getKitQty());
 		issueItem.setPartNo(issueItemDTO.getPartNo());
+		issueItem.setPartName(issueItemDTO.getPartName());
 		issueItem.setPartQty(issueItemDTO.getPartQty());
 		issueItem.setRemark(issueItemDTO.getRemark());
 		issueItem.setIssueRequestVO(issueRequestVO);
@@ -117,6 +136,7 @@ public class EmitterServiceImpl implements EmitterService {
 		issueRequestVO.setEmitterId(issueRequestDTO.getEmitterId());
 		issueRequestVO.setTat(
 				ChronoUnit.HOURS.between(currentDateTime, issueRequestDTO.getDemandDate().atTime(LocalTime.MAX)));
+		issueRequestVO.setIrType(issueRequestDTO.getIrType());
 	}
 
 	@Override
