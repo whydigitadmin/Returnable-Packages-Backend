@@ -2,6 +2,7 @@
 package com.whydigit.efit.repo;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -22,5 +23,10 @@ public interface FlowRepo extends JpaRepository<FlowVO, Long> {
 	List<FlowVO> findByOrgIdAndEmitterId(Long orgId, Long emitterId);
 
 	List<FlowVO> findById(String flowId);
+    @Query(value = "select a.id,a.emitter,a.flow_name from flow a where a.org_id=?1 and a.emitter_id=?2 group by a.id,a.emitter,a.flow_name",nativeQuery = true)
+	Set<Object[]> getFlowNameByOrgID(Long orgId, Long emitterId);
+
+	@Query(nativeQuery = true, value = "select a.display_name from customer a where id=?1")
+	String findEmiterbyId(long emitterId);
 
 }

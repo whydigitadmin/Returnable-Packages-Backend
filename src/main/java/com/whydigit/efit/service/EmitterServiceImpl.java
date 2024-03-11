@@ -5,7 +5,9 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -14,6 +16,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,10 +25,13 @@ import org.springframework.stereotype.Service;
 
 import com.whydigit.efit.common.EmitterConstant;
 import com.whydigit.efit.dto.EmitterAddressDTO;
+import com.whydigit.efit.dto.InwardDTO;
 import com.whydigit.efit.dto.IssueItemDTO;
 import com.whydigit.efit.dto.IssueRequestDTO;
 import com.whydigit.efit.dto.IssueRequestQtyApprovelDTO;
 import com.whydigit.efit.dto.Role;
+import com.whydigit.efit.entity.AssetGroupVO;
+import com.whydigit.efit.entity.BasicDetailVO;
 import com.whydigit.efit.entity.EmitterInwardVO;
 import com.whydigit.efit.entity.EmitterOutwardVO;
 import com.whydigit.efit.entity.FlowVO;
@@ -33,13 +39,16 @@ import com.whydigit.efit.entity.InwardVO;
 import com.whydigit.efit.entity.IssueItemVO;
 import com.whydigit.efit.entity.IssueRequestApprovedVO;
 import com.whydigit.efit.entity.IssueRequestVO;
+import com.whydigit.efit.entity.VwEmitterInwardVO;
 import com.whydigit.efit.exception.ApplicationException;
 import com.whydigit.efit.repo.EmitterInwardRepo;
 import com.whydigit.efit.repo.EmitterOutwardRepo;
 import com.whydigit.efit.repo.FlowRepo;
+import com.whydigit.efit.repo.InwardRepo;
 import com.whydigit.efit.repo.IssueItemRepo;
 import com.whydigit.efit.repo.IssueRequestRepo;
 import com.whydigit.efit.repo.UserRepo;
+import com.whydigit.efit.repo.VwEmitterInwardRepo;
 
 @Service
 public class EmitterServiceImpl implements EmitterService {
@@ -54,9 +63,15 @@ public class EmitterServiceImpl implements EmitterService {
 	EmitterOutwardRepo emitterOutwardRepo;
 	@Autowired
 	IssueItemRepo issueItemRepo;
+	@Autowired
+	InwardRepo inwardRepo;
 
 	@Autowired
 	FlowRepo flowRepo;
+	
+	@Autowired
+	VwEmitterInwardRepo vwEmitterInwardRepo;
+	
 
 	@Override
 	public IssueRequestVO createIssueRequest(IssueRequestDTO issueRequestDTO) throws ApplicationException {
@@ -80,7 +95,7 @@ public class EmitterServiceImpl implements EmitterService {
 	private void getIssueIemVOFromIssueRequestDTO(IssueItemDTO issueItemDTO, IssueRequestVO issueRequestVO,
 			IssueItemVO issueItem) {
 		issueItem.setIssueItemStatus(0);
-		issueItem.setKitNo(issueItemDTO.getKitNo());
+		issueItem.setKitName(issueItemDTO.getKitName());
 		issueItem.setKitQty(issueItemDTO.getKitQty());
 		issueItem.setPartNo(issueItemDTO.getPartNo());
 		issueItem.setPartQty(issueItemDTO.getPartQty());
@@ -231,12 +246,31 @@ public class EmitterServiceImpl implements EmitterService {
 	}
 
 	@Override
-	public Optional<EmitterInwardVO> updateEmitterInward(EmitterInwardVO emitterInwardVO) {
-		if (emitterInwardRepo.existsById(emitterInwardVO.getId())) {
-			return Optional.of(emitterInwardRepo.save(emitterInwardVO));
+	public InwardVO updateEmitterInward(InwardDTO inwardDTO) throws ApplicationException {
+		IssueItemVO issueItemVO=new IssueItemVO();
+		InwardVO inwardVO=new InwardVO();
+	    if (ObjectUtils.isNotEmpty(inwardDTO) && ObjectUtils.isNotEmpty(inwardDTO.getId())) {
+	    	inwardVO = inwardRepo.findById(inwardDTO.getId())
+	                .orElseThrow(() -> new ApplicationException("Emitter inward information not found."));
+			if (ObjectUtils.isNotEmpty(inwardDTO.getIssueItemId())) {
+				issueItemVO = issueItemRepo.findById(inwardDTO.getIssueItemId())
+						.orElseThrow(() -> new ApplicationException(" information not found."));
+			}
+			
 		} else {
-			return Optional.empty();
+			throw new ApplicationException("Invalid Emitter inward information.");
 		}
+	    inwardVO.setIssueItemVO(issueItemVO);    // Mapping
+	    getInwardVOFromInwardDTO(inwardDTO, inwardVO);
+		return inwardRepo.save(inwardVO);
+	}
+
+
+	private void getInwardVOFromInwardDTO(InwardDTO inwardDTO,
+			InwardVO inwardVO) {
+		inwardVO.setNetQtyRecieved(inwardDTO.getNetQtyRecieved());
+		inwardVO.setReturnQty(inwardDTO.getReturnQty());
+		inwardVO.setStatus(inwardDTO.getStatus());
 	}
 
 	@Override
@@ -245,6 +279,7 @@ public class EmitterServiceImpl implements EmitterService {
 
 	}
 
+	
 	// emitter outward
 	public List<EmitterOutwardVO> getAllEmitterOutward(Long orgId) {
 		List<EmitterOutwardVO> emitterOutwardVO = new ArrayList<>();
@@ -308,4 +343,52 @@ public class EmitterServiceImpl implements EmitterService {
 			throw new ApplicationException("Invalid cancel issue request. Failed To Cancel The Issue Requst.");
 		}
 	}
+
+	@Override
+	public List<VwEmitterInwardVO> getVwEmtInwardByOrgIdAndEmtId(Long orgId, Long emitterId) {
+		return vwEmitterInwardRepo.findAllByOrgId(orgId,emitterId);
+	}
+	
+	@Override
+	public List<VwEmitterInwardVO> getVwEmtInwardByOrgIdAndEmtIdAndFlow(Long orgId, Long emitterId, Long flowid) {
+		return vwEmitterInwardRepo.findAllByOrgIdFlow(orgId,emitterId,flowid);
+	}
+	
+	@Override
+	public List<VwEmitterInwardVO> getVwEmtInwardByOrgIdAndWarehouse(Long orgId,Long warehouseid) {
+		return vwEmitterInwardRepo.findAllByOrgIdAndWarehosue(orgId,warehouseid);
+	}
+
+	@Override
+	public Map<String, Object> getAllViewEmitterInward(Long orgId, Long emitterId, Long flowTo,
+	        Long warehouseLocationId) {
+	    Map<String, Object> vwEmitterInward = new HashMap<>();
+	    List<VwEmitterInwardVO> vwEmitterInwardVO = vwEmitterInwardRepo.findAll(new Specification<VwEmitterInwardVO>() {
+	        @Override
+	        public Predicate toPredicate(Root<VwEmitterInwardVO> root, CriteriaQuery<?> query,
+	                CriteriaBuilder criteriaBuilder) {
+	            List<Predicate> predicates = new ArrayList<>();
+	            if (ObjectUtils.isNotEmpty(orgId)) {
+	                predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("orgId"), orgId)));
+	            }
+	            if (ObjectUtils.isNotEmpty(emitterId)) {
+	                predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("emitterId"), emitterId)));
+	            }
+	            if (ObjectUtils.isNotEmpty(flowTo)) {
+	                predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("flowTo"), flowTo)));
+	            }
+	            if (ObjectUtils.isNotEmpty(warehouseLocationId)) {
+	                predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("warehouseLocationId"), warehouseLocationId)));
+	            }
+	            return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
+	        }
+	    });
+	    // Further processing based on basicDetailVO if needed
+	    vwEmitterInward.put("vwEmitterInwardVO", vwEmitterInwardVO);
+	    return vwEmitterInward;
+	}
+
+
+
+
 }

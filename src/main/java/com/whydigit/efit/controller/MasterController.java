@@ -2,8 +2,10 @@ package com.whydigit.efit.controller;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.validation.Valid;
 
@@ -630,6 +632,48 @@ public class MasterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
+	@GetMapping("/getAllFlowName")
+	public ResponseEntity<ResponseDTO> getFlowNameByOrgID(@RequestParam(required = true) Long orgId,@RequestParam(required = true)Long emitterId) {
+		String methodName = "getFlowNameByOrgID()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		Set<Object[]> flowVO = new HashSet<>();
+		try {
+			flowVO = masterService.getFlowNameByOrgID(orgId,emitterId);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			List<Map<String, Object>> location = getWarehouseLocation(flowVO);
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Flow name information get successfully");
+			responseObjectsMap.put("Flows", location);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap,
+					"Flow name information receive failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+
+	}
+
+	private List<Map<String, Object>> getWarehouseLocation(Set<Object[]> flowVO) {
+		List<Map<String, Object>> location = new ArrayList<>();
+		for (Object[] w : flowVO) {
+			Map<String, Object> warehouse = new HashMap<>();
+			warehouse.put("flowid", w[0]);
+			warehouse.put("emitter", w[1].toString());
+			warehouse.put("flow", w[2].toString());
+			location.add(warehouse);
+		}
+		return location;
+	}
+
+	
+	
 	@GetMapping("/flow/{id}")
 	public ResponseEntity<ResponseDTO> getFlowById(@PathVariable long id) {
 		String methodName = "getFlowById()";

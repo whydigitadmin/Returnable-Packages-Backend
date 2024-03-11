@@ -3,16 +3,21 @@ package com.whydigit.efit.service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
 import com.whydigit.efit.dto.EmitterAddressDTO;
+import com.whydigit.efit.dto.InwardDTO;
 import com.whydigit.efit.dto.IssueRequestDTO;
 import com.whydigit.efit.dto.IssueRequestQtyApprovelDTO;
 import com.whydigit.efit.entity.EmitterInwardVO;
 import com.whydigit.efit.entity.EmitterOutwardVO;
+import com.whydigit.efit.entity.FlowVO;
+import com.whydigit.efit.entity.InwardVO;
 import com.whydigit.efit.entity.IssueRequestVO;
+import com.whydigit.efit.entity.VwEmitterInwardVO;
 import com.whydigit.efit.exception.ApplicationException;
 
 @Service
@@ -31,8 +36,6 @@ public interface EmitterService {
 
 	EmitterInwardVO createEmitterInward(EmitterInwardVO emitterInwardVO);
 
-	Optional<EmitterInwardVO> updateEmitterInward(EmitterInwardVO emitterInwardVO);
-
 	void deleteEmitterInward(int id);
 
 	// emitter outward
@@ -49,5 +52,16 @@ public interface EmitterService {
 	IssueRequestVO issueRequestQtyApprovel(IssueRequestQtyApprovelDTO issueRequestQtyApprovelDTO) throws ApplicationException;
 
 	void cancelIssueRequest(Long issueRequestId, Long issueRequestItemId) throws ApplicationException;
+
+	InwardVO updateEmitterInward(InwardDTO inwardDTO) throws ApplicationException;
+
+	List<VwEmitterInwardVO> getVwEmtInwardByOrgIdAndEmtId(Long orgId, Long emitterId);
+
+	List<VwEmitterInwardVO> getVwEmtInwardByOrgIdAndEmtIdAndFlow(Long orgId, Long emitterId, Long flowid);
+
+	List<VwEmitterInwardVO> getVwEmtInwardByOrgIdAndWarehouse(Long orgId, Long warehouseid);
+
+	Map<String, Object> getAllViewEmitterInward(Long orgId,Long emitterId, Long flowTo,
+			Long warehouseLocationId);
 
 }

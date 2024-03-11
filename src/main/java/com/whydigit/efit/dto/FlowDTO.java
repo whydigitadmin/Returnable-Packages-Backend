@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class FlowDTO {
-	private int id;
+	private Long id;
 	private long orgId;
 	private Long receiverId;
 	private String flowName;

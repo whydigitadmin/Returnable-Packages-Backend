@@ -31,9 +31,10 @@ public class IssueItemVO {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
-	private String kitNo;
+	private String kitName;
 	private int kitQty;
 	private String partNo;
+	private String partName;
 	private int partQty;
 	private int issueItemStatus;
 	private int issuedQty;

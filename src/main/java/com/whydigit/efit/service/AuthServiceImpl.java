@@ -252,15 +252,12 @@ public class AuthServiceImpl implements AuthService {
 		String methodName = "changePassword()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		if (ObjectUtils.isEmpty(changePasswordRequest) || StringUtils.isBlank(changePasswordRequest.getUserName())
-				|| StringUtils.isBlank(changePasswordRequest.getOldPassword())
 				|| StringUtils.isBlank(changePasswordRequest.getNewPassword())) {
 			throw new ApplicationContextException(UserConstants.ERRROR_MSG_INVALID_CHANGE_PASSWORD_INFORMATION);
 		}
 		UserVO userVO = userRepo.findByUserName(changePasswordRequest.getUserName());
 		if (ObjectUtils.isNotEmpty(userVO)) {
-			if (compareEncodedPasswordWithEncryptedPassword(changePasswordRequest.getOldPassword(),
-					userVO.getPassword())) {
-				try {
+			try {
 					userVO.setPassword(encoder.encode(CryptoUtils.getDecrypt(changePasswordRequest.getNewPassword())));
 				} catch (Exception e) {
 					throw new ApplicationContextException(UserConstants.ERRROR_MSG_UNABLE_TO_ENCODE_USER_PASSWORD);
@@ -268,9 +265,7 @@ public class AuthServiceImpl implements AuthService {
 				userRepo.save(userVO);
 				userService.createUserAction(userVO.getUserName(), userVO.getUserId(),
 						UserConstants.USER_ACTION_TYPE_CHANGE_PASSWORD);
-			} else {
-				throw new ApplicationContextException(UserConstants.ERRROR_MSG_OLD_PASSWORD_MISMATCH);
-			}
+			
 		} else {
 			throw new ApplicationContextException(UserConstants.ERRROR_MSG_USER_INFORMATION_NOT_FOUND);
 		}

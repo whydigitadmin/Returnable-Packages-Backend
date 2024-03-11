@@ -26,12 +26,15 @@ import com.whydigit.efit.common.CommonConstant;
 import com.whydigit.efit.common.EmitterConstant;
 import com.whydigit.efit.common.UserConstants;
 import com.whydigit.efit.dto.EmitterAddressDTO;
+import com.whydigit.efit.dto.InwardDTO;
 import com.whydigit.efit.dto.IssueRequestDTO;
 import com.whydigit.efit.dto.IssueRequestQtyApprovelDTO;
 import com.whydigit.efit.dto.ResponseDTO;
 import com.whydigit.efit.entity.EmitterInwardVO;
 import com.whydigit.efit.entity.EmitterOutwardVO;
+import com.whydigit.efit.entity.InwardVO;
 import com.whydigit.efit.entity.IssueRequestVO;
+import com.whydigit.efit.entity.VwEmitterInwardVO;
 import com.whydigit.efit.service.EmitterService;
 
 @RestController
@@ -252,26 +255,26 @@ public class EmitterController extends BaseController {
 	}
 
 	@PutMapping("/emitterInward")
-	public ResponseEntity<ResponseDTO> updateEmitterInward(@RequestBody EmitterInwardVO emitterInwardVO) {
+	public ResponseEntity<ResponseDTO> updateEmitterInward(@RequestBody InwardDTO inwardDTO) {
 		String methodName = "updateEmitterInward()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
 		try {
-			EmitterInwardVO updateEmitterInwardVO = emitterService.updateEmitterInward(emitterInwardVO).orElse(null);
-			if (updateEmitterInwardVO != null) {
-				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "EmitterInward updated successfully");
-				responseObjectsMap.put("emitterInwardVO", updateEmitterInwardVO);
+			InwardVO updateInwardVO = emitterService.updateEmitterInward(inwardDTO);
+			if (updateInwardVO != null) {
+				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Inward updated successfully");
+				responseObjectsMap.put("inwardVO", updateInwardVO);
 				responseDTO = createServiceResponse(responseObjectsMap);
 			} else {
-				errorMsg = "EmitterInward not found for ID: " + emitterInwardVO.getId();
-				responseDTO = createServiceResponseError(responseObjectsMap, "EmitterInward update failed", errorMsg);
+				errorMsg = "EmitterInward not found for ID: " + inwardDTO.getId();
+				responseDTO = createServiceResponseError(responseObjectsMap, "Inward update failed", errorMsg);
 			}
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-			responseDTO = createServiceResponseError(responseObjectsMap, "EmitterInward update failed", errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "Inward update failed", errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
@@ -296,7 +299,115 @@ public class EmitterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
+	
+	@GetMapping("/getViewEmitter")
+	public ResponseEntity<ResponseDTO> getVwEmtInwardByOrgIdAndEmtId(@RequestParam(required = true) Long orgId,@RequestParam(required = true) Long emitterId
+			) {
+		String methodName = "getVwEmtInwardByOrgIdAndEmtId()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<VwEmitterInwardVO> ewEmitterInwardVO = new ArrayList<>();
+		try {
+			ewEmitterInwardVO = emitterService.getVwEmtInwardByOrgIdAndEmtId(orgId,emitterId);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Emitter inward found successfully.");
+			responseObjectsMap.put("ewEmitterInwardVO", ewEmitterInwardVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			errorMsg = "Emitter inward not found for the user.";
+			responseDTO = createServiceResponseError(responseObjectsMap, "Emitter inward not found", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+	
+	@GetMapping("/getViewEmitterByFlow")
+	public ResponseEntity<ResponseDTO> getVwEmtInwardByOrgIdAndEmtIdAndFlow(@RequestParam(required = true) Long orgId,@RequestParam(required = true) Long emitterId,@RequestParam(required = true) Long flowid
+			) {
+		String methodName = "getVwEmtInwardByOrgIdAndEmtIdAndFlow()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<VwEmitterInwardVO> ewEmitterInwardVO = new ArrayList<>();
+		try {
+			ewEmitterInwardVO = emitterService.getVwEmtInwardByOrgIdAndEmtIdAndFlow(orgId, emitterId, flowid);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Emitter inward found successfully.");
+			responseObjectsMap.put("ewEmitterInwardVO", ewEmitterInwardVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			errorMsg = "Emitter inward not found for the user.";
+			responseDTO = createServiceResponseError(responseObjectsMap, "Emitter inward not found", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+	
+	@GetMapping("/getViewEmitterByWarehouse")
+	public ResponseEntity<ResponseDTO> getVwEmtInwardByOrgIdAndWarehouse(@RequestParam(required = true) Long orgId,@RequestParam(required = true) Long warehouseid
+			) {
+		String methodName = "getVwEmtInwardByOrgIdAndWarehouse()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<VwEmitterInwardVO> ewEmitterInwardVO = new ArrayList<>();
+		try {
+			ewEmitterInwardVO = emitterService.getVwEmtInwardByOrgIdAndWarehouse(orgId, warehouseid);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Emitter inward found successfully.");
+			responseObjectsMap.put("ewEmitterInwardVO", ewEmitterInwardVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			errorMsg = "Emitter inward not found for the user.";
+			responseDTO = createServiceResponseError(responseObjectsMap, "Emitter inward not found", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
 
+	@GetMapping("/viewEmitterInward")
+	public ResponseEntity<ResponseDTO> getAllViewEmitterInward(@RequestParam(required = false) Long orgId,
+			 @RequestParam(required = false) Long emitterId,@RequestParam(required = false) Long flowTo,
+			 @RequestParam(required = false) Long warehouseLocationId) {
+		String methodName = "getAllViewEmitterInward()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		Map<String, Object> vwEmitterInwardVO = new HashMap<>();
+		try {
+			vwEmitterInwardVO = emitterService.getAllViewEmitterInward(orgId ,emitterId, flowTo, warehouseLocationId);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Emitter inward information get successfully");
+			responseObjectsMap.put("vwEmitterInwardVO", vwEmitterInwardVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "Emitter inward information receive failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
 //emitter outward
 	@GetMapping("/emitterOutward")
 	public ResponseEntity<ResponseDTO> getAllEmitterOutward(@RequestParam(required = false) Long orgId) {

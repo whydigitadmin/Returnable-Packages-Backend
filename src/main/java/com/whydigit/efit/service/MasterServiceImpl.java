@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
@@ -390,14 +391,17 @@ public class MasterServiceImpl implements MasterService {
 
 	@Override
 	public FlowVO createFlow(FlowDTO flowDTO) {
+		
 		FlowVO flowVO = createFlowVOByFlowDTO(flowDTO);
+		flowVO.setEmitter(flowRepo.findEmiterbyId(flowVO.getEmitterId()));
+//		flowVO.setDublicateFlowName(flowDTO.getOrgId()+flowDTO.getFlowName());
 		return flowRepo.save(flowVO);
 	}
 
 	private FlowVO createFlowVOByFlowDTO(FlowDTO flowDTO) {
 		List<FlowDetailVO> flowDetailVOList = new ArrayList<>();
 		FlowVO flowVO = FlowVO.builder().active(flowDTO.isActive()).orgin(flowDTO.getOrgin()).warehouseLocation(flowDTO.getWarehouseLocation())
-				.flowName(flowDTO.getFlowName()).receiverId(flowDTO.getReceiverId()).emitterId(flowDTO.getEmitterId())
+				.flowName(flowDTO.getFlowName()).receiverId(flowDTO.getReceiverId()).emitterId(flowDTO.getEmitterId()).emitter(flowDTO.getEmitter())
 				.destination(flowDTO.getDestination()).orgId(flowDTO.getOrgId()).flowDetailVO(flowDetailVOList).build();
 		flowDetailVOList = flowDTO.getFlowDetailDTO().stream()
 				.map(fdDTO -> FlowDetailVO.builder().active(fdDTO.isActive()).cycleTime(fdDTO.getCycleTime())
@@ -946,6 +950,11 @@ public class MasterServiceImpl implements MasterService {
 			throw new ApplicationException("Flow not found.");
 		}
 		return flowVO;
+	}
+
+	@Override
+	public Set<Object[]> getFlowNameByOrgID(Long orgId, Long emitterId) {
+		return flowRepo.getFlowNameByOrgID(orgId,emitterId);
 	}
 	
 }
