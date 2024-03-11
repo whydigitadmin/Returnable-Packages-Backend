@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -411,6 +412,14 @@ public class EmitterServiceImpl implements EmitterService {
 	    // Further processing based on basicDetailVO if needed
 	    vwEmitterInward.put("vwEmitterInwardVO", vwEmitterInwardVO);
 	    return vwEmitterInward;
+	}
+
+	
+	//getEmitter by Warehouseid
+	@Override
+	public Set<Object[]> getEmitterByWarehouseId(Long orgId, Long warehouseId) {
+		
+		return flowRepo.findEmitterByWarehouseId(orgId,warehouseId);
 	}
 
 
