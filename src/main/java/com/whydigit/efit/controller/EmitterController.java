@@ -73,7 +73,7 @@ public class EmitterController extends BaseController {
 
 	@GetMapping("/getIssueRequest")
 	public ResponseEntity<ResponseDTO> getIssueRequest(@RequestParam(required = false) Long emitterId,
-			@RequestParam(required = false) Long orgId,
+			@RequestParam(required = false) Long orgId,@RequestParam(required = false) Long userId,
 			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
 			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
 		String methodName = "getIssuseRequest()";

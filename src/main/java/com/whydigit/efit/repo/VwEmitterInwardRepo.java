@@ -10,7 +10,7 @@ import com.whydigit.efit.entity.VwEmitterInwardVO;
 
 public interface VwEmitterInwardRepo extends JpaRepository<VwEmitterInwardVO, Long>{
 	
-   @Query(nativeQuery = true,value= "select a.* from vw_emiter_inward a where a.org_id=?1 And a.emitter_id=?2")
+   @Query(nativeQuery = true,value= "select a.* from vw_emister_inward a where a.org_id=?1 And a.emitter_id=?2")
 	List<VwEmitterInwardVO> findAllByOrgId(Long orgId, Long emitterId);
 
 
