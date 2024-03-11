@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class VwEmitterInwardVO {
 @Id
-private Long requestID;
+private Long requestid;
 private Long orgId;
 private LocalDate requestedDate;
 private LocalDate demandDate;
