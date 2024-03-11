@@ -101,9 +101,6 @@ public class EmitterServiceImpl implements EmitterService {
 		issueItem.setPartQty(issueItemDTO.getPartQty());
 		issueItem.setRemark(issueItemDTO.getRemark());
 		issueItem.setIssueRequestVO(issueRequestVO);
-		InwardVO inwardVO = new InwardVO();
-		inwardVO.setIssueItemVO(issueItem);
-		issueItem.setInwardVO(inwardVO);
 		issueItem.setIssueItemStatus(EmitterConstant.ISSUE_REQUEST_STATUS_PENDING);
 		issueItem.setIssuedQty(0);
 	}
@@ -118,8 +115,8 @@ public class EmitterServiceImpl implements EmitterService {
 		issueRequestVO.setRequestedDate(currentDateTime);
 		issueRequestVO.setOrgId(issueRequestDTO.getOrgId());
 		issueRequestVO.setEmitterId(issueRequestDTO.getEmitterId());
-		issueRequestVO
-				.setTat(ChronoUnit.HOURS.between(currentDateTime, issueRequestDTO.getDemandDate().atStartOfDay()));
+		issueRequestVO.setTat(
+				ChronoUnit.HOURS.between(currentDateTime, issueRequestDTO.getDemandDate().atTime(LocalTime.MAX)));
 	}
 
 	@Override
@@ -194,6 +191,11 @@ public class EmitterServiceImpl implements EmitterService {
 					item.setIssueItemStatus(getItemStatus(qty, item.getKitQty()));
 					issueRequestApprovedVO.add(issueRequestApproved);
 					item.setIssueRequestApprovedVO(issueRequestApprovedVO);
+					if (ObjectUtils.isEmpty(item.getInwardVO())) {
+						InwardVO inwardVO = new InwardVO();
+						inwardVO.setIssueItemVO(item);
+						item.setInwardVO(inwardVO);
+					}
 				});
 		if (issueRequestVO.getIssueItemVO().stream()
 				.allMatch(flag -> flag.getIssueItemStatus() > EmitterConstant.ISSUE_REQUEST_ITEM_STATUS_INPROGRESS)) {
