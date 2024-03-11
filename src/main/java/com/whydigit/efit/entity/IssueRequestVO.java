@@ -14,6 +14,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.whydigit.efit.dto.IssueRequestType;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -36,6 +37,7 @@ public class IssueRequestVO {
 	private String flowName;
 	private int totalIssueItem;
 	private long tat;
+	private IssueRequestType irType;
 	private LocalDateTime requestedDate;
 	private LocalDate demandDate;
 	private int issueStatus;
