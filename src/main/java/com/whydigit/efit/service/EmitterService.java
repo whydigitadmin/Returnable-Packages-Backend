@@ -61,7 +61,7 @@ public interface EmitterService {
 
 	List<VwEmitterInwardVO> getVwEmtInwardByOrgIdAndWarehouse(Long orgId, Long warehouseid);
 
-	Map<String, Object> getAllViewEmitterInward(Long orgId,Long emitterId, Long flowTo,
+	Map<String, Object> getAllViewEmitterInward(Long orgId,Long emitterId, Long flowId,
 			Long warehouseLocationId);
 
 }

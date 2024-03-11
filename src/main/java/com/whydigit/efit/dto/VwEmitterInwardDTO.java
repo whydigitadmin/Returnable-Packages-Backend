@@ -14,7 +14,8 @@ public class VwEmitterInwardDTO {
 	private LocalDate requestedDate;
 	private LocalDate demandDate;
 	private long emitterId;
-	private String flowTo;
+	private String flowId;
+	private String kitNo;
 	private String flowName;
 	private long kitQty;
 	private String partName;
