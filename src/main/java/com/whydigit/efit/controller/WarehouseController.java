@@ -160,6 +160,32 @@ public class WarehouseController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
+	@GetMapping("/getWarehouseByUserID")
+	public ResponseEntity<ResponseDTO> getWarehouseByUserID(@RequestParam (required = true)long userId) {
+		String methodName = "getWarehouseByUserID()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<WarehouseVO> warehouseVO = new ArrayList<>();
+		try {
+			warehouseVO = warehouseService.getWarehouseByUserID(userId);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Warehouse found successfully.");
+			responseObjectsMap.put("warehouseVO", warehouseVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			errorMsg = "Flow not found for the user.";
+			responseDTO = createServiceResponseError(responseObjectsMap, "Warehouse not found", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+	
 	@DeleteMapping("/view/{id}")
 	public ResponseEntity<ResponseDTO> deleteWarehouse(@PathVariable Long id) {
 		String methodName = "deleteWarehouse()";

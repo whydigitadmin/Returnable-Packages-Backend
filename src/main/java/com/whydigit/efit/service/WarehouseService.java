@@ -24,4 +24,6 @@ public interface WarehouseService {
 
 	Optional<WarehouseVO> getWarehouseById(Long id);
 
+	List<WarehouseVO> getWarehouseByUserID(long userId) throws ApplicationException;
+
 }

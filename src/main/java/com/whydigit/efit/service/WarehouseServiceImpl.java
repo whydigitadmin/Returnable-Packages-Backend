@@ -1,16 +1,21 @@
 package com.whydigit.efit.service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.whydigit.efit.dto.WarehouseDTO;
+import com.whydigit.efit.entity.FlowVO;
 import com.whydigit.efit.entity.WarehouseVO;
 import com.whydigit.efit.exception.ApplicationException;
+import com.whydigit.efit.repo.UserRepo;
 import com.whydigit.efit.repo.WarehouseRepository;
 
 @Service
@@ -18,6 +23,9 @@ public class WarehouseServiceImpl implements WarehouseService {
 
 	@Autowired
 	WarehouseRepository warehouseRepo;
+	
+	@Autowired
+	UserRepo userRepo;
 
 	@Override
 	public List<WarehouseVO> getAllWarehouse() {
@@ -85,5 +93,31 @@ public class WarehouseServiceImpl implements WarehouseService {
 	public Optional<WarehouseVO> getWarehouseById(Long id) {
 		return warehouseRepo.findById(id);
 	}
+
+	@Override
+	public List<WarehouseVO> getWarehouseByUserID(long userId) throws ApplicationException {
+		String warehouseId = userRepo.getWarehouseByUserID(userId);
+		if (StringUtils.isBlank(warehouseId)) {
+			throw new ApplicationException("Warehouse not found.");
+		}
+		return getWarehouseByUserID(warehouseId);
+	}
+
+	private List<WarehouseVO> getWarehouseByUserID(String warehouseId) throws ApplicationException {
+		List<Long> warehouseIds = Arrays.stream(StringUtils.split(warehouseId, ",")).map(Long::parseLong)
+				.collect(Collectors.toList());
+		List<WarehouseVO> warehouseVO = warehouseRepo.findAllById(warehouseIds); 
+		if (warehouseVO.isEmpty()) {
+			throw new ApplicationException("Warehouse not found.");
+		}
+		return warehouseVO;
+		
+	}
+	
+	
+	
+
+	
+
 
 }

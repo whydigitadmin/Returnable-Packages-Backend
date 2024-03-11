@@ -39,6 +39,7 @@ public class FlowVO {
 	private String destination;
     private boolean active;
     private String warehouseLocation;
+//    private Long warehouseId;
 //   @Column(unique = true)
 //    private String dublicateFlowName;
   

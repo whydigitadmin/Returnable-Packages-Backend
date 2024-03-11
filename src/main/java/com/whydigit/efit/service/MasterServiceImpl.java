@@ -415,6 +415,7 @@ public class MasterServiceImpl implements MasterService {
 	@Override
 	public Optional<FlowVO> updateFlow(FlowVO flowVO) {
 		if (flowRepo.existsById(flowVO.getId())) {
+			flowVO.setEmitter(flowRepo.findEmiterbyId(flowVO.getEmitterId()));
 			return Optional.of(flowRepo.save(flowVO));
 		} else {
 			return Optional.empty();
@@ -945,7 +946,7 @@ public class MasterServiceImpl implements MasterService {
 	public List<FlowVO> getFlowByIds(String ids) throws ApplicationException {
 		List<Long> flowIds = Arrays.stream(StringUtils.split(ids, ",")).map(Long::parseLong)
 				.collect(Collectors.toList());
-		List<FlowVO> flowVO = flowRepo.findAllById(flowIds);
+		List<FlowVO> flowVO = flowRepo.findAllById(flowIds); 
 		if (flowVO.isEmpty()) {
 			throw new ApplicationException("Flow not found.");
 		}
