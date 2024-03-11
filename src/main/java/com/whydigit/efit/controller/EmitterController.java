@@ -32,7 +32,6 @@ import com.whydigit.efit.dto.IssueRequestQtyApprovelDTO;
 import com.whydigit.efit.dto.ResponseDTO;
 import com.whydigit.efit.entity.EmitterInwardVO;
 import com.whydigit.efit.entity.EmitterOutwardVO;
-import com.whydigit.efit.entity.FlowVO;
 import com.whydigit.efit.entity.InwardVO;
 import com.whydigit.efit.entity.IssueRequestVO;
 import com.whydigit.efit.entity.VwEmitterInwardVO;
@@ -382,6 +381,33 @@ public class EmitterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
+	@GetMapping("/viewEmitterInward")
+	public ResponseEntity<ResponseDTO> getAllViewEmitterInward(@RequestParam(required = false) Long orgId,
+			 @RequestParam(required = false) Long emitterId,@RequestParam(required = false) Long flowId,
+			 @RequestParam(required = false) Long warehouseLocationId) {
+		String methodName = "getAllViewEmitterInward()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		Map<String, Object> vwEmitterInwardVO = new HashMap<>();
+		try {
+			vwEmitterInwardVO = emitterService.getAllViewEmitterInward(orgId ,emitterId, flowId, warehouseLocationId);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Emitter inward information get successfully");
+			responseObjectsMap.put("vwEmitterInwardVO", vwEmitterInwardVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "Emitter inward information receive failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
 //emitter outward
 	@GetMapping("/emitterOutward")
 	public ResponseEntity<ResponseDTO> getAllEmitterOutward(@RequestParam(required = false) Long orgId) {

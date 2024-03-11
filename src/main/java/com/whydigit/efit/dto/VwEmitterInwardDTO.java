@@ -9,12 +9,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class VwEmitterInwardDTO {
-	private long requestID;
+	private long requestId;
 	private long ordId;
 	private LocalDate requestedDate;
 	private LocalDate demandDate;
 	private long emitterId;
-	private String flowTo;
+	private String flowId;
+	private String kitNo;
 	private String flowName;
 	private long kitQty;
 	private String partName;

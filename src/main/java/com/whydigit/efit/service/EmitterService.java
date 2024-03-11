@@ -3,6 +3,7 @@ package com.whydigit.efit.service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -59,5 +60,8 @@ public interface EmitterService {
 	List<VwEmitterInwardVO> getVwEmtInwardByOrgIdAndEmtIdAndFlow(Long orgId, Long emitterId, Long flowid);
 
 	List<VwEmitterInwardVO> getVwEmtInwardByOrgIdAndWarehouse(Long orgId, Long warehouseid);
+
+	Map<String, Object> getAllViewEmitterInward(Long orgId,Long emitterId, Long flowId,
+			Long warehouseLocationId);
 
 }
