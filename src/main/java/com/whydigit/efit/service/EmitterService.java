@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.stereotype.Service;
 
@@ -63,5 +64,7 @@ public interface EmitterService {
 
 	Map<String, Object> getAllViewEmitterInward(Long orgId,Long emitterId, Long flowId,
 			Long warehouseLocationId);
+	
+	Set<Object[]>getEmitterByWarehouseId(Long orgId,Long warehouseId);
 
 }

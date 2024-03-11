@@ -3,8 +3,10 @@ package com.whydigit.efit.controller;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -530,4 +532,42 @@ public class EmitterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
+	// Get Emitter By WarehouseId
+	@GetMapping("/getemitterByWarehouseId")
+	public ResponseEntity<ResponseDTO>getEmitterByWarehouseId(@RequestParam Long orgid,@RequestParam Long warehouseid) {
+		String methodName = "getemitterByWarehouseId()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		Set<Object[]> emitter = new HashSet<>();
+		try {
+			emitter = emitterService.getEmitterByWarehouseId(orgid, warehouseid);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			List<Map<String, String>>allEmitter=findEmitter(emitter);
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Emitters found by ID");
+			responseObjectsMap.put("emitters", allEmitter);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			errorMsg = "Emitters not found for ID: ";
+			responseDTO = createServiceResponseError(responseObjectsMap, "Emitters not found", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
+	private List<Map<String, String>> findEmitter(Set<Object[]> emitter) {
+		List<Map<String, String>>allEmitter=new ArrayList<>();
+		for(Object[]emi:emitter) {
+			Map<String, String> emiter=new HashMap<>();
+			emiter.put("emitterId",emi[0].toString());
+			emiter.put("emitterName", emi[1].toString());
+			allEmitter.add(emiter);
+		}
+		return allEmitter;
+	}
 }
