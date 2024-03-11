@@ -5,7 +5,9 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -14,6 +16,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +30,8 @@ import com.whydigit.efit.dto.IssueItemDTO;
 import com.whydigit.efit.dto.IssueRequestDTO;
 import com.whydigit.efit.dto.IssueRequestQtyApprovelDTO;
 import com.whydigit.efit.dto.Role;
+import com.whydigit.efit.entity.AssetGroupVO;
+import com.whydigit.efit.entity.BasicDetailVO;
 import com.whydigit.efit.entity.EmitterInwardVO;
 import com.whydigit.efit.entity.EmitterOutwardVO;
 import com.whydigit.efit.entity.FlowVO;
@@ -353,4 +358,37 @@ public class EmitterServiceImpl implements EmitterService {
 	public List<VwEmitterInwardVO> getVwEmtInwardByOrgIdAndWarehouse(Long orgId,Long warehouseid) {
 		return vwEmitterInwardRepo.findAllByOrgIdAndWarehosue(orgId,warehouseid);
 	}
+
+	@Override
+	public Map<String, Object> getAllViewEmitterInward(Long orgId, Long emitterId, Long flowTo,
+	        Long warehouseLocationId) {
+	    Map<String, Object> vwEmitterInward = new HashMap<>();
+	    List<VwEmitterInwardVO> vwEmitterInwardVO = vwEmitterInwardRepo.findAll(new Specification<VwEmitterInwardVO>() {
+	        @Override
+	        public Predicate toPredicate(Root<VwEmitterInwardVO> root, CriteriaQuery<?> query,
+	                CriteriaBuilder criteriaBuilder) {
+	            List<Predicate> predicates = new ArrayList<>();
+	            if (ObjectUtils.isNotEmpty(orgId)) {
+	                predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("orgId"), orgId)));
+	            }
+	            if (ObjectUtils.isNotEmpty(emitterId)) {
+	                predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("emitterId"), emitterId)));
+	            }
+	            if (ObjectUtils.isNotEmpty(flowTo)) {
+	                predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("flowTo"), flowTo)));
+	            }
+	            if (ObjectUtils.isNotEmpty(warehouseLocationId)) {
+	                predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("warehouseLocationId"), warehouseLocationId)));
+	            }
+	            return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
+	        }
+	    });
+	    // Further processing based on basicDetailVO if needed
+	    vwEmitterInward.put("vwEmitterInwardVO", vwEmitterInwardVO);
+	    return vwEmitterInward;
+	}
+
+
+
+
 }

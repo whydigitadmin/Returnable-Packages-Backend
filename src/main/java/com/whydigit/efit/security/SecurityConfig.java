@@ -34,17 +34,18 @@ public class SecurityConfig {
 				.permitAll()
 				.antMatchers("/v2/api-docs", "/configuration/ui", "/swagger-resources/**", "/configuration/security",
 						"/swagger-ui.html", "/swagger-ui/*", "/api/auth/signup", "/api/auth/login", "/api/auth/logout",
-						"/api/auth/user/{userId}",
-						"/api/auth/getRefreshToken", "/api/basicSetting/companyInfo", "/api/warehouse/updateWarehose",
-						"/api/master/asset", "/api/warehouse/view/{id}", "/api/usersdetails/view", "/api/master/**",
-						"​/api​/master​/addAddress", "/api/warehouse/getWarehouseLocationByOrgID",
-						"/api/warehouse/updateCreateWarehouse", "/api/warehouse/view",
-						"/api/warehouse/getWarehouseById/{id}", "/api/partStudy/basicDetails",
+						"/api/auth/user/{userId}", "/api/auth/getRefreshToken", "/api/basicSetting/companyInfo",
+						"/api/warehouse/updateWarehose", "/api/master/asset", "/api/warehouse/view/{id}",
+						"/api/usersdetails/view", "/api/master/**", "​/api​/master​/addAddress",
+						"/api/warehouse/getWarehouseLocationByOrgID", "/api/warehouse/updateCreateWarehouse",
+						"/api/warehouse/view", "/api/warehouse/getWarehouseById/{id}", "/api/partStudy/basicDetails",
 						"/api/partStudy/d}/searchPartStudyById", "/api/partStudy/packageDetail",
 						"/api/partStudy/packageDetail/{id}", "/api/partStudy/logistics",
 						"/api/partStudy/logistics/{id}", "/api/partStudy/**", "/api/inwardSku/**",
 						"/api/partStudy/stockDetail/{id}", "/api/emitter/createIssueRequest", "/api/emitter/*",
-						"/api/auth/createUser", "/api/master/flow/getFlowByIds","/api/master/getAllFlowName","/api/emitter/getViewEmitterByWarehouse","/api/emitter/getViewEmitter","/api/emitter/getViewEmitterByFlow")
+						"/api/auth/createUser", "/api/master/flow/getFlowByIds", "/api/master/getAllFlowName",
+						"/api/emitter/getViewEmitterByWarehouse", "/api/emitter/getViewEmitter",
+						"/api/emitter/getViewEmitterByFlow","/api/emitter/viewEmitterInward")
 				.permitAll().antMatchers("/api/**").hasAnyRole("USER", "GUEST_USER").anyRequest().authenticated();
 
 		http.addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
