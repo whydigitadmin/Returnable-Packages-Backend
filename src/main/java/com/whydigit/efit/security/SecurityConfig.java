@@ -44,7 +44,8 @@ public class SecurityConfig {
 						"/api/partStudy/packageDetail/{id}", "/api/partStudy/logistics",
 						"/api/partStudy/logistics/{id}", "/api/partStudy/**", "/api/inwardSku/**",
 						"/api/partStudy/stockDetail/{id}", "/api/emitter/createIssueRequest", "/api/emitter/*",
-						"/api/auth/createUser", "/api/master/flow/getFlowByIds","/api/master/getAllFlowName","/api/emitter/getViewEmitterByWarehouse","/api/emitter/getViewEmitter","/api/emitter/getViewEmitterByFlow")
+						"/api/auth/createUser", "/api/master/flow/getFlowByIds","/api/master/getAllFlowName","/api/emitter/getViewEmitterByWarehouse",
+						"/api/emitter/getViewEmitter","/api/emitter/getViewEmitterByFlow","/api/auth/changePassword")
 				.permitAll().antMatchers("/api/**").hasAnyRole("USER", "GUEST_USER").anyRequest().authenticated();
 
 		http.addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
