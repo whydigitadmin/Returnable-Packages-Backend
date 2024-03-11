@@ -383,7 +383,7 @@ public class EmitterController extends BaseController {
 
 	@GetMapping("/viewEmitterInward")
 	public ResponseEntity<ResponseDTO> getAllViewEmitterInward(@RequestParam(required = false) Long orgId,
-			 @RequestParam(required = false) Long emitterId,@RequestParam(required = false) Long flowTo,
+			 @RequestParam(required = false) Long emitterId,@RequestParam(required = false) Long flowId,
 			 @RequestParam(required = false) Long warehouseLocationId) {
 		String methodName = "getAllViewEmitterInward()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
@@ -392,7 +392,7 @@ public class EmitterController extends BaseController {
 		ResponseDTO responseDTO = null;
 		Map<String, Object> vwEmitterInwardVO = new HashMap<>();
 		try {
-			vwEmitterInwardVO = emitterService.getAllViewEmitterInward(orgId ,emitterId, flowTo, warehouseLocationId);
+			vwEmitterInwardVO = emitterService.getAllViewEmitterInward(orgId ,emitterId, flowId, warehouseLocationId);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);

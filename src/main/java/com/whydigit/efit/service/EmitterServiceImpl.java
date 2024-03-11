@@ -362,7 +362,7 @@ public class EmitterServiceImpl implements EmitterService {
 	}
 
 	@Override
-	public Map<String, Object> getAllViewEmitterInward(Long orgId, Long emitterId, Long flowTo,
+	public Map<String, Object> getAllViewEmitterInward(Long orgId, Long emitterId, Long flowId,
 	        Long warehouseLocationId) {
 	    Map<String, Object> vwEmitterInward = new HashMap<>();
 	    List<VwEmitterInwardVO> vwEmitterInwardVO = vwEmitterInwardRepo.findAll(new Specification<VwEmitterInwardVO>() {
@@ -376,8 +376,8 @@ public class EmitterServiceImpl implements EmitterService {
 	            if (ObjectUtils.isNotEmpty(emitterId)) {
 	                predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("emitterId"), emitterId)));
 	            }
-	            if (ObjectUtils.isNotEmpty(flowTo)) {
-	                predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("flowTo"), flowTo)));
+	            if (ObjectUtils.isNotEmpty(flowId)) {
+	                predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("flowId"), flowId)));
 	            }
 	            if (ObjectUtils.isNotEmpty(warehouseLocationId)) {
 	                predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("warehouseLocationId"), warehouseLocationId)));
