@@ -35,6 +35,8 @@ private Long issueItemStatus;
 private int issuedQty;
 private int netQtyRecieved;
 private int returnQty;
+private long issueItemInwardId;
+private long itemId;
 private String status;
 
 
