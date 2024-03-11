@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class VwEmitterInwardDTO {
-	private long requestID;
+	private long requestId;
 	private long ordId;
 	private LocalDate requestedDate;
 	private LocalDate demandDate;

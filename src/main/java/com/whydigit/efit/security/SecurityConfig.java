@@ -44,7 +44,7 @@ public class SecurityConfig {
 						"/api/partStudy/logistics/{id}", "/api/partStudy/**", "/api/inwardSku/**",
 						"/api/partStudy/stockDetail/{id}", "/api/emitter/createIssueRequest", "/api/emitter/*",
 						"/api/auth/createUser", "/api/master/flow/getFlowByIds", "/api/master/getAllFlowName",
-						"/api/emitter/getViewEmitterByWarehouse", "/api/emitter/getViewEmitter",
+						"/api/emitter/getViewEmitterByWarehouse", "/api/emitter/getViewEmitter","/api/auth/changePassword",
 						"/api/emitter/getViewEmitterByFlow","/api/emitter/viewEmitterInward")
 				.permitAll().antMatchers("/api/**").hasAnyRole("USER", "GUEST_USER").anyRequest().authenticated();
 
