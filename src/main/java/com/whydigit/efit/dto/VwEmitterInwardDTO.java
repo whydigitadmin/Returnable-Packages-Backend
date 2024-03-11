@@ -15,7 +15,7 @@ public class VwEmitterInwardDTO {
 	private LocalDate demandDate;
 	private long emitterId;
 	private String flowId;
-	private String kitNo;
+	private String kitName;
 	private String flowName;
 	private long kitQty;
 	private String partName;
@@ -25,5 +25,7 @@ public class VwEmitterInwardDTO {
 	private long issuedQty;
 	private long netQtyRecieved;
 	private long returnQty;
+	private long issueItemInwardId;
+	private long itemId;
 	private String status;
 }

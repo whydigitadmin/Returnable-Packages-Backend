@@ -27,7 +27,7 @@ private Long warehouseLocationId;
 private String warehouseLocation;
 private String flowName;
 private Long kitQty;
-private String kitNo;
+private String kitName;
 private String partName;
 private int partQty;
 private LocalDate reachedDate;
@@ -35,6 +35,8 @@ private Long issueItemStatus;
 private int issuedQty;
 private int netQtyRecieved;
 private int returnQty;
+private long issueItemInwardId;
+private long itemId;
 private String status;
 
 
