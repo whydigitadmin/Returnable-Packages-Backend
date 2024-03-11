@@ -27,7 +27,7 @@ private Long warehouseLocationId;
 private String warehouseLocation;
 private String flowName;
 private Long kitQty;
-private String kitNo;
+private String kitName;
 private String partName;
 private int partQty;
 private LocalDate reachedDate;
