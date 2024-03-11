@@ -34,4 +34,7 @@ public interface UserRepo extends JpaRepository<UserVO, Long> {
 	@Query(value = "select u.accessFlowId from UserVO u where u.id =?1")
 	String getFlowIdsByUserId(long userId);
 
+	@Query(value = "select u.accessWarehouse from UserVO u where u.id =?1")
+	String getWarehouseByUserID(long userId);
+
 }
