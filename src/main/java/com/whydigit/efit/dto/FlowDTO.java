@@ -24,7 +24,7 @@ public class FlowDTO {
 	private String orgin;
 	private String destination;
     private String warehouseLocation;
-    private Long warehouseId;
+    private Long warehouseId; 
 	private boolean active;
 	private List<FlowDetailDTO> flowDetailDTO;
 }
