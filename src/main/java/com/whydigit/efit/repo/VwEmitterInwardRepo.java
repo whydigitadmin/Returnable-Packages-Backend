@@ -2,6 +2,7 @@ package com.whydigit.efit.repo;
 
 import java.util.List;
 
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -19,5 +20,10 @@ List<VwEmitterInwardVO> findAllByOrgIdFlow(Long orgId, Long emitterId, Long flow
 
    @Query(nativeQuery = true,value= "select a.* from vw_emiter_inward a where a.org_id=?1 And a.warehouse_location_id=?2")
 List<VwEmitterInwardVO> findAllByOrgIdAndWarehosue(Long orgId, Long warehouseid);
+
+
+
+
+List<VwEmitterInwardVO> findAll(Specification<VwEmitterInwardVO> specification);
 
 }
