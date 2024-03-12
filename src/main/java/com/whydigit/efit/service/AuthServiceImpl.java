@@ -401,11 +401,21 @@ public class AuthServiceImpl implements AuthService {
 	}
 
 	private void getUserVOFromCreateUserFormDTO(CreateUserFormDTO createUserFormDTO, UserVO userVO) {
-		
+		String addIds = ObjectUtils.isNotEmpty(createUserFormDTO.getAccessaddId()) ? Arrays
+				.stream(createUserFormDTO.getAccessaddId()).map(String::valueOf).collect(Collectors.joining(","))
+				: StringUtils.EMPTY;
+		String warehouseIds = ObjectUtils.isNotEmpty(createUserFormDTO.getAccessWarehouse()) ? Arrays
+				.stream(createUserFormDTO.getAccessWarehouse()).map(String::valueOf).collect(Collectors.joining(","))
+				: StringUtils.EMPTY;
+		String flowIds = ObjectUtils.isNotEmpty(createUserFormDTO.getAccessFlowId()) ? Arrays
+				.stream(createUserFormDTO.getAccessFlowId()).map(String::valueOf).collect(Collectors.joining(","))
+				: StringUtils.EMPTY;
+		userVO.setAccessFlowId(flowIds);
+		userVO.setAccessaddId(addIds);
+		userVO.setAccessWarehouse(warehouseIds);
 		userVO.setFirstName(createUserFormDTO.getFirstName());
 		userVO.setUserId(createUserFormDTO.getUserId());
 		userVO.setLastName(createUserFormDTO.getLastName());
-		userVO.setUserName(createUserFormDTO.getUserName());
 		userVO.setPNo(createUserFormDTO.getPNo());
 		userVO.setRole(createUserFormDTO.getRole());
 		userVO.setAccessRightsRoleId(createUserFormDTO.getAccessRightsRoleId());
