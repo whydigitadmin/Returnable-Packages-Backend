@@ -5,8 +5,11 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.whydigit.efit.dto.CreatedUpdatedDate;
 
 import lombok.AllArgsConstructor;
@@ -24,12 +27,12 @@ public class EmitterOutwardVO {
 	private int id;
 	private long orgId;
 	private String location;
-	private String issuedTo;
-	private String partNo;
-	private String partName;
-	private String partQty;
-	private String kitNo;
-	private int kitQty;
+//	private String issuedTo;
+//	private String partNo;
+//	private String partName;
+//	private String partQty;
+//	private String kitNo;
+//	private int kitQty;
 	private String balancedKit;
 	private String invoiceNo;
 	private String cycleTime;
@@ -37,6 +40,11 @@ public class EmitterOutwardVO {
 	private String o2oTat;
 	private boolean active;
 
+	@JsonBackReference
+	@OneToOne
+    @JoinColumn(name = "issueItemId")
+	private IssueItemVO issueItemVO;
+	
 	@Embedded
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
 
