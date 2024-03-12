@@ -384,7 +384,7 @@ public class AuthServiceImpl implements AuthService {
 		userVO.setActive(true);
 		return userVO;
 	}
-
+ 
 	@Override
 	public Optional<UserVO> getUserById(Long userId) {
 		

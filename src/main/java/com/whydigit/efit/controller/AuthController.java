@@ -102,7 +102,7 @@ public class AuthController extends BaseController{
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
-		try {
+		try { 
 			UserVO updatedUserVO= authService.updateUser(CreateUserFormDTO);
 			if (updatedUserVO != null) {
 				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "User updated successfully");
