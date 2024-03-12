@@ -15,7 +15,7 @@ public class CreateUserFormDTO {
 
 	@NotBlank(message = "First Name is required")
 	private String firstName;
-
+	private Long userId;
 	private String lastName;
 	private Long emitterId;
 	private String userName;

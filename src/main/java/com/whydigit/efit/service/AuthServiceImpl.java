@@ -3,6 +3,7 @@ package com.whydigit.efit.service;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -383,11 +384,46 @@ public class AuthServiceImpl implements AuthService {
 		userVO.setActive(true);
 		return userVO;
 	}
-
+ 
 	@Override
 	public Optional<UserVO> getUserById(Long userId) {
 		
 		return userRepo.findById(userId);
 	}
 
+	@Override
+	public UserVO updateUser(CreateUserFormDTO createUserFormDTO) throws ApplicationException {
+		UserVO userVO = new UserVO();
+		userVO = userRepo.findById(createUserFormDTO.getUserId())
+				.orElseThrow(() -> new ApplicationException("Invalid  user details"));
+		getUserVOFromCreateUserFormDTO(createUserFormDTO, userVO);
+		return userRepo.save(userVO);
+	}
+
+	private void getUserVOFromCreateUserFormDTO(CreateUserFormDTO createUserFormDTO, UserVO userVO) {
+		String addIds = ObjectUtils.isNotEmpty(createUserFormDTO.getAccessaddId()) ? Arrays
+				.stream(createUserFormDTO.getAccessaddId()).map(String::valueOf).collect(Collectors.joining(","))
+				: StringUtils.EMPTY;
+		String warehouseIds = ObjectUtils.isNotEmpty(createUserFormDTO.getAccessWarehouse()) ? Arrays
+				.stream(createUserFormDTO.getAccessWarehouse()).map(String::valueOf).collect(Collectors.joining(","))
+				: StringUtils.EMPTY;
+		String flowIds = ObjectUtils.isNotEmpty(createUserFormDTO.getAccessFlowId()) ? Arrays
+				.stream(createUserFormDTO.getAccessFlowId()).map(String::valueOf).collect(Collectors.joining(","))
+				: StringUtils.EMPTY;
+		userVO.setAccessFlowId(flowIds);
+		userVO.setAccessaddId(addIds);
+		userVO.setAccessWarehouse(warehouseIds);
+		userVO.setFirstName(createUserFormDTO.getFirstName());
+		userVO.setLastName(createUserFormDTO.getLastName());
+		userVO.setPNo(createUserFormDTO.getPNo());
+		userVO.setRole(createUserFormDTO.getRole());
+		userVO.setAccessRightsRoleId(createUserFormDTO.getAccessRightsRoleId());
+		 
+	}
+
+	@Override 
+	public List<UserVO> getUserByOrgId(Long orgId) {
+		
+		return userRepo.findByOrgId(orgId);
+	}
 }

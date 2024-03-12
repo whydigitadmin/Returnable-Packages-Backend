@@ -402,7 +402,7 @@ public class MasterServiceImpl implements MasterService {
 		List<FlowDetailVO> flowDetailVOList = new ArrayList<>();
 		FlowVO flowVO = FlowVO.builder().active(flowDTO.isActive()).orgin(flowDTO.getOrgin()).warehouseLocation(flowDTO.getWarehouseLocation())
 				.flowName(flowDTO.getFlowName()).receiverId(flowDTO.getReceiverId()).emitterId(flowDTO.getEmitterId()).emitter(flowDTO.getEmitter())
-				.destination(flowDTO.getDestination()).orgId(flowDTO.getOrgId()).flowDetailVO(flowDetailVOList).build();
+				.destination(flowDTO.getDestination()).orgId(flowDTO.getOrgId()).warehouseId(flowDTO.getWarehouseId()).flowDetailVO(flowDetailVOList).build();
 		flowDetailVOList = flowDTO.getFlowDetailDTO().stream()
 				.map(fdDTO -> FlowDetailVO.builder().active(fdDTO.isActive()).cycleTime(fdDTO.getCycleTime())
 						.partName(fdDTO.getPartName()).kitName(fdDTO.getKitName()).partNumber(fdDTO.getPartNumber()).flowVO(flowVO)
@@ -415,6 +415,7 @@ public class MasterServiceImpl implements MasterService {
 	@Override
 	public Optional<FlowVO> updateFlow(FlowVO flowVO) {
 		if (flowRepo.existsById(flowVO.getId())) {
+			flowVO.setEmitter(flowRepo.findEmiterbyId(flowVO.getEmitterId()));
 			return Optional.of(flowRepo.save(flowVO));
 		} else {
 			return Optional.empty();
@@ -945,7 +946,7 @@ public class MasterServiceImpl implements MasterService {
 	public List<FlowVO> getFlowByIds(String ids) throws ApplicationException {
 		List<Long> flowIds = Arrays.stream(StringUtils.split(ids, ",")).map(Long::parseLong)
 				.collect(Collectors.toList());
-		List<FlowVO> flowVO = flowRepo.findAllById(flowIds);
+		List<FlowVO> flowVO = flowRepo.findAllById(flowIds); 
 		if (flowVO.isEmpty()) {
 			throw new ApplicationException("Flow not found.");
 		}
