@@ -14,6 +14,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.transaction.Transactional;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -31,8 +32,6 @@ import com.whydigit.efit.dto.IssueRequestDTO;
 import com.whydigit.efit.dto.IssueRequestQtyApprovelDTO;
 import com.whydigit.efit.dto.IssueRequestType;
 import com.whydigit.efit.dto.Role;
-import com.whydigit.efit.entity.AssetGroupVO;
-import com.whydigit.efit.entity.BasicDetailVO;
 import com.whydigit.efit.entity.EmitterInwardVO;
 import com.whydigit.efit.entity.EmitterOutwardVO;
 import com.whydigit.efit.entity.FlowDetailVO;
@@ -270,24 +269,32 @@ public class EmitterServiceImpl implements EmitterService {
 		return emitterInwardRepo.save(emitterInwardVO);
 	}
 
+	@Transactional
 	@Override
 	public InwardVO updateEmitterInward(InwardDTO inwardDTO) throws ApplicationException {
-		IssueItemVO issueItemVO=new IssueItemVO();
-		InwardVO inwardVO=new InwardVO();
-	    if (ObjectUtils.isNotEmpty(inwardDTO) && ObjectUtils.isNotEmpty(inwardDTO.getId())) {
-	    	inwardVO = inwardRepo.findById(inwardDTO.getId())
-	                .orElseThrow(() -> new ApplicationException("Emitter inward information not found."));
+		IssueItemVO issueItemVO = new IssueItemVO();
+		InwardVO inwardVO = new InwardVO();
+		if (ObjectUtils.isNotEmpty(inwardDTO) && ObjectUtils.isNotEmpty(inwardDTO.getId())) {
+			inwardVO = inwardRepo.findById(inwardDTO.getId())
+					.orElseThrow(() -> new ApplicationException("Emitter inward information not found."));
 			if (ObjectUtils.isNotEmpty(inwardDTO.getIssueItemId())) {
 				issueItemVO = issueItemRepo.findById(inwardDTO.getIssueItemId())
 						.orElseThrow(() -> new ApplicationException(" information not found."));
 			}
-			
+
 		} else {
 			throw new ApplicationException("Invalid Emitter inward information.");
 		}
-	    inwardVO.setIssueItemVO(issueItemVO);    // Mapping
-	    getInwardVOFromInwardDTO(inwardDTO, inwardVO);
-		return inwardRepo.save(inwardVO);
+		inwardVO.setIssueItemVO(issueItemVO); // Mapping
+		getInwardVOFromInwardDTO(inwardDTO, inwardVO);
+		inwardVO = inwardRepo.save(inwardVO);
+		EmitterOutwardVO outwardVO = new EmitterOutwardVO();
+		outwardVO = emitterOutwardRepo.findByIssueItemId(issueItemVO.getId()).orElse(new EmitterOutwardVO());
+		outwardVO.setIssueItemVO(issueItemVO);
+		outwardVO.setActive(true);
+		outwardVO.setOrgId(issueItemVO.getIssueRequestVO().getOrgId());
+		emitterOutwardRepo.save(outwardVO);
+		return inwardVO;
 	}
 
 

@@ -55,6 +55,10 @@ public class IssueItemVO {
 	@JsonManagedReference
 	@OneToOne(mappedBy = "issueItemVO", cascade = CascadeType.ALL)
 	private InwardVO inwardVO;
+	
+	@JsonManagedReference
+	@OneToOne(mappedBy = "issueItemVO", cascade = CascadeType.ALL)
+	private EmitterOutwardVO outwardVO;
 
 	@JsonManagedReference
 	@OneToMany(mappedBy = "issueItemVO", cascade = CascadeType.ALL)
