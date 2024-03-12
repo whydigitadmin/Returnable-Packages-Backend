@@ -418,10 +418,10 @@ public class AuthServiceImpl implements AuthService {
 		userVO.setPNo(createUserFormDTO.getPNo());
 		userVO.setRole(createUserFormDTO.getRole());
 		userVO.setAccessRightsRoleId(createUserFormDTO.getAccessRightsRoleId());
-		
+		 
 	}
 
-	@Override
+	@Override 
 	public List<UserVO> getUserByOrgId(Long orgId) {
 		
 		return userRepo.findByOrgId(orgId);
