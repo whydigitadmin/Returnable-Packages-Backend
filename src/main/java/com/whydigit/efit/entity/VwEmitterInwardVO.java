@@ -38,6 +38,7 @@ private int returnQty;
 private long issueItemInwardId;
 private long itemId;
 private String status;
+private String partNo;
 
 
 
