@@ -414,11 +414,16 @@ public class AuthServiceImpl implements AuthService {
 		userVO.setAccessaddId(addIds);
 		userVO.setAccessWarehouse(warehouseIds);
 		userVO.setFirstName(createUserFormDTO.getFirstName());
-		userVO.setUserId(createUserFormDTO.getUserId());
 		userVO.setLastName(createUserFormDTO.getLastName());
 		userVO.setPNo(createUserFormDTO.getPNo());
 		userVO.setRole(createUserFormDTO.getRole());
 		userVO.setAccessRightsRoleId(createUserFormDTO.getAccessRightsRoleId());
 		
+	}
+
+	@Override
+	public UserVO getUserByOrgId(Long orgId) {
+		
+		return userRepo.findByOrgId(orgId);
 	}
 }
