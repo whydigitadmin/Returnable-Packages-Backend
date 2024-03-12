@@ -3,6 +3,7 @@ package com.whydigit.efit.service;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -29,7 +30,6 @@ import com.whydigit.efit.dto.ResetPasswordFormDTO;
 import com.whydigit.efit.dto.Role;
 import com.whydigit.efit.dto.UserAddressDTO;
 import com.whydigit.efit.dto.UserResponseDTO;
-import com.whydigit.efit.entity.BasicDetailVO;
 import com.whydigit.efit.entity.CustomersVO;
 import com.whydigit.efit.entity.OrganizationVO;
 import com.whydigit.efit.entity.TokenVO;
@@ -422,7 +422,7 @@ public class AuthServiceImpl implements AuthService {
 	}
 
 	@Override
-	public UserVO getUserByOrgId(Long orgId) {
+	public List<UserVO> getUserByOrgId(Long orgId) {
 		
 		return userRepo.findByOrgId(orgId);
 	}

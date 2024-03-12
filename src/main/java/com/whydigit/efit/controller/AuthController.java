@@ -1,7 +1,9 @@
 
 package com.whydigit.efit.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.validation.Valid;
@@ -26,12 +28,10 @@ import com.whydigit.efit.common.UserConstants;
 import com.whydigit.efit.dto.ChangePasswordFormDTO;
 import com.whydigit.efit.dto.CreateOrganizationFormDTO;
 import com.whydigit.efit.dto.CreateUserFormDTO;
-import com.whydigit.efit.dto.CustomersDTO;
 import com.whydigit.efit.dto.LoginFormDTO;
 import com.whydigit.efit.dto.RefreshTokenDTO;
 import com.whydigit.efit.dto.ResponseDTO;
 import com.whydigit.efit.dto.UserResponseDTO;
-import com.whydigit.efit.entity.CustomersVO;
 import com.whydigit.efit.entity.UserVO;
 import com.whydigit.efit.service.AuthService;
 @CrossOrigin
@@ -156,7 +156,7 @@ public class AuthController extends BaseController{
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
-		UserVO userVO = null;
+		List<UserVO> userVO = new ArrayList<>();
 		try {
 			userVO = authService.getUserByOrgId(orgId);
 		} catch (Exception e) {
