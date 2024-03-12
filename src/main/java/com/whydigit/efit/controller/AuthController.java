@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -25,10 +26,12 @@ import com.whydigit.efit.common.UserConstants;
 import com.whydigit.efit.dto.ChangePasswordFormDTO;
 import com.whydigit.efit.dto.CreateOrganizationFormDTO;
 import com.whydigit.efit.dto.CreateUserFormDTO;
+import com.whydigit.efit.dto.CustomersDTO;
 import com.whydigit.efit.dto.LoginFormDTO;
 import com.whydigit.efit.dto.RefreshTokenDTO;
 import com.whydigit.efit.dto.ResponseDTO;
 import com.whydigit.efit.dto.UserResponseDTO;
+import com.whydigit.efit.entity.CustomersVO;
 import com.whydigit.efit.entity.UserVO;
 import com.whydigit.efit.service.AuthService;
 @CrossOrigin
@@ -91,6 +94,34 @@ public class AuthController extends BaseController{
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
+	
+	@PutMapping("/updateUser")
+	public ResponseEntity<ResponseDTO> updateUser(@RequestBody CreateUserFormDTO CreateUserFormDTO) {
+		String methodName = "updateUser()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		try {
+			UserVO updatedUserVO= authService.updateUser(CreateUserFormDTO);
+			if (updatedUserVO != null) {
+				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "User updated successfully");
+				responseObjectsMap.put("updatedUserVO", updatedUserVO);
+				responseDTO = createServiceResponse(responseObjectsMap);
+			} else {
+				errorMsg = "User not found for ID: " + CreateUserFormDTO.getUserId();
+				responseDTO = createServiceResponseError(responseObjectsMap, "User update failed", errorMsg);
+			}
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "Users" + " update failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
+	
 	
 	@GetMapping("/user/{userId}")
 	public ResponseEntity<ResponseDTO> getUserById(@PathVariable Long userId) {

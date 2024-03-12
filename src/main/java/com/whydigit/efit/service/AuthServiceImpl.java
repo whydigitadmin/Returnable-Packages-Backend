@@ -29,6 +29,7 @@ import com.whydigit.efit.dto.ResetPasswordFormDTO;
 import com.whydigit.efit.dto.Role;
 import com.whydigit.efit.dto.UserAddressDTO;
 import com.whydigit.efit.dto.UserResponseDTO;
+import com.whydigit.efit.entity.BasicDetailVO;
 import com.whydigit.efit.entity.CustomersVO;
 import com.whydigit.efit.entity.OrganizationVO;
 import com.whydigit.efit.entity.TokenVO;
@@ -390,4 +391,24 @@ public class AuthServiceImpl implements AuthService {
 		return userRepo.findById(userId);
 	}
 
+	@Override
+	public UserVO updateUser(CreateUserFormDTO createUserFormDTO) throws ApplicationException {
+		UserVO userVO = new UserVO();
+		userVO = userRepo.findById(createUserFormDTO.getUserId())
+				.orElseThrow(() -> new ApplicationException("Invalid  user details"));
+		getUserVOFromCreateUserFormDTO(createUserFormDTO, userVO);
+		return userRepo.save(userVO);
+	}
+
+	private void getUserVOFromCreateUserFormDTO(CreateUserFormDTO createUserFormDTO, UserVO userVO) {
+		
+		userVO.setFirstName(createUserFormDTO.getFirstName());
+		userVO.setUserId(createUserFormDTO.getUserId());
+		userVO.setLastName(createUserFormDTO.getLastName());
+		userVO.setUserName(createUserFormDTO.getUserName());
+		userVO.setPNo(createUserFormDTO.getPNo());
+		userVO.setRole(createUserFormDTO.getRole());
+		userVO.setAccessRightsRoleId(createUserFormDTO.getAccessRightsRoleId());
+		
+	}
 }
