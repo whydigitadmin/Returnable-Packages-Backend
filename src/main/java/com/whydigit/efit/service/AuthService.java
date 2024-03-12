@@ -30,6 +30,8 @@ public interface AuthService {
 
 	public Optional<UserVO> getUserById(Long userId);
 
-	public UserVO updateUser(CreateUserFormDTO createUserFormDTO) throws ApplicationException; 
+	public UserVO updateUser(CreateUserFormDTO createUserFormDTO) throws ApplicationException;
+
+	public UserVO getUserByOrgId(Long orgId); 
 
 }
