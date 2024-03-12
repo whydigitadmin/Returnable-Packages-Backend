@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -33,6 +34,7 @@ import com.whydigit.efit.dto.IssueRequestDTO;
 import com.whydigit.efit.dto.IssueRequestQtyApprovelDTO;
 import com.whydigit.efit.dto.IssueRequestType;
 import com.whydigit.efit.dto.Role;
+import com.whydigit.efit.entity.CustomersVO;
 import com.whydigit.efit.entity.EmitterInwardVO;
 import com.whydigit.efit.entity.EmitterOutwardVO;
 import com.whydigit.efit.entity.FlowDetailVO;
@@ -41,14 +43,21 @@ import com.whydigit.efit.entity.InwardVO;
 import com.whydigit.efit.entity.IssueItemVO;
 import com.whydigit.efit.entity.IssueRequestApprovedVO;
 import com.whydigit.efit.entity.IssueRequestVO;
+import com.whydigit.efit.entity.KitVO;
+import com.whydigit.efit.entity.MovementStockItemVO;
+import com.whydigit.efit.entity.MovementStockVO;
+import com.whydigit.efit.entity.MovementType;
 import com.whydigit.efit.entity.VwEmitterInwardVO;
 import com.whydigit.efit.exception.ApplicationException;
+import com.whydigit.efit.repo.CustomersRepo;
 import com.whydigit.efit.repo.EmitterInwardRepo;
 import com.whydigit.efit.repo.EmitterOutwardRepo;
 import com.whydigit.efit.repo.FlowRepo;
 import com.whydigit.efit.repo.InwardRepo;
 import com.whydigit.efit.repo.IssueItemRepo;
 import com.whydigit.efit.repo.IssueRequestRepo;
+import com.whydigit.efit.repo.KitRepo;
+import com.whydigit.efit.repo.MovementStockRepo;
 import com.whydigit.efit.repo.UserRepo;
 import com.whydigit.efit.repo.VwEmitterInwardRepo;
 
@@ -73,7 +82,15 @@ public class EmitterServiceImpl implements EmitterService {
 	
 	@Autowired
 	VwEmitterInwardRepo vwEmitterInwardRepo;
+
+	@Autowired
+	MovementStockRepo movementStockRepo;
 	
+	@Autowired
+	KitRepo kitRepo;
+	
+	@Autowired
+	CustomersRepo customersRepo;
 
 	@Override
 	public IssueRequestVO createIssueRequest(IssueRequestDTO issueRequestDTO) throws ApplicationException {
@@ -190,10 +207,12 @@ public class EmitterServiceImpl implements EmitterService {
 	}
 
 	@Override
+	@Transactional
 	public IssueRequestVO issueRequestQtyApprovel(IssueRequestQtyApprovelDTO issueRequestQtyApprovelDTO)
 			throws ApplicationException {
 		IssueRequestVO issueRequestVO = issueRequestRepo.findById(issueRequestQtyApprovelDTO.getIssueRequestId())
 				.orElseThrow(() -> new ApplicationException("Invalid issueRequest information."));
+		List<MovementStockVO> movementStockVO=new ArrayList<>();
 		issueRequestVO.getIssueItemVO().stream()
 				.filter(item -> item.getId() == issueRequestQtyApprovelDTO.getIssueItemId()).forEach(item -> {
 					List<IssueRequestApprovedVO> issueRequestApprovedVO = item.getIssueRequestApprovedVO();
@@ -219,6 +238,7 @@ public class EmitterServiceImpl implements EmitterService {
 						inwardVO.setIssueItemVO(item);
 						item.setInwardVO(inwardVO);
 					}
+					movementStockVO.add(getMovementStock(item,issueRequestQtyApprovelDTO.getIssuedQty(),MovementType.INWARD));
 				});
 		if (issueRequestVO.getIssueItemVO().stream()
 				.allMatch(flag -> flag.getIssueItemStatus() > EmitterConstant.ISSUE_REQUEST_ITEM_STATUS_INPROGRESS)) {
@@ -233,7 +253,35 @@ public class EmitterServiceImpl implements EmitterService {
 		else {
 			issueRequestVO.setIssueStatus(EmitterConstant.ISSUE_REQUEST_STATUS_PENDING);
 		}
-		return issueRequestRepo.save(issueRequestVO);
+		issueRequestVO= issueRequestRepo.save(issueRequestVO);
+		movementStockRepo.saveAll(movementStockVO);
+		return issueRequestVO;
+	}
+
+	private MovementStockVO getMovementStock(IssueItemVO issueItemVO,int issuedQty,MovementType type){
+		IssueRequestVO issueRequestVO=issueItemVO.getIssueRequestVO();
+		KitVO kitVO = kitRepo.findById(issueItemVO.getKitName()).get();
+		CustomersVO customersVO=customersRepo.findById(issueRequestVO.getEmitterId()).get();
+		MovementStockVO movementStock = new MovementStockVO();
+		movementStock.setEmitterId(issueRequestVO.getEmitterId());
+		movementStock.setEmitterName(customersVO.getDisplayName());
+		movementStock.setFlowId(issueRequestVO.getFlowTo());
+		movementStock.setFlowName(issueRequestVO.getFlowName());
+		movementStock.setKitName(issueItemVO.getKitName());
+		movementStock.setQty(issuedQty);
+		movementStock.setType(type);
+		movementStock.setMovementDate(LocalDate.now());
+		movementStock.setOrgId(customersVO.getOrgId());
+		List<MovementStockItemVO> movementStockItemVO = kitVO.getKitAssetVO().stream().map(kavo -> {
+			MovementStockItemVO movementStockItem = new MovementStockItemVO();
+			movementStockItem.setKitAssetId(kavo.getId());
+			movementStockItem.setAssetName(kavo.getAssetName());
+			movementStockItem.setAssetQTY((int) kavo.getQuantity() * issuedQty);
+			movementStockItem.setMovementStockVO(movementStock);
+			return movementStockItem;
+		}).collect(Collectors.toList());
+		movementStock.setMovementStockItemVO(movementStockItemVO);
+		return movementStock;
 	}
 
 	private int getItemStatus(int issuedQty, int reqQty) {
@@ -275,12 +323,15 @@ public class EmitterServiceImpl implements EmitterService {
 	public InwardVO updateEmitterInward(InwardDTO inwardDTO) throws ApplicationException {
 		IssueItemVO issueItemVO = new IssueItemVO();
 		InwardVO inwardVO = new InwardVO();
+		MovementStockVO movementStockVO = new MovementStockVO();
 		if (ObjectUtils.isNotEmpty(inwardDTO) && ObjectUtils.isNotEmpty(inwardDTO.getId())) {
 			inwardVO = inwardRepo.findById(inwardDTO.getId())
 					.orElseThrow(() -> new ApplicationException("Emitter inward information not found."));
 			if (ObjectUtils.isNotEmpty(inwardDTO.getIssueItemId())) {
 				issueItemVO = issueItemRepo.findById(inwardDTO.getIssueItemId())
 						.orElseThrow(() -> new ApplicationException(" information not found."));
+				movementStockVO = getMovementStock(issueItemVO, (int) inwardDTO.getNetQtyRecieved(),
+						MovementType.OUTWARD);
 			}
 
 		} else {
@@ -295,6 +346,7 @@ public class EmitterServiceImpl implements EmitterService {
 		outwardVO.setActive(true);
 		outwardVO.setOrgId(issueItemVO.getIssueRequestVO().getOrgId());
 		emitterOutwardRepo.save(outwardVO);
+		movementStockRepo.save(movementStockVO);
 		return inwardVO;
 	}
 
