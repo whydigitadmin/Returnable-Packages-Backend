@@ -1,5 +1,6 @@
 package com.whydigit.efit.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import com.whydigit.efit.dto.ChangePasswordFormDTO;
@@ -32,6 +33,6 @@ public interface AuthService {
 
 	public UserVO updateUser(CreateUserFormDTO createUserFormDTO) throws ApplicationException;
 
-	public UserVO getUserByOrgId(Long orgId); 
+	public List<UserVO> getUserByOrgId(Long orgId); 
 
 }
