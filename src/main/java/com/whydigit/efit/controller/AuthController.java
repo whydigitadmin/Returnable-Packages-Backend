@@ -150,7 +150,7 @@ public class AuthController extends BaseController{
 	}
 	
 	@GetMapping("/userByOrgId")
-	public ResponseEntity<ResponseDTO> getUserByOrgId(@PathVariable Long orgId) {
+	public ResponseEntity<ResponseDTO> getUserByOrgId(@RequestParam Long orgId) {
 		String methodName = "getUserByOrgId()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
