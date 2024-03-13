@@ -501,10 +501,9 @@ public class EmitterServiceImpl implements EmitterService {
 	}
 
 	@Override
-	public List<MaxPartQtyPerKitVO> getAllMaxPartQtyPerKit(Long orgId, Long emitterId, Long flowId, String partNumber) {
-	    List<MaxPartQtyPerKitVO> maxPartQtyPerKitVO;
-	    
-	    maxPartQtyPerKitVO = maxPartQtyPerKitRepo.findAll(new Specification<MaxPartQtyPerKitVO>() {
+	public Map<String, Object> getAllMaxPartQtyPerKit(Long orgId, Long emitterId, Long flowId, String partNumber) {
+		Map<String, Object> maxPrtQty = new HashMap<>();
+	    List<MaxPartQtyPerKitVO>maxPartQtyPerKitVO = maxPartQtyPerKitRepo.findAll(new Specification<MaxPartQtyPerKitVO>() {
 	        @Override
 	        public Predicate toPredicate(Root<MaxPartQtyPerKitVO> root, CriteriaQuery<?> query,
 	                                     CriteriaBuilder criteriaBuilder) {
@@ -521,10 +520,11 @@ public class EmitterServiceImpl implements EmitterService {
 	            if (StringUtils.isNotBlank(partNumber)) {
 	                predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("partNumber"), partNumber)));
 	            }
-	            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+	            return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
 	        }
 	    });
-	    return maxPartQtyPerKitVO;
+	    maxPrtQty.put("MaxPartQtyPerKitVO", maxPartQtyPerKitVO);
+		return maxPrtQty;
 	}
 
 		

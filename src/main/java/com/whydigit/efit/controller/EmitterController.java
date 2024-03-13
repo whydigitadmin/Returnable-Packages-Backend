@@ -584,16 +584,16 @@ public class EmitterController extends BaseController {
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
-		List<MaxPartQtyPerKitVO> maxPartQtyPerKitVO= new ArrayList<>();
+		Map<String, Object> maxPartQtyPerKit = new HashMap<>();;
 		try {
-			maxPartQtyPerKitVO = emitterService.getAllMaxPartQtyPerKit(orgId,emitterId,flowId,partNumber);
+			maxPartQtyPerKit = emitterService.getAllMaxPartQtyPerKit(orgId,emitterId,flowId,partNumber);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
 		}
 		if (StringUtils.isBlank(errorMsg)) {
 			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Maximum part qty per kit information get successfully");
-			responseObjectsMap.put("maxPartQtyPerKitVO", maxPartQtyPerKitVO);
+			responseObjectsMap.put("maxPartQtyPerKit", maxPartQtyPerKit);
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} else {
 			responseDTO = createServiceResponseError(responseObjectsMap, "Maximum part qty per kit information receive failed",
