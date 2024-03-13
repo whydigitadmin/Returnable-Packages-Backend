@@ -37,7 +37,7 @@ public interface UserRepo extends JpaRepository<UserVO, Long> {
 	@Query(value = "select u.accessWarehouse from UserVO u where u.id =?1")
 	String getWarehouseByUserID(long userId);
 
-	@Query(value = "select u.* from users u where u.org_id=?1",nativeQuery = true)
+	@Query(value = "select u.* from users u where u.org_id=?1",nativeQuery = true) 
 	List<UserVO> findByOrgId(Long orgId);
 
 }
