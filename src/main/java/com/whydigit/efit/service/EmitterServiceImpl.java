@@ -500,7 +500,7 @@ public class EmitterServiceImpl implements EmitterService {
 	}
 
 	@Override
-	public List<MaxPartQtyPerKitVO> getAllMaxPartQtyPerKit(Long orgId) {
+	public List<MaxPartQtyPerKitVO> getAllMaxPartQtyPerKit(Long orgId, Long emitterId, Long flowId, String partNo) {
 		return maxPartQtyPerKitRepo.findMaxPartQtyPerKitByOrgId(orgId);
 	}
 

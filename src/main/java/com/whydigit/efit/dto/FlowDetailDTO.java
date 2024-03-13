@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class FlowDetailDTO {
 	private String kitName;
-//	private String emitter;
+	private String emitter;
 	private long orgId;
 	private long emitterId;
 	private String partNumber;
