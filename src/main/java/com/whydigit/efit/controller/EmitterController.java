@@ -76,9 +76,10 @@ public class EmitterController extends BaseController {
 
 	@GetMapping("/getIssueRequest")
 	public ResponseEntity<ResponseDTO> getIssueRequest(@RequestParam(required = false) Long emitterId,
-			@RequestParam(required = false) Long orgId,@RequestParam(required = false) Long userId,
+			@RequestParam(required = false) Long orgId, @RequestParam(required = false) String warehouseLocation,
 			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+			@RequestParam(required = false) Long warehouseLoacationId) {
 		String methodName = "getIssuseRequest()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -86,7 +87,7 @@ public class EmitterController extends BaseController {
 		ResponseDTO responseDTO = null;
 		List<IssueRequestVO> issueRequestVO = new ArrayList<>();
 		try {
-			issueRequestVO = emitterService.getIssueRequest(emitterId, orgId, startDate, endDate);
+			issueRequestVO = emitterService.getIssueRequest(emitterId, warehouseLocation,orgId, startDate, endDate,warehouseLoacationId);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(CommonConstant.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
