@@ -83,7 +83,16 @@ public class EmitterServiceImpl implements EmitterService {
 
 	@Autowired
 	VwEmitterInwardRepo vwEmitterInwardRepo;
+	
+	@Autowired
+	CustomersRepo customersRepo;
 
+	@Autowired
+	MovementStockRepo movementStockRepo;
+	
+	@Autowired
+	KitRepo kitRepo;
+	
 	@Override
 	public IssueRequestVO createIssueRequest(IssueRequestDTO issueRequestDTO) throws ApplicationException {
 		IssueRequestVO issueRequestVO = new IssueRequestVO();
