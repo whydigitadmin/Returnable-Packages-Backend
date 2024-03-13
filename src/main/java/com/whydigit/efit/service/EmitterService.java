@@ -18,6 +18,7 @@ import com.whydigit.efit.entity.EmitterOutwardVO;
 import com.whydigit.efit.entity.FlowVO;
 import com.whydigit.efit.entity.InwardVO;
 import com.whydigit.efit.entity.IssueRequestVO;
+import com.whydigit.efit.entity.MaxPartQtyPerKitVO;
 import com.whydigit.efit.entity.VwEmitterInwardVO;
 import com.whydigit.efit.exception.ApplicationException;
 
@@ -26,7 +27,8 @@ public interface EmitterService {
 
 	IssueRequestVO createIssueRequest(IssueRequestDTO issueRequestDTO) throws ApplicationException;
 
-	public List<IssueRequestVO> getIssueRequest(Long emitterId, Long orgId, LocalDate startDate, LocalDate endDate);
+//	public List<IssueRequestVO> getIssueRequest(Long emitterId, Long orgId, LocalDate startDate, LocalDate endDate,
+//			Long warehouseLocationId, String warehouseLocation);
 
 	List<EmitterAddressDTO> getEmitterAddress(Long orgId);
 
@@ -66,5 +68,14 @@ public interface EmitterService {
 			Long warehouseLocationId);
 	
 	Set<Object[]>getEmitterByWarehouseId(Long orgId,Long warehouseId);
+
+	Map<String, Object> getAllMaxPartQtyPerKit(Long orgId, Long emitterId, Long flowId, String partNumber);
+
+	List<IssueRequestVO> getIssueRequest(Long emitterId, String warehouseLocation, Long orgId, LocalDate startDate,
+			LocalDate endDate, Long warehouseLoacationId);
+
+	
+
+	
 
 }

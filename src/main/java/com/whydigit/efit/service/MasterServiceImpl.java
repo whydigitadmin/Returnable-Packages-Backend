@@ -395,6 +395,8 @@ public class MasterServiceImpl implements MasterService {
 		FlowVO flowVO = createFlowVOByFlowDTO(flowDTO);
 		flowVO.setEmitter(flowRepo.findEmiterbyId(flowVO.getEmitterId()));
 //		flowVO.setDublicateFlowName(flowDTO.getOrgId()+flowDTO.getFlowName());
+		flowVO.setWarehouseLocation(flowRepo.getWarehouseLocationByLocationId(flowDTO.getWarehouseId())); 
+		flowVO.setReceiver(flowRepo.getReceiverByReceiverId(flowDTO.getReceiverId()));
 		return flowRepo.save(flowVO);
 	}
 
@@ -404,8 +406,8 @@ public class MasterServiceImpl implements MasterService {
 				.flowName(flowDTO.getFlowName()).receiverId(flowDTO.getReceiverId()).emitterId(flowDTO.getEmitterId()).emitter(flowDTO.getEmitter())
 				.destination(flowDTO.getDestination()).orgId(flowDTO.getOrgId()).warehouseId(flowDTO.getWarehouseId()).flowDetailVO(flowDetailVOList).build();
 		flowDetailVOList = flowDTO.getFlowDetailDTO().stream()
-				.map(fdDTO -> FlowDetailVO.builder().active(fdDTO.isActive()).cycleTime(fdDTO.getCycleTime())
-						.partName(fdDTO.getPartName()).kitName(fdDTO.getKitName()).partNumber(fdDTO.getPartNumber()).flowVO(flowVO)
+				.map(fdDTO -> FlowDetailVO.builder().active(fdDTO.isActive()).cycleTime(fdDTO.getCycleTime()).emitterId(flowDTO.getEmitterId()).orgId(flowDTO.getOrgId())
+						.partName(fdDTO.getPartName()).kitName(fdDTO.getKitName()).partNumber(fdDTO.getPartNumber()).emitter(flowRepo.findEmiterbyId(flowVO.getEmitterId())).flowVO(flowVO)
 						.build())
 				.collect(Collectors.toList());
 		flowVO.setFlowDetailVO(flowDetailVOList);

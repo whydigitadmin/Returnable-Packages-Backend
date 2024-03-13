@@ -35,6 +35,7 @@ import com.whydigit.efit.dto.IssueRequestItemApprovelDTO;
 import com.whydigit.efit.dto.IssueRequestQtyApprovelDTO;
 import com.whydigit.efit.dto.IssueRequestType;
 import com.whydigit.efit.dto.Role;
+import com.whydigit.efit.entity.AssetGroupVO;
 import com.whydigit.efit.entity.CustomersVO;
 import com.whydigit.efit.entity.EmitterInwardVO;
 import com.whydigit.efit.entity.EmitterOutwardVO;
@@ -45,6 +46,7 @@ import com.whydigit.efit.entity.IssueItemVO;
 import com.whydigit.efit.entity.IssueRequestApprovedVO;
 import com.whydigit.efit.entity.IssueRequestVO;
 import com.whydigit.efit.entity.KitVO;
+import com.whydigit.efit.entity.MaxPartQtyPerKitVO;
 import com.whydigit.efit.entity.MovementStockItemVO;
 import com.whydigit.efit.entity.MovementStockVO;
 import com.whydigit.efit.entity.MovementType;
@@ -58,6 +60,7 @@ import com.whydigit.efit.repo.InwardRepo;
 import com.whydigit.efit.repo.IssueItemRepo;
 import com.whydigit.efit.repo.IssueRequestRepo;
 import com.whydigit.efit.repo.KitRepo;
+import com.whydigit.efit.repo.MaxPartQtyPerKitRepo;
 import com.whydigit.efit.repo.MovementStockRepo;
 import com.whydigit.efit.repo.UserRepo;
 import com.whydigit.efit.repo.VwEmitterInwardRepo;
@@ -85,8 +88,9 @@ public class EmitterServiceImpl implements EmitterService {
 	VwEmitterInwardRepo vwEmitterInwardRepo;
 	
 	@Autowired
+	MaxPartQtyPerKitRepo maxPartQtyPerKitRepo;
+	@Autowired
 	CustomersRepo customersRepo;
-
 	@Autowired
 	MovementStockRepo movementStockRepo;
 	
@@ -125,6 +129,8 @@ public class EmitterServiceImpl implements EmitterService {
 		issueRequestVO.setFlowName(flowVO.getFlowName());
 		issueRequestVO.setIssueItemVO(issueItemVO);
 		issueRequestVO.setTotalIssueItem(issueItemVO.size());
+		issueRequestVO.setWarehouseLocationId(issueRequestRepo.findWarehouseLocationId(issueRequestDTO.getFlowTo()));
+		issueRequestVO.setWarehouseLocation(issueRequestRepo.findWarehouseLocation(issueRequestDTO.getFlowTo()));
 		issueRequestVO = issueRequestRepo.save(issueRequestVO);
 		return issueRequestVO;
 	}
@@ -159,7 +165,7 @@ public class EmitterServiceImpl implements EmitterService {
 	}
 
 	@Override
-	public List<IssueRequestVO> getIssueRequest(Long emitterId, Long orgId, LocalDate startDate, LocalDate endDate) {
+	public List<IssueRequestVO> getIssueRequest(Long emitterId,String warehouseLocation, Long orgId, LocalDate startDate, LocalDate endDate,Long warehouseLocationId) {
 
 		return issueRequestRepo.findAll(new Specification<IssueRequestVO>() {
 
@@ -177,6 +183,12 @@ public class EmitterServiceImpl implements EmitterService {
 					predicates.add(criteriaBuilder.between(root.get("requestedDate"),
 							LocalDateTime.of(startDate, LocalTime.MIDNIGHT),
 							LocalDateTime.of(endDate, LocalTime.MIDNIGHT)));
+				} 
+				if (StringUtils.isNoneBlank(warehouseLocation)) {
+					predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("WarehouseLocation"), warehouseLocation)));
+				}
+				if (ObjectUtils.isNotEmpty(warehouseLocationId)) {
+					predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("warehouseLocationId"), warehouseLocationId)));
 				}
 				return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
 			}
@@ -488,4 +500,35 @@ public class EmitterServiceImpl implements EmitterService {
 		return flowRepo.findEmitterByWarehouseId(orgId, warehouseId);
 	}
 
-}
+	@Override
+	public Map<String, Object> getAllMaxPartQtyPerKit(Long orgId, Long emitterId, Long flowId, String partNumber) {
+		Map<String, Object> maxPrtQty = new HashMap<>();
+	    List<MaxPartQtyPerKitVO>maxPartQtyPerKitVO = maxPartQtyPerKitRepo.findAll(new Specification<MaxPartQtyPerKitVO>() {
+	        @Override
+	        public Predicate toPredicate(Root<MaxPartQtyPerKitVO> root, CriteriaQuery<?> query,
+	                                     CriteriaBuilder criteriaBuilder) {
+	            List<Predicate> predicates = new ArrayList<>();
+	            if (ObjectUtils.isNotEmpty(orgId)) {
+	                predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("orgId"), orgId)));
+	            }
+	            if (ObjectUtils.isNotEmpty(emitterId)) { // Corrected from orgId to emitterId
+	                predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("emitterId"), emitterId)));
+	            }
+	            if (ObjectUtils.isNotEmpty(flowId)) { // Corrected from orgId to flowId
+	                predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("flowId"), flowId)));
+	            }
+	            if (StringUtils.isNotBlank(partNumber)) {
+	                predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("partNumber"), partNumber)));
+	            }
+	            return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
+	        }
+	    });
+	    maxPrtQty.put("MaxPartQtyPerKitVO", maxPartQtyPerKitVO);
+		return maxPrtQty;
+	}
+
+		
+
+	}
+
+
