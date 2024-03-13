@@ -1,4 +1,4 @@
-package com.whydigit.efit.security;
+                                   package com.whydigit.efit.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -40,7 +40,7 @@ public class SecurityConfig {
 						"/api/warehouse/getWarehouseLocationByOrgID", "/api/warehouse/updateCreateWarehouse",
 						"/api/warehouse/view", "/api/warehouse/getWarehouseById/{id}", "/api/partStudy/basicDetails",
 						"/api/partStudy/d}/searchPartStudyById", "/api/partStudy/packageDetail",
-						"/api/partStudy/packageDetail/{id}", "/api/partStudy/logistics",
+						"/api/partStudy/packageDetail/{id}", "/api/partStudy/logistics","/api/company/setup",
 						"/api/partStudy/logistics/{id}", "/api/partStudy/**", "/api/inwardSku/**",
 						"/api/partStudy/stockDetail/{id}", "/api/emitter/createIssueRequest", "/api/emitter/*",
 						"/api/auth/createUser", "/api/master/flow/getFlowByIds", "/api/master/getAllFlowName",
