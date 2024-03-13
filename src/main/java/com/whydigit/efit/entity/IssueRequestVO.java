@@ -31,6 +31,8 @@ public class IssueRequestVO {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 	private long orgId;
+	private long warehouseLocationId;
+	private String warehouseLocation;
 	private long emitterId;
 	private long reqAddressId;
 	private Long flowTo;
