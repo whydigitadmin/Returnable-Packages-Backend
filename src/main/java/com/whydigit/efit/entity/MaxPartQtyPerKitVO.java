@@ -18,7 +18,7 @@ public class MaxPartQtyPerKitVO {
 private long id;
 	private long orgId;
 	private long emitterId;
-	private long partNumber;
+	private String partNumber;
 	private long flowId;
 	private String kitId;
 	private int maxPartQty;
