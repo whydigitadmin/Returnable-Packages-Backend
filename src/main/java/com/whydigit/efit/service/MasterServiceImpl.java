@@ -395,6 +395,7 @@ public class MasterServiceImpl implements MasterService {
 		FlowVO flowVO = createFlowVOByFlowDTO(flowDTO);
 		flowVO.setEmitter(flowRepo.findEmiterbyId(flowVO.getEmitterId()));
 //		flowVO.setDublicateFlowName(flowDTO.getOrgId()+flowDTO.getFlowName());
+		flowVO.setWarehouseLocation(flowRepo.getWarehouseLocationByLocationId(flowDTO.getWarehouseId())); 
 		return flowRepo.save(flowVO);
 	}
 
