@@ -2,6 +2,7 @@ package com.whydigit.efit.repo;
 
 import java.util.List;
 
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -11,5 +12,7 @@ public interface MaxPartQtyPerKitRepo extends JpaRepository<MaxPartQtyPerKitVO, 
 	
 @Query(value = "select * from vw_max_partqty_perkit where org_id=?1",nativeQuery = true)
 	List<MaxPartQtyPerKitVO> findMaxPartQtyPerKitByOrgId(Long orgId);
+
+List<MaxPartQtyPerKitVO> findAll(Specification<MaxPartQtyPerKitVO> specification);
 
 }
