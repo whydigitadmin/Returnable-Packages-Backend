@@ -69,7 +69,7 @@ public interface EmitterService {
 	
 	Set<Object[]>getEmitterByWarehouseId(Long orgId,Long warehouseId);
 
-	List<MaxPartQtyPerKitVO> getAllMaxPartQtyPerKit(Long orgId, Long emitterId, Long flowId, String partNo);
+	List<MaxPartQtyPerKitVO> getAllMaxPartQtyPerKit(Long orgId, Long emitterId, Long flowId, String partNumber);
 
 	List<IssueRequestVO> getIssueRequest(Long emitterId, String warehouseLocation, Long orgId, LocalDate startDate,
 			LocalDate endDate, Long warehouseLoacationId);
