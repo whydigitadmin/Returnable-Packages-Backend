@@ -18,6 +18,7 @@ import com.whydigit.efit.entity.EmitterOutwardVO;
 import com.whydigit.efit.entity.FlowVO;
 import com.whydigit.efit.entity.InwardVO;
 import com.whydigit.efit.entity.IssueRequestVO;
+import com.whydigit.efit.entity.MaxPartQtyPerKitVO;
 import com.whydigit.efit.entity.VwEmitterInwardVO;
 import com.whydigit.efit.exception.ApplicationException;
 
@@ -66,5 +67,7 @@ public interface EmitterService {
 			Long warehouseLocationId);
 	
 	Set<Object[]>getEmitterByWarehouseId(Long orgId,Long warehouseId);
+
+	List<MaxPartQtyPerKitVO> getAllMaxPartQtyPerKit(Long orgId);
 
 }
