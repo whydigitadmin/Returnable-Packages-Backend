@@ -27,7 +27,8 @@ public interface EmitterService {
 
 	IssueRequestVO createIssueRequest(IssueRequestDTO issueRequestDTO) throws ApplicationException;
 
-	public List<IssueRequestVO> getIssueRequest(Long emitterId, Long orgId, LocalDate startDate, LocalDate endDate);
+//	public List<IssueRequestVO> getIssueRequest(Long emitterId, Long orgId, LocalDate startDate, LocalDate endDate,
+//			Long warehouseLocationId, String warehouseLocation);
 
 	List<EmitterAddressDTO> getEmitterAddress(Long orgId);
 
@@ -69,5 +70,12 @@ public interface EmitterService {
 	Set<Object[]>getEmitterByWarehouseId(Long orgId,Long warehouseId);
 
 	List<MaxPartQtyPerKitVO> getAllMaxPartQtyPerKit(Long orgId);
+
+	List<IssueRequestVO> getIssueRequest(Long emitterId, String warehouseLocation, Long orgId, LocalDate startDate,
+			LocalDate endDate, Long warehouseLoacationId);
+
+	
+
+	
 
 }

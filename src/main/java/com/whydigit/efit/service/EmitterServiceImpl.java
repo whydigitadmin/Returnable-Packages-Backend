@@ -128,6 +128,8 @@ public class EmitterServiceImpl implements EmitterService {
 		issueRequestVO.setFlowName(flowVO.getFlowName());
 		issueRequestVO.setIssueItemVO(issueItemVO);
 		issueRequestVO.setTotalIssueItem(issueItemVO.size());
+		issueRequestVO.setWarehouseLocationId(issueRequestRepo.findWarehouseLocationId(issueRequestDTO.getFlowTo()));
+		issueRequestVO.setWarehouseLocation(issueRequestRepo.findWarehouseLocation(issueRequestDTO.getFlowTo()));
 		issueRequestVO = issueRequestRepo.save(issueRequestVO);
 		return issueRequestVO;
 	}
@@ -162,7 +164,7 @@ public class EmitterServiceImpl implements EmitterService {
 	}
 
 	@Override
-	public List<IssueRequestVO> getIssueRequest(Long emitterId, Long orgId, LocalDate startDate, LocalDate endDate) {
+	public List<IssueRequestVO> getIssueRequest(Long emitterId,String warehouseLocation, Long orgId, LocalDate startDate, LocalDate endDate,Long warehouseLocationId) {
 
 		return issueRequestRepo.findAll(new Specification<IssueRequestVO>() {
 
@@ -180,6 +182,12 @@ public class EmitterServiceImpl implements EmitterService {
 					predicates.add(criteriaBuilder.between(root.get("requestedDate"),
 							LocalDateTime.of(startDate, LocalTime.MIDNIGHT),
 							LocalDateTime.of(endDate, LocalTime.MIDNIGHT)));
+				} 
+				if (StringUtils.isNoneBlank(warehouseLocation)) {
+					predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("WarehouseLocation"), warehouseLocation)));
+				}
+				if (ObjectUtils.isNotEmpty(warehouseLocationId)) {
+					predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("warehouseLocationId"), warehouseLocationId)));
 				}
 				return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
 			}
