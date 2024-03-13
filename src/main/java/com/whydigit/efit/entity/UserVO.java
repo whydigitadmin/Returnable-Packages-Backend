@@ -44,9 +44,6 @@ public class UserVO {
 	private String accessWarehouse;
 	private String accessFlowId;
 	private Long pNo;
-	
-
-
 	private boolean isActive;
 	private LocalDateTime lastLogin;
 	@Enumerated(EnumType.STRING)
