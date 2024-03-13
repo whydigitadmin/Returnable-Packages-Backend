@@ -33,7 +33,7 @@ public interface FlowRepo extends JpaRepository<FlowVO, Long> {
 	@Query(nativeQuery = true, value = "select a.emitter_id,a.emitter from flow a where a.org_id=?1 and a.warehouse_id=?2 group by a.emitter_id,a.emitter")
 	Set<Object[]> findEmitterByWarehouseId(Long orgId, Long warehouseId);
 
-	@Query(value = "select a.warehouse_location from warehouse a where a.warehosue_id=?1", nativeQuery = true)
+	@Query(value = "select a.warehouse_location from warehouse a where a.warehouse_id=?1", nativeQuery = true)
 	String getWarehouseLocationByLocationId(Long warehouseId);
 
 	@Query(value = "select a.display_name from customer a where a.id=?1", nativeQuery = true)
