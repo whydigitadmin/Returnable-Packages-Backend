@@ -35,6 +35,7 @@ import com.whydigit.efit.dto.IssueRequestItemApprovelDTO;
 import com.whydigit.efit.dto.IssueRequestQtyApprovelDTO;
 import com.whydigit.efit.dto.IssueRequestType;
 import com.whydigit.efit.dto.Role;
+import com.whydigit.efit.entity.AssetGroupVO;
 import com.whydigit.efit.entity.CustomersVO;
 import com.whydigit.efit.entity.EmitterInwardVO;
 import com.whydigit.efit.entity.EmitterOutwardVO;
@@ -501,7 +502,33 @@ public class EmitterServiceImpl implements EmitterService {
 
 	@Override
 	public List<MaxPartQtyPerKitVO> getAllMaxPartQtyPerKit(Long orgId, Long emitterId, Long flowId, String partNo) {
-		return maxPartQtyPerKitRepo.findMaxPartQtyPerKitByOrgId(orgId);
+	    List<MaxPartQtyPerKitVO> maxPartQtyPerKitVO;
+	    
+	    maxPartQtyPerKitVO = maxPartQtyPerKitRepo.findAll(new Specification<MaxPartQtyPerKitVO>() {
+	        @Override
+	        public Predicate toPredicate(Root<MaxPartQtyPerKitVO> root, CriteriaQuery<?> query,
+	                                     CriteriaBuilder criteriaBuilder) {
+	            List<Predicate> predicates = new ArrayList<>();
+	            if (ObjectUtils.isNotEmpty(orgId)) {
+	                predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("orgId"), orgId)));
+	            }
+	            if (ObjectUtils.isNotEmpty(emitterId)) { // Corrected from orgId to emitterId
+	                predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("emitterId"), emitterId)));
+	            }
+	            if (ObjectUtils.isNotEmpty(flowId)) { // Corrected from orgId to flowId
+	                predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("flowId"), flowId)));
+	            }
+	            if (StringUtils.isNotBlank(partNo)) {
+	                predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("partNo"), partNo)));
+	            }
+	            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+	        }
+	    });
+	    return maxPartQtyPerKitVO;
 	}
 
-}
+		
+
+	}
+
+
