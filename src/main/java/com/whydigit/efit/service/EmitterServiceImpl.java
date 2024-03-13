@@ -70,10 +70,9 @@ public class EmitterServiceImpl implements EmitterService {
 
 	@Autowired
 	FlowRepo flowRepo;
-	
+
 	@Autowired
 	VwEmitterInwardRepo vwEmitterInwardRepo;
-	
 
 	@Override
 	public IssueRequestVO createIssueRequest(IssueRequestDTO issueRequestDTO) throws ApplicationException {
@@ -87,15 +86,13 @@ public class EmitterServiceImpl implements EmitterService {
 			getIssueItemVOFromIssueRequestDTO(issueItemDTO, issueRequestVO, issueItem);
 			if (StringUtils.isBlank(issueRequestDTO.getIrType().name())) {
 				throw new ApplicationException("Invalid issue request type");
-			} 
-				else if (issueRequestDTO.getIrType().equals(IssueRequestType.IR_KIT)) {
+			} else if (issueRequestDTO.getIrType().equals(IssueRequestType.IR_KIT)) {
 //				FlowDetailVO flowDetailVO = flowVO.getFlowDetailVO().stream()
 //						.filter(fd -> StringUtils.equalsIgnoreCase(fd.getKitName(), issueItemDTO.getKitName()))
 //						.findFirst().orElseThrow(() -> new ApplicationException("Flow not Match with kit"));
 //				issueItem.setPartName(flowDetailVO.getPartName());
 //				issueItem.setPartNo(flowDetailVO.getPartNumber());
-			} 
-			else if (issueRequestDTO.getIrType().equals(IssueRequestType.IR_PART)) {
+			} else if (issueRequestDTO.getIrType().equals(IssueRequestType.IR_PART)) {
 				FlowDetailVO flowDetailVO = flowVO.getFlowDetailVO().stream()
 						.filter(fd -> StringUtils.equalsIgnoreCase(fd.getPartNumber(), issueItemDTO.getPartNo()))
 						.findFirst().orElseThrow(() -> new ApplicationException("Flow not Match with part"));
@@ -298,9 +295,7 @@ public class EmitterServiceImpl implements EmitterService {
 		return inwardVO;
 	}
 
-
-	private void getInwardVOFromInwardDTO(InwardDTO inwardDTO,
-			InwardVO inwardVO) {
+	private void getInwardVOFromInwardDTO(InwardDTO inwardDTO, InwardVO inwardVO) {
 		inwardVO.setNetQtyRecieved(inwardDTO.getNetQtyRecieved());
 		inwardVO.setReturnQty(inwardDTO.getReturnQty());
 		inwardVO.setStatus(inwardDTO.getStatus());
@@ -312,7 +307,6 @@ public class EmitterServiceImpl implements EmitterService {
 
 	}
 
-	
 	// emitter outward
 	public List<EmitterOutwardVO> getAllEmitterOutward(Long orgId) {
 		List<EmitterOutwardVO> emitterOutwardVO = new ArrayList<>();
@@ -379,57 +373,54 @@ public class EmitterServiceImpl implements EmitterService {
 
 	@Override
 	public List<VwEmitterInwardVO> getVwEmtInwardByOrgIdAndEmtId(Long orgId, Long emitterId) {
-		return vwEmitterInwardRepo.findAllByOrgId(orgId,emitterId);
+		return vwEmitterInwardRepo.findAllByOrgId(orgId, emitterId);
 	}
-	
+
 	@Override
 	public List<VwEmitterInwardVO> getVwEmtInwardByOrgIdAndEmtIdAndFlow(Long orgId, Long emitterId, Long flowid) {
-		return vwEmitterInwardRepo.findAllByOrgIdFlow(orgId,emitterId,flowid);
+		return vwEmitterInwardRepo.findAllByOrgIdFlow(orgId, emitterId, flowid);
 	}
-	
+
 	@Override
-	public List<VwEmitterInwardVO> getVwEmtInwardByOrgIdAndWarehouse(Long orgId,Long warehouseid) {
-		return vwEmitterInwardRepo.findAllByOrgIdAndWarehosue(orgId,warehouseid);
+	public List<VwEmitterInwardVO> getVwEmtInwardByOrgIdAndWarehouse(Long orgId, Long warehouseid) {
+		return vwEmitterInwardRepo.findAllByOrgIdAndWarehosue(orgId, warehouseid);
 	}
 
 	@Override
 	public Map<String, Object> getAllViewEmitterInward(Long orgId, Long emitterId, Long flowId,
-	        Long warehouseLocationId) {
-	    Map<String, Object> vwEmitterInward = new HashMap<>();
-	    List<VwEmitterInwardVO> vwEmitterInwardVO = vwEmitterInwardRepo.findAll(new Specification<VwEmitterInwardVO>() {
-	        @Override
-	        public Predicate toPredicate(Root<VwEmitterInwardVO> root, CriteriaQuery<?> query,
-	                CriteriaBuilder criteriaBuilder) {
-	            List<Predicate> predicates = new ArrayList<>();
-	            if (ObjectUtils.isNotEmpty(orgId)) {
-	                predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("orgId"), orgId)));
-	            }
-	            if (ObjectUtils.isNotEmpty(emitterId)) {
-	                predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("emitterId"), emitterId)));
-	            }
-	            if (ObjectUtils.isNotEmpty(flowId)) {
-	                predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("flowId"), flowId)));
-	            }
-	            if (ObjectUtils.isNotEmpty(warehouseLocationId)) {
-	                predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("warehouseLocationId"), warehouseLocationId)));
-	            }
-	            return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
-	        }
-	    });
-	    // Further processing based on basicDetailVO if needed
-	    vwEmitterInward.put("vwEmitterInwardVO", vwEmitterInwardVO);
-	    return vwEmitterInward;
+			Long warehouseLocationId) {
+		Map<String, Object> vwEmitterInward = new HashMap<>();
+		List<VwEmitterInwardVO> vwEmitterInwardVO = vwEmitterInwardRepo.findAll(new Specification<VwEmitterInwardVO>() {
+			@Override
+			public Predicate toPredicate(Root<VwEmitterInwardVO> root, CriteriaQuery<?> query,
+					CriteriaBuilder criteriaBuilder) {
+				List<Predicate> predicates = new ArrayList<>();
+				if (ObjectUtils.isNotEmpty(orgId)) {
+					predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("orgId"), orgId)));
+				}
+				if (ObjectUtils.isNotEmpty(emitterId)) {
+					predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("emitterId"), emitterId)));
+				}
+				if (ObjectUtils.isNotEmpty(flowId)) {
+					predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("flowId"), flowId)));
+				}
+				if (ObjectUtils.isNotEmpty(warehouseLocationId)) {
+					predicates.add(criteriaBuilder
+							.and(criteriaBuilder.equal(root.get("warehouseLocationId"), warehouseLocationId)));
+				}
+				return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
+			}
+		});
+		// Further processing based on basicDetailVO if needed
+		vwEmitterInward.put("vwEmitterInwardVO", vwEmitterInwardVO);
+		return vwEmitterInward;
 	}
 
-	
-	//getEmitter by Warehouseid
+	// getEmitter by Warehouseid
 	@Override
 	public Set<Object[]> getEmitterByWarehouseId(Long orgId, Long warehouseId) {
-		
-		return flowRepo.findEmitterByWarehouseId(orgId,warehouseId);
+
+		return flowRepo.findEmitterByWarehouseId(orgId, warehouseId);
 	}
-
-
-
 
 }
