@@ -576,7 +576,7 @@ public class EmitterController extends BaseController {
 	@GetMapping("/maxPartQtyPerKit")
 	public ResponseEntity<ResponseDTO> getAllMaxPartQtyPerKit(@RequestParam(required = false) Long orgId,
 			@RequestParam(required = false) Long emitterId, @RequestParam(required = false) Long flowId,
-			@RequestParam(required = false) String partNo
+			@RequestParam(required = false) String partNumber
 
 	) {
 		String methodName = "getAllMaxPartQtyPerKit()";
@@ -586,7 +586,7 @@ public class EmitterController extends BaseController {
 		ResponseDTO responseDTO = null;
 		List<MaxPartQtyPerKitVO> maxPartQtyPerKitVO= new ArrayList<>();
 		try {
-			maxPartQtyPerKitVO = emitterService.getAllMaxPartQtyPerKit(orgId,emitterId,flowId,partNo);
+			maxPartQtyPerKitVO = emitterService.getAllMaxPartQtyPerKit(orgId,emitterId,flowId,partNumber);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);

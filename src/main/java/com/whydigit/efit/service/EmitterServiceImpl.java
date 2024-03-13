@@ -501,7 +501,7 @@ public class EmitterServiceImpl implements EmitterService {
 	}
 
 	@Override
-	public List<MaxPartQtyPerKitVO> getAllMaxPartQtyPerKit(Long orgId, Long emitterId, Long flowId, String partNo) {
+	public List<MaxPartQtyPerKitVO> getAllMaxPartQtyPerKit(Long orgId, Long emitterId, Long flowId, String partNumber) {
 	    List<MaxPartQtyPerKitVO> maxPartQtyPerKitVO;
 	    
 	    maxPartQtyPerKitVO = maxPartQtyPerKitRepo.findAll(new Specification<MaxPartQtyPerKitVO>() {
@@ -518,8 +518,8 @@ public class EmitterServiceImpl implements EmitterService {
 	            if (ObjectUtils.isNotEmpty(flowId)) { // Corrected from orgId to flowId
 	                predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("flowId"), flowId)));
 	            }
-	            if (StringUtils.isNotBlank(partNo)) {
-	                predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("partNo"), partNo)));
+	            if (StringUtils.isNotBlank(partNumber)) {
+	                predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("partNumber"), partNumber)));
 	            }
 	            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
 	        }
