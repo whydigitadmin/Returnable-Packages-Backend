@@ -31,6 +31,7 @@ import com.whydigit.efit.dto.EmitterAddressDTO;
 import com.whydigit.efit.dto.InwardDTO;
 import com.whydigit.efit.dto.IssueItemDTO;
 import com.whydigit.efit.dto.IssueRequestDTO;
+import com.whydigit.efit.dto.IssueRequestItemApprovelDTO;
 import com.whydigit.efit.dto.IssueRequestQtyApprovelDTO;
 import com.whydigit.efit.dto.IssueRequestType;
 import com.whydigit.efit.dto.Role;
@@ -213,33 +214,11 @@ public class EmitterServiceImpl implements EmitterService {
 		IssueRequestVO issueRequestVO = issueRequestRepo.findById(issueRequestQtyApprovelDTO.getIssueRequestId())
 				.orElseThrow(() -> new ApplicationException("Invalid issueRequest information."));
 		List<MovementStockVO> movementStockVO=new ArrayList<>();
-		issueRequestVO.getIssueItemVO().stream()
-				.filter(item -> item.getId() == issueRequestQtyApprovelDTO.getIssueItemId()).forEach(item -> {
-					List<IssueRequestApprovedVO> issueRequestApprovedVO = item.getIssueRequestApprovedVO();
-					IssueRequestApprovedVO issueRequestApproved = new IssueRequestApprovedVO();
-					issueRequestApproved.setApprovedDate(LocalDateTime.now());
-					issueRequestApproved.setApprovedId(issueRequestQtyApprovelDTO.getApprovedId());
-					issueRequestApproved.setApproverName(issueRequestQtyApprovelDTO.getApproverName());
-					issueRequestApproved.setIssueItemVO(item);
-					issueRequestApproved.setQuantity(issueRequestQtyApprovelDTO.getIssuedQty());
-					int qty = issueRequestApprovedVO.stream().mapToInt(IssueRequestApprovedVO::getQuantity).sum()
-							+ issueRequestQtyApprovelDTO.getIssuedQty();
-					int ct = issueRequestApprovedVO.size() == 0 && qty == item.getKitQty() ? 0 : 1;
-					issueRequestApproved.setIrApprovedId(
-							new StringBuilder(Long.toString(issueRequestQtyApprovelDTO.getIssueRequestId())).append("-")
-									.append(issueRequestQtyApprovelDTO.getIssueItemId()).append("-")
-									.append(issueRequestApprovedVO.size() + ct).toString());
-					item.setIssuedQty(qty);
-					item.setIssueItemStatus(getItemStatus(qty, item.getKitQty()));
-					issueRequestApprovedVO.add(issueRequestApproved);
-					item.setIssueRequestApprovedVO(issueRequestApprovedVO);
-					if (ObjectUtils.isEmpty(item.getInwardVO())) {
-						InwardVO inwardVO = new InwardVO();
-						inwardVO.setIssueItemVO(item);
-						item.setInwardVO(inwardVO);
-					}
-					movementStockVO.add(getMovementStock(item,issueRequestQtyApprovelDTO.getIssuedQty(),MovementType.INWARD));
-				});
+		CustomersVO customersVO=customersRepo.findById(issueRequestVO.getEmitterId()).orElseThrow(()-> new ApplicationException("Custimer not found."));
+		for (IssueRequestItemApprovelDTO irItem : issueRequestQtyApprovelDTO.getIssueRequestItemApprovelDTO()) {
+			setIssueRequestItemQTY(issueRequestQtyApprovelDTO, issueRequestVO, movementStockVO, customersVO,
+					irItem.getIssuedQty(), irItem.getIssueItemId());
+		}
 		if (issueRequestVO.getIssueItemVO().stream()
 				.allMatch(flag -> flag.getIssueItemStatus() > EmitterConstant.ISSUE_REQUEST_ITEM_STATUS_INPROGRESS)) {
 			issueRequestVO.setIssueStatus(EmitterConstant.ISSUE_REQUEST_STATUS_ISSUED);
@@ -258,10 +237,41 @@ public class EmitterServiceImpl implements EmitterService {
 		return issueRequestVO;
 	}
 
-	private MovementStockVO getMovementStock(IssueItemVO issueItemVO,int issuedQty,MovementType type){
+	private void setIssueRequestItemQTY(IssueRequestQtyApprovelDTO issueRequestQtyApprovelDTO,
+			IssueRequestVO issueRequestVO, List<MovementStockVO> movementStockVO, CustomersVO customersVO,int itemQTY,long itemId) {
+		issueRequestVO.getIssueItemVO().stream()
+				.filter(item -> item.getId() == itemId).forEach(item -> {
+					List<IssueRequestApprovedVO> issueRequestApprovedVO = item.getIssueRequestApprovedVO();
+					IssueRequestApprovedVO issueRequestApproved = new IssueRequestApprovedVO();
+					issueRequestApproved.setApprovedDate(LocalDateTime.now());
+					issueRequestApproved.setApprovedId(issueRequestQtyApprovelDTO.getApprovedId());
+					issueRequestApproved.setApproverName(issueRequestQtyApprovelDTO.getApproverName());
+					issueRequestApproved.setIssueItemVO(item);
+					issueRequestApproved.setQuantity(itemQTY);
+					int qty = issueRequestApprovedVO.stream().mapToInt(IssueRequestApprovedVO::getQuantity).sum()
+							+ itemQTY;
+					int ct = issueRequestApprovedVO.size() == 0 && qty == item.getKitQty() ? 0 : 1;
+					issueRequestApproved.setIrApprovedId(
+							new StringBuilder(Long.toString(issueRequestQtyApprovelDTO.getIssueRequestId())).append("-")
+									.append(itemId).append("-")
+									.append(issueRequestApprovedVO.size() + ct).toString());
+					item.setIssuedQty(qty);
+					item.setIssueItemStatus(getItemStatus(qty, item.getKitQty()));
+					issueRequestApprovedVO.add(issueRequestApproved);
+					item.setIssueRequestApprovedVO(issueRequestApprovedVO);
+					if (ObjectUtils.isEmpty(item.getInwardVO())) {
+						InwardVO inwardVO = new InwardVO();
+						inwardVO.setIssueItemVO(item);
+						item.setInwardVO(inwardVO);
+					}
+					movementStockVO.add(getMovementStock(item,itemQTY,MovementType.INWARD,customersVO));
+				});
+	}
+
+	private MovementStockVO getMovementStock(IssueItemVO issueItemVO,int issuedQty,MovementType type,CustomersVO customersVO){
 		IssueRequestVO issueRequestVO=issueItemVO.getIssueRequestVO();
 		KitVO kitVO = kitRepo.findById(issueItemVO.getKitName()).get();
-		CustomersVO customersVO=customersRepo.findById(issueRequestVO.getEmitterId()).get();
+//		CustomersVO customersVO=customersRepo.findById(issueRequestVO.getEmitterId()).get();
 		MovementStockVO movementStock = new MovementStockVO();
 		movementStock.setEmitterId(issueRequestVO.getEmitterId());
 		movementStock.setEmitterName(customersVO.getDisplayName());
@@ -330,8 +340,10 @@ public class EmitterServiceImpl implements EmitterService {
 			if (ObjectUtils.isNotEmpty(inwardDTO.getIssueItemId())) {
 				issueItemVO = issueItemRepo.findById(inwardDTO.getIssueItemId())
 						.orElseThrow(() -> new ApplicationException(" information not found."));
+				CustomersVO customersVO = customersRepo.findById(issueItemVO.getIssueRequestVO().getEmitterId())
+						.orElseThrow(() -> new ApplicationException("Custimer not found."));
 				movementStockVO = getMovementStock(issueItemVO, (int) inwardDTO.getNetQtyRecieved(),
-						MovementType.OUTWARD);
+						MovementType.OUTWARD, customersVO);
 			}
 
 		} else {
