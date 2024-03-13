@@ -20,7 +20,7 @@ private long id;
 	private long emitterId;
 	private long partNumber;
 	private long flowId;
-	private long kitId;
+	private String kitId;
 	private int maxPartQty;
 }
 
