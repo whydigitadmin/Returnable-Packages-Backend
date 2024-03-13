@@ -45,6 +45,7 @@ import com.whydigit.efit.entity.IssueItemVO;
 import com.whydigit.efit.entity.IssueRequestApprovedVO;
 import com.whydigit.efit.entity.IssueRequestVO;
 import com.whydigit.efit.entity.KitVO;
+import com.whydigit.efit.entity.MaxPartQtyPerKitVO;
 import com.whydigit.efit.entity.MovementStockItemVO;
 import com.whydigit.efit.entity.MovementStockVO;
 import com.whydigit.efit.entity.MovementType;
@@ -58,6 +59,7 @@ import com.whydigit.efit.repo.InwardRepo;
 import com.whydigit.efit.repo.IssueItemRepo;
 import com.whydigit.efit.repo.IssueRequestRepo;
 import com.whydigit.efit.repo.KitRepo;
+import com.whydigit.efit.repo.MaxPartQtyPerKitRepo;
 import com.whydigit.efit.repo.MovementStockRepo;
 import com.whydigit.efit.repo.UserRepo;
 import com.whydigit.efit.repo.VwEmitterInwardRepo;
@@ -85,8 +87,9 @@ public class EmitterServiceImpl implements EmitterService {
 	VwEmitterInwardRepo vwEmitterInwardRepo;
 	
 	@Autowired
+	MaxPartQtyPerKitRepo maxPartQtyPerKitRepo;
+	@Autowired
 	CustomersRepo customersRepo;
-
 	@Autowired
 	MovementStockRepo movementStockRepo;
 	
@@ -486,6 +489,11 @@ public class EmitterServiceImpl implements EmitterService {
 	public Set<Object[]> getEmitterByWarehouseId(Long orgId, Long warehouseId) {
 
 		return flowRepo.findEmitterByWarehouseId(orgId, warehouseId);
+	}
+
+	@Override
+	public List<MaxPartQtyPerKitVO> getAllMaxPartQtyPerKit(Long orgId) {
+		return maxPartQtyPerKitRepo.findMaxPartQtyPerKitByOrgId(orgId);
 	}
 
 }
