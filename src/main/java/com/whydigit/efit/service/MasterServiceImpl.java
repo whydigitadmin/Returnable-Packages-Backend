@@ -407,7 +407,7 @@ public class MasterServiceImpl implements MasterService {
 				.destination(flowDTO.getDestination()).orgId(flowDTO.getOrgId()).warehouseId(flowDTO.getWarehouseId()).flowDetailVO(flowDetailVOList).build();
 		flowDetailVOList = flowDTO.getFlowDetailDTO().stream()
 				.map(fdDTO -> FlowDetailVO.builder().active(fdDTO.isActive()).cycleTime(fdDTO.getCycleTime()).emitterId(flowDTO.getEmitterId()).orgId(flowDTO.getOrgId())
-						.partName(fdDTO.getPartName()).kitName(fdDTO.getKitName()).partNumber(fdDTO.getPartNumber()).flowVO(flowVO)
+						.partName(fdDTO.getPartName()).kitName(fdDTO.getKitName()).partNumber(fdDTO.getPartNumber()).emitter(flowRepo.findEmiterbyId(flowVO.getEmitterId())).flowVO(flowVO)
 						.build())
 				.collect(Collectors.toList());
 		flowVO.setFlowDetailVO(flowDetailVOList);

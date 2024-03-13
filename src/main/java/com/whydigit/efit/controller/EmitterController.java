@@ -572,8 +572,13 @@ public class EmitterController extends BaseController {
 		}
 		return allEmitter;
 	}
+
 	@GetMapping("/maxPartQtyPerKit")
-	public ResponseEntity<ResponseDTO> getAllMaxPartQtyPerKit(@RequestParam(required = false) Long orgId) {
+	public ResponseEntity<ResponseDTO> getAllMaxPartQtyPerKit(@RequestParam(required = false) Long orgId,
+			@RequestParam(required = false) Long emitterId, @RequestParam(required = false) Long flowId,
+			@RequestParam(required = false) String partNo
+
+	) {
 		String methodName = "getAllMaxPartQtyPerKit()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -581,7 +586,7 @@ public class EmitterController extends BaseController {
 		ResponseDTO responseDTO = null;
 		List<MaxPartQtyPerKitVO> maxPartQtyPerKitVO= new ArrayList<>();
 		try {
-			maxPartQtyPerKitVO = emitterService.getAllMaxPartQtyPerKit(orgId);
+			maxPartQtyPerKitVO = emitterService.getAllMaxPartQtyPerKit(orgId,emitterId,flowId,partNo);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
