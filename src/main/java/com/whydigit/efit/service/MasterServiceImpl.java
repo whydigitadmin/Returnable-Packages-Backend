@@ -965,7 +965,7 @@ public class MasterServiceImpl implements MasterService {
 	}
 
 	@Override
-	public List<KitResponseDTO> loadKitQty(Long irItemId, Long kitQty) {
+	public int loadKitQty(Long irItemId, Long kitQty) {
 		return issueItemRepo.loadKitQty(irItemId,kitQty);
 	}
 	
