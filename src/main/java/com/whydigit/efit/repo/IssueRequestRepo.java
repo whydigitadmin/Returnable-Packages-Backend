@@ -25,7 +25,7 @@ public interface IssueRequestRepo
 	int cancelIssueRequestByIssueRequestId(Long issueRequestId, int issueRequestStatusCancelled);
 
 	@Query(value = "select b.warehouse_id from  flow b where b.id=?1 group BY  b.warehouse_id",nativeQuery = true)
-	long findWarehouseLocationId(Long flowTo);
+	long findWarehouseLocationId(Long flowTo); 
 
 	@Query(value = "select b.warehouse_location from  flow b where b.id=?1 group BY  b.warehouse_location",nativeQuery = true)
 	String findWarehouseLocation(Long flowTo);
