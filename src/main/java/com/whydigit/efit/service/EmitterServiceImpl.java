@@ -35,7 +35,6 @@ import com.whydigit.efit.dto.IssueRequestItemApprovelDTO;
 import com.whydigit.efit.dto.IssueRequestQtyApprovelDTO;
 import com.whydigit.efit.dto.IssueRequestType;
 import com.whydigit.efit.dto.Role;
-import com.whydigit.efit.entity.AssetGroupVO;
 import com.whydigit.efit.entity.CustomersVO;
 import com.whydigit.efit.entity.EmitterInwardVO;
 import com.whydigit.efit.entity.EmitterOutwardVO;
@@ -50,6 +49,7 @@ import com.whydigit.efit.entity.MaxPartQtyPerKitVO;
 import com.whydigit.efit.entity.MovementStockItemVO;
 import com.whydigit.efit.entity.MovementStockVO;
 import com.whydigit.efit.entity.MovementType;
+import com.whydigit.efit.entity.OutwardView;
 import com.whydigit.efit.entity.VwEmitterInwardVO;
 import com.whydigit.efit.exception.ApplicationException;
 import com.whydigit.efit.repo.CustomersRepo;
@@ -62,6 +62,7 @@ import com.whydigit.efit.repo.IssueRequestRepo;
 import com.whydigit.efit.repo.KitRepo;
 import com.whydigit.efit.repo.MaxPartQtyPerKitRepo;
 import com.whydigit.efit.repo.MovementStockRepo;
+import com.whydigit.efit.repo.OutwardViewRepo;
 import com.whydigit.efit.repo.UserRepo;
 import com.whydigit.efit.repo.VwEmitterInwardRepo;
 
@@ -96,6 +97,9 @@ public class EmitterServiceImpl implements EmitterService {
 	
 	@Autowired
 	KitRepo kitRepo;
+	
+	@Autowired
+	OutwardViewRepo outwardViewRepo;
 	
 	@Override
 	public IssueRequestVO createIssueRequest(IssueRequestDTO issueRequestDTO) throws ApplicationException {
@@ -242,6 +246,7 @@ public class EmitterServiceImpl implements EmitterService {
 		else {
 			issueRequestVO.setIssueStatus(EmitterConstant.ISSUE_REQUEST_STATUS_PENDING);
 		}
+		issueItemRepo.updateApptovedStatus(issueRequestQtyApprovelDTO.getIssueRequestId());
 		issueRequestVO= issueRequestRepo.save(issueRequestVO);
 		movementStockRepo.saveAll(movementStockVO);
 		return issueRequestVO;
@@ -361,7 +366,7 @@ public class EmitterServiceImpl implements EmitterService {
 		}
 		inwardVO.setIssueItemVO(issueItemVO); // Mapping
 		getInwardVOFromInwardDTO(inwardDTO, inwardVO);
-		issueItemVO.setApprovedStatus(true);
+//		issueItemVO.setApprovedStatus(true);
 		inwardVO = inwardRepo.save(inwardVO);
 		EmitterOutwardVO outwardVO = new EmitterOutwardVO();
 		outwardVO = emitterOutwardRepo.findByIssueItemId(issueItemVO.getId()).orElse(new EmitterOutwardVO());
@@ -526,6 +531,19 @@ public class EmitterServiceImpl implements EmitterService {
 	    });
 	    maxPrtQty.put("MaxPartQtyPerKitVO", maxPartQtyPerKitVO);
 		return maxPrtQty;
+	}
+
+	@Override
+	public List<OutwardView> getAllEmitterOutwardView(Long orgId) {
+		List<OutwardView> outwardView = new ArrayList<>();
+		if (ObjectUtils.isNotEmpty(orgId)) {
+			LOGGER.info("Successfully Received  EmitterOutward Information BY OrgId : {}", orgId);
+			outwardView = outwardViewRepo.getOutwardViewByOrgId(orgId);
+		} else {
+			LOGGER.info("Successfully Received  EmitterOutward Information For All OrgId.");
+			outwardView = outwardViewRepo.findAll();
+		}
+		return outwardView;
 	}
 
 		
