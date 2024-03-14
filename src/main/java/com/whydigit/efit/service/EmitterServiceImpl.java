@@ -35,7 +35,6 @@ import com.whydigit.efit.dto.IssueRequestItemApprovelDTO;
 import com.whydigit.efit.dto.IssueRequestQtyApprovelDTO;
 import com.whydigit.efit.dto.IssueRequestType;
 import com.whydigit.efit.dto.Role;
-import com.whydigit.efit.entity.AssetGroupVO;
 import com.whydigit.efit.entity.CustomersVO;
 import com.whydigit.efit.entity.EmitterInwardVO;
 import com.whydigit.efit.entity.EmitterOutwardVO;
@@ -247,6 +246,7 @@ public class EmitterServiceImpl implements EmitterService {
 		else {
 			issueRequestVO.setIssueStatus(EmitterConstant.ISSUE_REQUEST_STATUS_PENDING);
 		}
+		issueItemRepo.updateApptovedStatus(issueRequestQtyApprovelDTO.getIssueRequestId());
 		issueRequestVO= issueRequestRepo.save(issueRequestVO);
 		movementStockRepo.saveAll(movementStockVO);
 		return issueRequestVO;
@@ -366,7 +366,7 @@ public class EmitterServiceImpl implements EmitterService {
 		}
 		inwardVO.setIssueItemVO(issueItemVO); // Mapping
 		getInwardVOFromInwardDTO(inwardDTO, inwardVO);
-		issueItemVO.setApprovedStatus(true);
+//		issueItemVO.setApprovedStatus(true);
 		inwardVO = inwardRepo.save(inwardVO);
 		EmitterOutwardVO outwardVO = new EmitterOutwardVO();
 		outwardVO = emitterOutwardRepo.findByIssueItemId(issueItemVO.getId()).orElse(new EmitterOutwardVO());
