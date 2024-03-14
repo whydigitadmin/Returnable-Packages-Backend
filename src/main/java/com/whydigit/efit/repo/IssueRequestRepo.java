@@ -10,7 +10,6 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
-import com.whydigit.efit.dto.KitResponseDTO;
 import com.whydigit.efit.entity.IssueRequestVO;
 
 public interface IssueRequestRepo
