@@ -3,12 +3,10 @@ package com.whydigit.efit.dto;
 import java.time.LocalDateTime;
 import java.util.Date;
 
-import javax.persistence.Embedded;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 
 import com.whydigit.efit.entity.AccessRightsVO;
-import com.whydigit.efit.entity.CustomersVO;
 import com.whydigit.efit.entity.UserAddressVO;
 
 import lombok.AllArgsConstructor;
