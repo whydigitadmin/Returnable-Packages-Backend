@@ -24,10 +24,10 @@ public interface IssueRequestRepo
 	@Query(value = "update IssueRequestVO ir set ir.issueStatus=?2 where ir.id=?1")
 	int cancelIssueRequestByIssueRequestId(Long issueRequestId, int issueRequestStatusCancelled);
 
-	@Query(value = "select b.warehouse_id from issue_request a , flow b where a.flow_to=b.id and a.flow_to=?1 group BY  b.warehouse_id",nativeQuery = true)
+	@Query(value = "select b.warehouse_id from  flow b where b.id=?1 group BY  b.warehouse_id",nativeQuery = true)
 	long findWarehouseLocationId(Long flowTo);
 
-	@Query(value = "select b.warehouse_location from issue_request a , flow b where a.flow_to=b.id and a.flow_to=?1 group BY  b.warehouse_location",nativeQuery = true)
+	@Query(value = "select b.warehouse_location from  flow b where b.id=32 group BY  b.warehouse_location",nativeQuery = true)
 	String findWarehouseLocation(Long flowTo);
 	
 }
