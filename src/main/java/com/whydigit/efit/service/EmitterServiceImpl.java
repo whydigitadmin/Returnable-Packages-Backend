@@ -228,7 +228,7 @@ public class EmitterServiceImpl implements EmitterService {
 		IssueRequestVO issueRequestVO = issueRequestRepo.findById(issueRequestQtyApprovelDTO.getIssueRequestId())
 				.orElseThrow(() -> new ApplicationException("Invalid issueRequest information."));
 		List<MovementStockVO> movementStockVO=new ArrayList<>();
-		CustomersVO customersVO=customersRepo.findById(issueRequestVO.getEmitterId()).orElseThrow(()-> new ApplicationException("Custimer not found."));
+		CustomersVO customersVO=customersRepo.findById(issueRequestVO.getEmitterId()).orElseThrow(()-> new ApplicationException("Emitter not found for this issueRequestId."));
 		for (IssueRequestItemApprovelDTO irItem : issueRequestQtyApprovelDTO.getIssueRequestItemApprovelDTO()) {
 			setIssueRequestItemQTY(issueRequestQtyApprovelDTO, issueRequestVO, movementStockVO, customersVO,
 					irItem.getIssuedQty(), irItem.getIssueItemId());
