@@ -31,11 +31,13 @@ import com.whydigit.efit.dto.EmitterAddressDTO;
 import com.whydigit.efit.dto.InwardDTO;
 import com.whydigit.efit.dto.IssueRequestDTO;
 import com.whydigit.efit.dto.IssueRequestQtyApprovelDTO;
+import com.whydigit.efit.dto.OutwardKitDetailsDTO;
 import com.whydigit.efit.dto.ResponseDTO;
 import com.whydigit.efit.entity.EmitterInwardVO;
 import com.whydigit.efit.entity.EmitterOutwardVO;
 import com.whydigit.efit.entity.InwardVO;
 import com.whydigit.efit.entity.IssueRequestVO;
+import com.whydigit.efit.entity.OutwardKitDetailsVO;
 import com.whydigit.efit.entity.OutwardView;
 import com.whydigit.efit.entity.VwEmitterInwardVO;
 import com.whydigit.efit.service.EmitterService;
@@ -628,4 +630,32 @@ public class EmitterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 
 	}
+	
+	@PostMapping("/updateOutwardKitQty")
+	public ResponseEntity<ResponseDTO> updateOutwardKitQty(@RequestBody OutwardKitDetailsDTO OutwardKitDetailsDTO) {
+		String methodName = "updateOutwardKitQty()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		OutwardKitDetailsVO outwardKitDetailsVO = new OutwardKitDetailsVO();
+		try {
+			outwardKitDetailsVO = emitterService.updateOutwardKitQty(OutwardKitDetailsDTO);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(CommonConstant.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE,
+					EmitterConstant.UPDATE_OUTWARD_KIT_QUANTITY_SUCCESS_MESSAGE);
+			responseObjectsMap.put(EmitterConstant.ISSUE_REQUEST_VO, outwardKitDetailsVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap,
+					EmitterConstant.UPDATE_OUTWARD_KIT_QUANTITY_FAILED_MESSAGE, errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
 }

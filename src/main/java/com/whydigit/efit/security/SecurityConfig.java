@@ -40,7 +40,7 @@ public class SecurityConfig {
 						"/api/warehouse/getWarehouseLocationByOrgID", "/api/warehouse/updateCreateWarehouse",
 						"/api/warehouse/view", "/api/warehouse/getWarehouseById/{id}", "/api/partStudy/basicDetails",
 						"/api/partStudy/d}/searchPartStudyById", "/api/partStudy/packageDetail",
-						"/api/partStudy/packageDetail/{id}", "/api/partStudy/logistics","/api/company/setup",
+						"/api/partStudy/packageDetail/{id}", "/api/partStudy/logistics","/api/company/setup","api/emitter/updateOutwardKitQty",
 						"/api/partStudy/logistics/{id}", "/api/partStudy/**", "/api/inwardSku/**",
 						"/api/partStudy/stockDetail/{id}", "/api/emitter/createIssueRequest", "/api/emitter/*",
 						"/api/auth/createUser", "/api/master/flow/getFlowByIds", "/api/master/getAllFlowName",

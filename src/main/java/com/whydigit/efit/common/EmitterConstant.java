@@ -22,4 +22,6 @@ public class EmitterConstant {
 	public static final int ISSUE_REQUEST_STATUS_CLOSE = 4;
 	public static final String ISSUE_REQUEST_CANCEL_SUCCESS_MESSAGE = "Issue request cancel successfully.";
 	public static final String ISSUE_REQUEST_CANCEL_FAILED_MESSAGE = "Issue request cancel failed.";
+	public static final String UPDATE_OUTWARD_KIT_QUANTITY_SUCCESS_MESSAGE = "Outward kit qty successfully";
+	public static final String UPDATE_OUTWARD_KIT_QUANTITY_FAILED_MESSAGE = "Outward kit qty failed.";
 }
