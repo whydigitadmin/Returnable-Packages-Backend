@@ -42,7 +42,7 @@ public class IssueItemVO {
 	private int balanceQty;
 	private String remark;
 	private LocalDateTime reachedDate;
-	private boolean approvedStatus;
+	private Boolean approvedStatus;
 
 	@ManyToOne
 	@JoinColumn(name = "issue_request_id")
