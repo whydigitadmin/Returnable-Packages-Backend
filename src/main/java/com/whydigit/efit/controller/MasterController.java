@@ -1546,5 +1546,31 @@ public class MasterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
+	
+	@PutMapping("/loadKitQty")
+	public ResponseEntity<ResponseDTO> loadKitQty(@RequestParam(required = false) Long irItemId,@RequestParam (required = false) Long kitQty) {
+		String methodName = "loadKitQty()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		int kitResponseDTO=0;
+		try {
+			kitResponseDTO = masterService.loadKitQty(irItemId,kitQty);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "KitQty information Update successfully");
+			responseObjectsMap.put("irItemId", irItemId);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "KitQty information Update failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
 
 }

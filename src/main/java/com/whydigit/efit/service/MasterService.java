@@ -174,4 +174,6 @@ public interface MasterService {
 
 	Set<Object[]> getFlowNameByOrgID(Long orgId, Long emitterId);
 
+	int loadKitQty(Long irItemId, Long kitQty);
+
 }

@@ -1,11 +1,14 @@
 package com.whydigit.efit.repo;
 
+import java.util.List;
+
 import javax.transaction.Transactional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
+import com.whydigit.efit.dto.KitResponseDTO;
 import com.whydigit.efit.entity.IssueItemVO;
 
 public interface IssueItemRepo extends JpaRepository<IssueItemVO, Long> {
@@ -18,5 +21,10 @@ public interface IssueItemRepo extends JpaRepository<IssueItemVO, Long> {
 	@Transactional
 	@Query(value = "update issue_item itm set itm.issue_item_status=?2 where itm.issue_request_id=?1", nativeQuery = true)
 	int cancelIssueRequestByIssueRequestId(Long issueRequestId, int issueRequestItemStatusCancelled);
+
+	@Modifying
+	@Transactional
+	@Query(value = "update issue_item a set a.kit_qty=?2 where a.id=?1", nativeQuery = true)
+	int loadKitQty(Long irItemId, Long kitQty);
 
 }

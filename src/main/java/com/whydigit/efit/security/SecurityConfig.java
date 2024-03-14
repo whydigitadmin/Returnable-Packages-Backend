@@ -36,7 +36,7 @@ public class SecurityConfig {
 						"/swagger-ui.html", "/swagger-ui/*", "/api/auth/signup", "/api/auth/login", "/api/auth/logout",
 						"/api/auth/user/{userId}", "/api/auth/getRefreshToken", "/api/basicSetting/companyInfo",
 						"/api/warehouse/updateWarehose", "/api/master/asset", "/api/warehouse/view/{id}",
-						"/api/usersdetails/view", "/api/master/**", "​/api​/master​/addAddress",
+						"/api/usersdetails/view", "/api/master/**", "​/api​/master​/addAddress","api/master/loadKitQty",
 						"/api/warehouse/getWarehouseLocationByOrgID", "/api/warehouse/updateCreateWarehouse",
 						"/api/warehouse/view", "/api/warehouse/getWarehouseById/{id}", "/api/partStudy/basicDetails",
 						"/api/partStudy/d}/searchPartStudyById", "/api/partStudy/packageDetail",
