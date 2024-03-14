@@ -366,13 +366,16 @@ public class EmitterServiceImpl implements EmitterService {
 		}
 		inwardVO.setIssueItemVO(issueItemVO); // Mapping
 		getInwardVOFromInwardDTO(inwardDTO, inwardVO);
+
 //		issueItemVO.setApprovedStatus(true);
+
 		inwardVO = inwardRepo.save(inwardVO);
 		EmitterOutwardVO outwardVO = new EmitterOutwardVO();
 		outwardVO = emitterOutwardRepo.findByIssueItemId(issueItemVO.getId()).orElse(new EmitterOutwardVO());
 		outwardVO.setIssueItemVO(issueItemVO);
 		outwardVO.setActive(true);
 		outwardVO.setOrgId(issueItemVO.getIssueRequestVO().getOrgId());
+		
 		emitterOutwardRepo.save(outwardVO);
 		movementStockRepo.save(movementStockVO);
 		return inwardVO;
@@ -534,9 +537,13 @@ public class EmitterServiceImpl implements EmitterService {
 	}
 
 	@Override
-	public List<OutwardView> getAllEmitterOutwardView(Long orgId) {
+	public List<OutwardView> getAllEmitterOutwardView(Long orgId, Long flowId) {
 		List<OutwardView> outwardView = new ArrayList<>();
-		if (ObjectUtils.isNotEmpty(orgId)) {
+		if(ObjectUtils.isNotEmpty(orgId) && ObjectUtils.isNotEmpty(flowId)) {
+			LOGGER.info("Successfully Received  EmitterOutward Information BY OrgId : {} flowId : {}", orgId,flowId);
+			outwardView = outwardViewRepo.getOutwardViewByOrgIdAndFlowId(orgId,flowId);	
+		}
+		else if (ObjectUtils.isNotEmpty(orgId)) {
 			LOGGER.info("Successfully Received  EmitterOutward Information BY OrgId : {}", orgId);
 			outwardView = outwardViewRepo.getOutwardViewByOrgId(orgId);
 		} else {
