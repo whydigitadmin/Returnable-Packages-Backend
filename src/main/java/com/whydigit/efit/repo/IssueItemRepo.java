@@ -25,6 +25,6 @@ public interface IssueItemRepo extends JpaRepository<IssueItemVO, Long> {
 	@Modifying
 	@Transactional
 	@Query(value = "update issue_item a set a.kit_qty=?2 where a.id=?1", nativeQuery = true)
-	List<KitResponseDTO> loadKitQty(Long irItemId, Long kitQty);
+	int loadKitQty(Long irItemId, Long kitQty);
 
 }
