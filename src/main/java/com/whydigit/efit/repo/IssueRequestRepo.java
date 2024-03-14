@@ -27,7 +27,7 @@ public interface IssueRequestRepo
 	@Query(value = "select b.warehouse_id from  flow b where b.id=?1 group BY  b.warehouse_id",nativeQuery = true)
 	long findWarehouseLocationId(Long flowTo);
 
-	@Query(value = "select b.warehouse_location from  flow b where b.id=32 group BY  b.warehouse_location",nativeQuery = true)
+	@Query(value = "select b.warehouse_location from  flow b where b.id=?1 group BY  b.warehouse_location",nativeQuery = true)
 	String findWarehouseLocation(Long flowTo);
 	
 }
