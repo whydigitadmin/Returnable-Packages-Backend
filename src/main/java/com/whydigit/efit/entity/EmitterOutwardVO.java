@@ -1,5 +1,7 @@
 																																																																																																																																																																																																																																																																											package com.whydigit.efit.entity;
 
+import java.time.LocalDate;
+
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -33,13 +35,13 @@ public class EmitterOutwardVO {
 //	private String partQty;
 //	private String kitNo;
 //	private int kitQty;
-	private String balancedKit;
+	private int balancedKit;
 	private String invoiceNo;
 	private String cycleTime;
 	private String previousDispatch;
 	private String o2oTat;
 	private boolean active;
-
+    private LocalDate inwardConfirmDate;
 	@JsonBackReference
 	@OneToOne
     @JoinColumn(name = "issueItemId")

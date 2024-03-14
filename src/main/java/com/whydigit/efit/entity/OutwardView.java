@@ -27,6 +27,9 @@ public class OutwardView {
 	private String flowNumber;
 	private int netQtyReceived; 
 	private String cycleTime;
-	private String kitReturnQTY;
+	private int kitReturnQTY;
 	private Long orgId;
+    private LocalDate inwardConfirmDate;
+	private long emitterId;
+	private int balanceQTY;
 }
