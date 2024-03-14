@@ -75,7 +75,7 @@ public interface EmitterService {
 	List<IssueRequestVO> getIssueRequest(Long emitterId, String warehouseLocation, Long orgId, LocalDate startDate,
 			LocalDate endDate, Long warehouseLoacationId);
 
-	List<OutwardView> getAllEmitterOutwardView(Long orgId);
+	List<OutwardView> getAllEmitterOutwardView(Long orgId, Long flowId);
 
 	
 
