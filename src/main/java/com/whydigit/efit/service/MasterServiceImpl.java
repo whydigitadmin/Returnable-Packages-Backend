@@ -79,6 +79,7 @@ import com.whydigit.efit.repo.CustomersAddressRepo;
 import com.whydigit.efit.repo.CustomersBankDetailsRepo;
 import com.whydigit.efit.repo.CustomersRepo;
 import com.whydigit.efit.repo.FlowRepo;
+import com.whydigit.efit.repo.IssueItemRepo;
 import com.whydigit.efit.repo.KitRepo;
 import com.whydigit.efit.repo.ManufacturerProductRepo;
 import com.whydigit.efit.repo.ManufacturerRepo;
@@ -140,6 +141,9 @@ public class MasterServiceImpl implements MasterService {
 	
 	@Autowired
 	UserRepo userRepo;
+	
+	@Autowired
+	IssueItemRepo issueItemRepo;
 
 	@Override
 	public List<AssetVO> getAllAsset(Long orgId) {
@@ -958,6 +962,11 @@ public class MasterServiceImpl implements MasterService {
 	@Override
 	public Set<Object[]> getFlowNameByOrgID(Long orgId, Long emitterId) {
 		return flowRepo.getFlowNameByOrgID(orgId,emitterId);
+	}
+
+	@Override
+	public List<KitResponseDTO> loadKitQty(Long irItemId, Long kitQty) {
+		return issueItemRepo.loadKitQty(irItemId,kitQty);
 	}
 	
 }

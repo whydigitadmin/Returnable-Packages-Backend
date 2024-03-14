@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
+import com.whydigit.efit.dto.KitResponseDTO;
 import com.whydigit.efit.entity.IssueRequestVO;
 
 public interface IssueRequestRepo
@@ -29,4 +30,5 @@ public interface IssueRequestRepo
 
 	@Query(value = "select b.warehouse_location from issue_request a , flow b where a.flow_to=b.id and a.flow_to=?1 group BY  b.warehouse_location",nativeQuery = true)
 	String findWarehouseLocation(Long flowTo);
+	
 }
