@@ -361,6 +361,7 @@ public class EmitterServiceImpl implements EmitterService {
 		}
 		inwardVO.setIssueItemVO(issueItemVO); // Mapping
 		getInwardVOFromInwardDTO(inwardDTO, inwardVO);
+		issueItemVO.setApprovedStatus(true);
 		inwardVO = inwardRepo.save(inwardVO);
 		EmitterOutwardVO outwardVO = new EmitterOutwardVO();
 		outwardVO = emitterOutwardRepo.findByIssueItemId(issueItemVO.getId()).orElse(new EmitterOutwardVO());
