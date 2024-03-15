@@ -1,10 +1,13 @@
 package com.whydigit.efit.dto;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
-import javax.persistence.Embedded;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+
+import com.whydigit.efit.entity.AccessRightsVO;
+import com.whydigit.efit.entity.UserAddressVO;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,7 +17,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserResponseDTO {
-	private Long userId;
+	private long userId;
+	private long orgId;
 	private String firstName;
 	private String lastName;
 	private String email;
@@ -23,9 +27,10 @@ public class UserResponseDTO {
 	private boolean isActive;
 	@Enumerated(EnumType.STRING)
 	private Role role;
-	@Embedded
-	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
 	private Date accountRemovedDate;
 	private String token;
 	private String tokenId;
+	private LocalDateTime lastLogin;
+	private AccessRightsVO accessRightsVO;
+	private UserAddressVO userAddressVO;
 }
