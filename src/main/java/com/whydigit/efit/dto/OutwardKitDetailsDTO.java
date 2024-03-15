@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OutwardKitDetailsDTO {
-	private int emitterOtwarId;
+	private long emitterOutwarId;
 	private String kitNO;
 	private int kitQty;
 }

@@ -414,7 +414,7 @@ public class EmitterServiceImpl implements EmitterService {
 	}
 
 	@Override
-	public Optional<EmitterOutwardVO> getEmitterOutwardById(int id) {
+	public Optional<EmitterOutwardVO> getEmitterOutwardById(long id) {
 		return emitterOutwardRepo.findById(id);
 	}
 
@@ -433,7 +433,7 @@ public class EmitterServiceImpl implements EmitterService {
 	}
 
 	@Override
-	public void deleteEmitterOutward(int id) {
+	public void deleteEmitterOutward(long id) {
 		emitterOutwardRepo.deleteById(id);
 	}
 
@@ -566,7 +566,7 @@ public class EmitterServiceImpl implements EmitterService {
 		OutwardKitDetailsVO outwardKitDetailVO = new OutwardKitDetailsVO();
 		outwardKitDetailVO.setKitNO(outwardKitDetailsDTO.getKitNO());
 		outwardKitDetailVO.setKitQty(outwardKitDetailsDTO.getKitQty());
-		EmitterOutwardVO emitterOutwardVO = emitterOutwardRepo.findById(outwardKitDetailsDTO.getEmitterOtwarId())
+		EmitterOutwardVO emitterOutwardVO = emitterOutwardRepo.findById(outwardKitDetailsDTO.getEmitterOutwarId())
 				.orElseThrow(() -> new ApplicationException("EmitterId not found."));
 		outwardKitDetailVO.setEmitterOutwardVO(emitterOutwardVO); 
 		return outwardKitDetailsRepo.save(outwardKitDetailVO);
