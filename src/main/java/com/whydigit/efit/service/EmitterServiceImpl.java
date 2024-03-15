@@ -35,6 +35,7 @@ import com.whydigit.efit.dto.IssueRequestDTO;
 import com.whydigit.efit.dto.IssueRequestItemApprovelDTO;
 import com.whydigit.efit.dto.IssueRequestQtyApprovelDTO;
 import com.whydigit.efit.dto.IssueRequestType;
+import com.whydigit.efit.dto.OutwardKitDetailsDTO;
 import com.whydigit.efit.dto.Role;
 import com.whydigit.efit.entity.CustomersVO;
 import com.whydigit.efit.entity.EmitterInwardVO;
@@ -50,6 +51,7 @@ import com.whydigit.efit.entity.MaxPartQtyPerKitVO;
 import com.whydigit.efit.entity.MovementStockItemVO;
 import com.whydigit.efit.entity.MovementStockVO;
 import com.whydigit.efit.entity.MovementType;
+import com.whydigit.efit.entity.OutwardKitDetailsVO;
 import com.whydigit.efit.entity.OutwardView;
 import com.whydigit.efit.entity.VwEmitterInwardVO;
 import com.whydigit.efit.exception.ApplicationException;
@@ -63,6 +65,7 @@ import com.whydigit.efit.repo.IssueRequestRepo;
 import com.whydigit.efit.repo.KitRepo;
 import com.whydigit.efit.repo.MaxPartQtyPerKitRepo;
 import com.whydigit.efit.repo.MovementStockRepo;
+import com.whydigit.efit.repo.OutwardKitDetailsRepo;
 import com.whydigit.efit.repo.OutwardViewRepo;
 import com.whydigit.efit.repo.UserRepo;
 import com.whydigit.efit.repo.VwEmitterInwardRepo;
@@ -101,6 +104,9 @@ public class EmitterServiceImpl implements EmitterService {
 	
 	@Autowired
 	OutwardViewRepo outwardViewRepo;
+	
+	@Autowired
+	OutwardKitDetailsRepo outwardKitDetailsRepo;
 	
 	@Override
 	public IssueRequestVO createIssueRequest(IssueRequestDTO issueRequestDTO) throws ApplicationException {
@@ -554,7 +560,19 @@ public class EmitterServiceImpl implements EmitterService {
 		return outwardView;
 	}
 
-		
+	@Override
+	public OutwardKitDetailsVO updateOutwardKitQty(OutwardKitDetailsDTO outwardKitDetailsDTO) throws ApplicationException {
+
+		OutwardKitDetailsVO outwardKitDetailVO = new OutwardKitDetailsVO();
+		outwardKitDetailVO.setKitNO(outwardKitDetailsDTO.getKitNO());
+		outwardKitDetailVO.setKitQty(outwardKitDetailsDTO.getKitQty());
+		EmitterOutwardVO emitterOutwardVO = emitterOutwardRepo.findById(outwardKitDetailsDTO.getEmitterOtwarId())
+				.orElseThrow(() -> new ApplicationException("EmitterId not found."));
+		outwardKitDetailVO.setEmitterOutwardVO(emitterOutwardVO); 
+		return outwardKitDetailsRepo.save(outwardKitDetailVO);
+
+	}
+
 
 	}
 

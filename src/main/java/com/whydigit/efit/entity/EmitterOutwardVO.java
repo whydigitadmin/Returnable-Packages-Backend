@@ -1,17 +1,21 @@
 																																																																																																																																																																																																																																																																											package com.whydigit.efit.entity;
 
 import java.time.LocalDate;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.whydigit.efit.dto.CreatedUpdatedDate;
 
 import lombok.AllArgsConstructor;
@@ -46,6 +50,10 @@ public class EmitterOutwardVO {
 	@OneToOne
     @JoinColumn(name = "issueItemId")
 	private IssueItemVO issueItemVO;
+	
+	@OneToMany(mappedBy = "emitterOutwardVO",cascade = CascadeType.ALL)
+	@JsonManagedReference
+	private List<OutwardKitDetailsVO> OutwardKitDetailsVO;
 	
 	@Embedded
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();

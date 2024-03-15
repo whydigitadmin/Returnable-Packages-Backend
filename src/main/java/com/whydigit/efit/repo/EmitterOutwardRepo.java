@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import com.whydigit.efit.entity.EmitterOutwardVO;
+import com.whydigit.efit.entity.FlowVO;
 
 public interface EmitterOutwardRepo extends JpaRepository<EmitterOutwardVO, Integer> {
 
@@ -15,5 +16,7 @@ public interface EmitterOutwardRepo extends JpaRepository<EmitterOutwardVO, Inte
 
 	@Query(value="select * from emitter_outward where issue_item_id=?1",nativeQuery = true)
 	Optional<EmitterOutwardVO> findByIssueItemId(long issueItemId);
+
+	Optional<EmitterOutwardVO> findById(long emitterOtwarId);
 
 }
