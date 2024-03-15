@@ -40,7 +40,8 @@ private long issueItemInwardId;
 private long itemId;
 private String status;
 private String partNo;
-private Boolean approvedStatus;
+private boolean approvedStatus;
+private boolean netRecAcceptStatus;
 
 
 
