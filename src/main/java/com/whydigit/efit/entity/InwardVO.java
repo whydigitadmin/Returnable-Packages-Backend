@@ -29,6 +29,7 @@ public class InwardVO {
 	private String status;
 	private long returnQty;
 	private long netQtyRecieved;
+	private Boolean netRecAcceptStatus;
 	
 	@JsonBackReference
 	@OneToOne
