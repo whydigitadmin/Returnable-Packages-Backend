@@ -29,4 +29,6 @@ public class VwEmitterInwardDTO {
 	private long itemId;
 	private String partNo;
 	private String status;
+	private boolean approvedStatus;
+	private boolean netRecAcceptStatus;
 }
