@@ -28,7 +28,7 @@ public class OutwardKitDetailsVO {
 	private long id;
 	private String kitNO;
 	private int kitQty;
-	private LocalDateTime receivedDate;
+	private LocalDateTime receivedDate=LocalDateTime.now();
 
 	
 	
