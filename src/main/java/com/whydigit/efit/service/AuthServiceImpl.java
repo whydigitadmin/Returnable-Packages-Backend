@@ -113,6 +113,7 @@ public class AuthServiceImpl implements AuthService {
 		userAddressVO.setCountry(userAddressDTO.getCountry());
 		userAddressVO.setLocation(userAddressDTO.getLocation());
 		userAddressVO.setPin(userAddressDTO.getPin());
+		userAddressVO.setCity((userAddressDTO.getCity()));
 		userAddressVO.setState(userAddressDTO.getState());
 		return userAddressVO;
 	}

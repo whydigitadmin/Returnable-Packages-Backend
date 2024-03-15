@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.whydigit.efit.dto.WarehouseDTO;
-import com.whydigit.efit.entity.FlowVO;
 import com.whydigit.efit.entity.WarehouseVO;
 import com.whydigit.efit.exception.ApplicationException;
 import com.whydigit.efit.repo.UserRepo;

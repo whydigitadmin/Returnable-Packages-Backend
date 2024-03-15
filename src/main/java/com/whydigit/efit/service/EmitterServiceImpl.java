@@ -35,8 +35,8 @@ import com.whydigit.efit.dto.IssueRequestDTO;
 import com.whydigit.efit.dto.IssueRequestItemApprovelDTO;
 import com.whydigit.efit.dto.IssueRequestQtyApprovelDTO;
 import com.whydigit.efit.dto.IssueRequestType;
+import com.whydigit.efit.dto.OutwardKitDetailsDTO;
 import com.whydigit.efit.dto.Role;
-import com.whydigit.efit.entity.AssetGroupVO;
 import com.whydigit.efit.entity.CustomersVO;
 import com.whydigit.efit.entity.EmitterInwardVO;
 import com.whydigit.efit.entity.EmitterOutwardVO;
@@ -51,6 +51,7 @@ import com.whydigit.efit.entity.MaxPartQtyPerKitVO;
 import com.whydigit.efit.entity.MovementStockItemVO;
 import com.whydigit.efit.entity.MovementStockVO;
 import com.whydigit.efit.entity.MovementType;
+import com.whydigit.efit.entity.OutwardKitDetailsVO;
 import com.whydigit.efit.entity.OutwardView;
 import com.whydigit.efit.entity.VwEmitterInwardVO;
 import com.whydigit.efit.exception.ApplicationException;
@@ -64,6 +65,7 @@ import com.whydigit.efit.repo.IssueRequestRepo;
 import com.whydigit.efit.repo.KitRepo;
 import com.whydigit.efit.repo.MaxPartQtyPerKitRepo;
 import com.whydigit.efit.repo.MovementStockRepo;
+import com.whydigit.efit.repo.OutwardKitDetailsRepo;
 import com.whydigit.efit.repo.OutwardViewRepo;
 import com.whydigit.efit.repo.UserRepo;
 import com.whydigit.efit.repo.VwEmitterInwardRepo;
@@ -102,6 +104,9 @@ public class EmitterServiceImpl implements EmitterService {
 	
 	@Autowired
 	OutwardViewRepo outwardViewRepo;
+	
+	@Autowired
+	OutwardKitDetailsRepo outwardKitDetailsRepo;
 	
 	@Override
 	public IssueRequestVO createIssueRequest(IssueRequestDTO issueRequestDTO) throws ApplicationException {
@@ -230,7 +235,7 @@ public class EmitterServiceImpl implements EmitterService {
 		IssueRequestVO issueRequestVO = issueRequestRepo.findById(issueRequestQtyApprovelDTO.getIssueRequestId())
 				.orElseThrow(() -> new ApplicationException("Invalid issueRequest information."));
 		List<MovementStockVO> movementStockVO=new ArrayList<>();
-		CustomersVO customersVO=customersRepo.findById(issueRequestVO.getEmitterId()).orElseThrow(()-> new ApplicationException("Custimer not found."));
+		CustomersVO customersVO=customersRepo.findById(issueRequestVO.getEmitterId()).orElseThrow(()-> new ApplicationException("Emitter not found for this issueRequestId."));
 		for (IssueRequestItemApprovelDTO irItem : issueRequestQtyApprovelDTO.getIssueRequestItemApprovelDTO()) {
 			setIssueRequestItemQTY(issueRequestQtyApprovelDTO, issueRequestVO, movementStockVO, customersVO,
 					irItem.getIssuedQty(), irItem.getIssueItemId());
@@ -248,6 +253,7 @@ public class EmitterServiceImpl implements EmitterService {
 		else {
 			issueRequestVO.setIssueStatus(EmitterConstant.ISSUE_REQUEST_STATUS_PENDING);
 		}
+		issueItemRepo.updateApptovedStatus(issueRequestQtyApprovelDTO.getIssueRequestId());
 		issueRequestVO= issueRequestRepo.save(issueRequestVO);
 		movementStockRepo.saveAll(movementStockVO);
 		return issueRequestVO;
@@ -367,6 +373,9 @@ public class EmitterServiceImpl implements EmitterService {
 		}
 		inwardVO.setIssueItemVO(issueItemVO); // Mapping
 		getInwardVOFromInwardDTO(inwardDTO, inwardVO);
+
+//		issueItemVO.setApprovedStatus(true);
+
 		inwardVO = inwardRepo.save(inwardVO);
 		EmitterOutwardVO outwardVO = new EmitterOutwardVO();
 		outwardVO = emitterOutwardRepo.findByIssueItemId(issueItemVO.getId()).orElse(new EmitterOutwardVO());
@@ -551,7 +560,19 @@ public class EmitterServiceImpl implements EmitterService {
 		return outwardView;
 	}
 
-		
+	@Override
+	public OutwardKitDetailsVO updateOutwardKitQty(OutwardKitDetailsDTO outwardKitDetailsDTO) throws ApplicationException {
+
+		OutwardKitDetailsVO outwardKitDetailVO = new OutwardKitDetailsVO();
+		outwardKitDetailVO.setKitNO(outwardKitDetailsDTO.getKitNO());
+		outwardKitDetailVO.setKitQty(outwardKitDetailsDTO.getKitQty());
+		EmitterOutwardVO emitterOutwardVO = emitterOutwardRepo.findById(outwardKitDetailsDTO.getEmitterOtwarId())
+				.orElseThrow(() -> new ApplicationException("EmitterId not found."));
+		outwardKitDetailVO.setEmitterOutwardVO(emitterOutwardVO); 
+		return outwardKitDetailsRepo.save(outwardKitDetailVO);
+
+	}
+
 
 	}
 
