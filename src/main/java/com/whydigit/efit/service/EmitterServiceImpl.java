@@ -572,7 +572,7 @@ public class EmitterServiceImpl implements EmitterService {
 				.orElseThrow(() -> new ApplicationException("EmitterId not found."));
 		outwardKitDetailVO.setEmitterOutwardVO(emitterOutwardVO); 
 		emitterOutwardVO.setKitNo(outwardKitDetailsDTO.getKitNO());
-		emitterOutwardVO.setKitQty(outwardKitDetailsDTO.getKitQty());
+		emitterOutwardVO.setKitReturnqty(outwardKitDetailsDTO.getKitQty());
 		emitterOutwardRepo.save(emitterOutwardVO);
 		return outwardKitDetailsRepo.save(outwardKitDetailVO);
 
