@@ -30,7 +30,7 @@ import lombok.NoArgsConstructor;
 public class EmitterOutwardVO {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
+	private long id;
 	private long orgId;
 	private String location;
 //	private String issuedTo;

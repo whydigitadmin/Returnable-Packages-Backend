@@ -45,13 +45,13 @@ public interface EmitterService {
 	// emitter outward
 	List<EmitterOutwardVO> getAllEmitterOutward(Long orgId);
 
-	Optional<EmitterOutwardVO> getEmitterOutwardById(int id);
+	Optional<EmitterOutwardVO> getEmitterOutwardById(long id);
 
 	EmitterOutwardVO createEmitterOutward(EmitterOutwardVO emitterOutwardVO);
 
 	Optional<EmitterOutwardVO> updateEmitterOutward(EmitterOutwardVO emitterOutwardVO);
 
-	void deleteEmitterOutward(int id);
+	void deleteEmitterOutward(long id);
 
 	IssueRequestVO issueRequestQtyApprovel(IssueRequestQtyApprovelDTO issueRequestQtyApprovelDTO) throws ApplicationException;
 
