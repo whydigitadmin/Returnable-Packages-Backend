@@ -392,7 +392,8 @@ public class EmitterServiceImpl implements EmitterService {
 		inwardVO.setNetQtyRecieved(inwardDTO.getNetQtyRecieved());
 		inwardVO.setReturnQty(inwardDTO.getReturnQty());
 		inwardVO.setStatus(inwardDTO.getStatus());
-	}
+		inwardVO.setNetRecAcceptStatus(true);
+		}
 
 	@Override
 	public void deleteEmitterInward(int id) {
