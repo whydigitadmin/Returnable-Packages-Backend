@@ -1,6 +1,7 @@
 package com.whydigit.efit.entity;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -40,6 +41,7 @@ private long issueItemInwardId;
 private long itemId;
 private String status;
 private String partNo;
+private LocalDateTime approvedDate;
 private boolean approvedStatus;
 private boolean netRecAcceptStatus;
 

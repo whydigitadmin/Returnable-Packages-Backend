@@ -1,6 +1,7 @@
 package com.whydigit.efit.dto;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -29,6 +30,7 @@ public class VwEmitterInwardDTO {
 	private long itemId;
 	private String partNo;
 	private String status;
+	private LocalDateTime approvedDate;
 	private boolean approvedStatus;
 	private boolean netRecAcceptStatus;
 }
