@@ -380,6 +380,7 @@ public class EmitterServiceImpl implements EmitterService {
 		EmitterOutwardVO outwardVO = new EmitterOutwardVO();
 		outwardVO = emitterOutwardRepo.findByIssueItemId(issueItemVO.getId()).orElse(new EmitterOutwardVO());
 		outwardVO.setIssueItemVO(issueItemVO);
+		outwardVO.setKitQty(inwardVO.getNetQtyRecieved());
 		outwardVO.setActive(true);
 		outwardVO.setOrgId(issueItemVO.getIssueRequestVO().getOrgId());
 		outwardVO.setInwardConfirmDate(LocalDate.now());
