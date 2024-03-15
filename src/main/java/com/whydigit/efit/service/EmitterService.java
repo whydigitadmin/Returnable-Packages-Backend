@@ -13,10 +13,12 @@ import com.whydigit.efit.dto.EmitterAddressDTO;
 import com.whydigit.efit.dto.InwardDTO;
 import com.whydigit.efit.dto.IssueRequestDTO;
 import com.whydigit.efit.dto.IssueRequestQtyApprovelDTO;
+import com.whydigit.efit.dto.OutwardKitDetailsDTO;
 import com.whydigit.efit.entity.EmitterInwardVO;
 import com.whydigit.efit.entity.EmitterOutwardVO;
 import com.whydigit.efit.entity.InwardVO;
 import com.whydigit.efit.entity.IssueRequestVO;
+import com.whydigit.efit.entity.OutwardKitDetailsVO;
 import com.whydigit.efit.entity.OutwardView;
 import com.whydigit.efit.entity.VwEmitterInwardVO;
 import com.whydigit.efit.exception.ApplicationException;
@@ -43,13 +45,13 @@ public interface EmitterService {
 	// emitter outward
 	List<EmitterOutwardVO> getAllEmitterOutward(Long orgId);
 
-	Optional<EmitterOutwardVO> getEmitterOutwardById(int id);
+	Optional<EmitterOutwardVO> getEmitterOutwardById(long id);
 
 	EmitterOutwardVO createEmitterOutward(EmitterOutwardVO emitterOutwardVO);
 
 	Optional<EmitterOutwardVO> updateEmitterOutward(EmitterOutwardVO emitterOutwardVO);
 
-	void deleteEmitterOutward(int id);
+	void deleteEmitterOutward(long id);
 
 	IssueRequestVO issueRequestQtyApprovel(IssueRequestQtyApprovelDTO issueRequestQtyApprovelDTO) throws ApplicationException;
 
@@ -74,6 +76,8 @@ public interface EmitterService {
 			LocalDate endDate, Long warehouseLoacationId);
 
 	List<OutwardView> getAllEmitterOutwardView(Long orgId, Long flowId);
+
+	OutwardKitDetailsVO updateOutwardKitQty(OutwardKitDetailsDTO outwardKitDetailsDTO) throws ApplicationException;
 
 	
 
