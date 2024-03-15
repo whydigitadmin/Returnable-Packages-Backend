@@ -126,6 +126,7 @@ public class AuthServiceImpl implements AuthService {
 		userAddressVO.setCountry(userAddressDTO.getCountry());
 		userAddressVO.setLocation(userAddressDTO.getLocation());
 		userAddressVO.setPin(userAddressDTO.getPin());
+		userAddressVO.setCity(userAddressDTO.getCity());
 		userAddressVO.setState(userAddressDTO.getState());
 		return userAddressVO;
 	}
@@ -342,7 +343,7 @@ public class AuthServiceImpl implements AuthService {
 		} else if (userRepo.existsByEmail(createUserFormDTO.getEmail())) {
 			throw new ApplicationContextException(UserConstants.ERRROR_MSG_USER_INFORMATION_ALREADY_REGISTERED);
 		}
-		UserVO userVO = getUserVOFromCreateUserFormDTO(createUserFormDTO);
+		UserVO userVO = getUserVOFromCreateUserFormDTO(createUserFormDTO);  
 		userVO.setOrganizationVO(organizationRepo.findById(createUserFormDTO.getOrgId())
 				.orElseThrow(() -> new ApplicationException("No orginaization found.")));
 		userVO.setUserAddressVO(userAddressRepo.save(getAddressVOFromCreateUserFormDTO(createUserFormDTO)));
@@ -398,6 +399,7 @@ public class AuthServiceImpl implements AuthService {
 		userVO = userRepo.findById(createUserFormDTO.getUserId())
 				.orElseThrow(() -> new ApplicationException("Invalid  user details"));
 		getUserVOFromCreateUserFormDTO(createUserFormDTO, userVO);
+		userVO.setUserAddressVO(userAddressRepo.save(getAddressVOFromCreateUserFormDTO(createUserFormDTO)));
 		return userRepo.save(userVO);
 	}
 
