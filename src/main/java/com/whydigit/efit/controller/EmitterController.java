@@ -605,7 +605,7 @@ public class EmitterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 	@GetMapping("/emitterOutward/v1")
-	public ResponseEntity<ResponseDTO> getAllEmitterOutwardView(@RequestParam(required = false) Long orgId) {
+	public ResponseEntity<ResponseDTO> getAllEmitterOutwardView(@RequestParam(required = false) Long orgId,@RequestParam(required = false) Long flowId ) {
 		String methodName = "getAllEmitterOutwardView()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -613,7 +613,7 @@ public class EmitterController extends BaseController {
 		ResponseDTO responseDTO = null;
 		List<OutwardView> outwardView = new ArrayList<>();
 		try {
-			outwardView = emitterService.getAllEmitterOutwardView(orgId);
+			outwardView = emitterService.getAllEmitterOutwardView(orgId,flowId);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
