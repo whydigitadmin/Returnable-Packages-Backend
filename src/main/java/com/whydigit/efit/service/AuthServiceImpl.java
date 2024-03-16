@@ -399,9 +399,9 @@ public class AuthServiceImpl implements AuthService {
 		userVO = userRepo.findById(createUserFormDTO.getUserId())
 				.orElseThrow(() -> new ApplicationException("Invalid  user details"));
 		getUserVOFromCreateUserFormDTO(createUserFormDTO, userVO);
-		userVO.setUserAddressVO(userAddressRepo.save(getAddressVOFromCreateUserFormDTO(createUserFormDTO)));
+		userVO.setUserAddressVO(userAddressRepo.save(getAddressVOFromCreateUserFormDTO(createUserFormDTO)));   // for set addressVO in userVO
 		return userRepo.save(userVO);
-	}
+	}  
 
 	private void getUserVOFromCreateUserFormDTO(CreateUserFormDTO createUserFormDTO, UserVO userVO) {
 		String addIds = ObjectUtils.isNotEmpty(createUserFormDTO.getAccessaddId()) ? Arrays
