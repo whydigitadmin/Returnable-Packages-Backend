@@ -6,7 +6,6 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import com.whydigit.efit.entity.CityVO;
-import com.whydigit.efit.entity.CountryListVO;
 import com.whydigit.efit.entity.CountryVO;
 import com.whydigit.efit.entity.CurrencyMasterVO;
 import com.whydigit.efit.entity.EmployeeVO;
@@ -27,15 +26,7 @@ public interface BasicMasterService {
 
 	void deleteLocalCurrency(int id);
 	
-	List<CountryListVO> getAllCountryList();
-
-	Optional<CountryListVO> getCountryListById(int id);
-
-	CountryListVO createCountryList(CountryListVO countryListVO);
-
-	Optional<CountryListVO> updateCountryList(CountryListVO countryListVO);
-
-	void deleteCountryList(int id);
+	
 
 	List<CountryVO> getAllgetAllcountries();
 
@@ -61,13 +52,13 @@ public interface BasicMasterService {
 
 	List<CityVO> getAllgetAllCities();
 
-	Optional<CityVO> getCityById(int id);
+	Optional<CityVO> getCityById(Long id);
 
 	CityVO createCity(CityVO cityVO);
 
 	Optional<CityVO> updateCity(CityVO cityVO);
 
-	void deleteCity(int id);
+	void deleteCity(Long id);
 
 
 

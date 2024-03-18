@@ -696,6 +696,7 @@ public class MasterServiceImpl implements MasterService {
 				customersAddressVO = customersAddressRepo.findById(customersAddressDTO.getId())
 						.orElseThrow(() -> new ApplicationException("Customer Address information not found."));
 			}
+			getCustomersAddressVOFromCustomersAddressDTO(customersAddressDTO, customersAddressVO);
 			customersAddressVO.setCustomersVO(customersVO);
 		} else {
 			throw new ApplicationException("Invalid customer address information.");

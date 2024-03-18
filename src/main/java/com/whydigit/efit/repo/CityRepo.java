@@ -7,6 +7,8 @@ import com.whydigit.efit.entity.CityVO;
 
 
 @Repository
-public interface CityRepo extends JpaRepository<CityVO, Integer> {
+public interface CityRepo extends JpaRepository<CityVO, Long> {
+
+	boolean existsById(Long cityid);
 
 }
