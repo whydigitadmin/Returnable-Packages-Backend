@@ -25,7 +25,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class CustomersBankDetailsVO {
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "CustomersBankDetailsVO")
+	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "CustomersBankDetailsVO")
 	@SequenceGenerator(name = "CustomersBankDetailsVO", sequenceName = "CustomersBankDetailsVo", initialValue = 1000000001, allocationSize = 1)
 	@Column(name="customer2id")
 	private Long id;

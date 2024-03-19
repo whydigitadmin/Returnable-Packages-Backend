@@ -22,11 +22,11 @@ import lombok.NoArgsConstructor;
 @Builder
 public class CustomerAttachmentVO {
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "CustomerAttachmentVO")
+	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "CustomerAttachmentVO")
 	@SequenceGenerator(name = "CustomerAttachmentVO", sequenceName = "CustomerAttachmentVo", initialValue = 1000000001, allocationSize = 1)
 	@Column(name="customer3id")
 	private long id;
-	@Column(name="fileName",length = 25)
+	@Column(name="filename",length = 25)
 	private String fileName;
 	@Column(name="type",length = 25)
 	private String type;
