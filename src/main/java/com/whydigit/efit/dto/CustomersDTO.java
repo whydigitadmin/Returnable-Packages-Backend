@@ -16,7 +16,7 @@ public class CustomersDTO {
 	private String entityLegalName;
 	private String displayName;
 	private String email;
-	private long phoneNumber;
+	private String phoneNumber;
 	private boolean customerActivatePortal;
 	private boolean active;
 }
