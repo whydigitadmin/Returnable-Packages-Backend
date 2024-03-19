@@ -14,7 +14,6 @@ public class WarehouseDTO {
 	private long orgId;
 	@NotEmpty(message = "Location name is required")
 	private String locationName;
-	private String name;
 	private String address;
 	private String state;
 	private String pincode;

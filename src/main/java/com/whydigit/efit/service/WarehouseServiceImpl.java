@@ -74,7 +74,6 @@ public class WarehouseServiceImpl implements WarehouseService {
 	private void getWarehouseVOFromWarehouseDTO(WarehouseDTO warehouseDTO, WarehouseVO warehouseVO) {
 		warehouseVO.setOrgId(warehouseDTO.getOrgId());
 		warehouseVO.setLocationName(warehouseDTO.getLocationName());
-		warehouseVO.setName(warehouseDTO.getName());
 		warehouseVO.setAddress(warehouseDTO.getAddress());
 		warehouseVO.setState(warehouseDTO.getState());
 		warehouseVO.setPincode(warehouseDTO.getPincode());
