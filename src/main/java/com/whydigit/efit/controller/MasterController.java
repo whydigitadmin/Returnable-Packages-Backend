@@ -1455,7 +1455,7 @@ public class MasterController extends BaseController {
 	}
 
 	@GetMapping("/kit/{id}")
-	public ResponseEntity<ResponseDTO> getKitById(@PathVariable String id) {
+	public ResponseEntity<ResponseDTO> getKitById(@PathVariable Long id) {
 		String methodName = "getKitById()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -1528,7 +1528,7 @@ public class MasterController extends BaseController {
 	}
 
 	@DeleteMapping("/delteKit/{id}")
-	public ResponseEntity<ResponseDTO> deleteKit(@PathVariable String id) {
+	public ResponseEntity<ResponseDTO> deleteKit(@PathVariable Long id) {
 		String methodName = "deleteKit()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;

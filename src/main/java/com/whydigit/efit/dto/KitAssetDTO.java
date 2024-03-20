@@ -13,6 +13,5 @@ public class KitAssetDTO {
 	private String assetCategory;
 	private String assetCodeId;
 	private String assetName;
-	private long partQuantity;
-	private long quantity;
+	private int quantity;
 }

@@ -128,13 +128,13 @@ public interface MasterService {
 	// Create Kit
 	List<KitResponseDTO> getAllKit(Long orgId);
 
-	Optional<KitVO> getKitById(String id);
+	Optional<KitVO> getKitById(Long id);
 
 	KitVO createkit(KitDTO kitDTO) throws ApplicationException;
 
 	Optional<KitVO> updatedKit(KitVO kitVO);
 
-	void deleteKit(String id);
+	void deleteKit(Long id);
 
 	Map<String, List<CustomersVO>> CustomersType(Long orgId);
 
