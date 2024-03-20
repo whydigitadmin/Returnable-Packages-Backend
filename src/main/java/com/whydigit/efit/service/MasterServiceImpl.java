@@ -159,7 +159,7 @@ public class MasterServiceImpl implements MasterService {
 	}
 
 	@Override
-	public Optional<AssetVO> getAssetById(int id) {
+	public Optional<AssetVO> getAssetById(Long id) {
 		return assetRepo.findById(id);
 	}
 
@@ -170,7 +170,6 @@ public class MasterServiceImpl implements MasterService {
 		while (skuId <= assetVO.getSkuTo()) {
 			AssetItemVO assetItem = new AssetItemVO();
 			assetItem.setAssetVO(assetVO);
-			assetItem.setCreatedDateTime(LocalDateTime.now());
 			assetItem.setAssetName(assetVO.getAssetName());
 			assetItem.setSkuId(new StringBuilder(assetVO.getAssetCodeId()).append("-").append(skuId).toString());
 			assetItem.setStatus(MasterConstant.ASSET_ITEM_STATUS_INSTOCK);
@@ -191,7 +190,7 @@ public class MasterServiceImpl implements MasterService {
 	}
 
 	@Override
-	public void deleteAsset(int id) {
+	public void deleteAsset(Long id) {
 		assetRepo.deleteById(id);
 
 	}
@@ -291,10 +290,6 @@ public class MasterServiceImpl implements MasterService {
 		}
 	}
 
-	@Override
-	public void deleteAssetGroup(int id) {
-		assetRepo.deleteById(id);
-	}
 
 	@Override
 	public List<CustomersVO> getAllCustomers(Long orgId) {

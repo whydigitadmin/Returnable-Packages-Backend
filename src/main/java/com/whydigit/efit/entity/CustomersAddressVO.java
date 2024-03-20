@@ -62,10 +62,10 @@ public class CustomersAddressVO {
 	
 	@Column(name="designation",length = 50)
     private String designation;
-	
+
 //	@Column(name="isprimary")
 //	private boolean isPrimary;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "customerid")
 	@JsonBackReference
