@@ -69,15 +69,15 @@ public interface MasterService {
 
 	CustomersVO updateCustomers(CustomersDTO customersDTO) throws ApplicationException;
 
-	CustomersBankDetailsVO createUpdateBankDetails(CustomersBankDetailsDTO customersBankDetailsDTO)
-			throws ApplicationException;
+//	CustomersBankDetailsVO createUpdateBankDetails(CustomersBankDetailsDTO customersBankDetailsDTO)
+//			throws ApplicationException;
 
 	void deleteCustomers(Long id);
 
 	void deleteCustomersBankDetails(Long id);
 
-	CustomersAddressVO createUpdateCustomersAddress(CustomersAddressDTO customersAddressDTO)
-			throws ApplicationException;
+//	CustomersAddressVO createUpdateCustomersAddress(CustomersAddressDTO customersAddressDTO)
+//			throws ApplicationException;
 
 	void deleteCustomersAddress(Long id);
 

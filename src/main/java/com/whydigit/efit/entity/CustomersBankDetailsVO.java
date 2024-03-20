@@ -49,7 +49,7 @@ public class CustomersBankDetailsVO {
 	private boolean isDefault;
 
 	@ManyToOne
-	@JoinColumn(name = "customers_id")
+	@JoinColumn(name = "customerid")
 	@JsonBackReference
 	private CustomersVO customersVO;
 

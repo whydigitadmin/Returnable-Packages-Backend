@@ -21,5 +21,5 @@ public class CustomersAddressDTO {
 	private String state;
 	private String email;
 	private String designation;
-	private Long customerId;
+	private String customerid;
 }

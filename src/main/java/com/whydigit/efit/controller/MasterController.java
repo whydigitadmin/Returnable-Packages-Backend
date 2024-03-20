@@ -481,68 +481,68 @@ public class MasterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
-	@PostMapping("/customersAddress")
-	public ResponseEntity<ResponseDTO> createUpdateCustomersAddress(
-			@RequestBody CustomersAddressDTO customersAddressDTO) {
-		String methodName = "updateCustomersAddress()";
-		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
-		String errorMsg = null;
-		Map<String, Object> responseObjectsMap = new HashMap<>();
-		ResponseDTO responseDTO = null;
-		String action = StringUtils.EMPTY;
-		try {
-			action = ObjectUtils.isEmpty(customersAddressDTO.getId()) ? "create" : "update";
-			CustomersAddressVO customersCustomersAddressVO = masterService
-					.createUpdateCustomersAddress(customersAddressDTO);
-			if (customersCustomersAddressVO != null) {
-				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Customers Address " + action + " successfully");
-				responseObjectsMap.put("customersAddressVO", customersCustomersAddressVO);
-				responseDTO = createServiceResponse(responseObjectsMap);
-			} else {
-				responseDTO = createServiceResponseError(responseObjectsMap, "Customers Address " + action + " failed",
-						errorMsg);
-			}
-		} catch (Exception e) {
-			errorMsg = e.getMessage();
-			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-			responseDTO = createServiceResponseError(responseObjectsMap, "Customers Address " + action + " failed",
-					errorMsg);
-		}
-		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
-		return ResponseEntity.ok().body(responseDTO);
-	}
+//	@PostMapping("/customersAddress")
+//	public ResponseEntity<ResponseDTO> createUpdateCustomersAddress(
+//			@RequestBody CustomersAddressDTO customersAddressDTO) {
+//		String methodName = "updateCustomersAddress()";
+//		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+//		String errorMsg = null;
+//		Map<String, Object> responseObjectsMap = new HashMap<>();
+//		ResponseDTO responseDTO = null;
+//		String action = StringUtils.EMPTY;
+//		try {
+//			action = ObjectUtils.isEmpty(customersAddressDTO.getId()) ? "create" : "update";
+//			CustomersAddressVO customersCustomersAddressVO = masterService
+//					.createUpdateCustomersAddress(customersAddressDTO);
+//			if (customersCustomersAddressVO != null) {
+//				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Customers Address " + action + " successfully");
+//				responseObjectsMap.put("customersAddressVO", customersCustomersAddressVO);
+//				responseDTO = createServiceResponse(responseObjectsMap);
+//			} else {
+//				responseDTO = createServiceResponseError(responseObjectsMap, "Customers Address " + action + " failed",
+//						errorMsg);
+//			}
+//		} catch (Exception e) {
+//			errorMsg = e.getMessage();
+//			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+//			responseDTO = createServiceResponseError(responseObjectsMap, "Customers Address " + action + " failed",
+//					errorMsg);
+//		}
+//		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+//		return ResponseEntity.ok().body(responseDTO);
+//	}
 
-	@PostMapping("/customersBankDetails")
-	public ResponseEntity<ResponseDTO> createUpdateBankDetails(
-			@RequestBody CustomersBankDetailsDTO customersBankDetailsDTO) {
-		String methodName = "updateCustomersBankDetails()";
-		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
-		String errorMsg = null;
-		Map<String, Object> responseObjectsMap = new HashMap<>();
-		ResponseDTO responseDTO = null;
-		String action = StringUtils.EMPTY;
-		try {
-			action = ObjectUtils.isEmpty(customersBankDetailsDTO.getId()) ? "create" : "update";
-			CustomersBankDetailsVO customersBankDetailsVO = masterService
-					.createUpdateBankDetails(customersBankDetailsDTO);
-			if (customersBankDetailsVO != null) {
-				responseObjectsMap.put(CommonConstant.STRING_MESSAGE,
-						"Customers Bank Details " + action + " successfully");
-				responseObjectsMap.put("customersBankDetailsVO", customersBankDetailsVO);
-				responseDTO = createServiceResponse(responseObjectsMap);
-			} else {
-				responseDTO = createServiceResponseError(responseObjectsMap,
-						"Customers BankDetails " + action + " failed", errorMsg);
-			}
-		} catch (Exception e) {
-			errorMsg = e.getMessage();
-			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-			responseDTO = createServiceResponseError(responseObjectsMap, "Customers Bank Details" + " update failed",
-					errorMsg);
-		}
-		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
-		return ResponseEntity.ok().body(responseDTO);
-	}
+//	@PostMapping("/customersBankDetails")
+//	public ResponseEntity<ResponseDTO> createUpdateBankDetails(
+//			@RequestBody CustomersBankDetailsDTO customersBankDetailsDTO) {
+//		String methodName = "updateCustomersBankDetails()";
+//		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+//		String errorMsg = null;
+//		Map<String, Object> responseObjectsMap = new HashMap<>();
+//		ResponseDTO responseDTO = null;
+//		String action = StringUtils.EMPTY;
+//		try {
+//			action = ObjectUtils.isEmpty(customersBankDetailsDTO.getId()) ? "create" : "update";
+//			CustomersBankDetailsVO customersBankDetailsVO = masterService
+//					.createUpdateBankDetails(customersBankDetailsDTO);
+//			if (customersBankDetailsVO != null) {
+//				responseObjectsMap.put(CommonConstant.STRING_MESSAGE,
+//						"Customers Bank Details " + action + " successfully");
+//				responseObjectsMap.put("customersBankDetailsVO", customersBankDetailsVO);
+//				responseDTO = createServiceResponse(responseObjectsMap);
+//			} else {
+//				responseDTO = createServiceResponseError(responseObjectsMap,
+//						"Customers BankDetails " + action + " failed", errorMsg);
+//			}
+//		} catch (Exception e) {
+//			errorMsg = e.getMessage();
+//			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+//			responseDTO = createServiceResponseError(responseObjectsMap, "Customers Bank Details" + " update failed",
+//					errorMsg);
+//		}
+//		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+//		return ResponseEntity.ok().body(responseDTO);
+//	}
 
 	@DeleteMapping("/CustomersBankDetails/{id}")
 	public ResponseEntity<ResponseDTO> deleteCustomersBankDetails(@PathVariable Long id) {
