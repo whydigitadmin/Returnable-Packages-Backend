@@ -31,7 +31,7 @@ public class CustomersAddressVO {
 	@Column(name="gst",length = 25)
 	private String gstRegistrationStatus;
 	
-	@Column(name="street1",length = 100)
+	@Column(name="street1",length = 100) 
 	private String street1;
 	
 	@Column(name="street2",length = 100)
@@ -61,9 +61,7 @@ public class CustomersAddressVO {
 	@Column(name="designation",length = 50)
     private String designation;
 
-//	@Column(name="isprimary")
-//	private boolean isPrimary;
-
+     
 	@ManyToOne
 	@JoinColumn(name = "customerid")
 	@JsonBackReference

@@ -39,7 +39,7 @@ public class SecurityConfig {
 						"/api/usersdetails/view", "/api/master/**", "​/api​/master​/addAddress","api/master/loadKitQty",
 						"/api/warehouse/getWarehouseLocationByOrgID", "/api/warehouse/updateCreateWarehouse",
 						"/api/warehouse/view", "/api/warehouse/getWarehouseById/{id}", "/api/partStudy/basicDetails",
-						"/api/partStudy/d}/searchPartStudyById", "/api/partStudy/packageDetail",
+						"/api/partStudy/d}/searchPartStudyById", "/api/partStudy/packageDetail","api/master/dmap",
 						"/api/partStudy/packageDetail/{id}", "/api/partStudy/logistics","/api/company/setup","api/emitter/updateOutwardKitQty",
 						"/api/partStudy/logistics/{id}", "/api/partStudy/**", "/api/inwardSku/**",
 						"/api/partStudy/stockDetail/{id}", "/api/emitter/createIssueRequest", "/api/emitter/*",
