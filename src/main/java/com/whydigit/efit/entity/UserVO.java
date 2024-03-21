@@ -45,7 +45,7 @@ public class UserVO {
 	private String accessFlowId;
 	private Long pNo;
 	private boolean isActive;
-	private LocalDateTime lastLogin;
+	private String lastLogin;
 	@Enumerated(EnumType.STRING)
 	private Role role;
 	private long accessRightsRoleId;

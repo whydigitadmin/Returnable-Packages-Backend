@@ -864,17 +864,8 @@ public class MasterServiceImpl implements MasterService {
 	// Vendor
 
 	@Override
-	public VendorVO updateCreateVendor(@Valid VendorDTO vendorDTO) throws ApplicationException {
+	public VendorVO updateCreateVendor(VendorDTO vendorDTO) throws ApplicationException {
 		VendorVO vendorVO = new VendorVO();
-		if (ObjectUtils.isNotEmpty(vendorDTO.getId())) {
-			vendorVO = VendorRepo.findById(vendorDTO.getId())
-					.orElseThrow(() -> new ApplicationException("Invalid vendor details"));
-		}
-		getVendorVOFromVendorDTO(vendorDTO, vendorVO);
-		return VendorRepo.save(vendorVO);
-	}
-
-	private void getVendorVOFromVendorDTO(@Valid VendorDTO vendorDTO, VendorVO vendorVO) {
 		vendorVO.setOrgId(vendorDTO.getOrgId());
 		vendorVO.setVenderType(vendorDTO.getVenderType());
 		vendorVO.setDisplyName(vendorDTO.getDisplyName());
@@ -883,8 +874,63 @@ public class MasterServiceImpl implements MasterService {
 		vendorVO.setEmail(vendorDTO.getEmail());
 		vendorVO.setVenderActivePortal(vendorDTO.isActive());
 		vendorVO.setActive(vendorDTO.isActive());
-
+		
+		List<VendorBankDetailsVO>vendorBankDetailsVO=new ArrayList<>();
+		if(vendorDTO.getVendorBankDetailsDTO()!=null)
+		{
+			for(VendorBankDetailsDTO vendorbankDetailsDTO:vendorDTO.getVendorBankDetailsDTO())
+			{
+				VendorBankDetailsVO bankDetailsVO=new VendorBankDetailsVO();
+				bankDetailsVO.setAccountNo(vendorbankDetailsDTO.getAccountNo());
+				bankDetailsVO.setBank(vendorbankDetailsDTO.getBank());
+				bankDetailsVO.setBranch(vendorbankDetailsDTO.getBranch());
+				bankDetailsVO.setAccountname(vendorbankDetailsDTO.getAccountName());
+				bankDetailsVO.setIfscCode(vendorbankDetailsDTO.getIfscCode());
+				bankDetailsVO.setVendorVO(vendorVO);
+				vendorBankDetailsVO.add(bankDetailsVO);;
+			}
+		}
+		vendorVO.setVendorBankDetailsVO(vendorBankDetailsVO);
+		
+		List<VendorAddressVO>vendorAddressVO=new ArrayList<>();
+		if(vendorDTO.getVendorAddressDTO()!=null)
+		{
+			for(VendorAddressDTO vendorAddressDTO:vendorDTO.getVendorAddressDTO())
+			{
+				VendorAddressVO vendorAddress=new VendorAddressVO();
+				
+				vendorAddress.setGstNumber(vendorAddressDTO.getGstNumber());
+				vendorAddress.setStreet1(vendorAddressDTO.getStreet1());
+				vendorAddress.setStreet2(vendorAddressDTO.getStreet2());
+				vendorAddress.setCity(vendorAddressDTO.getCity());
+				vendorAddress.setPinCode(vendorAddressDTO.getPinCode());
+				vendorAddress.setContactName(vendorAddressDTO.getContactName());
+				vendorAddress.setPhoneNumber(vendorAddressDTO.getPhoneNumber());
+				vendorAddress.setDesignation(vendorAddressDTO.getDesignation());
+				vendorAddress.setEmail(vendorAddressDTO.getEmail());
+				vendorAddress.setGstRegistrationStatus(vendorAddressDTO.getGstRegistrationStatus());
+				vendorAddress.setState(vendorAddressDTO.getState());
+				vendorAddress.setVendorVO(vendorVO);
+				
+				vendorAddressVO.add(vendorAddress);
+			}
+		}
+		vendorVO.setVendorAddressVO(vendorAddressVO);
+		
+		return VendorRepo.save(vendorVO);
 	}
+
+//	private void getVendorVOFromVendorDTO(@Valid VendorDTO vendorDTO, VendorVO vendorVO) {
+//		vendorVO.setOrgId(vendorDTO.getOrgId());
+//		vendorVO.setVenderType(vendorDTO.getVenderType());
+//		vendorVO.setDisplyName(vendorDTO.getDisplyName());
+//		vendorVO.setPhoneNumber(vendorDTO.getPhoneNumber());
+//		vendorVO.setEntityLegalName(vendorDTO.getEntityLegalName());
+//		vendorVO.setEmail(vendorDTO.getEmail());
+//		vendorVO.setVenderActivePortal(vendorDTO.isActive());
+//		vendorVO.setActive(vendorDTO.isActive());
+//
+//	}
 
 	@Override
 	public List<VendorVO> getVendorByOrgId(Long orgId) {
@@ -904,41 +950,41 @@ public class MasterServiceImpl implements MasterService {
 		VendorRepo.deleteById(id);
 	}
 
-	@Override
-	public VendorAddressVO updateCreateVendorAddress(@Valid VendorAddressDTO vendorAddressDTO)
-	        throws ApplicationException {
-	    VendorAddressVO vendorAddressVO = new VendorAddressVO();
-	    if (ObjectUtils.isNotEmpty(vendorAddressDTO) && ObjectUtils.isNotEmpty(vendorAddressDTO.getVendorId())) {
-	        VendorVO vendorVO = vendorRepo.findById(vendorAddressDTO.getVendorId())
-	                .orElseThrow(() -> new ApplicationException("Vendor information not found."));
-			if (ObjectUtils.isNotEmpty(vendorAddressDTO.getId())) {
-				vendorAddressVO = vendorAddressRepo.findById(vendorAddressDTO.getId())
-						.orElseThrow(() -> new ApplicationException("Vendor Address information not found."));
-			}
-			vendorAddressVO.setVendorVO(vendorVO); // Setting the VendorVO in VendorAddressVO
-		} else {
-			throw new ApplicationException("Invalid vendor address information.");
-		}
-		getVendorAddressVOFromVendorAddressDTO(vendorAddressDTO, vendorAddressVO);
-		return vendorAddressRepo.save(vendorAddressVO);
-	}
-
-	private void getVendorAddressVOFromVendorAddressDTO(@Valid VendorAddressDTO vendorAddressDTO,
-			VendorAddressVO vendorAddressVO) {
-		vendorAddressVO.setOrgId(vendorAddressDTO.getOrgId());
-		vendorAddressVO.setGstNumber(vendorAddressDTO.getGstNumber());
-		vendorAddressVO.setStreet1(vendorAddressDTO.getStreet1());
-		vendorAddressVO.setStreet2(vendorAddressDTO.getStreet2());
-		vendorAddressVO.setCity(vendorAddressDTO.getCity());
-		vendorAddressVO.setPincode(vendorAddressDTO.getPincode());
-		vendorAddressVO.setContactName(vendorAddressDTO.getContactName());
-		vendorAddressVO.setPhone(vendorAddressDTO.getPhone());
-		vendorAddressVO.setDestination(vendorAddressDTO.getDestination());
-		vendorAddressVO.setEMail(vendorAddressDTO.getEMail());
-		vendorAddressVO.setGstRegistrationStatus(vendorAddressDTO.getGstRegistrationStatus());
-		vendorAddressVO.setState(vendorAddressDTO.getState());
-
-	}
+//	@Override
+//	public VendorAddressVO updateCreateVendorAddress(@Valid VendorAddressDTO vendorAddressDTO)
+//	        throws ApplicationException {
+//	    VendorAddressVO vendorAddressVO = new VendorAddressVO();
+//	    if (ObjectUtils.isNotEmpty(vendorAddressDTO) && ObjectUtils.isNotEmpty(vendorAddressDTO.getVendorid())) {
+//	        VendorVO vendorVO = vendorRepo.findById(vendorAddressDTO.getVendorid())
+//	                .orElseThrow(() -> new ApplicationException("Vendor information not found."));
+//			if (ObjectUtils.isNotEmpty(vendorAddressDTO.getId())) {
+//				vendorAddressVO = vendorAddressRepo.findById(vendorAddressDTO.getId())
+//						.orElseThrow(() -> new ApplicationException("Vendor Address information not found."));
+//			}
+//			vendorAddressVO.setVendorVO(vendorVO); // Setting the VendorVO in VendorAddressVO
+//		} else {
+//			throw new ApplicationException("Invalid vendor address information.");
+//		}
+//		getVendorAddressVOFromVendorAddressDTO(vendorAddressDTO, vendorAddressVO);
+//		return vendorAddressRepo.save(vendorAddressVO);
+//	}
+//
+//	private void getVendorAddressVOFromVendorAddressDTO(@Valid VendorAddressDTO vendorAddressDTO,
+//			VendorAddressVO vendorAddressVO) {
+//		vendorAddressVO.setOrgId(vendorAddressDTO.getOrgId());
+//		vendorAddressVO.setGstNumber(vendorAddressDTO.getGstNumber());
+//		vendorAddressVO.setStreet1(vendorAddressDTO.getStreet1());
+//		vendorAddressVO.setStreet2(vendorAddressDTO.getStreet2());
+//		vendorAddressVO.setCity(vendorAddressDTO.getCity());
+//		vendorAddressVO.setPincode(vendorAddressDTO.getPincode());
+//		vendorAddressVO.setContactName(vendorAddressDTO.getContactName());
+//		vendorAddressVO.setPhone(vendorAddressDTO.getPhone());
+//		vendorAddressVO.setDestination(vendorAddressDTO.getDestination());
+//		vendorAddressVO.setEMail(vendorAddressDTO.getEMail());
+//		vendorAddressVO.setGstRegistrationStatus(vendorAddressDTO.getGstRegistrationStatus());
+//		vendorAddressVO.setState(vendorAddressDTO.getState());
+//
+//	}
 
 	@Override
 	public Optional<VendorAddressVO> getVendorAddressById(Long id) {
@@ -950,36 +996,36 @@ public class MasterServiceImpl implements MasterService {
 		vendorAddressRepo.deleteById(id);
 	}
 
-	@Override
-	public VendorBankDetailsVO updateCreatevendorBankDetails(@Valid VendorBankDetailsDTO vendorBankDetailsDTO)
-			throws ApplicationException {
-		VendorBankDetailsVO vendorBankDetailsVO = new VendorBankDetailsVO();
-		if (ObjectUtils.isNotEmpty(vendorBankDetailsDTO)
-				&& ObjectUtils.isNotEmpty(vendorBankDetailsDTO.getVendorId())) {
-			VendorVO vendorVO = vendorRepo.findById(vendorBankDetailsDTO.getVendorId())
-					.orElseThrow(() -> new ApplicationException("Vendor information not found."));
-			if (ObjectUtils.isNotEmpty(vendorBankDetailsDTO.getId())) {
-				vendorBankDetailsVO = vendorBankDetailsRepo.findById(vendorBankDetailsDTO.getId())
-						.orElseThrow(() -> new ApplicationException("Vendor bank detail information not found."));
-			}
-			vendorBankDetailsVO.setVendorVO(vendorVO);
-		} else {
-			throw new ApplicationException("Invalid vendor bank detail information.");
-		}
-		getVendorBankDetailsVOFromVendorBankDetailsDTO(vendorBankDetailsDTO, vendorBankDetailsVO);
-		return vendorBankDetailsRepo.save(vendorBankDetailsVO);
-	}
+//	@Override
+//	public VendorBankDetailsVO updateCreatevendorBankDetails(@Valid VendorBankDetailsDTO vendorBankDetailsDTO)
+//			throws ApplicationException {
+//		VendorBankDetailsVO vendorBankDetailsVO = new VendorBankDetailsVO();
+//		if (ObjectUtils.isNotEmpty(vendorBankDetailsDTO)
+//				&& ObjectUtils.isNotEmpty(vendorBankDetailsDTO.getVendorId())) {
+//			VendorVO vendorVO = vendorRepo.findById(vendorBankDetailsDTO.getVendorId())
+//					.orElseThrow(() -> new ApplicationException("Vendor information not found."));
+//			if (ObjectUtils.isNotEmpty(vendorBankDetailsDTO.getId())) {
+//				vendorBankDetailsVO = vendorBankDetailsRepo.findById(vendorBankDetailsDTO.getId())
+//						.orElseThrow(() -> new ApplicationException("Vendor bank detail information not found."));
+//			}
+//			vendorBankDetailsVO.setVendorVO(vendorVO);
+//		} else {
+//			throw new ApplicationException("Invalid vendor bank detail information.");
+//		}
+//		getVendorBankDetailsVOFromVendorBankDetailsDTO(vendorBankDetailsDTO, vendorBankDetailsVO);
+//		return vendorBankDetailsRepo.save(vendorBankDetailsVO);
+//	}
 
-	private void getVendorBankDetailsVOFromVendorBankDetailsDTO(@Valid VendorBankDetailsDTO vendorBankDetailsDTO,
-			VendorBankDetailsVO vendorBankDetailsVO) {
-		vendorBankDetailsVO.setOrgId(vendorBankDetailsDTO.getOrgId());
-		vendorBankDetailsVO.setBank(vendorBankDetailsDTO.getBank());
-		vendorBankDetailsVO.setDisplayName(vendorBankDetailsDTO.getDisplayName());
-		vendorBankDetailsVO.setIfscCode(vendorBankDetailsDTO.getIfscCode());
-		vendorBankDetailsVO.setAccountNum(vendorBankDetailsDTO.getAccountNum());
-		vendorBankDetailsVO.setBranch(vendorBankDetailsDTO.getBranch());
-
-	}
+//	private void getVendorBankDetailsVOFromVendorBankDetailsDTO(@Valid VendorBankDetailsDTO vendorBankDetailsDTO,
+//			VendorBankDetailsVO vendorBankDetailsVO) {
+//		vendorBankDetailsVO.setOrgId(vendorBankDetailsDTO.getOrgId());
+//		vendorBankDetailsVO.setBank(vendorBankDetailsDTO.getBank());
+//		vendorBankDetailsVO.setAccountname(vendorBankDetailsDTO.getDisplayName());
+//		vendorBankDetailsVO.setIfscCode(vendorBankDetailsDTO.getIfscCode());
+//		vendorBankDetailsVO.setAccountNo(vendorBankDetailsDTO.getAccountNum());
+//		vendorBankDetailsVO.setBranch(vendorBankDetailsDTO.getBranch());
+//
+//	}
 
 	@Override
 	public Optional<VendorBankDetailsVO> getVendorBankDetailsById(Long id) {

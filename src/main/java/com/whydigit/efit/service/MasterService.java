@@ -150,20 +150,19 @@ public interface MasterService {
 
 	Optional<VendorVO> getVendorById(Long id);
 
-	VendorVO updateCreateVendor(@Valid VendorDTO vendorDTO) throws ApplicationException;
+	VendorVO updateCreateVendor(VendorDTO vendorDTO) throws ApplicationException;
 
 	List<VendorVO> getVendorByOrgId(Long orgId);
 
 	void deletevendor(long id);
 
-	VendorAddressVO updateCreateVendorAddress(@Valid VendorAddressDTO vendorAddressDTO) throws ApplicationException;
+//	VendorAddressVO updateCreateVendorAddress(@Valid VendorAddressDTO vendorAddressDTO) throws ApplicationException;
 
 	Optional<VendorAddressVO> getVendorAddressById(Long id);
 
 	void deletevendorAddress(Long id);
 
-	VendorBankDetailsVO updateCreatevendorBankDetails(@Valid VendorBankDetailsDTO vendorBankDetailsDTO)
-			throws ApplicationException;
+//	VendorBankDetailsVO updateCreatevendorBankDetails(@Valid VendorBankDetailsDTO vendorBankDetailsDTO)throws ApplicationException;
 
 	Optional<VendorBankDetailsVO> getVendorBankDetailsById(Long id);
 

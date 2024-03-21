@@ -30,7 +30,7 @@ public class UserResponseDTO {
 	private Date accountRemovedDate;
 	private String token;
 	private String tokenId;
-	private LocalDateTime lastLogin;
+	private String lastLogin;
 	private AccessRightsVO accessRightsVO;
 	private UserAddressVO userAddressVO;
 }
