@@ -41,13 +41,13 @@ public interface MasterService {
 
 	List<AssetVO> getAllAsset(Long orgId);
 
-	Optional<AssetVO> getAssetById(int id);
+	Optional<AssetVO> getAssetById(Long id);
 
 	AssetVO createAsset(AssetVO assetVO);
 
 	Optional<AssetVO> updateAsset(AssetVO assetVO);
 
-	void deleteAsset(int id);
+	void deleteAsset(Long id);
 
 	Map<String, Object> getAllAssetGroup(Long orgId, String assetCategory, String assetName, String assetCodeId,
 			String manufacturer);
@@ -58,7 +58,6 @@ public interface MasterService {
 
 	Optional<AssetGroupVO> updateAssetGroup(AssetGroupVO assetGroupVO);
 
-	void deleteAssetGroup(int id);
 
 	// CUstomers
 
@@ -70,15 +69,15 @@ public interface MasterService {
 
 	CustomersVO updateCustomers(CustomersDTO customersDTO) throws ApplicationException;
 
-	CustomersBankDetailsVO createUpdateBankDetails(CustomersBankDetailsDTO customersBankDetailsDTO)
-			throws ApplicationException;
+//	CustomersBankDetailsVO createUpdateBankDetails(CustomersBankDetailsDTO customersBankDetailsDTO)
+//			throws ApplicationException;
 
 	void deleteCustomers(Long id);
 
 	void deleteCustomersBankDetails(Long id);
 
-	CustomersAddressVO createUpdateCustomersAddress(CustomersAddressDTO customersAddressDTO)
-			throws ApplicationException;
+//	CustomersAddressVO createUpdateCustomersAddress(CustomersAddressDTO customersAddressDTO)
+//			throws ApplicationException;
 
 	void deleteCustomersAddress(Long id);
 
@@ -129,13 +128,13 @@ public interface MasterService {
 	// Create Kit
 	List<KitResponseDTO> getAllKit(Long orgId);
 
-	Optional<KitVO> getKitById(String id);
+	Optional<KitVO> getKitById(Long id);
 
 	KitVO createkit(KitDTO kitDTO) throws ApplicationException;
 
 	Optional<KitVO> updatedKit(KitVO kitVO);
 
-	void deleteKit(String id);
+	void deleteKit(Long id);
 
 	Map<String, List<CustomersVO>> CustomersType(Long orgId);
 
@@ -175,5 +174,9 @@ public interface MasterService {
 	Set<Object[]> getFlowNameByOrgID(Long orgId, Long emitterId);
 
 	int loadKitQty(Long irItemId, Long kitQty);
+
+
+
+	
 
 }
