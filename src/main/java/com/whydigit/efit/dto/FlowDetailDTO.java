@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class FlowDetailDTO {
+	
 	private String kitName;
 	private String emitter;
 	private long orgId;
@@ -28,5 +29,6 @@ public class FlowDetailDTO {
 	// private String productToPack;
 	// private int quantity;
 	// private String rentalTerm;
+	
 
 }

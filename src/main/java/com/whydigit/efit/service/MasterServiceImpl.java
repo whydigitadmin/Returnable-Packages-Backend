@@ -25,7 +25,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import javax.validation.Valid;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -41,11 +40,11 @@ import com.opencsv.CSVReader;
 import com.whydigit.efit.common.CommonConstant;
 import com.whydigit.efit.common.CustomerConstant;
 import com.whydigit.efit.common.MasterConstant;
-import com.whydigit.efit.controller.DmapDTO;
 import com.whydigit.efit.dto.CustomerAttachmentType;
 import com.whydigit.efit.dto.CustomersAddressDTO;
 import com.whydigit.efit.dto.CustomersBankDetailsDTO;
 import com.whydigit.efit.dto.CustomersDTO;
+import com.whydigit.efit.dto.DmapDTO;
 import com.whydigit.efit.dto.DmapDetailsDTO;
 import com.whydigit.efit.dto.FlowDTO;
 import com.whydigit.efit.dto.KitAssetDTO;
@@ -150,12 +149,14 @@ public class MasterServiceImpl implements MasterService {
 	
 	@Autowired
 	IssueItemRepo issueItemRepo;
-
+	
 	@Autowired
 	DmapRepo dmapRepo;
-
+	
 	@Autowired
-	DmapDetailsRepo dmapDetailsRepo;
+	DmapDetailsRepo detailsRepo;
+
+	
 	
 	@Override
 	public List<AssetVO> getAllAsset(Long orgId) {
@@ -1079,27 +1080,34 @@ public class MasterServiceImpl implements MasterService {
 	}
 
 	@Override
-	public DmapVO createDmap(DmapDTO dmapDTO) {
-		DmapVO dmapVO = new DmapVO();
+	public DmapVO createDmapVO(DmapDTO  dmapDTO) {
+		
+		DmapVO dmapVO=new DmapVO();
+		dmapVO.setFinYear(dmapDTO.getFinYear());
 		dmapVO.setFromDate(dmapDTO.getFromDate());
 		dmapVO.setToDate(dmapDTO.getToDate());
-		dmapVO.setFinYear(dmapDTO.getFinYear());
+		dmapVO.setExtDate(dmapDTO.getExtDate());
 		dmapVO.setOrgId(dmapDTO.getOrgId());
-		dmapVO.setExtendedDate(dmapDTO.getExtendedDate());
-
-		List<DmapDetailsVO> dmapDetailsVO = new ArrayList<>();
-		if (dmapDTO.getDmapDetailsDTO() != null) {
-			for (DmapDetailsDTO dmapDetails : dmapDTO.getDmapDetailsDTO()) {
-				DmapDetailsVO dmapDet = new DmapDetailsVO();
-				dmapDet.setSCode(dmapDetails.getSCode());
-				dmapDet.setPrefix(dmapDetails.getPrefix());
-				dmapDet.setSufix(dmapDetails.getSufix());
-				dmapDet.setSequence(dmapDetails.getSequence());
-				dmapDet.setType(dmapDetails.getType());
-				dmapDetailsVO.add(dmapDet);
+		
+		List<DmapDetailsVO>dmapDetailsVO=new ArrayList<>();
+		if(dmapDTO.getDmapDetailsDTO()!=null)
+		{
+			for(DmapDetailsDTO detailsDTO:dmapDTO.getDmapDetailsDTO())
+			{
+				DmapDetailsVO detailsVO=new DmapDetailsVO();
+					detailsVO.setScode(detailsDTO.getScode());
+					detailsVO.setPrefix(detailsDTO.getPrefix());
+					detailsVO.setSequence(detailsDTO.getSequence());
+					detailsVO.setSufix(detailsDTO.getSufix());
+					detailsVO.setType(detailsDTO.getType());
+					detailsVO.setDmapVO(dmapVO);
+					
+					dmapDetailsVO.add(detailsVO);
 			}
 		}
 		dmapVO.setDmapDetailsVO(dmapDetailsVO);
 		return dmapRepo.save(dmapVO);
 	}
+
+	
 }

@@ -1,6 +1,5 @@
 package com.whydigit.efit.entity;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 
 import javax.persistence.Embedded;

@@ -30,12 +30,11 @@ import com.whydigit.efit.common.CommonConstant;
 import com.whydigit.efit.common.UserConstants;
 import com.whydigit.efit.dto.CustomerAttachmentType;
 import com.whydigit.efit.dto.CustomersDTO;
+import com.whydigit.efit.dto.DmapDTO;
 import com.whydigit.efit.dto.FlowDTO;
 import com.whydigit.efit.dto.KitDTO;
 import com.whydigit.efit.dto.KitResponseDTO;
 import com.whydigit.efit.dto.ResponseDTO;
-import com.whydigit.efit.dto.VendorAddressDTO;
-import com.whydigit.efit.dto.VendorBankDetailsDTO;
 import com.whydigit.efit.dto.VendorDTO;
 import com.whydigit.efit.entity.AssetCategoryVO;
 import com.whydigit.efit.entity.AssetGroupVO;
@@ -1572,25 +1571,26 @@ public class MasterController extends BaseController {
 	//DMAP
 	
 	@PostMapping("/dmap")
-	public ResponseEntity<ResponseDTO> createDmap(@RequestBody DmapDTO dmapDTO) {
+	public ResponseEntity<ResponseDTO> createDmap(@RequestBody DmapDTO  dmapDTO) {
 		String methodName = "createDmap()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
 		try {
-			DmapVO createdDmapVO = masterService.createDmap(dmapDTO);
+			DmapVO creatDmapVO = masterService.createDmapVO(dmapDTO);
 			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Dmap created successfully");
-			responseObjectsMap.put("DmapVO", createdDmapVO);
+			responseObjectsMap.put("dMapVO", creatDmapVO);
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-			responseDTO = createServiceResponseError(responseObjectsMap, "dmapDTO creation failed", errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "Dmap creation failed", errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
+	
 	
 
 
