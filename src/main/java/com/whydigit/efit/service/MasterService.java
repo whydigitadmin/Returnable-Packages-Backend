@@ -9,6 +9,7 @@ import javax.validation.Valid;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.whydigit.efit.controller.DmapDTO;
 import com.whydigit.efit.dto.CustomerAttachmentType;
 import com.whydigit.efit.dto.CustomersAddressDTO;
 import com.whydigit.efit.dto.CustomersBankDetailsDTO;
@@ -25,6 +26,7 @@ import com.whydigit.efit.entity.AssetVO;
 import com.whydigit.efit.entity.CustomersAddressVO;
 import com.whydigit.efit.entity.CustomersBankDetailsVO;
 import com.whydigit.efit.entity.CustomersVO;
+import com.whydigit.efit.entity.DmapVO;
 import com.whydigit.efit.entity.FlowVO;
 import com.whydigit.efit.entity.KitVO;
 import com.whydigit.efit.entity.ManufacturerProductVO;
@@ -174,6 +176,9 @@ public interface MasterService {
 	Set<Object[]> getFlowNameByOrgID(Long orgId, Long emitterId);
 
 	int loadKitQty(Long irItemId, Long kitQty);
+
+	DmapVO createDmap(DmapDTO dmapDTO);
+
 
 
 

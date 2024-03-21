@@ -41,10 +41,12 @@ import com.opencsv.CSVReader;
 import com.whydigit.efit.common.CommonConstant;
 import com.whydigit.efit.common.CustomerConstant;
 import com.whydigit.efit.common.MasterConstant;
+import com.whydigit.efit.controller.DmapDTO;
 import com.whydigit.efit.dto.CustomerAttachmentType;
 import com.whydigit.efit.dto.CustomersAddressDTO;
 import com.whydigit.efit.dto.CustomersBankDetailsDTO;
 import com.whydigit.efit.dto.CustomersDTO;
+import com.whydigit.efit.dto.DmapDetailsDTO;
 import com.whydigit.efit.dto.FlowDTO;
 import com.whydigit.efit.dto.KitAssetDTO;
 import com.whydigit.efit.dto.KitDTO;
@@ -60,6 +62,8 @@ import com.whydigit.efit.entity.CustomerAttachmentVO;
 import com.whydigit.efit.entity.CustomersAddressVO;
 import com.whydigit.efit.entity.CustomersBankDetailsVO;
 import com.whydigit.efit.entity.CustomersVO;
+import com.whydigit.efit.entity.DmapDetailsVO;
+import com.whydigit.efit.entity.DmapVO;
 import com.whydigit.efit.entity.FlowDetailVO;
 import com.whydigit.efit.entity.FlowVO;
 import com.whydigit.efit.entity.KitAssetVO;
@@ -78,6 +82,8 @@ import com.whydigit.efit.repo.CustomerAttachmentRepo;
 import com.whydigit.efit.repo.CustomersAddressRepo;
 import com.whydigit.efit.repo.CustomersBankDetailsRepo;
 import com.whydigit.efit.repo.CustomersRepo;
+import com.whydigit.efit.repo.DmapDetailsRepo;
+import com.whydigit.efit.repo.DmapRepo;
 import com.whydigit.efit.repo.FlowRepo;
 import com.whydigit.efit.repo.IssueItemRepo;
 import com.whydigit.efit.repo.KitRepo;
@@ -145,6 +151,12 @@ public class MasterServiceImpl implements MasterService {
 	@Autowired
 	IssueItemRepo issueItemRepo;
 
+	@Autowired
+	DmapRepo dmapRepo;
+
+	@Autowired
+	DmapDetailsRepo dmapDetailsRepo;
+	
 	@Override
 	public List<AssetVO> getAllAsset(Long orgId) {
 		List<AssetVO> assetVO = new ArrayList<>();
@@ -1019,5 +1031,29 @@ public class MasterServiceImpl implements MasterService {
 	public int loadKitQty(Long irItemId, Long kitQty) {
 		return issueItemRepo.loadKitQty(irItemId,kitQty);
 	}
-	
+
+	@Override
+	public DmapVO createDmap(DmapDTO dmapDTO) {
+		DmapVO dmapVO = new DmapVO();
+		dmapVO.setFromDate(dmapDTO.getFromDate());
+		dmapVO.setToDate(dmapDTO.getToDate());
+		dmapVO.setFinYear(dmapDTO.getFinYear());
+		dmapVO.setOrgId(dmapDTO.getOrgId());
+		dmapVO.setExtendedDate(dmapDTO.getExtendedDate());
+
+		List<DmapDetailsVO> dmapDetailsVO = new ArrayList<>();
+		if (dmapDTO.getDmapDetailsDTO() != null) {
+			for (DmapDetailsDTO dmapDetails : dmapDTO.getDmapDetailsDTO()) {
+				DmapDetailsVO dmapDet = new DmapDetailsVO();
+				dmapDet.setSCode(dmapDetails.getSCode());
+				dmapDet.setPrefix(dmapDetails.getPrefix());
+				dmapDet.setSufix(dmapDetails.getSufix());
+				dmapDet.setSequence(dmapDetails.getSequence());
+				dmapDet.setType(dmapDetails.getType());
+				dmapDetailsVO.add(dmapDet);
+			}
+		}
+		dmapVO.setDmapDetailsVO(dmapDetailsVO);
+		return dmapRepo.save(dmapVO);
+	}
 }
