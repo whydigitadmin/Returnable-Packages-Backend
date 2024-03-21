@@ -9,7 +9,6 @@ import java.util.Set;
 
 import javax.validation.Valid;
 
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,8 +29,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.whydigit.efit.common.CommonConstant;
 import com.whydigit.efit.common.UserConstants;
 import com.whydigit.efit.dto.CustomerAttachmentType;
-import com.whydigit.efit.dto.CustomersAddressDTO;
-import com.whydigit.efit.dto.CustomersBankDetailsDTO;
 import com.whydigit.efit.dto.CustomersDTO;
 import com.whydigit.efit.dto.FlowDTO;
 import com.whydigit.efit.dto.KitDTO;
@@ -44,8 +41,8 @@ import com.whydigit.efit.entity.AssetCategoryVO;
 import com.whydigit.efit.entity.AssetGroupVO;
 import com.whydigit.efit.entity.AssetVO;
 import com.whydigit.efit.entity.CustomersAddressVO;
-import com.whydigit.efit.entity.CustomersBankDetailsVO;
 import com.whydigit.efit.entity.CustomersVO;
+import com.whydigit.efit.entity.DmapVO;
 import com.whydigit.efit.entity.FlowVO;
 import com.whydigit.efit.entity.KitVO;
 import com.whydigit.efit.entity.ManufacturerProductVO;
@@ -1571,6 +1568,30 @@ public class MasterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
+	
+	//DMAP
+	
+	@PostMapping("/dmap")
+	public ResponseEntity<ResponseDTO> createDmap(@RequestBody DmapDTO dmapDTO) {
+		String methodName = "createDmap()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		try {
+			DmapVO createdDmapVO = masterService.createDmap(dmapDTO);
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Dmap created successfully");
+			responseObjectsMap.put("DmapVO", createdDmapVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "dmapDTO creation failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+	
 
 
 }
