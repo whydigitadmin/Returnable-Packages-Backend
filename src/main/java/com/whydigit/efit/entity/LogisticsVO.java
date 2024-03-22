@@ -27,16 +27,23 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class LogisticsVO {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "partstudy3")
-	@SequenceGenerator(name = "partstudy3", sequenceName = "partstudy3seqge", initialValue = 1000000001, allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "partstudyloggen")
+	@SequenceGenerator(name = "partstudyloggen", sequenceName = "partstudylogseq", initialValue = 1000000001, allocationSize = 1)
 	@Column(name ="partstudy3id")
+	private Long id;
+	
+	@Column(name ="refpsid")
 	private Long refPsId;
+	
 	@Column(name ="orgid")
 	private Long orgId;
+	
 	@Column(name ="avglotsize",length =15)
 	private int avgLotSize;
+	
 	@Column(name ="dispatchfrequency",length =15)
 	private int dispatchFrequency;
+	
 	@Column(name ="diapatchto",length =50)
 	private String diapatchTo;
 	

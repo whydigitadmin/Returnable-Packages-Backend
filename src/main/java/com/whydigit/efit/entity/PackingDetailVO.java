@@ -32,39 +32,58 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PackingDetailVO {
+	
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "partstudy2gen")
-	@SequenceGenerator(name = "partstudy2gen", sequenceName = "partstudy2seqge", initialValue = 1000000001, allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "partstudypackgen")
+	@SequenceGenerator(name = "partstudypackgen", sequenceName = "partstudypackseq", initialValue = 1000000001, allocationSize = 1)
 	@Column(name="partstudy2id")
+	private Long id;
+	
+	@Column(name="refpsid")
 	private Long refPsId;
-	@Column(name="orgId")
+	
+	@Column(name="orgid")
 	private Long orgId;
+	
 	@Column(name="length",precision = 4,scale = 2)
 	private Float length;
+	
 	@Column(name="breath",precision = 4,scale = 2)
 	private Float breath;
+	
 	@Column(name="height",precision = 4,scale = 2)
 	private Float height;
+	
 	@Column(name="unit",length =25)
 	private String partUnit;
-	@Column(name="existingPart",length =25)
+	
+	@Column(name="existingpart",length =25)
 	private String existingPart;
+	
 	@Column(name="cpc",length = 25)
 	private String currentPackingChallenges;
+	
 	@Column(name="ppp",length =25)
 	private String partsPerPackaging;
-	@Column(name="sensitive",length =25)
+	
+	@Column(name="senstive",length =25)
 	private String partSensitive;
+	
 	@Column(name="partgreasy",length =25 )
 	private String partGreasy;
+	
 	@Column(name="orientation",length =25)
 	private String partOrientation;
+	
 	@Column(name="mpsu",length = 25)
 	private String multiPartInSingleUnit;
+	
 	@Column(name="stacking",length =25)
 	private String stacking;
+	
 	@Column(name="nesting",length =25 )
 	private String nesting;
+	
 	@Column(name="remarks",length =25)
 	private String remarks;
 	

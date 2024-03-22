@@ -44,8 +44,10 @@ public class PartStudyController extends BaseController {
 	public static final Logger LOGGER = LoggerFactory.getLogger(BasicMasterController.class);
 
 	@Autowired
-		Map<String, Object> responseObjectsMap = new HashMap<>();
 	private PartStudyService partStudyService;
+	
+	Map<String, Object> responseObjectsMap = new HashMap<>();
+	
 	
 	@GetMapping("/basicDetails")
 	public ResponseEntity<ResponseDTO> getAllBasicDetail(@RequestParam(required = false) Long orgId) {
