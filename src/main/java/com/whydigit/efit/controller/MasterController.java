@@ -1609,7 +1609,7 @@ public class MasterController extends BaseController {
 				responseObjectsMap.put("serviceVO", updatedServiceVO);
 				responseDTO = createServiceResponse(responseObjectsMap);
 			} else {
-				errorMsg = "Service not found for ID: " + serviceDTO.getCode();
+				errorMsg = "Service not found for ID: " + serviceDTO.getId();
 				responseDTO = createServiceResponseError(responseObjectsMap, "Service update failed", errorMsg);
 			}
 		} catch (Exception e) {

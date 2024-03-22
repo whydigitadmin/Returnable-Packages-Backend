@@ -1,12 +1,16 @@
 
 package com.whydigit.efit.entity;
 
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -17,23 +21,32 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "ps_logistics")
+@Table(name = "partstudy3")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class LogisticsVO {
-
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "partstudy3")
+	@SequenceGenerator(name = "partstudy3", sequenceName = "partstudy3seqge", initialValue = 1000000001, allocationSize = 1)
+	@Column(name ="partstudy3id")
 	private Long refPsId;
-	private String partStudyId;
+	@Column(name ="orgid")
 	private Long orgId;
-	private String avgLotSize;
-	private String dispatchFrequency;
+	@Column(name ="avglotsize",length =15)
+	private int avgLotSize;
+	@Column(name ="dispatchfrequency",length =15)
+	private int dispatchFrequency;
+	@Column(name ="diapatchto",length =50)
 	private String diapatchTo;
+	
+	
+	
+	
 	@JsonBackReference
 	@OneToOne
 	@MapsId
-	@JoinColumn(name = "refPsId")
+	@JoinColumn(name = "partstudyid")
 	private BasicDetailVO basicDetailVO;
 
 	@Embedded
