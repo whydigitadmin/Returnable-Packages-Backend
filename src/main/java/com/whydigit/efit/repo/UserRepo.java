@@ -27,7 +27,7 @@ public interface UserRepo extends JpaRepository<UserVO, Long> {
 	@Modifying
 	@Transactional
 	@Query(value= "update UserVO u set u.lastLogin=?2 where u.userId=?1" )
-	void updateLastLoginByUserId(Long userId, LocalDateTime now);
+	void updateLastLoginByUserId(Long userId, String string);
 
 	@Query(value = "SELECT u2.user_id, ua.id,u2.first_name,u2.last_name, ua.location,ua.address1,ua.address2,ua.country,ua.state,ua.pin FROM users u2 LEFT JOIN user_address ua ON u2.address_id = ua.id WHERE u2.org_id = ?1 AND u2.role = ?2",nativeQuery = true)
 	List<Object[]> findByOrgIdAndRole(Long orgId,String string);

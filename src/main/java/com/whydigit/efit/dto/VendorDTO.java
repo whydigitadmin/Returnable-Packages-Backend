@@ -1,5 +1,7 @@
 package com.whydigit.efit.dto;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,5 +21,9 @@ public class VendorDTO {
 	private String email;
 	private boolean venderActivePortal;
 	private boolean active;
+	
+	private List<VendorAddressDTO>vendorAddressDTO;
+	
+	private List<VendorBankDetailsDTO>vendorBankDetailsDTO;
 
 }

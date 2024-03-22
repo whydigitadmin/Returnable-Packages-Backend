@@ -1,9 +1,7 @@
-package com.whydigit.efit.controller;
+package com.whydigit.efit.dto;
 
 import java.time.LocalDate;
 import java.util.List;
-
-import com.whydigit.efit.dto.DmapDetailsDTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,12 +10,16 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+
 public class DmapDTO {
-	private long orgId;
-	private char finYear;
+	
+	private String finYear;
 	private LocalDate fromDate;
 	private LocalDate toDate;
-	private LocalDate extendedDate;
+	private LocalDate extDate;
+	private Long orgId;
+	
 	
 	private List<DmapDetailsDTO> dmapDetailsDTO;
+
 }

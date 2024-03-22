@@ -196,7 +196,7 @@ public class AuthServiceImpl implements AuthService {
 
 	private void updateLastLoginByUserId(Long userId) {
 		try {
-			userRepo.updateLastLoginByUserId(userId, LocalDateTime.now());
+			userRepo.updateLastLoginByUserId(userId,LocalDateTime.now().toString());
 		} catch (Exception e) {
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME_WITH_USER_ID, "updateLastLoginByUserId()", userId,
 					e.getMessage());
@@ -222,11 +222,11 @@ public class AuthServiceImpl implements AuthService {
 	/**
 	 * @param userVO
 	 */
-	private void updateUserLoginInformation(UserVO userVO) {
+	private void updateUserLoginInformation(UserVO userVO1) {
 		try {
-			userVO.setLoginStatus(true);
-			userRepo.save(userVO);
-			userService.createUserAction(userVO.getUserName(), userVO.getUserId(),
+			userVO1.setLoginStatus(true);
+			userRepo.save(userVO1);
+			userService.createUserAction(userVO1.getUserName(), userVO1.getUserId(),
 					UserConstants.USER_ACTION_TYPE_LOGIN);
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage());

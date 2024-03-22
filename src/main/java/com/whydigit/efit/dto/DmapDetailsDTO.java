@@ -8,11 +8,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DmapDetailsDTO {
-	private String sCode;
+	
+	private String scode;
 	private String prefix;
 	private int sequence;
 	private String sufix;
 	private String type;
-	
 
 }

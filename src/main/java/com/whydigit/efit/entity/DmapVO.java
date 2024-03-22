@@ -22,36 +22,50 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "dmap")
+@Table(name="dmap")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class DmapVO {
-
-	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "dmapgen")
-	@SequenceGenerator(name = "dmapgen", sequenceName = "dmapseqge", initialValue = 1000000001, allocationSize = 1)
+	
 	@Id
-	@Column(name = "dampid")
+	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "dmapgen")
+	@SequenceGenerator(name = "dmapgen", sequenceName = "dmapseq", initialValue = 1000000001, allocationSize = 1)
+	@Column(name="dmapid")
 	private Long id;
-	@Column(name = "orgid")
-	private long orgId;
-	@Column(name = "finyear", length = 4)
-	private char finYear;
-	@Column(name = "fromdate")
-	private LocalDate fromDate;
-	@Column(name = "todate")
-	private LocalDate toDate;
-	@Column(name = "extendeddate")
-	private LocalDate extendedDate;
-	@Column(name = "createdby")
+	
+	@Column(name="orgid")
+	private Long orgId;
+	
+	private boolean cancel=false;
+	private boolean active;
+	
+	@Column(name="cancelremarks",length = 50)
+	private String cancelRemarks;
+	
+	@Column(name="createdby",length = 25)
 	private String createdBy;
-	@Column(name = "modifiedby")
+	
+	@Column(name="modifiedby",length = 25)
 	private String modifiedBy;
-
+	
+	@Column(name="finyear",length = 4)
+	private String finYear;
+	
+	@Column(name="fromdate",length = 4)
+	private LocalDate fromDate;
+	
+	@Column(name="todate",length = 4)
+	private LocalDate toDate;
+	
+	@Column(name="extendeddate",length = 4)
+	private LocalDate extDate;
+	
 	@OneToMany(mappedBy = "dmapVO", cascade = CascadeType.ALL)
 	@JsonManagedReference
-	private List<DmapDetailsVO> dmapDetailsVO;
-
+	List<DmapDetailsVO> dmapDetailsVO;
+	
 	@Embedded
-	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
+	private CreatedUpdatedDate commonDate=new CreatedUpdatedDate();
+
 }

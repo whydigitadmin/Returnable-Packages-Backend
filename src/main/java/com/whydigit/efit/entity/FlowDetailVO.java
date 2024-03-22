@@ -13,6 +13,7 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.whydigit.efit.dto.CreatedUpdatedDate;
+import com.whydigit.efit.entity.FlowVO.FlowVOBuilder;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -36,9 +37,9 @@ public class FlowDetailVO {
 	private Long flow2RowId;
 	@Column(name="orgid")
 	private Long orgId;
-	@Column(name="kitname",length = 25)
+	@Column(name="kitcode",length = 25)
 	private String kitName;
-	@Column(name="partnumber",length = 25)
+	@Column(name="partno",length = 25)
 	private String partNumber;
 	@Column(name="emitter",length = 25)
 	private String emitter;
@@ -68,4 +69,6 @@ public class FlowDetailVO {
 	@Embedded
 	@Builder.Default
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
+
+	
 }

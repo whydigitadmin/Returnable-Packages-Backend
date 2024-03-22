@@ -24,19 +24,19 @@ public interface FlowRepo extends JpaRepository<FlowVO, Long> {
 
 	List<FlowVO> findById(String flowId);
 
-	@Query(value = "select a.id,a.emitter,a.flow_name from flow a where a.org_id=?1 and a.emitter_id=?2 group by a.id,a.emitter,a.flow_name", nativeQuery = true)
+	@Query(value = "select a.flowid,a.emitter,a.flow from flow a where a.orgid=?1 and a.emitterid=?2 group by a.flowid,a.emitter,a.flow", nativeQuery = true)
 	Set<Object[]> getFlowNameByOrgID(Long orgId, Long emitterId);
 
-	@Query(nativeQuery = true, value = "select a.display_name from customer a where id=?1")
+	@Query(nativeQuery = true, value = "select a.displayname from customer a where customerid=?1")
 	String findEmiterbyId(long emitterId);
 
-	@Query(nativeQuery = true, value = "select a.emitter_id,a.emitter from flow a where a.org_id=?1 and a.warehouse_id=?2 group by a.emitter_id,a.emitter")
+	@Query(nativeQuery = true, value = "select a.emitterid,a.emitter from flow a where a.orgid=?1 and a.warehouseid=?2 group by a.emitterid,a.emitter")
 	Set<Object[]> findEmitterByWarehouseId(Long orgId, Long warehouseId);
 
-	@Query(value = "select a.warehouse_location from warehouse a where a.warehouse_id=?1", nativeQuery = true)
+	@Query(value = "select a.whlocation from warehouse a where a.warehouseid=?1", nativeQuery = true)
 	String getWarehouseLocationByLocationId(Long warehouseId);
 
-	@Query(value = "select a.display_name from customer a where a.id=?1", nativeQuery = true)
+	@Query(value = "select a.displayname from customer a where a.customerid=?1", nativeQuery = true)
 	String getReceiverByReceiverId(Long receiverId);
 
 }
