@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 public class LogisticsDTO {
 	private Long refPsId;
 	private Long orgId;
-	private String avgLotSize;
-	private String dispatchFrequency;
+	private int avgLotSize;
+	private int dispatchFrequency;
 	private String diapatchTo;
 }
