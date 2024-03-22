@@ -13,6 +13,7 @@ import com.whydigit.efit.dto.DmapDTO;
 import com.whydigit.efit.dto.FlowDTO;
 import com.whydigit.efit.dto.KitDTO;
 import com.whydigit.efit.dto.KitResponseDTO;
+import com.whydigit.efit.dto.ServiceDTO;
 import com.whydigit.efit.dto.VendorDTO;
 import com.whydigit.efit.entity.AssetCategoryVO;
 import com.whydigit.efit.entity.AssetGroupVO;
@@ -24,6 +25,7 @@ import com.whydigit.efit.entity.FlowVO;
 import com.whydigit.efit.entity.KitVO;
 import com.whydigit.efit.entity.ManufacturerProductVO;
 import com.whydigit.efit.entity.ManufacturerVO;
+import com.whydigit.efit.entity.ServiceVO;
 import com.whydigit.efit.entity.UnitVO;
 import com.whydigit.efit.entity.VendorAddressVO;
 import com.whydigit.efit.entity.VendorBankDetailsVO;
@@ -171,7 +173,10 @@ public interface MasterService {
 	
 	DmapVO createDmapVO(DmapDTO  dmapDTO);
 
+	//service
 	
+	ServiceVO updateCreateService(ServiceDTO serviceDTO) throws ApplicationException;
+
 
 
 
