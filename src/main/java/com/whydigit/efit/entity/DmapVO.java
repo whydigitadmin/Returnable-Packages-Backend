@@ -52,13 +52,13 @@ public class DmapVO {
 	@Column(name="finyear",length = 4)
 	private String finYear;
 	
-	@Column(name="fromdate",length = 4)
+	@Column(name="fromdate")
 	private LocalDate fromDate;
 	
-	@Column(name="todate",length = 4)
+	@Column(name="todate")
 	private LocalDate toDate;
 	
-	@Column(name="extendeddate",length = 4)
+	@Column(name="extendeddate")
 	private LocalDate extDate;
 	
 	@OneToMany(mappedBy = "dmapVO", cascade = CascadeType.ALL)
