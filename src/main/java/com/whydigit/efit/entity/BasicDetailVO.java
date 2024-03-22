@@ -29,7 +29,7 @@ import lombok.NoArgsConstructor;
 public class BasicDetailVO {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "partstudygen")
-	@SequenceGenerator(name = "partstudygen", sequenceName = "partstudyeqge", initialValue = 1000000001, allocationSize = 1)
+	@SequenceGenerator(name = "partstudygen", sequenceName = "partstudyseq", initialValue = 1000000001, allocationSize = 1)
 	@Column(name = "partstudyid")
 	private Long refPsId;
 	@Column(name = "orgid" )

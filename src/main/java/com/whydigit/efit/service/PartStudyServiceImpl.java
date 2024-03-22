@@ -99,9 +99,13 @@ public class PartStudyServiceImpl implements PartStudyService {
 	public BasicDetailVO createBasicDetail(BasicDetailDTO basicDetailDTO) {
 		BasicDetailVO basicDetailVO = new BasicDetailVO();
 		getBasicDetailVOFromBasicDetailDTO(basicDetailDTO, basicDetailVO);
+		basicDetailRepo.save(basicDetailVO);
 		PackingDetailVO packingDetailVO = new PackingDetailVO();
 		StockDetailVO stockdetailVO = new StockDetailVO();
 		LogisticsVO logisticsVO = new LogisticsVO();
+		packingDetailVO.setRefPsId(basicDetailVO.getRefPsId());
+		stockdetailVO.setRefPsId(basicDetailVO.getRefPsId());
+		logisticsVO.setRefPsId(basicDetailVO.getRefPsId());
 		packingDetailVO.setBasicDetailVO(basicDetailVO);
 		stockdetailVO.setBasicDetailVO(basicDetailVO);
 		logisticsVO.setBasicDetailVO(basicDetailVO);
