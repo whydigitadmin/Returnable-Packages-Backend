@@ -20,8 +20,8 @@ public class BasicDetailDTO {
 	private String partNumber;
 	private Float weight;
 	private String weightUnit;
-	private String partVolume;
-	private String highestVolume;
-	private String lowestVolume;
+	private int partVolume;
+	private int highestVolume;
+	private int lowestVolume;
 	
 }

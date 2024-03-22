@@ -10,12 +10,12 @@ import lombok.NoArgsConstructor;
 public class StockDetailDTO {
 	private Long refPsId;
 	private Long orgId;
-	private Integer emitterStoreDays;
-	private Integer emitterLineDays;
-	private Integer inTransitDays;
-	private Integer receiverLineStorageDays;
-	private Integer receiverManufacturingLineDays;
-	private Integer otherStorageDays;
-	private Integer reverseLogisticsDay;
-	private Integer totalCycleTime;
+	private int emitterStoreDays;
+	private int emitterLineDays;
+	private int inTransitDays;
+	private int receiverLineStorageDays;
+	private int receiverManufacturingLineDays;
+	private int otherStorageDays;
+	private int reverseLogisticsDay;
+	private int totalCycleTime;
 }
