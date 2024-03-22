@@ -25,6 +25,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.validation.Valid;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -50,6 +51,7 @@ import com.whydigit.efit.dto.FlowDTO;
 import com.whydigit.efit.dto.KitAssetDTO;
 import com.whydigit.efit.dto.KitDTO;
 import com.whydigit.efit.dto.KitResponseDTO;
+import com.whydigit.efit.dto.ServiceDTO;
 import com.whydigit.efit.dto.VendorAddressDTO;
 import com.whydigit.efit.dto.VendorBankDetailsDTO;
 import com.whydigit.efit.dto.VendorDTO;
@@ -69,6 +71,7 @@ import com.whydigit.efit.entity.KitAssetVO;
 import com.whydigit.efit.entity.KitVO;
 import com.whydigit.efit.entity.ManufacturerProductVO;
 import com.whydigit.efit.entity.ManufacturerVO;
+import com.whydigit.efit.entity.ServiceVO;
 import com.whydigit.efit.entity.UnitVO;
 import com.whydigit.efit.entity.VendorAddressVO;
 import com.whydigit.efit.entity.VendorBankDetailsVO;
@@ -88,6 +91,7 @@ import com.whydigit.efit.repo.IssueItemRepo;
 import com.whydigit.efit.repo.KitRepo;
 import com.whydigit.efit.repo.ManufacturerProductRepo;
 import com.whydigit.efit.repo.ManufacturerRepo;
+import com.whydigit.efit.repo.ServiceRepo;
 import com.whydigit.efit.repo.UnitRepo;
 import com.whydigit.efit.repo.UserRepo;
 import com.whydigit.efit.repo.VendorAddressRepo;
@@ -156,7 +160,8 @@ public class MasterServiceImpl implements MasterService {
 	@Autowired
 	DmapDetailsRepo detailsRepo;
 
-	
+	@Autowired
+	ServiceRepo serviceRepo;
 	
 	@Override
 	public List<AssetVO> getAllAsset(Long orgId) {
@@ -1107,6 +1112,25 @@ public class MasterServiceImpl implements MasterService {
 		}
 		dmapVO.setDmapDetailsVO(dmapDetailsVO);
 		return dmapRepo.save(dmapVO);
+	}
+
+	//service
+	@Override
+	public ServiceVO updateCreateService(ServiceDTO serviceDTO) throws ApplicationException {
+		ServiceVO serviceVO = new ServiceVO();
+		if (ObjectUtils.isNotEmpty(serviceDTO.getId())) {
+			serviceVO = serviceRepo.findById(serviceDTO.getId())
+					.orElseThrow(() -> new ApplicationException("Invalid service details"));
+		}
+
+		getServiceVOFromServiceDTO(serviceDTO, serviceVO);
+		return serviceRepo.save(serviceVO);
+	}
+
+	private void getServiceVOFromServiceDTO(@Valid ServiceDTO serviceDTO, ServiceVO serviceVO) {
+		serviceVO.setId(serviceDTO.getId());
+		serviceVO.setCode(serviceDTO.getCode());
+		serviceVO.setDescription(serviceDTO.getDescription());
 	}
 
 	
