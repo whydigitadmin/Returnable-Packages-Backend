@@ -32,6 +32,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PackingDetailVO {
+
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "partstudypackgen")
@@ -87,10 +88,7 @@ public class PackingDetailVO {
 	@Column(name="remarks",length =25)
 	private String remarks;
 	
-	
-	
-	
-	
+
 	@Transient
 	private List<PDAttachmentVO> partImage;
 	@Transient
@@ -103,7 +101,7 @@ public class PackingDetailVO {
 	@JsonBackReference
 	@OneToOne
 	@MapsId
-    @JoinColumn(name = "partstudyid")
+  @JoinColumn(name = "partstudyid")
 	private BasicDetailVO basicDetailVO;
 	@JsonManagedReference
 	@OneToMany(mappedBy = "packingDetailVO",cascade = CascadeType.ALL)
