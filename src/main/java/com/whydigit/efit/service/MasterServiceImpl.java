@@ -41,6 +41,7 @@ import com.opencsv.CSVReader;
 import com.whydigit.efit.common.CommonConstant;
 import com.whydigit.efit.common.CustomerConstant;
 import com.whydigit.efit.common.MasterConstant;
+import com.whydigit.efit.dto.CnoteDTO;
 import com.whydigit.efit.dto.CustomerAttachmentType;
 import com.whydigit.efit.dto.CustomersAddressDTO;
 import com.whydigit.efit.dto.CustomersBankDetailsDTO;
@@ -59,6 +60,7 @@ import com.whydigit.efit.entity.AssetCategoryVO;
 import com.whydigit.efit.entity.AssetGroupVO;
 import com.whydigit.efit.entity.AssetItemVO;
 import com.whydigit.efit.entity.AssetVO;
+import com.whydigit.efit.entity.CnoteVO;
 import com.whydigit.efit.entity.CustomerAttachmentVO;
 import com.whydigit.efit.entity.CustomersAddressVO;
 import com.whydigit.efit.entity.CustomersBankDetailsVO;
@@ -80,6 +82,7 @@ import com.whydigit.efit.exception.ApplicationException;
 import com.whydigit.efit.repo.AssetCategoryRepo;
 import com.whydigit.efit.repo.AssetGroupRepo;
 import com.whydigit.efit.repo.AssetRepo;
+import com.whydigit.efit.repo.CnoteRepo;
 import com.whydigit.efit.repo.CustomerAttachmentRepo;
 import com.whydigit.efit.repo.CustomersAddressRepo;
 import com.whydigit.efit.repo.CustomersBankDetailsRepo;
@@ -147,22 +150,25 @@ public class MasterServiceImpl implements MasterService {
 
 	@Autowired
 	CustomerAttachmentRepo customerAttachmentRepo;
-	
+
 	@Autowired
 	UserRepo userRepo;
-	
+
 	@Autowired
 	IssueItemRepo issueItemRepo;
-	
+
 	@Autowired
 	DmapRepo dmapRepo;
-	
+
 	@Autowired
 	DmapDetailsRepo detailsRepo;
 
 	@Autowired
 	ServiceRepo serviceRepo;
-	
+
+	@Autowired
+	CnoteRepo cnoteRepo;
+
 	@Override
 	public List<AssetVO> getAllAsset(Long orgId) {
 		List<AssetVO> assetVO = new ArrayList<>();
@@ -308,7 +314,6 @@ public class MasterServiceImpl implements MasterService {
 		}
 	}
 
-
 	@Override
 	public List<CustomersVO> getAllCustomers(Long orgId) {
 		List<CustomersVO> customersVO = new ArrayList<>();
@@ -358,51 +363,47 @@ public class MasterServiceImpl implements MasterService {
 		customersVO.setCustomerActivatePortal(customersDTO.isCustomerActivatePortal());
 		customersVO.setActive(customersDTO.isActive());
 //		getCustomersVOFromCustomersDTO(customersDTO, customersVO);
-		
-		List<CustomersAddressVO>customersAddressVO=new ArrayList<>();
-        if(customersDTO.getCustomerAddressDTO()!=null)
-        {
-        	for(CustomersAddressDTO addressDTO:customersDTO.getCustomerAddressDTO() )
-        	{
-        		CustomersAddressVO custAddress=new CustomersAddressVO();
-        		
-        		custAddress.setGstRegistrationStatus(addressDTO.getGstRegistrationStatus());
-        		custAddress.setStreet1(addressDTO.getStreet1());
-        		custAddress.setStreet2(addressDTO.getStreet2());
-        		custAddress.setPinCode(addressDTO.getPinCode());
-        		custAddress.setPhoneNumber(addressDTO.getPhoneNumber());
-        		custAddress.setGstNumber(addressDTO.getGstNumber());
-        		custAddress.setCity(addressDTO.getCity());
-        		custAddress.setContactName(addressDTO.getContactName());
-        		custAddress.setState(addressDTO.getState());
-        		custAddress.setEmail(addressDTO.getEmail());
-        		custAddress.setDesignation(addressDTO.getDesignation());
-        		custAddress.setCustomersVO(customersVO);
-        		
-        		customersAddressVO.add(custAddress);
-        	}
-        }
-        customersVO.setCustomersAddressVO(customersAddressVO);
-        
-        List<CustomersBankDetailsVO>customersBankDetailsVO=new ArrayList<>();
-        if(customersDTO.getCustomerBankDetailsDTO()!=null)
-        {
-        	for(CustomersBankDetailsDTO bankDetailsDTO:customersDTO.getCustomerBankDetailsDTO())
-        	{
-        		CustomersBankDetailsVO bankdetails=new CustomersBankDetailsVO();
-        		
-        		bankdetails.setBank(bankDetailsDTO.getBank());
-        		bankdetails.setAccountName(bankDetailsDTO.getAccountName());
-        		bankdetails.setIfscCode(bankDetailsDTO.getIfscCode());
-        		bankdetails.setBranch(bankDetailsDTO.getBranch());
-        		bankdetails.setAccountNo(bankDetailsDTO.getAccountNo());
-        		bankdetails.setCustomersVO(customersVO);
-        		        		
-        		customersBankDetailsVO.add(bankdetails);
-        	}
-        }
-        customersVO.setCustomersBankDetailsVO(customersBankDetailsVO);
-        
+
+		List<CustomersAddressVO> customersAddressVO = new ArrayList<>();
+		if (customersDTO.getCustomerAddressDTO() != null) {
+			for (CustomersAddressDTO addressDTO : customersDTO.getCustomerAddressDTO()) {
+				CustomersAddressVO custAddress = new CustomersAddressVO();
+
+				custAddress.setGstRegistrationStatus(addressDTO.getGstRegistrationStatus());
+				custAddress.setStreet1(addressDTO.getStreet1());
+				custAddress.setStreet2(addressDTO.getStreet2());
+				custAddress.setPinCode(addressDTO.getPinCode());
+				custAddress.setPhoneNumber(addressDTO.getPhoneNumber());
+				custAddress.setGstNumber(addressDTO.getGstNumber());
+				custAddress.setCity(addressDTO.getCity());
+				custAddress.setContactName(addressDTO.getContactName());
+				custAddress.setState(addressDTO.getState());
+				custAddress.setEmail(addressDTO.getEmail());
+				custAddress.setDesignation(addressDTO.getDesignation());
+				custAddress.setCustomersVO(customersVO);
+
+				customersAddressVO.add(custAddress);
+			}
+		}
+		customersVO.setCustomersAddressVO(customersAddressVO);
+
+		List<CustomersBankDetailsVO> customersBankDetailsVO = new ArrayList<>();
+		if (customersDTO.getCustomerBankDetailsDTO() != null) {
+			for (CustomersBankDetailsDTO bankDetailsDTO : customersDTO.getCustomerBankDetailsDTO()) {
+				CustomersBankDetailsVO bankdetails = new CustomersBankDetailsVO();
+
+				bankdetails.setBank(bankDetailsDTO.getBank());
+				bankdetails.setAccountName(bankDetailsDTO.getAccountName());
+				bankdetails.setIfscCode(bankDetailsDTO.getIfscCode());
+				bankdetails.setBranch(bankDetailsDTO.getBranch());
+				bankdetails.setAccountNo(bankDetailsDTO.getAccountNo());
+				bankdetails.setCustomersVO(customersVO);
+
+				customersBankDetailsVO.add(bankdetails);
+			}
+		}
+		customersVO.setCustomersBankDetailsVO(customersBankDetailsVO);
+
 		return customersRepo.save(customersVO);
 	}
 
@@ -462,24 +463,27 @@ public class MasterServiceImpl implements MasterService {
 
 	@Override
 	public FlowVO createFlow(FlowDTO flowDTO) {
-		
+
 		FlowVO flowVO = createFlowVOByFlowDTO(flowDTO);
 		flowVO.setEmitter(flowRepo.findEmiterbyId(flowVO.getEmitterId()));
 //		flowVO.setDublicateFlowName(flowDTO.getOrgId()+flowDTO.getFlowName());
-		flowVO.setWarehouseLocation(flowRepo.getWarehouseLocationByLocationId(flowDTO.getWarehouseId())); 
+		flowVO.setWarehouseLocation(flowRepo.getWarehouseLocationByLocationId(flowDTO.getWarehouseId()));
 		flowVO.setReceiver(flowRepo.getReceiverByReceiverId(flowDTO.getReceiverId()));
 		return flowRepo.save(flowVO);
 	}
 
 	private FlowVO createFlowVOByFlowDTO(FlowDTO flowDTO) {
 		List<FlowDetailVO> flowDetailVOList = new ArrayList<>();
-		FlowVO flowVO = FlowVO.builder().active(flowDTO.isActive()).orgin(flowDTO.getOrgin()).warehouseLocation(flowDTO.getWarehouseLocation())
-				.flowName(flowDTO.getFlowName()).receiverId(flowDTO.getReceiverId()).emitterId(flowDTO.getEmitterId()).emitter(flowDTO.getEmitter())
-				.destination(flowDTO.getDestination()).orgId(flowDTO.getOrgId()).warehouseId(flowDTO.getWarehouseId()).flowDetailVO(flowDetailVOList).build();
+		FlowVO flowVO = FlowVO.builder().active(flowDTO.isActive()).orgin(flowDTO.getOrgin())
+				.warehouseLocation(flowDTO.getWarehouseLocation()).flowName(flowDTO.getFlowName())
+				.receiverId(flowDTO.getReceiverId()).emitterId(flowDTO.getEmitterId()).emitter(flowDTO.getEmitter())
+				.destination(flowDTO.getDestination()).orgId(flowDTO.getOrgId()).warehouseId(flowDTO.getWarehouseId())
+				.flowDetailVO(flowDetailVOList).build();
 		flowDetailVOList = flowDTO.getFlowDetailDTO().stream()
-				.map(fdDTO -> FlowDetailVO.builder().active(fdDTO.isActive()).cycleTime(fdDTO.getCycleTime()).emitterId(flowDTO.getEmitterId()).orgId(flowDTO.getOrgId())
-						.partName(fdDTO.getPartName()).kitName(fdDTO.getKitName()).partNumber(fdDTO.getPartNumber()).emitter(flowRepo.findEmiterbyId(flowVO.getEmitterId())).flowVO(flowVO)
-						.build())
+				.map(fdDTO -> FlowDetailVO.builder().active(fdDTO.isActive()).cycleTime(fdDTO.getCycleTime())
+						.emitterId(flowDTO.getEmitterId()).orgId(flowDTO.getOrgId()).partName(fdDTO.getPartName())
+						.kitName(fdDTO.getKitName()).partNumber(fdDTO.getPartNumber())
+						.emitter(flowRepo.findEmiterbyId(flowVO.getEmitterId())).flowVO(flowVO).build())
 				.collect(Collectors.toList());
 		flowVO.setFlowDetailVO(flowDetailVOList);
 		return flowVO;
@@ -693,11 +697,12 @@ public class MasterServiceImpl implements MasterService {
 
 	@Override
 	public KitVO createkit(KitDTO kitDTO) throws ApplicationException {
-		if (StringUtils.isNotEmpty(kitRepo.findKitcode(kitDTO.getKitCode(),kitDTO.getOrgId()))) {
+		if (StringUtils.isNotEmpty(kitRepo.findKitcode(kitDTO.getKitCode(), kitDTO.getOrgId()))) {
 			throw new ApplicationException("Kit code already exist. Please try with new kit code.");
 		}
 		List<KitAssetVO> kitAssetVO = new ArrayList<>();
-		KitVO kitVO = KitVO.builder().kitCode(kitDTO.getKitCode()).orgId(kitDTO.getOrgId()).partQty(kitDTO.getPartQuantity()).kitAssetVO(kitAssetVO).build();
+		KitVO kitVO = KitVO.builder().kitCode(kitDTO.getKitCode()).orgId(kitDTO.getOrgId())
+				.partQty(kitDTO.getPartQuantity()).kitAssetVO(kitAssetVO).build();
 		for (KitAssetDTO kitAsset : kitDTO.getKitAssetDTO()) {
 			kitAssetVO.add(KitAssetVO.builder().assetCategory(kitAsset.getAssetCategory())
 					.assetCodeId(kitAsset.getAssetCodeId()).assetName(kitAsset.getAssetName())
@@ -892,31 +897,28 @@ public class MasterServiceImpl implements MasterService {
 		vendorVO.setEmail(vendorDTO.getEmail());
 		vendorVO.setVenderActivePortal(vendorDTO.isActive());
 		vendorVO.setActive(vendorDTO.isActive());
-		
-		List<VendorBankDetailsVO>vendorBankDetailsVO=new ArrayList<>();
-		if(vendorDTO.getVendorBankDetailsDTO()!=null)
-		{
-			for(VendorBankDetailsDTO vendorbankDetailsDTO:vendorDTO.getVendorBankDetailsDTO())
-			{
-				VendorBankDetailsVO bankDetailsVO=new VendorBankDetailsVO();
+
+		List<VendorBankDetailsVO> vendorBankDetailsVO = new ArrayList<>();
+		if (vendorDTO.getVendorBankDetailsDTO() != null) {
+			for (VendorBankDetailsDTO vendorbankDetailsDTO : vendorDTO.getVendorBankDetailsDTO()) {
+				VendorBankDetailsVO bankDetailsVO = new VendorBankDetailsVO();
 				bankDetailsVO.setAccountNo(vendorbankDetailsDTO.getAccountNo());
 				bankDetailsVO.setBank(vendorbankDetailsDTO.getBank());
 				bankDetailsVO.setBranch(vendorbankDetailsDTO.getBranch());
 				bankDetailsVO.setAccountname(vendorbankDetailsDTO.getAccountName());
 				bankDetailsVO.setIfscCode(vendorbankDetailsDTO.getIfscCode());
 				bankDetailsVO.setVendorVO(vendorVO);
-				vendorBankDetailsVO.add(bankDetailsVO);;
+				vendorBankDetailsVO.add(bankDetailsVO);
+				;
 			}
 		}
 		vendorVO.setVendorBankDetailsVO(vendorBankDetailsVO);
-		
-		List<VendorAddressVO>vendorAddressVO=new ArrayList<>();
-		if(vendorDTO.getVendorAddressDTO()!=null)
-		{
-			for(VendorAddressDTO vendorAddressDTO:vendorDTO.getVendorAddressDTO())
-			{
-				VendorAddressVO vendorAddress=new VendorAddressVO();
-				
+
+		List<VendorAddressVO> vendorAddressVO = new ArrayList<>();
+		if (vendorDTO.getVendorAddressDTO() != null) {
+			for (VendorAddressDTO vendorAddressDTO : vendorDTO.getVendorAddressDTO()) {
+				VendorAddressVO vendorAddress = new VendorAddressVO();
+
 				vendorAddress.setGstNumber(vendorAddressDTO.getGstNumber());
 				vendorAddress.setStreet1(vendorAddressDTO.getStreet1());
 				vendorAddress.setStreet2(vendorAddressDTO.getStreet2());
@@ -929,12 +931,12 @@ public class MasterServiceImpl implements MasterService {
 				vendorAddress.setGstRegistrationStatus(vendorAddressDTO.getGstRegistrationStatus());
 				vendorAddress.setState(vendorAddressDTO.getState());
 				vendorAddress.setVendorVO(vendorVO);
-				
+
 				vendorAddressVO.add(vendorAddress);
 			}
 		}
 		vendorVO.setVendorAddressVO(vendorAddressVO);
-		
+
 		return VendorRepo.save(vendorVO);
 	}
 
@@ -1067,7 +1069,7 @@ public class MasterServiceImpl implements MasterService {
 	public List<FlowVO> getFlowByIds(String ids) throws ApplicationException {
 		List<Long> flowIds = Arrays.stream(StringUtils.split(ids, ",")).map(Long::parseLong)
 				.collect(Collectors.toList());
-		List<FlowVO> flowVO = flowRepo.findAllById(flowIds); 
+		List<FlowVO> flowVO = flowRepo.findAllById(flowIds);
 		if (flowVO.isEmpty()) {
 			throw new ApplicationException("Flow not found.");
 		}
@@ -1076,45 +1078,43 @@ public class MasterServiceImpl implements MasterService {
 
 	@Override
 	public Set<Object[]> getFlowNameByOrgID(Long orgId, Long emitterId) {
-		return flowRepo.getFlowNameByOrgID(orgId,emitterId);
+		return flowRepo.getFlowNameByOrgID(orgId, emitterId);
 	}
 
 	@Override
 	public int loadKitQty(Long irItemId, Long kitQty) {
-		return issueItemRepo.loadKitQty(irItemId,kitQty);
+		return issueItemRepo.loadKitQty(irItemId, kitQty);
 	}
 
 	@Override
-	public DmapVO createDmapVO(DmapDTO  dmapDTO) {
-		
-		DmapVO dmapVO=new DmapVO();
+	public DmapVO createDmapVO(DmapDTO dmapDTO) {
+
+		DmapVO dmapVO = new DmapVO();
 		dmapVO.setFinYear(dmapDTO.getFinYear());
 		dmapVO.setFromDate(dmapDTO.getFromDate());
 		dmapVO.setToDate(dmapDTO.getToDate());
 		dmapVO.setExtDate(dmapDTO.getExtDate());
 		dmapVO.setOrgId(dmapDTO.getOrgId());
-		
-		List<DmapDetailsVO>dmapDetailsVO=new ArrayList<>();
-		if(dmapDTO.getDmapDetailsDTO()!=null)
-		{
-			for(DmapDetailsDTO detailsDTO:dmapDTO.getDmapDetailsDTO())
-			{
-				DmapDetailsVO detailsVO=new DmapDetailsVO();
-					detailsVO.setScode(detailsDTO.getScode());
-					detailsVO.setPrefix(detailsDTO.getPrefix());
-					detailsVO.setSequence(detailsDTO.getSequence());
-					detailsVO.setSufix(detailsDTO.getSufix());
-					detailsVO.setType(detailsDTO.getType());
-					detailsVO.setDmapVO(dmapVO);
-					
-					dmapDetailsVO.add(detailsVO);
+
+		List<DmapDetailsVO> dmapDetailsVO = new ArrayList<>();
+		if (dmapDTO.getDmapDetailsDTO() != null) {
+			for (DmapDetailsDTO detailsDTO : dmapDTO.getDmapDetailsDTO()) {
+				DmapDetailsVO detailsVO = new DmapDetailsVO();
+				detailsVO.setScode(detailsDTO.getScode());
+				detailsVO.setPrefix(detailsDTO.getPrefix());
+				detailsVO.setSequence(detailsDTO.getSequence());
+				detailsVO.setSufix(detailsDTO.getSufix());
+				detailsVO.setType(detailsDTO.getType());
+				detailsVO.setDmapVO(dmapVO);
+
+				dmapDetailsVO.add(detailsVO);
 			}
 		}
 		dmapVO.setDmapDetailsVO(dmapDetailsVO);
 		return dmapRepo.save(dmapVO);
 	}
 
-	//service
+	// service
 	@Override
 	public ServiceVO updateCreateService(ServiceDTO serviceDTO) throws ApplicationException {
 		ServiceVO serviceVO = new ServiceVO();
@@ -1133,5 +1133,28 @@ public class MasterServiceImpl implements MasterService {
 		serviceVO.setDescription(serviceDTO.getDescription());
 	}
 
-	
+	@Override
+	public CnoteVO updateCreateCnote(CnoteDTO cnoteDTO) throws ApplicationException {
+		CnoteVO cnoteVO = new CnoteVO();
+		if (ObjectUtils.isNotEmpty(cnoteDTO.getCnoteId())) {
+			cnoteVO = cnoteRepo.findById(cnoteDTO.getCnoteId())
+					.orElseThrow(() -> new ApplicationException("Invalid cnote details"));
+		}
+
+		getCnoteVOFromCnoteDTO(cnoteDTO, cnoteVO);
+		return cnoteRepo.save(cnoteVO);
+	}
+
+	private void getCnoteVOFromCnoteDTO(CnoteDTO cnoteDTO, CnoteVO cnoteVO) {
+		cnoteVO.setCnoteId(cnoteDTO.getCnoteId());
+		cnoteVO.setCancelRemarks(cnoteDTO.getCancelRemarks());
+		cnoteVO.setCode(cnoteDTO.getCode());
+		cnoteVO.setDescription(cnoteDTO.getDescription());
+		cnoteVO.setServiceCode(cnoteDTO.getServiceCode());
+		cnoteVO.setRcode(cnoteDTO.getRcode());
+		cnoteVO.setCcode(cnoteDTO.getCcode());
+		cnoteVO.setRlEdger(cnoteDTO.getRlEdger());
+		cnoteVO.setClEdger(cnoteDTO.getClEdger());
+
+	}
 }
