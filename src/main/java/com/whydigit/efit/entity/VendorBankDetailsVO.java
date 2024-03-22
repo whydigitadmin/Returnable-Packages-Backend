@@ -1,5 +1,6 @@
 package com.whydigit.efit.entity;
 
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -7,6 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -18,27 +20,37 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "vendor_bank_details")
+@Table(name = "Vendorbankdetails")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class VendorBankDetailsVO {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "vendorbankgen")
+	@SequenceGenerator(name = "vendorbankgen", sequenceName = "vendorbankseq", initialValue = 1000000001, allocationSize = 1)
+	@Column(name="vendorbankdetailsid")
 	private Long id;
-	private Long orgId;
+	
+	@Column(name="bank",length = 25)
 	private String bank;
-	private String displayName;
+	
+	@Column(name="accountname",length = 25)
+	private String accountname;
+	
+	@Column(name="ifsccode",length = 25)
 	private String ifscCode;
-	private Long accountNum;
+	
+	@Column(name="accountno",length = 25)
+	private String accountNo;
+	
+	@Column(name="branch",length = 25)
 	private String branch;
 	
 	@ManyToOne
-	@JoinColumn(name="vendor_id")
+	@JoinColumn(name="vendorid")
 	@JsonBackReference
 	VendorVO vendorVO;
 
-	@Embedded
-	private CreatedUpdatedDate commonDate;
+
 }

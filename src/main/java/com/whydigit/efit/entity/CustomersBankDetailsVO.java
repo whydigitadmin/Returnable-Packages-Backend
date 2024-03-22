@@ -1,7 +1,6 @@
 package com.whydigit.efit.entity;
 
 import javax.persistence.Column;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -12,7 +11,6 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.whydigit.efit.dto.CreatedUpdatedDate;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -49,7 +47,7 @@ public class CustomersBankDetailsVO {
 	private boolean isDefault;
 
 	@ManyToOne
-	@JoinColumn(name = "customers_id")
+	@JoinColumn(name = "customerid")
 	@JsonBackReference
 	private CustomersVO customersVO;
 

@@ -291,7 +291,7 @@ public class EmitterServiceImpl implements EmitterService {
 
 	private MovementStockVO getMovementStock(IssueItemVO issueItemVO,int issuedQty,MovementType type,CustomersVO customersVO){
 		IssueRequestVO issueRequestVO=issueItemVO.getIssueRequestVO();
-		KitVO kitVO = kitRepo.findById(issueItemVO.getKitName()).get();
+		KitVO kitVO = kitRepo.findByKitCode(issueItemVO.getKitName()).get();
 //		CustomersVO customersVO=customersRepo.findById(issueRequestVO.getEmitterId()).get();
 		MovementStockVO movementStock = new MovementStockVO();
 		movementStock.setEmitterId(issueRequestVO.getEmitterId());

@@ -9,17 +9,16 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class VendorAddressDTO {
 	private Long id;
-	private long orgId;
 	private String gstRegistrationStatus;
 	private String street1;
 	private String street2;
-	private String state;
+	private String pinCode;
+	private String phoneNumber;
+	private String gstNumber;
 	private String city;
-	private String pincode;
 	private String contactName;
-	private String phone;
-	private String destination;
-	private long gstNumber;
-	private String eMail;
-	private Long vendorId;
+	private String state;
+	private String email;
+	private String designation;
+	private String vendorid;
 }

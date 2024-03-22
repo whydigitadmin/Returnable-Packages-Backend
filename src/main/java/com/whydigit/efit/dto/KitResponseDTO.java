@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.Embedded;
+
 import com.whydigit.efit.entity.KitAssetVO;
 
 import lombok.AllArgsConstructor;
@@ -14,10 +16,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class KitResponseDTO {
-	private String id;
+	private String kitCode;
 	private long orgId;
 	private String partId;
-	private String partQty;
+	private int partQty;	
 	private Map<String, List<KitAssetVO>> kitAssetCategory = new HashMap<>();
 
 }

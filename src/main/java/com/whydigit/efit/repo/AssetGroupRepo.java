@@ -12,6 +12,7 @@ import com.whydigit.efit.entity.AssetGroupVO;
 
 @Repository
 public interface AssetGroupRepo extends JpaRepository<AssetGroupVO, String> {
+	
 	@Query(value = "select a from AssetGroupVO a Where a.orgId=?1")
 	List<AssetGroupVO> getAllAssetGroupByOrgId(Long orgId);
 

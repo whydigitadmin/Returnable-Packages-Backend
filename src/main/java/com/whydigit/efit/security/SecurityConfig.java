@@ -39,14 +39,15 @@ public class SecurityConfig {
 						"/api/usersdetails/view", "/api/master/**", "​/api​/master​/addAddress","api/master/loadKitQty",
 						"/api/warehouse/getWarehouseLocationByOrgID", "/api/warehouse/updateCreateWarehouse",
 						"/api/warehouse/view", "/api/warehouse/getWarehouseById/{id}", "/api/partStudy/basicDetails",
-						"/api/partStudy/d}/searchPartStudyById", "/api/partStudy/packageDetail",
+						"/api/partStudy/d}/searchPartStudyById", "/api/partStudy/packageDetail","api/master/dmap",
 						"/api/partStudy/packageDetail/{id}", "/api/partStudy/logistics","/api/company/setup","api/emitter/updateOutwardKitQty",
 						"/api/partStudy/logistics/{id}", "/api/partStudy/**", "/api/inwardSku/**",
 						"/api/partStudy/stockDetail/{id}", "/api/emitter/createIssueRequest", "/api/emitter/*",
 						"/api/auth/createUser", "/api/master/flow/getFlowByIds", "/api/master/getAllFlowName",
 						"/api/emitter/getViewEmitterByWarehouse", "/api/emitter/getViewEmitter","/api/auth/changePassword","/api/auth/userByOrgId",
 						"/api/emitter/getViewEmitterByFlow","/api/emitter/viewEmitterInward","/api/warehouse/getWarehouseByUserID",
-						"/api/emitter/getemitterByWarehouseId","/api/auth/updateUser","/api/emitter/emitterOutward/v1","/api/basicMaster/city","/api/basicMaster/country")
+						"/api/emitter/getemitterByWarehouseId","/api/auth/updateUser","/api/emitter/emitterOutward/v1",
+						"/api/basicMaster/city","/api/basicMaster/country","/api/master/dmap")
 				.permitAll().antMatchers("/api/**").hasAnyRole("USER", "GUEST_USER").anyRequest().authenticated();
 
 		http.addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
