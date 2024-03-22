@@ -27,26 +27,38 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class StockDetailVO {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "partstudy4")
-	@SequenceGenerator(name = "partstudy4", sequenceName = "partstudy4seqge", initialValue = 1000000001, allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "partstudystockgen")
+	@SequenceGenerator(name = "partstudystockgen", sequenceName = "partstudystockseq", initialValue = 1000000001, allocationSize = 1)
 	@Column(name ="partstudy4id")
+	private Long id;
+	
+	@Column(name ="refpsid")
 	private Long refPsId;
+	
 	@Column(name ="orgId")
 	private Long orgId;
+	
 	@Column(name ="esd",length =15)
 	private int emitterStoreDays;
+	
 	@Column(name ="eld",length =15)
 	private int emitterLineDays;
+	
 	@Column(name ="intransitdays",length =15)
 	private int inTransitDays;
+	
 	@Column(name ="rld",length =15)
 	private int receiverLineStorageDays;
+	
 	@Column(name ="rmld",length =15)
 	private int receiverManufacturingLineDays;
+	
 	@Column(name ="osd",length =15)
 	private int otherStorageDays;
+	
 	@Column(name ="rlsd",length =15)
 	private int reverseLogisticsDay;
+	
 	@Column(name ="tct",length =15)
 	private int totalCycleTime;
 	

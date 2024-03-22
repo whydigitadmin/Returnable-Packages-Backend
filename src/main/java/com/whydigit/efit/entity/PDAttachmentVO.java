@@ -22,7 +22,7 @@ import lombok.NoArgsConstructor;
 public class PDAttachmentVO {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "partstudy5gen")
-	@SequenceGenerator(name = "partstudy5gen", sequenceName = "partstudy5seqge", initialValue = 1000000001, allocationSize = 1)
+	@SequenceGenerator(name = "partstudy5gen", sequenceName = "partstudy5seq", initialValue = 1000000001, allocationSize = 1)
 	@Column(name ="partstudy5id")
 	private long id;
 	@Column(name ="filename",length=50)
