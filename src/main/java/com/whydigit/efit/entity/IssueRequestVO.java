@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -16,6 +17,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.whydigit.efit.dto.CreatedUpdatedDate;
 import com.whydigit.efit.dto.IssueRequestType;
 
 import lombok.AllArgsConstructor;
@@ -42,10 +44,11 @@ public class IssueRequestVO {
 	private long orgId;
 	@Column(name = "customerid")
 	private int customerId;
-	@Column(name = "whli")
+	@Column(name = "whlocationid")
 	private long warehouseLocationId;
 	@Column(name = "warehouselocation", length = 50)
 	private String warehouseLocation;
+	@Column(name = "emitterid")
 	private long emitterId;
 	@Column(name = "reqaddressid")
 	private long reqAddressId;
@@ -69,6 +72,8 @@ public class IssueRequestVO {
 	private String createdBy;
 	@Column(name = "modifiedy", length = 25)
 	private String modifiedBy;
+	@Column(name = "cancelremarks", length = 25)
+	private String cancelRemark;
 	private String remark;
 	private boolean active;
 	private boolean cancel;
@@ -76,5 +81,8 @@ public class IssueRequestVO {
 	@OneToMany(mappedBy = "issueRequestVO", cascade = CascadeType.ALL, orphanRemoval = true)
 	@JsonManagedReference
 	private List<IssueItemVO> issueItemVO = new ArrayList<>();
+	
+	@Embedded
+	private CreatedUpdatedDate commonDate=new CreatedUpdatedDate();
 
 }
