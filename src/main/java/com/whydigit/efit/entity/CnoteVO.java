@@ -34,7 +34,7 @@ public class CnoteVO {
 	private String createdBy;
 	@Column(name = "modifiedby", length = 25)
 	private String modifiedBy;
-	@Column(name = "cancelremarks", length = 25)
+	@Column(name = "cancelremarks", length = 25)   
 	private String cancelRemarks;
 	@Column(name = "code", length = 10)
 	private String code;

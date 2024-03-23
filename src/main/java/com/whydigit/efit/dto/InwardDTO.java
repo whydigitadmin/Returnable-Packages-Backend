@@ -11,7 +11,7 @@ public class InwardDTO {
 	private Long id;
 	private Long issueItemId;
 	private String status;
-	private long returnQty;
-	private long netQtyRecieved;
+	private int returnQty;
+	private int netQtyRecieved;
 
 }
