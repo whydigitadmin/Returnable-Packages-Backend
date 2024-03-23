@@ -56,7 +56,8 @@ public class IssueItemVO {
 	@Column(name = "remark")
 	private String remark;
 	@Column(name = "reacheddate")
-	private LocalDateTime reachedDate;
+	private String reachedDate;
+	@Column(name="approvedstatus")
 	private boolean approvedStatus;
 	@ManyToOne
 	@JoinColumn(name = "issuerequestid")

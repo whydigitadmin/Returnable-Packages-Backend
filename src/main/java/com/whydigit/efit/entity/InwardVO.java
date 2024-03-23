@@ -35,6 +35,7 @@ public class InwardVO {
 	private int returnQty;
 	@Column(name ="netqtyrecieved",length =15)
 	private int netQtyRecieved;
+	@Column(name ="netrecacceptstatus",length =15)
 	private boolean netRecAcceptStatus;
 	@Column(name ="issuerequest2rowid",length=15)
 	private int issueRequest2RowId;		
