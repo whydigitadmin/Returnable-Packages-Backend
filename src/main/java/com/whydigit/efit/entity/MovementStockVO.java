@@ -35,7 +35,7 @@ public class MovementStockVO {
 	private String KitName;
 	private int qty;
 	private MovementType type;
-	private LocalDate movementDate;
+	private String movementDate;
 	private Long orgId;
 	@JsonManagedReference
 	@OneToMany(mappedBy = "movementStockVO", cascade = CascadeType.ALL)

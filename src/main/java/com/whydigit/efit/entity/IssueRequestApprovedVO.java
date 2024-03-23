@@ -15,7 +15,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "issue_request_approved")
+@Table(name = "irapproved")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

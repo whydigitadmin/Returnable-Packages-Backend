@@ -301,7 +301,7 @@ public class EmitterServiceImpl implements EmitterService {
 		movementStock.setKitName(issueItemVO.getKitName());
 		movementStock.setQty(issuedQty);
 		movementStock.setType(type);
-		movementStock.setMovementDate(LocalDate.now());
+		movementStock.setMovementDate(LocalDate.now().toString());
 		movementStock.setOrgId(customersVO.getOrgId());
 		List<MovementStockItemVO> movementStockItemVO = kitVO.getKitAssetVO().stream().map(kavo -> {
 			MovementStockItemVO movementStockItem = new MovementStockItemVO();

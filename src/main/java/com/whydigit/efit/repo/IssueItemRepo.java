@@ -16,17 +16,17 @@ public interface IssueItemRepo extends JpaRepository<IssueItemVO, Long> {
 
 	@Modifying
 	@Transactional
-	@Query(value = "update issue_item itm set itm.issue_item_status=?2 where itm.issue_request_id=?1", nativeQuery = true)
+	@Query(value = "update issuerequest2 itm set itm.issueitemstatus=?2 where itm.issuerequest2id=?1", nativeQuery = true)
 	int cancelIssueRequestByIssueRequestId(Long issueRequestId, int issueRequestItemStatusCancelled);
 
 	@Modifying
 	@Transactional
-	@Query(value = "update issue_item a set a.kit_qty=?2 where a.id=?1", nativeQuery = true)
+	@Query(value = "update issuerequest2 a set a.kitqty=?2 where a.issuerequest2id=?1", nativeQuery = true)
 	int loadKitQty(Long irItemId, Long kitQty);
 
 	@Modifying
 	@Transactional
-	@Query(value = "update issue_item a set a.approved_status=1 where issue_request_id=?1", nativeQuery = true)
+	@Query(value = "update issuerequest2 a set a.approvedstatus=1 where issuerequest2id=?1", nativeQuery = true)
 	void updateApptovedStatus(Long issueRequestId);
 
 }
