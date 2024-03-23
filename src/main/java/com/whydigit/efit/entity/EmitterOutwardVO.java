@@ -1,4 +1,4 @@
-																																																																																																																																																																																																																																																																											package com.whydigit.efit.entity;
+package com.whydigit.efit.entity;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -46,16 +46,16 @@ public class EmitterOutwardVO {
 	private String previousDispatch;
 	private String o2oTat;
 	private boolean active;
-    private LocalDate inwardConfirmDate;
+	private LocalDate inwardConfirmDate;
 	@JsonBackReference
 	@OneToOne
-    @JoinColumn(name = "issueItemId")
+	@JoinColumn(name = "issueItemId")
 	private IssueItemVO issueItemVO;
-	
-	@OneToMany(mappedBy = "emitterOutwardVO",cascade = CascadeType.ALL)
+
+	@OneToMany(mappedBy = "emitterOutwardVO", cascade = CascadeType.ALL)
 	@JsonManagedReference
 	private List<OutwardKitDetailsVO> OutwardKitDetailsVO;
-	
+
 	@Embedded
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
 
