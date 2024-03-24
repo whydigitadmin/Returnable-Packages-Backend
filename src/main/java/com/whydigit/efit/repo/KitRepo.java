@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import com.whydigit.efit.entity.FlowVO;
 import com.whydigit.efit.entity.KitVO;
 
 @Repository
@@ -21,6 +20,7 @@ public interface KitRepo  extends JpaRepository<KitVO, Long>{
 	@Query("select a from KitVO a where a.kitCode=?1")
 	Optional<KitVO> findByKitCode(String kitName);
 
+	
 	
 
 }

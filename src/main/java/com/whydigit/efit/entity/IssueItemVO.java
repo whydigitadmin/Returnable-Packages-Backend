@@ -1,6 +1,5 @@
 package com.whydigit.efit.entity;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.persistence.CascadeType;
