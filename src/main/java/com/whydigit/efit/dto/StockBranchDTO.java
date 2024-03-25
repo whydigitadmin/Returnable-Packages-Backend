@@ -1,0 +1,18 @@
+package com.whydigit.efit.dto;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class StockBranchDTO {
+	
+	private String branch;
+	private String branchCode;
+	private Long orgId;
+	private boolean active;
+	private String createdby;
+
+}
