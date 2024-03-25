@@ -55,6 +55,7 @@ import com.whydigit.efit.entity.OutwardView;
 import com.whydigit.efit.entity.VwEmitterInwardVO;
 import com.whydigit.efit.exception.ApplicationException;
 import com.whydigit.efit.repo.CustomersRepo;
+import com.whydigit.efit.repo.DmapDetailsRepo;
 import com.whydigit.efit.repo.EmitterInwardRepo;
 import com.whydigit.efit.repo.EmitterOutwardRepo;
 import com.whydigit.efit.repo.FlowRepo;
@@ -87,6 +88,9 @@ public class EmitterServiceImpl implements EmitterService {
 
 	@Autowired
 	FlowRepo flowRepo;
+	
+	@Autowired
+	DmapDetailsRepo dmapdetailsRepo;
 
 	@Autowired
 	VwEmitterInwardRepo vwEmitterInwardRepo;
@@ -142,6 +146,13 @@ public class EmitterServiceImpl implements EmitterService {
 		issueRequestVO.setWarehouseLocationId(issueRequestRepo.findWarehouseLocationId(issueRequestDTO.getFlowTo()));
 		issueRequestVO.setWarehouseLocation(issueRequestRepo.findWarehouseLocation(issueRequestDTO.getFlowTo()));
 		issueRequestVO = issueRequestRepo.save(issueRequestVO);
+		
+		String emittercode=customersRepo.findcustomercodeByEmitterId(issueRequestVO.getEmitterId());
+		String type=dmapdetailsRepo.finddoctype(issueRequestVO.getScode());
+		Long ids=issueRequestRepo.finddocid();
+		issueRequestVO.setDocId(type+emittercode+ids);
+		issueRequestRepo.updatesequence();
+		issueRequestVO = issueRequestRepo.save(issueRequestVO);
 		return issueRequestVO;
 	}
 
@@ -169,6 +180,7 @@ public class EmitterServiceImpl implements EmitterService {
 		issueRequestVO.setRequestedDate(currentDateTime);
 		issueRequestVO.setOrgId(issueRequestDTO.getOrgId());
 		issueRequestVO.setEmitterId(issueRequestDTO.getEmitterId());
+		issueRequestVO.setCustomerId(issueRequestDTO.getEmitterId());
 		issueRequestVO.setTat(
 				ChronoUnit.HOURS.between(currentDateTime, issueRequestDTO.getDemandDate().atTime(LocalTime.MAX)));
 		issueRequestVO.setIrType(issueRequestDTO.getIrType());

@@ -117,6 +117,8 @@ public class MasterServiceImpl implements MasterService {
 	FlowRepo flowRepo;
 	@Autowired
 	VendorRepo vendorRepo;
+	
+
 	@Autowired
 	ManufacturerRepo manufacturerRepo;
 	@Autowired
@@ -133,6 +135,7 @@ public class MasterServiceImpl implements MasterService {
 	VendorBankDetailsRepo vendorBankDetailsRepo;
 	@Autowired
 	KitRepo kitRepo;
+	
 	@PersistenceContext
 	private EntityManager entityManager;
 
@@ -161,7 +164,7 @@ public class MasterServiceImpl implements MasterService {
 	DmapRepo dmapRepo;
 
 	@Autowired
-	DmapDetailsRepo detailsRepo;
+	DmapDetailsRepo dmapdetailsRepo;
 
 	@Autowired
 	ServiceRepo serviceRepo;
@@ -708,6 +711,11 @@ public class MasterServiceImpl implements MasterService {
 					.assetCodeId(kitAsset.getAssetCodeId()).assetName(kitAsset.getAssetName())
 					.quantity(kitAsset.getQuantity()).kitVO(kitVO).build());
 		}
+		kitRepo.save(kitVO);
+		String type=dmapdetailsRepo.finddoctype(kitVO.getScode());
+		Long ids=kitRepo.finddocid();
+		kitVO.setKno(type+ids);
+		kitRepo.updatesequence();
 		return kitRepo.save(kitVO);
 	}
 
@@ -1105,6 +1113,8 @@ public class MasterServiceImpl implements MasterService {
 				detailsVO.setSequence(detailsDTO.getSequence());
 				detailsVO.setSufix(detailsDTO.getSufix());
 				detailsVO.setType(detailsDTO.getType());
+				detailsVO.setDocIdType(detailsDTO.getPrefix()+dmapDTO.getFinYear()+detailsDTO.getSufix());
+				detailsVO.setFinYear(dmapDTO.getFinYear());
 				detailsVO.setDmapVO(dmapVO);
 
 				dmapDetailsVO.add(detailsVO);
