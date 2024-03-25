@@ -35,7 +35,8 @@ public class IssueRequestVO {
 	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "issuerequestgen")
 	@SequenceGenerator(name = "issuerequestgen", sequenceName = "issuerequestseq", initialValue = 1000000001, allocationSize = 1)
 	@Column(name = "issuerequestid")
-	private long id;
+	private Long id;
+	private String scode="BINRE";
 	@Column(name = "docid", length = 25)
 	private String docId;
 	@Column(name = "docdate")
