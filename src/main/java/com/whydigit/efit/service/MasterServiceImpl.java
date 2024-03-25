@@ -53,6 +53,7 @@ import com.whydigit.efit.dto.KitAssetDTO;
 import com.whydigit.efit.dto.KitDTO;
 import com.whydigit.efit.dto.KitResponseDTO;
 import com.whydigit.efit.dto.ServiceDTO;
+import com.whydigit.efit.dto.StockBranchDTO;
 import com.whydigit.efit.dto.VendorAddressDTO;
 import com.whydigit.efit.dto.VendorBankDetailsDTO;
 import com.whydigit.efit.dto.VendorDTO;
@@ -74,6 +75,7 @@ import com.whydigit.efit.entity.KitVO;
 import com.whydigit.efit.entity.ManufacturerProductVO;
 import com.whydigit.efit.entity.ManufacturerVO;
 import com.whydigit.efit.entity.ServiceVO;
+import com.whydigit.efit.entity.StockBranchVO;
 import com.whydigit.efit.entity.UnitVO;
 import com.whydigit.efit.entity.VendorAddressVO;
 import com.whydigit.efit.entity.VendorBankDetailsVO;
@@ -95,6 +97,7 @@ import com.whydigit.efit.repo.KitRepo;
 import com.whydigit.efit.repo.ManufacturerProductRepo;
 import com.whydigit.efit.repo.ManufacturerRepo;
 import com.whydigit.efit.repo.ServiceRepo;
+import com.whydigit.efit.repo.StockBranchRepo;
 import com.whydigit.efit.repo.UnitRepo;
 import com.whydigit.efit.repo.UserRepo;
 import com.whydigit.efit.repo.VendorAddressRepo;
@@ -171,6 +174,9 @@ public class MasterServiceImpl implements MasterService {
 
 	@Autowired
 	CnoteRepo cnoteRepo;
+	
+	@Autowired
+	StockBranchRepo stockBranchRepo;
 
 	@Override
 	public List<AssetVO> getAllAsset(Long orgId) {
@@ -1166,5 +1172,25 @@ public class MasterServiceImpl implements MasterService {
 		cnoteVO.setRlEdger(cnoteDTO.getRlEdger());
 		cnoteVO.setClEdger(cnoteDTO.getClEdger());
 
+	}
+
+	
+	// Stock branch
+	@Override
+	public StockBranchVO createStockBranch(StockBranchDTO stockBranchDTO) {
+		StockBranchVO stockBranchVO=new StockBranchVO();
+		stockBranchVO.setBranch(stockBranchDTO.getBranch());
+		stockBranchVO.setBranchCode(stockBranchDTO.getBranch());
+		stockBranchVO.setOrgId(stockBranchDTO.getOrgId());
+		stockBranchVO.setCreatedBy(stockBranchDTO.getCreatedby());
+		stockBranchVO.setModifiedBy(stockBranchDTO.getCreatedby());
+		stockBranchVO.setActive(stockBranchDTO.isActive());
+		return stockBranchRepo.save(stockBranchVO);
+	}
+
+	@Override
+	public List<StockBranchVO> getAllStockBranchByOrgId(Long orgId) {
+		
+		return stockBranchRepo.findByOrgId(orgId);
 	}
 }

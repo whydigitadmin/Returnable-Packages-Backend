@@ -15,6 +15,7 @@ import com.whydigit.efit.dto.FlowDTO;
 import com.whydigit.efit.dto.KitDTO;
 import com.whydigit.efit.dto.KitResponseDTO;
 import com.whydigit.efit.dto.ServiceDTO;
+import com.whydigit.efit.dto.StockBranchDTO;
 import com.whydigit.efit.dto.VendorDTO;
 import com.whydigit.efit.entity.AssetCategoryVO;
 import com.whydigit.efit.entity.AssetGroupVO;
@@ -28,6 +29,7 @@ import com.whydigit.efit.entity.KitVO;
 import com.whydigit.efit.entity.ManufacturerProductVO;
 import com.whydigit.efit.entity.ManufacturerVO;
 import com.whydigit.efit.entity.ServiceVO;
+import com.whydigit.efit.entity.StockBranchVO;
 import com.whydigit.efit.entity.UnitVO;
 import com.whydigit.efit.entity.VendorAddressVO;
 import com.whydigit.efit.entity.VendorBankDetailsVO;
@@ -179,5 +181,12 @@ public interface MasterService {
 	ServiceVO updateCreateService(ServiceDTO serviceDTO) throws ApplicationException;
 
 	CnoteVO updateCreateCnote(CnoteDTO cnoteDTO) throws ApplicationException;
+	
+	
+	// Stock Branch
+	
+	StockBranchVO createStockBranch(StockBranchDTO stockBranchDTO);
+
+	List<StockBranchVO> getAllStockBranchByOrgId(Long orgId);
 
 }

@@ -1,4 +1,4 @@
-                                   package com.whydigit.efit.security;
+package com.whydigit.efit.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -51,7 +51,7 @@ public class SecurityConfig {
 						"/api/emitter/viewEmitterInward", "/api/warehouse/getWarehouseByUserID",
 						"/api/emitter/getemitterByWarehouseId", "/api/auth/updateUser",
 						"/api/emitter/emitterOutward/v1", "/api/basicMaster/city", "/api/basicMaster/country",
-						"/api/master/dmap")
+						"/api/master/dmap","/api/master/stockbranchByOrgId","/api/master/stockbranch")
 				.permitAll().antMatchers("/api/**").hasAnyRole("USER", "GUEST_USER").anyRequest().authenticated();
 
 		http.addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
