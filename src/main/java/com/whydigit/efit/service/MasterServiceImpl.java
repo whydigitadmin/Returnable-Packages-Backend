@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.InputStreamReader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -41,6 +42,10 @@ import com.opencsv.CSVReader;
 import com.whydigit.efit.common.CommonConstant;
 import com.whydigit.efit.common.CustomerConstant;
 import com.whydigit.efit.common.MasterConstant;
+import com.whydigit.efit.dto.AssetInwardDTO;
+import com.whydigit.efit.dto.AssetInwardDetailDTO;
+import com.whydigit.efit.dto.AssetInwardDetailDTO;
+import com.whydigit.efit.dto.AssetInwardDetailVO;
 import com.whydigit.efit.dto.CnoteDTO;
 import com.whydigit.efit.dto.CustomerAttachmentType;
 import com.whydigit.efit.dto.CustomersAddressDTO;
@@ -59,7 +64,9 @@ import com.whydigit.efit.dto.VendorBankDetailsDTO;
 import com.whydigit.efit.dto.VendorDTO;
 import com.whydigit.efit.entity.AssetCategoryVO;
 import com.whydigit.efit.entity.AssetGroupVO;
+import com.whydigit.efit.entity.AssetInwardVO;
 import com.whydigit.efit.entity.AssetItemVO;
+import com.whydigit.efit.entity.AssetStockDetailsVO;
 import com.whydigit.efit.entity.AssetVO;
 import com.whydigit.efit.entity.CnoteVO;
 import com.whydigit.efit.entity.CustomerAttachmentVO;
@@ -83,7 +90,10 @@ import com.whydigit.efit.entity.VendorVO;
 import com.whydigit.efit.exception.ApplicationException;
 import com.whydigit.efit.repo.AssetCategoryRepo;
 import com.whydigit.efit.repo.AssetGroupRepo;
+import com.whydigit.efit.repo.AssetInwardDetailRepo;
+import com.whydigit.efit.repo.AssetInwardRepo;
 import com.whydigit.efit.repo.AssetRepo;
+import com.whydigit.efit.repo.AssetStockDetailsRepo;
 import com.whydigit.efit.repo.CnoteRepo;
 import com.whydigit.efit.repo.CustomerAttachmentRepo;
 import com.whydigit.efit.repo.CustomersAddressRepo;
@@ -141,6 +151,9 @@ public class MasterServiceImpl implements MasterService {
 	
 	@PersistenceContext
 	private EntityManager entityManager;
+	
+	@Autowired
+	AssetStockDetailsRepo assetStockDetailsRepo;
 
 	@Autowired
 	CustomersAddressRepo customersAddressRepo;
@@ -174,6 +187,12 @@ public class MasterServiceImpl implements MasterService {
 
 	@Autowired
 	CnoteRepo cnoteRepo;
+	
+	@Autowired
+	AssetInwardRepo assetInwardRepo;
+	
+	@Autowired
+	AssetInwardDetailRepo assetInwardDetailRepo;
 	
 	@Autowired
 	StockBranchRepo stockBranchRepo;
@@ -1174,6 +1193,59 @@ public class MasterServiceImpl implements MasterService {
 
 	}
 
+
+	@Override
+	public AssetInwardVO createAssetInward(AssetInwardDTO assetInwardDTO) {
+		
+		AssetInwardVO assetInwardVO=new AssetInwardVO();
+		assetInwardVO.setDocId(assetInwardDTO.getDocId());
+		assetInwardVO.setDocDate(assetInwardDTO.getDocDate());
+		assetInwardVO.setStockBranch(assetInwardDTO.getStockBranch());
+		List<AssetInwardDetailVO> assetInwardDetailVO = new ArrayList<>();
+		if (assetInwardDTO.getAssetInwardDetailDTO() != null) 
+		{
+			for (AssetInwardDetailDTO AssetInward : assetInwardDTO.getAssetInwardDetailDTO()) 
+			{
+				AssetInwardDetailVO assetInwardDetail = new AssetInwardDetailVO();
+				
+				assetInwardDetail.setBinLocation(AssetInward.getBinLocation());
+				assetInwardDetail.setSkuDetail(AssetInward.getSkuDetail());
+				assetInwardDetail.setSkuQty(AssetInward.getSkuQty());
+				assetInwardDetail.setSkucode(AssetInward.getSkucode());
+				assetInwardDetail.setStockLocation(AssetInward.getStockLocation());
+				assetInwardDetail.setStockValue(AssetInward.getStockValue());
+				assetInwardDetail.setAssetInwardVO(assetInwardVO);
+				assetInwardDetailVO.add(assetInwardDetail);
+			}
+		}
+		assetInwardVO.setAssetInwardDetailVO(assetInwardDetailVO);
+		AssetInwardVO assetInwardVO1 = assetInwardRepo.save(assetInwardVO);
+		List<AssetInwardDetailVO>assetInwardDetailVOs=assetInwardVO1.getAssetInwardDetailVO();
+		
+		if(assetInwardDetailVOs!=null && !assetInwardDetailVOs.isEmpty())
+		{
+			for(AssetInwardDetailVO assetdetails:assetInwardDetailVOs) 
+			{
+				
+				AssetStockDetailsVO assetStockDetailsVO=new AssetStockDetailsVO();
+				assetStockDetailsVO.setStockRef(assetInwardVO1.getDocId());
+				assetStockDetailsVO.setStockDate(assetInwardVO1.getDocDate());
+				assetStockDetailsVO.setStockBranch(assetInwardVO1.getStockBranch());
+				assetStockDetailsVO.setSku(assetdetails.getSkuDetail());
+				assetStockDetailsVO.setSkuCode(assetdetails.getSkucode());
+				assetStockDetailsVO.setSkuQty(assetdetails.getSkuQty());
+				assetStockDetailsVO.setStockValue(assetdetails.getStockValue());
+				assetStockDetailsVO.setStockLocation(assetdetails.getStockLocation());
+				assetStockDetailsVO.setBinLocation(assetdetails.getBinLocation());	
+				assetStockDetailsVO.setStockSource(assetInwardVO1.getSCode());
+				assetStockDetailsVO.setPm("P");
+				assetStockDetailsRepo.save(assetStockDetailsVO);
+				
+			}
+		
+		}		
+		return assetInwardRepo.save(assetInwardVO);
+
 	
 	// Stock branch
 	@Override
@@ -1192,5 +1264,6 @@ public class MasterServiceImpl implements MasterService {
 	public List<StockBranchVO> getAllStockBranchByOrgId(Long orgId) {
 		
 		return stockBranchRepo.findByOrgId(orgId);
+
 	}
 }
