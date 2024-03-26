@@ -52,9 +52,11 @@ import com.whydigit.efit.entity.MovementStockVO;
 import com.whydigit.efit.entity.MovementType;
 import com.whydigit.efit.entity.OutwardKitDetailsVO;
 import com.whydigit.efit.entity.OutwardView;
+import com.whydigit.efit.entity.ReturnStockVO;
 import com.whydigit.efit.entity.VwEmitterInwardVO;
 import com.whydigit.efit.exception.ApplicationException;
 import com.whydigit.efit.repo.CustomersRepo;
+import com.whydigit.efit.repo.DmapDetailsRepo;
 import com.whydigit.efit.repo.EmitterInwardRepo;
 import com.whydigit.efit.repo.EmitterOutwardRepo;
 import com.whydigit.efit.repo.FlowRepo;
@@ -66,6 +68,7 @@ import com.whydigit.efit.repo.MaxPartQtyPerKitRepo;
 import com.whydigit.efit.repo.MovementStockRepo;
 import com.whydigit.efit.repo.OutwardKitDetailsRepo;
 import com.whydigit.efit.repo.OutwardViewRepo;
+import com.whydigit.efit.repo.ReturnStockRepo;
 import com.whydigit.efit.repo.UserRepo;
 import com.whydigit.efit.repo.VwEmitterInwardRepo;
 
@@ -87,6 +90,12 @@ public class EmitterServiceImpl implements EmitterService {
 
 	@Autowired
 	FlowRepo flowRepo;
+	
+	@Autowired
+	ReturnStockRepo returnStockRepo;
+	
+	@Autowired
+	DmapDetailsRepo dmapdetailsRepo;
 
 	@Autowired
 	VwEmitterInwardRepo vwEmitterInwardRepo;
@@ -142,6 +151,13 @@ public class EmitterServiceImpl implements EmitterService {
 		issueRequestVO.setWarehouseLocationId(issueRequestRepo.findWarehouseLocationId(issueRequestDTO.getFlowTo()));
 		issueRequestVO.setWarehouseLocation(issueRequestRepo.findWarehouseLocation(issueRequestDTO.getFlowTo()));
 		issueRequestVO = issueRequestRepo.save(issueRequestVO);
+		
+		String emittercode=customersRepo.findcustomercodeByEmitterId(issueRequestVO.getEmitterId());
+		String type=dmapdetailsRepo.finddoctype(issueRequestVO.getScode());
+		Long ids=issueRequestRepo.finddocid();
+		issueRequestVO.setDocId(type+emittercode+ids);
+		issueRequestRepo.updatesequence();
+		issueRequestVO = issueRequestRepo.save(issueRequestVO);
 		return issueRequestVO;
 	}
 
@@ -169,6 +185,7 @@ public class EmitterServiceImpl implements EmitterService {
 		issueRequestVO.setRequestedDate(currentDateTime);
 		issueRequestVO.setOrgId(issueRequestDTO.getOrgId());
 		issueRequestVO.setEmitterId(issueRequestDTO.getEmitterId());
+		issueRequestVO.setCustomerId(issueRequestDTO.getEmitterId());
 		issueRequestVO.setTat(
 				ChronoUnit.HOURS.between(currentDateTime, issueRequestDTO.getDemandDate().atTime(LocalTime.MAX)));
 		issueRequestVO.setIrType(issueRequestDTO.getIrType());
@@ -389,10 +406,17 @@ public class EmitterServiceImpl implements EmitterService {
 	}
 
 	private void getInwardVOFromInwardDTO(InwardDTO inwardDTO, InwardVO inwardVO) {
+		
+		ReturnStockVO returnStockVO=new ReturnStockVO();
+		
 		inwardVO.setNetQtyRecieved(inwardDTO.getNetQtyRecieved());
 		inwardVO.setReturnQty(inwardDTO.getReturnQty());
 		inwardVO.setStatus(inwardDTO.getStatus());
 		inwardVO.setNetRecAcceptStatus(true);
+		
+		returnStockVO.setQty(inwardDTO.getNetQtyRecieved());
+		returnStockVO.setIssue_item_id(inwardDTO.getIssueItemId());
+		returnStockRepo.save(returnStockVO);
 		}
 
 	@Override
@@ -573,6 +597,13 @@ public class EmitterServiceImpl implements EmitterService {
 		emitterOutwardVO.setKitNo(outwardKitDetailsDTO.getKitNO());
 		emitterOutwardVO.setKitReturnqty(outwardKitDetailsDTO.getKitQty());
 		emitterOutwardRepo.save(emitterOutwardVO);
+		
+		ReturnStockVO returnStockVO=new ReturnStockVO();
+		
+		returnStockVO.setIssue_item_id(emitterOutwardVO.getIssueItemVO().getId());
+		returnStockVO.setQty(outwardKitDetailsDTO.getKitQty()*-1);
+		returnStockRepo.save(returnStockVO);		
+		
 		return outwardKitDetailsRepo.save(outwardKitDetailVO);
 
 	}

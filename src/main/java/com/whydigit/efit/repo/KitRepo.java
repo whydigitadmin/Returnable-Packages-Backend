@@ -20,6 +20,12 @@ public interface KitRepo  extends JpaRepository<KitVO, Long>{
 	@Query("select a from KitVO a where a.kitCode=?1")
 	Optional<KitVO> findByKitCode(String kitName);
 
+	@Query(nativeQuery = true,value="select sequence_value from kitnoseq")
+	Long finddocid();
+
+	@Query(nativeQuery = true,value="CALL next_sequence_value()")
+	void updatesequence();
+
 	
 	
 

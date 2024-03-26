@@ -17,6 +17,9 @@ public interface CustomersRepo extends JpaRepository<CustomersVO, Long> {
 
 	List<CustomersVO> findByOrgId(Long orgId);
 
+	@Query(nativeQuery = true , value ="select code from customer where customerid=?1")
+	String findcustomercodeByEmitterId(long emitterId);
+
 	
 
 }

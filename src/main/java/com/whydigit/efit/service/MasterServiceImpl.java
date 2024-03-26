@@ -58,6 +58,7 @@ import com.whydigit.efit.dto.KitAssetDTO;
 import com.whydigit.efit.dto.KitDTO;
 import com.whydigit.efit.dto.KitResponseDTO;
 import com.whydigit.efit.dto.ServiceDTO;
+import com.whydigit.efit.dto.StockBranchDTO;
 import com.whydigit.efit.dto.VendorAddressDTO;
 import com.whydigit.efit.dto.VendorBankDetailsDTO;
 import com.whydigit.efit.dto.VendorDTO;
@@ -81,6 +82,7 @@ import com.whydigit.efit.entity.KitVO;
 import com.whydigit.efit.entity.ManufacturerProductVO;
 import com.whydigit.efit.entity.ManufacturerVO;
 import com.whydigit.efit.entity.ServiceVO;
+import com.whydigit.efit.entity.StockBranchVO;
 import com.whydigit.efit.entity.UnitVO;
 import com.whydigit.efit.entity.VendorAddressVO;
 import com.whydigit.efit.entity.VendorBankDetailsVO;
@@ -105,6 +107,7 @@ import com.whydigit.efit.repo.KitRepo;
 import com.whydigit.efit.repo.ManufacturerProductRepo;
 import com.whydigit.efit.repo.ManufacturerRepo;
 import com.whydigit.efit.repo.ServiceRepo;
+import com.whydigit.efit.repo.StockBranchRepo;
 import com.whydigit.efit.repo.UnitRepo;
 import com.whydigit.efit.repo.UserRepo;
 import com.whydigit.efit.repo.VendorAddressRepo;
@@ -127,6 +130,8 @@ public class MasterServiceImpl implements MasterService {
 	FlowRepo flowRepo;
 	@Autowired
 	VendorRepo vendorRepo;
+	
+
 	@Autowired
 	ManufacturerRepo manufacturerRepo;
 	@Autowired
@@ -143,6 +148,7 @@ public class MasterServiceImpl implements MasterService {
 	VendorBankDetailsRepo vendorBankDetailsRepo;
 	@Autowired
 	KitRepo kitRepo;
+	
 	@PersistenceContext
 	private EntityManager entityManager;
 	
@@ -174,7 +180,7 @@ public class MasterServiceImpl implements MasterService {
 	DmapRepo dmapRepo;
 
 	@Autowired
-	DmapDetailsRepo detailsRepo;
+	DmapDetailsRepo dmapdetailsRepo;
 
 	@Autowired
 	ServiceRepo serviceRepo;
@@ -188,8 +194,8 @@ public class MasterServiceImpl implements MasterService {
 	@Autowired
 	AssetInwardDetailRepo assetInwardDetailRepo;
 	
-	
-	
+	@Autowired
+	StockBranchRepo stockBranchRepo;
 
 	@Override
 	public List<AssetVO> getAllAsset(Long orgId) {
@@ -730,6 +736,11 @@ public class MasterServiceImpl implements MasterService {
 					.assetCodeId(kitAsset.getAssetCodeId()).assetName(kitAsset.getAssetName())
 					.quantity(kitAsset.getQuantity()).kitVO(kitVO).build());
 		}
+		kitRepo.save(kitVO);
+		String type=dmapdetailsRepo.finddoctype(kitVO.getScode());
+		Long ids=kitRepo.finddocid();
+		kitVO.setKno(type+ids);
+		kitRepo.updatesequence();
 		return kitRepo.save(kitVO);
 	}
 
@@ -1127,6 +1138,8 @@ public class MasterServiceImpl implements MasterService {
 				detailsVO.setSequence(detailsDTO.getSequence());
 				detailsVO.setSufix(detailsDTO.getSufix());
 				detailsVO.setType(detailsDTO.getType());
+				detailsVO.setDocIdType(detailsDTO.getPrefix()+dmapDTO.getFinYear()+detailsDTO.getSufix());
+				detailsVO.setFinYear(dmapDTO.getFinYear());
 				detailsVO.setDmapVO(dmapVO);
 
 				dmapDetailsVO.add(detailsVO);
@@ -1180,6 +1193,7 @@ public class MasterServiceImpl implements MasterService {
 
 	}
 
+
 	@Override
 	public AssetInwardVO createAssetInward(AssetInwardDTO assetInwardDTO) {
 		
@@ -1231,5 +1245,25 @@ public class MasterServiceImpl implements MasterService {
 		
 		}		
 		return assetInwardRepo.save(assetInwardVO);
+
+	
+	// Stock branch
+	@Override
+	public StockBranchVO createStockBranch(StockBranchDTO stockBranchDTO) {
+		StockBranchVO stockBranchVO=new StockBranchVO();
+		stockBranchVO.setBranch(stockBranchDTO.getBranch());
+		stockBranchVO.setBranchCode(stockBranchDTO.getBranch());
+		stockBranchVO.setOrgId(stockBranchDTO.getOrgId());
+		stockBranchVO.setCreatedBy(stockBranchDTO.getCreatedby());
+		stockBranchVO.setModifiedBy(stockBranchDTO.getCreatedby());
+		stockBranchVO.setActive(stockBranchDTO.isActive());
+		return stockBranchRepo.save(stockBranchVO);
+	}
+
+	@Override
+	public List<StockBranchVO> getAllStockBranchByOrgId(Long orgId) {
+		
+		return stockBranchRepo.findByOrgId(orgId);
+
 	}
 }

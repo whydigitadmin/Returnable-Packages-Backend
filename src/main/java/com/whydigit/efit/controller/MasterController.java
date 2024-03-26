@@ -38,6 +38,7 @@ import com.whydigit.efit.dto.KitDTO;
 import com.whydigit.efit.dto.KitResponseDTO;
 import com.whydigit.efit.dto.ResponseDTO;
 import com.whydigit.efit.dto.ServiceDTO;
+import com.whydigit.efit.dto.StockBranchDTO;
 import com.whydigit.efit.dto.VendorDTO;
 import com.whydigit.efit.entity.AssetCategoryVO;
 import com.whydigit.efit.entity.AssetGroupVO;
@@ -52,6 +53,7 @@ import com.whydigit.efit.entity.KitVO;
 import com.whydigit.efit.entity.ManufacturerProductVO;
 import com.whydigit.efit.entity.ManufacturerVO;
 import com.whydigit.efit.entity.ServiceVO;
+import com.whydigit.efit.entity.StockBranchVO;
 import com.whydigit.efit.entity.UnitVO;
 import com.whydigit.efit.entity.VendorAddressVO;
 import com.whydigit.efit.entity.VendorBankDetailsVO;
@@ -1634,29 +1636,77 @@ public class MasterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 	
+
 	//AssetInward
 	@PostMapping("/assetInward")
 	public ResponseEntity<ResponseDTO> createAssetInward(@RequestBody AssetInwardDTO assetInwardDTO) {
 		String methodName = "createAssetInward()";
+    LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		try {
+      	AssetInwardVO createdAssetInwardVO = masterService.createAssetInward(assetInwardDTO);
+			  responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "AssetInward created successfully");
+			  responseObjectsMap.put("assetInwardVO", createdAssetInwardVO);
+        responseDTO = createServiceResponse(responseObjectsMap);
+    }
+  catch (Exception e)
+  {
+      errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+    	responseDTO = createServiceResponseError(responseObjectsMap, "AssetInward creation failed", errorMsg);
+    }
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
+	// Stock branch
+	@PostMapping("/stockbranch")
+	public ResponseEntity<ResponseDTO> createStockBranch(@RequestBody StockBranchDTO stockBranchDTO) {
+		String methodName = "createStockBranch()";
+
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
 		try {
-			AssetInwardVO createdAssetInwardVO = masterService.createAssetInward(assetInwardDTO);
-			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "AssetInward created successfully");
-			responseObjectsMap.put("assetInwardVO", createdAssetInwardVO);
+			StockBranchVO stockBranchVO = masterService.createStockBranch(stockBranchDTO);
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Stock Branch Created successfully");
+			responseObjectsMap.put("StockBranchVO", stockBranchVO);
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-			responseDTO = createServiceResponseError(responseObjectsMap, "AssetInward creation failed", errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "Stock Branch Creation failed", errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-
 	
-	
+	@GetMapping("/stockbranchByOrgId")
+	public ResponseEntity<ResponseDTO> getStockBranchByOrgId(@RequestParam Long orgId) {
+		String methodName = "getStockBranchByOrgId()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<StockBranchVO> branchVOs = new ArrayList<>();
+		try {
+			branchVOs = masterService.getAllStockBranchByOrgId(orgId);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Stock Branch information get successfully");
+			responseObjectsMap.put("branch", branchVOs);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "Stock Branch information receive failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}	
 	
 }

@@ -44,6 +44,12 @@ public class DmapDetailsVO {
 	@Column(name="type",length = 2)
 	private String type;
 	
+	@Column(name="docidtype",length = 15)
+	private String docIdType;
+	
+	@Column(name="finyear", length = 4)
+	private String finYear;
+	
 	@ManyToOne
 	@JoinColumn(name = "dmapid")
 	@JsonBackReference

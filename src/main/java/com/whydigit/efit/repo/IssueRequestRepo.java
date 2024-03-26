@@ -29,5 +29,11 @@ public interface IssueRequestRepo
 
 	@Query(value = "select b.whlocation from  flow b where b.flowid=?1 group BY  b.whlocation",nativeQuery = true)
 	String findWarehouseLocation(Long flowTo);
+
+	@Query(nativeQuery = true,value="select binid from binrqseq")
+	Long finddocid();
+
+	@Query(nativeQuery = true,value="CALL bin_next_value()")
+	void updatesequence();
 	
 }
