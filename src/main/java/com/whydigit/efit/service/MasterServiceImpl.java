@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.InputStreamReader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -43,7 +42,6 @@ import com.whydigit.efit.common.CommonConstant;
 import com.whydigit.efit.common.CustomerConstant;
 import com.whydigit.efit.common.MasterConstant;
 import com.whydigit.efit.dto.AssetInwardDTO;
-import com.whydigit.efit.dto.AssetInwardDetailDTO;
 import com.whydigit.efit.dto.AssetInwardDetailDTO;
 import com.whydigit.efit.dto.AssetInwardDetailVO;
 import com.whydigit.efit.dto.CnoteDTO;
@@ -1245,7 +1243,7 @@ public class MasterServiceImpl implements MasterService {
 		
 		}		
 		return assetInwardRepo.save(assetInwardVO);
-
+	}
 	
 	// Stock branch
 	@Override
