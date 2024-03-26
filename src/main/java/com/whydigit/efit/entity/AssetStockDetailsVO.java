@@ -23,12 +23,12 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class assetStockDetailsVO {
+public class AssetStockDetailsVO {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "stockdetailsgen")
 	@SequenceGenerator(name = "stockdetailsgen", sequenceName = "stockdetailsseq", initialValue = 1000000001, allocationSize = 1)
 	@Column(name = "stockdetailsid")
-	private String stockDetailsId;
+	private Long stockDetailsId;
 	private boolean active;
 	private boolean cancel;
 	@Column(name="cancelremarks",length=25)
@@ -38,25 +38,23 @@ public class assetStockDetailsVO {
 	@Column(name="modifiedby",length=25)
 	private String modifiedBy;
 	@Column(name="scode",length=5)
-	private String sCode;
+	private String sCode="STOCK";
 	@Column(name="stockbranch",length=10)
 	private String stockBranch;
 	@Column(name="stocklocation",length=40)
 	private String stockLocation;
-	@Column(name="stock",length=25)
-	private String stock;
-	@Column(name="stockid",length=2)
-	private String stockId;
+	@Column(name="stockvalue",precision = 2,scale =4)
+	private Float stockValue;
+	@Column(name="stockref",length=10)
+	private String stockRef;
 	@Column(name="stockdate")
 	private LocalDate stockDate=LocalDate.now();
-	@Column(name="stockDateAndTime")
+	@Column(name="stockdatetime")
 	private LocalDateTime stockDateAndTime=LocalDateTime.now();
-	@Column(name="skuCode",length=15)
+	@Column(name="skucode",length=15)
 	private String skuCode;
-	@Column(name="skudetails",length=40)
-	private String skuDetails;
-	@Column(name="skyqty",length=15)
-	private int skyQty;
+	@Column(name="skuqty",length=15)
+	private int skuQty;
 	@Column(name="sku",length=25)
 	private String sku;
 	@Column(name="pm",length=10)

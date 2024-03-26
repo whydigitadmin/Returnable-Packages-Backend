@@ -49,7 +49,7 @@ public class SecurityConfig {
 						"/api/emitter/getViewEmitterByWarehouse", "/api/emitter/getViewEmitter",
 						"/api/auth/changePassword", "/api/auth/userByOrgId", "/api/emitter/getViewEmitterByFlow",
 						"/api/emitter/viewEmitterInward", "/api/warehouse/getWarehouseByUserID",
-						"/api/emitter/getemitterByWarehouseId", "/api/auth/updateUser",
+						"/api/emitter/getemitterByWarehouseId", "/api/auth/updateUser","api/master/createAssetInward",
 						"/api/emitter/emitterOutward/v1", "/api/basicMaster/city", "/api/basicMaster/country",
 						"/api/master/dmap")
 				.permitAll().antMatchers("/api/**").hasAnyRole("USER", "GUEST_USER").anyRequest().authenticated();

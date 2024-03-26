@@ -28,6 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.whydigit.efit.common.CommonConstant;
 import com.whydigit.efit.common.UserConstants;
+import com.whydigit.efit.dto.AssetInwardDTO;
 import com.whydigit.efit.dto.CnoteDTO;
 import com.whydigit.efit.dto.CustomerAttachmentType;
 import com.whydigit.efit.dto.CustomersDTO;
@@ -40,6 +41,7 @@ import com.whydigit.efit.dto.ServiceDTO;
 import com.whydigit.efit.dto.VendorDTO;
 import com.whydigit.efit.entity.AssetCategoryVO;
 import com.whydigit.efit.entity.AssetGroupVO;
+import com.whydigit.efit.entity.AssetInwardVO;
 import com.whydigit.efit.entity.AssetVO;
 import com.whydigit.efit.entity.CnoteVO;
 import com.whydigit.efit.entity.CustomersAddressVO;
@@ -288,25 +290,6 @@ public class MasterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
-//	@DeleteMapping("/assetGroup/{id}")
-//	public ResponseEntity<ResponseDTO> deleteAssetGroup(@PathVariable int id) {
-//		String methodName = "deleteAssetGroup()";
-//		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
-//		String errorMsg = null;
-//		Map<String, Object> responseObjectsMap = new HashMap<>();
-//		ResponseDTO responseDTO = null;
-//		try {
-//			masterService.deleteAssetGroup(id);
-//			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "AssetGroup deleted successfully");
-//			responseDTO = createServiceResponse(responseObjectsMap);
-//		} catch (Exception e) {
-//			errorMsg = e.getMessage();
-//			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-//			responseDTO = createServiceResponseError(responseObjectsMap, "AssetGroup deletion failed", errorMsg);
-//		}
-//		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
-//		return ResponseEntity.ok().body(responseDTO);
-//	}
 
 	// customers
 
@@ -1650,5 +1633,30 @@ public class MasterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
+	
+	//AssetInward
+	@PostMapping("/assetInward")
+	public ResponseEntity<ResponseDTO> createAssetInward(@RequestBody AssetInwardDTO assetInwardDTO) {
+		String methodName = "createAssetInward()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		try {
+			AssetInwardVO createdAssetInwardVO = masterService.createAssetInward(assetInwardDTO);
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "AssetInward created successfully");
+			responseObjectsMap.put("assetInwardVO", createdAssetInwardVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "AssetInward creation failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
+	
+	
 	
 }
