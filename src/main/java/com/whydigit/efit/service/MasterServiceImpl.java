@@ -1250,7 +1250,7 @@ public class MasterServiceImpl implements MasterService {
 	public StockBranchVO createStockBranch(StockBranchDTO stockBranchDTO) {
 		StockBranchVO stockBranchVO=new StockBranchVO();
 		stockBranchVO.setBranch(stockBranchDTO.getBranch());
-		stockBranchVO.setBranchCode(stockBranchDTO.getBranch());
+		stockBranchVO.setBranchCode(stockBranchDTO.getBranchCode());
 		stockBranchVO.setOrgId(stockBranchDTO.getOrgId());
 		stockBranchVO.setCreatedBy(stockBranchDTO.getCreatedby());
 		stockBranchVO.setModifiedBy(stockBranchDTO.getCreatedby());
