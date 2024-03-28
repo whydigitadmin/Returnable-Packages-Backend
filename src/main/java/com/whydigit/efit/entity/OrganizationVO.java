@@ -61,6 +61,9 @@ public class OrganizationVO {
 	@Column(name="logo",length = 25)
 	private String orgLogo;
 	
+	@Column(name="code",length = 25)
+	private String code;
+	
 	@Column(name="active")
 	private boolean isActive;
 	
