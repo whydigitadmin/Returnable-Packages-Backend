@@ -29,6 +29,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.whydigit.efit.common.CommonConstant;
 import com.whydigit.efit.common.UserConstants;
 import com.whydigit.efit.dto.AssetInwardDTO;
+import com.whydigit.efit.dto.AssetTaggingDTO;
 import com.whydigit.efit.dto.CnoteDTO;
 import com.whydigit.efit.dto.CustomerAttachmentType;
 import com.whydigit.efit.dto.CustomersDTO;
@@ -43,6 +44,7 @@ import com.whydigit.efit.dto.VendorDTO;
 import com.whydigit.efit.entity.AssetCategoryVO;
 import com.whydigit.efit.entity.AssetGroupVO;
 import com.whydigit.efit.entity.AssetInwardVO;
+import com.whydigit.efit.entity.AssetTaggingVO;
 import com.whydigit.efit.entity.AssetVO;
 import com.whydigit.efit.entity.CnoteVO;
 import com.whydigit.efit.entity.CustomersAddressVO;
@@ -1708,5 +1710,68 @@ public class MasterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}	
+	
+	// Asset Tagging
+	
+	@PostMapping("/assettagging")
+	public ResponseEntity<ResponseDTO> createAssetTagging(@RequestBody AssetTaggingDTO assetTaggingDTO) {
+		String methodName = "createStockBranch()";
+
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		try {
+			AssetTaggingVO assetTaggingVO = masterService.createTagging(assetTaggingDTO);
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Tagging Created successfully");
+			responseObjectsMap.put("AssetTaggingVO", assetTaggingVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "Tagging Creation failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+	
+	@GetMapping("/Tagcode")
+	public ResponseEntity<ResponseDTO> getTagCodeByAsset(@RequestParam String assetcode,@RequestParam String asset,@RequestParam int startno,@RequestParam int endno) {
+		String methodName = "getTagCodeByAsset()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		Set<Object[]> tagcode = new HashSet<>();
+		try {
+			tagcode = masterService.getTagCodeByAsset(assetcode, asset, startno, endno);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			List<Map<String, String>>assetTagCode=TagCodes(tagcode);
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Tag Code get information successfully");
+			responseObjectsMap.put("tagcode", assetTagCode);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "Tag Code information receive failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
+	private List<Map<String, String>> TagCodes(Set<Object[]> tagcode) {
+		List<Map<String, String>>assetTagCode=new ArrayList<>();
+		for(Object[] tag:tagcode)
+		{
+			Map<String, String> assetcode= new HashMap<>();
+			assetcode.put("AssetCode", tag[0].toString());
+			assetcode.put("Asset", tag[1].toString());
+			assetcode.put("TagCode", tag[2].toString());
+			assetTagCode.add(assetcode);	
+		}
+		return assetTagCode;
+	}
 	
 }

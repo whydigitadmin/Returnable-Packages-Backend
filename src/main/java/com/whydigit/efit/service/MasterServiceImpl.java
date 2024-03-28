@@ -44,6 +44,8 @@ import com.whydigit.efit.common.MasterConstant;
 import com.whydigit.efit.dto.AssetInwardDTO;
 import com.whydigit.efit.dto.AssetInwardDetailDTO;
 import com.whydigit.efit.dto.AssetInwardDetailVO;
+import com.whydigit.efit.dto.AssetTaggingDTO;
+import com.whydigit.efit.dto.AssetTaggingDetailsDTO;
 import com.whydigit.efit.dto.CnoteDTO;
 import com.whydigit.efit.dto.CustomerAttachmentType;
 import com.whydigit.efit.dto.CustomersAddressDTO;
@@ -65,6 +67,8 @@ import com.whydigit.efit.entity.AssetGroupVO;
 import com.whydigit.efit.entity.AssetInwardVO;
 import com.whydigit.efit.entity.AssetItemVO;
 import com.whydigit.efit.entity.AssetStockDetailsVO;
+import com.whydigit.efit.entity.AssetTaggingDetailsVO;
+import com.whydigit.efit.entity.AssetTaggingVO;
 import com.whydigit.efit.entity.AssetVO;
 import com.whydigit.efit.entity.CnoteVO;
 import com.whydigit.efit.entity.CustomerAttachmentVO;
@@ -92,6 +96,8 @@ import com.whydigit.efit.repo.AssetInwardDetailRepo;
 import com.whydigit.efit.repo.AssetInwardRepo;
 import com.whydigit.efit.repo.AssetRepo;
 import com.whydigit.efit.repo.AssetStockDetailsRepo;
+import com.whydigit.efit.repo.AssetTaggingDetailsRepo;
+import com.whydigit.efit.repo.AssetTaggingRepo;
 import com.whydigit.efit.repo.CnoteRepo;
 import com.whydigit.efit.repo.CustomerAttachmentRepo;
 import com.whydigit.efit.repo.CustomersAddressRepo;
@@ -128,8 +134,10 @@ public class MasterServiceImpl implements MasterService {
 	FlowRepo flowRepo;
 	@Autowired
 	VendorRepo vendorRepo;
-	
-
+	@Autowired
+	AssetTaggingRepo assetTaggingRepo;
+	@Autowired
+	AssetTaggingDetailsRepo assetTaggingDetailsRepo;
 	@Autowired
 	ManufacturerRepo manufacturerRepo;
 	@Autowired
@@ -1263,5 +1271,45 @@ public class MasterServiceImpl implements MasterService {
 		
 		return stockBranchRepo.findByOrgId(orgId);
 
+	}
+
+	// Asset Tagging
+	@Override
+	public AssetTaggingVO createTagging(AssetTaggingDTO assetTaggingDTO) {
+		
+		AssetTaggingVO assetTaggingVO=new AssetTaggingVO();
+		assetTaggingVO.setDocid(assetTaggingDTO.getDocId());
+		assetTaggingVO.setDocDate(assetTaggingDTO.getDocDate());
+		assetTaggingVO.setCancel(false);
+		assetTaggingVO.setCreatedBy(assetTaggingDTO.getCreatedBy());
+		assetTaggingVO.setModifiedBy(assetTaggingDTO.getCreatedBy());
+		assetTaggingVO.setActive(true);
+		assetTaggingVO.setAsset(assetTaggingDTO.getAsset());
+		assetTaggingVO.setAssetCode(assetTaggingDTO.getAssetCode());
+		assetTaggingVO.setSeqFrom(assetTaggingDTO.getSeqFrom());
+		assetTaggingVO.setSeqTo(assetTaggingDTO.getSeqTo());
+		assetTaggingVO.setOrgId(assetTaggingDTO.getOrgId());
+		List<AssetTaggingDetailsVO>assetTaggingDetailsVO=new ArrayList<>();
+		if(assetTaggingDTO.getTaggingDetailsDTO()!=null) {
+			
+			for(AssetTaggingDetailsDTO taggingDetailsDTO: assetTaggingDTO.getTaggingDetailsDTO())
+			{
+				AssetTaggingDetailsVO assetTaggingDetails=new AssetTaggingDetailsVO();
+				assetTaggingDetails.setTaggingDocDd(assetTaggingVO.getDocid());
+				assetTaggingDetails.setAssetCode(taggingDetailsDTO.getAssetCode());
+				assetTaggingDetails.setAsset(taggingDetailsDTO.getAsset());
+				assetTaggingDetails.setTagCode(taggingDetailsDTO.getTagCode());
+				assetTaggingDetailsVO.add(assetTaggingDetails);
+			}
+		}
+		assetTaggingVO.setTaggingDetails(assetTaggingDetailsVO);
+		
+		return assetTaggingRepo.save(assetTaggingVO);
+	}
+	
+	@Override
+	public Set<Object[]> getTagCodeByAsset(String assetcode, String asset, int startno, int endno) {
+		
+		return assetTaggingRepo.getTagCodeByAsset(assetcode,asset,startno,endno);
 	}
 }
