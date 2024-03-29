@@ -1,6 +1,5 @@
 package com.whydigit.efit.repo;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.transaction.Transactional;

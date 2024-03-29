@@ -1,4 +1,4 @@
-package com.whydigit.efit.dto;
+package com.whydigit.efit.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -12,7 +12,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.whydigit.efit.entity.AssetInwardVO;
+import com.whydigit.efit.dto.CreatedUpdatedDate;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

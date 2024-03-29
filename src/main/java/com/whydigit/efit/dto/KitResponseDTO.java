@@ -4,8 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.persistence.Embedded;
-
 import com.whydigit.efit.entity.KitAssetVO;
 
 import lombok.AllArgsConstructor;

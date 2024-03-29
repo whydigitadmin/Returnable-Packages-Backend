@@ -15,7 +15,6 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.whydigit.efit.dto.AssetInwardDetailVO;
 import com.whydigit.efit.dto.CreatedUpdatedDate;
 
 import lombok.AllArgsConstructor;
@@ -39,6 +38,10 @@ public class AssetInwardVO {
 	private String docId;
 	@Column(name = "docdate")
 	private LocalDate docDate = LocalDate.now();
+	@Column(name="sourcefrom",length = 25)
+	private String sourceFrom;
+	
+	
 	@Column(name = "stockbranch", length = 40)
 	private String stockBranch;
 	private boolean cancel;
