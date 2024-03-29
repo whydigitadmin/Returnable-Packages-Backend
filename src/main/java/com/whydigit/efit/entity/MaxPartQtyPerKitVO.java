@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class MaxPartQtyPerKitVO {
 	@Id
-private long id;
+	private long id;
 	private long orgId;
 	private long emitterId;
 	private String partNumber;

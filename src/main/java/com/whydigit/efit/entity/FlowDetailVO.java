@@ -13,7 +13,6 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.whydigit.efit.dto.CreatedUpdatedDate;
-import com.whydigit.efit.entity.FlowVO.FlowVOBuilder;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

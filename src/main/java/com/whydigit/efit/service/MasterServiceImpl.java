@@ -43,7 +43,6 @@ import com.whydigit.efit.common.CustomerConstant;
 import com.whydigit.efit.common.MasterConstant;
 import com.whydigit.efit.dto.AssetInwardDTO;
 import com.whydigit.efit.dto.AssetInwardDetailDTO;
-import com.whydigit.efit.dto.AssetInwardDetailVO;
 import com.whydigit.efit.dto.AssetTaggingDTO;
 import com.whydigit.efit.dto.AssetTaggingDetailsDTO;
 import com.whydigit.efit.dto.CnoteDTO;
@@ -64,6 +63,7 @@ import com.whydigit.efit.dto.VendorBankDetailsDTO;
 import com.whydigit.efit.dto.VendorDTO;
 import com.whydigit.efit.entity.AssetCategoryVO;
 import com.whydigit.efit.entity.AssetGroupVO;
+import com.whydigit.efit.entity.AssetInwardDetailVO;
 import com.whydigit.efit.entity.AssetInwardVO;
 import com.whydigit.efit.entity.AssetItemVO;
 import com.whydigit.efit.entity.AssetStockDetailsVO;
@@ -1207,6 +1207,7 @@ public class MasterServiceImpl implements MasterService {
 		assetInwardVO.setDocId(assetInwardDTO.getDocId());
 		assetInwardVO.setDocDate(assetInwardDTO.getDocDate());
 		assetInwardVO.setStockBranch(assetInwardDTO.getStockBranch());
+		assetInwardVO.setSourceFrom(assetInwardDTO.getSourceFrom());
 		List<AssetInwardDetailVO> assetInwardDetailVO = new ArrayList<>();
 		if (assetInwardDTO.getAssetInwardDetailDTO() != null) 
 		{
@@ -1243,7 +1244,7 @@ public class MasterServiceImpl implements MasterService {
 				assetStockDetailsVO.setStockValue(assetdetails.getStockValue());
 				assetStockDetailsVO.setStockLocation(assetdetails.getStockLocation());
 				assetStockDetailsVO.setBinLocation(assetdetails.getBinLocation());	
-				assetStockDetailsVO.setStockSource(assetInwardVO1.getSCode());
+				assetStockDetailsVO.setScreen(assetInwardVO1.getSCode());
 				assetStockDetailsVO.setPm("P");
 				assetStockDetailsRepo.save(assetStockDetailsVO);
 				
