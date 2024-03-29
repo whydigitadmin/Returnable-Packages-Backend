@@ -14,6 +14,7 @@ import com.whydigit.efit.dto.InwardDTO;
 import com.whydigit.efit.dto.IssueRequestDTO;
 import com.whydigit.efit.dto.IssueRequestQtyApprovelDTO;
 import com.whydigit.efit.dto.OutwardKitDetailsDTO;
+import com.whydigit.efit.entity.BinAllotmentVO;
 import com.whydigit.efit.entity.EmitterInwardVO;
 import com.whydigit.efit.entity.EmitterOutwardVO;
 import com.whydigit.efit.entity.InwardVO;
@@ -80,6 +81,10 @@ public interface EmitterService {
 	OutwardKitDetailsVO updateOutwardKitQty(OutwardKitDetailsDTO outwardKitDetailsDTO) throws ApplicationException;
 
 	
+	//get Issue request
+	
+	List<BinAllotmentVO> getBinRequest(Long emitterId, String warehouseLocation, Long orgId, LocalDate startDate,
+			LocalDate endDate, Long warehouseLoacationId);
 
 	
 

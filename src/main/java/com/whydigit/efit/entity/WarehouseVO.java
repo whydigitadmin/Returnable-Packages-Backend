@@ -59,6 +59,10 @@ public class WarehouseVO {
 	private String createdby;
 	@Column(name="modifiedby",length = 30)
 	private String modifiedby;
+	
+	@Column(name="stockbranch",length = 30)
+	private String stockBranch;
+	
 
 	@Embedded
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();

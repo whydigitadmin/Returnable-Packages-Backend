@@ -36,6 +36,7 @@ import com.whydigit.efit.dto.IssueRequestQtyApprovelDTO;
 import com.whydigit.efit.dto.IssueRequestType;
 import com.whydigit.efit.dto.OutwardKitDetailsDTO;
 import com.whydigit.efit.dto.Role;
+import com.whydigit.efit.entity.BinAllotmentVO;
 import com.whydigit.efit.entity.CustomersVO;
 import com.whydigit.efit.entity.EmitterInwardVO;
 import com.whydigit.efit.entity.EmitterOutwardVO;
@@ -55,6 +56,7 @@ import com.whydigit.efit.entity.OutwardView;
 import com.whydigit.efit.entity.ReturnStockVO;
 import com.whydigit.efit.entity.VwEmitterInwardVO;
 import com.whydigit.efit.exception.ApplicationException;
+import com.whydigit.efit.repo.BinAllotmentRepo;
 import com.whydigit.efit.repo.CustomersRepo;
 import com.whydigit.efit.repo.DmapDetailsRepo;
 import com.whydigit.efit.repo.EmitterInwardRepo;
@@ -109,6 +111,9 @@ public class EmitterServiceImpl implements EmitterService {
 	
 	@Autowired
 	KitRepo kitRepo;
+	
+	@Autowired
+	BinAllotmentRepo binAllotmentRepo;
 	
 	@Autowired
 	OutwardViewRepo outwardViewRepo;
@@ -607,8 +612,40 @@ public class EmitterServiceImpl implements EmitterService {
 		return outwardKitDetailsRepo.save(outwardKitDetailVO);
 
 	}
+	
+	@Override
+	public List<BinAllotmentVO> getBinRequest(Long emitterId,String warehouseLocation, Long orgId, LocalDate startDate, LocalDate endDate,Long warehouseLocationId) {
 
+		return binAllotmentRepo.findAll(new Specification<IssueRequestVO>() {
+
+			@Override
+			public Predicate toPredicate(Root<IssueRequestVO> root, CriteriaQuery<?> query,
+					CriteriaBuilder criteriaBuilder) {
+				List<Predicate> predicates = new ArrayList<>();
+				if (ObjectUtils.isNotEmpty(emitterId)) {
+					predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("emitterId"), emitterId)));
+				}
+				if (ObjectUtils.isNotEmpty(orgId)) {
+					predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("orgId"), orgId)));
+				}
+				if (ObjectUtils.isNotEmpty(startDate) && ObjectUtils.isNotEmpty(endDate)) {
+					predicates.add(criteriaBuilder.between(root.get("requestedDate"),
+							LocalDateTime.of(startDate, LocalTime.MIDNIGHT),
+							LocalDateTime.of(endDate, LocalTime.MIDNIGHT)));
+				} 
+				if (StringUtils.isNoneBlank(warehouseLocation)) {
+					predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("WarehouseLocation"), warehouseLocation)));
+				}
+				if (ObjectUtils.isNotEmpty(warehouseLocationId)) {
+					predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("warehouseLocationId"), warehouseLocationId)));
+				}
+				return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
+			}
+		});
 
 	}
+
+
+}
 
 

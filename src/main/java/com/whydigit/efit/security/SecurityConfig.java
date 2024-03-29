@@ -51,7 +51,8 @@ public class SecurityConfig {
 						"/api/emitter/viewEmitterInward", "/api/warehouse/getWarehouseByUserID",
 						"/api/emitter/getemitterByWarehouseId", "/api/auth/updateUser","api/master/createAssetInward",
 						"/api/emitter/emitterOutward/v1", "/api/basicMaster/city", "/api/basicMaster/country",
-						"/api/master/dmap","/api/master/stockbranchByOrgId","/api/master/stockbranch","/api/master/assettagging","/api/master/Tagcode","/api/basicMaster/city")
+						"/api/master/dmap","/api/master/stockbranchByOrgId","/api/master/stockbranch","/api/master/assettagging","/api/master/Tagcode","/api/basicMaster/city",
+						"/api/emitter/getBinRequest")
 				.permitAll().antMatchers("/api/**").hasAnyRole("USER", "GUEST_USER").anyRequest().authenticated();
 
 		http.addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
