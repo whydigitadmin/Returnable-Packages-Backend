@@ -728,6 +728,11 @@ public class MasterServiceImpl implements MasterService {
 	public Optional<KitVO> getKitById(Long id) {
 		return kitRepo.findById(id);
 	}
+	
+	@Override
+	public Optional<KitVO> getKitByKitCode(String kitName) {
+		return kitRepo.findByKitCode(kitName);
+	}
 
 	@Override
 	public KitVO createkit(KitDTO kitDTO) throws ApplicationException {
