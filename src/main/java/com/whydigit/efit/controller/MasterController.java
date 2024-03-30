@@ -1466,6 +1466,32 @@ public class MasterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
+	
+	@GetMapping("/kitDetails")
+	public ResponseEntity<ResponseDTO> getKitByKitCode(@RequestParam String kitName) {
+		String methodName = "getKitByKitCode()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		KitVO kitVO = null;
+		try {
+			kitVO = masterService.getKitByKitCode(kitName).orElse(null);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Kit found by ID");
+			responseObjectsMap.put("KitVO", kitVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			errorMsg = "CreateKit not found for KitCode: " + kitName;
+			responseDTO = createServiceResponseError(responseObjectsMap, "Kit not found", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
 
 	@PostMapping("/createkit")
 	public ResponseEntity<ResponseDTO> createkit(@RequestBody KitDTO kitDTO) {

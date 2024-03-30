@@ -37,7 +37,7 @@ import com.whydigit.efit.dto.IssueRequestType;
 import com.whydigit.efit.dto.OutwardKitDetailsDTO;
 import com.whydigit.efit.dto.Role;
 import com.whydigit.efit.entity.AssetStockDetailsVO;
-
+import com.whydigit.efit.entity.BinAllotmentVO;
 import com.whydigit.efit.entity.CustomersVO;
 import com.whydigit.efit.entity.EmitterInwardVO;
 import com.whydigit.efit.entity.EmitterOutwardVO;
@@ -55,6 +55,7 @@ import com.whydigit.efit.entity.ReturnStockVO;
 import com.whydigit.efit.entity.VwEmitterInwardVO;
 import com.whydigit.efit.exception.ApplicationException;
 import com.whydigit.efit.repo.AssetStockDetailsRepo;
+import com.whydigit.efit.repo.BinAllotmentRepo;
 import com.whydigit.efit.repo.CustomersRepo;
 import com.whydigit.efit.repo.DmapDetailsRepo;
 import com.whydigit.efit.repo.EmitterInwardRepo;

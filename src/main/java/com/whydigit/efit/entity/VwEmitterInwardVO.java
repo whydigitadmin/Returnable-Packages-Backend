@@ -46,8 +46,4 @@ private boolean approvedStatus;
 private boolean netRecAcceptStatus;
 
 
-
-
-
-
 }

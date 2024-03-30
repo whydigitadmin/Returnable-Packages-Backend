@@ -133,6 +133,8 @@ public interface MasterService {
 	List<KitResponseDTO> getAllKit(Long orgId);
 
 	Optional<KitVO> getKitById(Long id);
+	
+	Optional<KitVO> getKitByKitCode(String kitName);
 
 	KitVO createkit(KitDTO kitDTO) throws ApplicationException;
 
