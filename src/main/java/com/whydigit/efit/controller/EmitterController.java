@@ -107,36 +107,36 @@ public class EmitterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 	
-	// get Bin Allotment
-	@GetMapping("/getBinRequest")
-	public ResponseEntity<ResponseDTO> getBinRequest(@RequestParam(required = false) Long emitterId,
-			@RequestParam(required = false) Long orgId, @RequestParam(required = false) String warehouseLocation,
-			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
-			@RequestParam(required = false) Long warehouseLoacationId) {
-		String methodName = "getBinRequest()";
-		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
-		String errorMsg = null;
-		Map<String, Object> responseObjectsMap = new HashMap<>();
-		ResponseDTO responseDTO = null;
-		List<BinAllotmentVO> binAllotmentVO = new ArrayList<>();
-		try {
-			binAllotmentVO = emitterService.getBinRequest(emitterId, warehouseLocation,orgId, startDate, endDate,warehouseLoacationId);
-		} catch (Exception e) {
-			errorMsg = e.getMessage();
-			LOGGER.error(CommonConstant.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-		}
-		if (StringUtils.isBlank(errorMsg)) {
-			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, EmitterConstant.ISSUE_REQUEST_SUCCESS_MESSAGE);
-			responseObjectsMap.put(EmitterConstant.ISSUE_REQUEST_VO, binAllotmentVO);
-			responseDTO = createServiceResponse(responseObjectsMap);
-		} else {
-			responseDTO = createServiceResponseError(responseObjectsMap,
-					EmitterConstant.ISSUE_REQUEST_REGISTERED_FAILED_MESSAGE, errorMsg);
-		}
-		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
-		return ResponseEntity.ok().body(responseDTO);
-	}
+//	// get Bin Allotment
+//	@GetMapping("/getBinRequest")
+//	public ResponseEntity<ResponseDTO> getBinRequest(@RequestParam(required = false) Long emitterId,
+//			@RequestParam(required = false) Long orgId, @RequestParam(required = false) String warehouseLocation,
+//			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+//			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+//			@RequestParam(required = false) Long warehouseLoacationId) {
+//		String methodName = "getBinRequest()";
+//		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+//		String errorMsg = null;
+//		Map<String, Object> responseObjectsMap = new HashMap<>();
+//		ResponseDTO responseDTO = null;
+//		List<BinAllotmentVO> issueRequestVO = new ArrayList<>();
+//		try {
+//			issueRequestVO = emitterService.getBinRequest(emitterId, warehouseLocation,orgId, startDate, endDate,warehouseLoacationId);
+//		} catch (Exception e) {
+//			errorMsg = e.getMessage();
+//			LOGGER.error(CommonConstant.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+//		}
+//		if (StringUtils.isBlank(errorMsg)) {
+//			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, EmitterConstant.ISSUE_REQUEST_SUCCESS_MESSAGE);
+//			responseObjectsMap.put(EmitterConstant.ISSUE_REQUEST_VO, issueRequestVO);
+//			responseDTO = createServiceResponse(responseObjectsMap);
+//		} else {
+//			responseDTO = createServiceResponseError(responseObjectsMap,
+//					EmitterConstant.ISSUE_REQUEST_REGISTERED_FAILED_MESSAGE, errorMsg);
+//		}
+//		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+//		return ResponseEntity.ok().body(responseDTO);
+//	}
 
 	@GetMapping("/cancelIssueRequest")
 	public ResponseEntity<ResponseDTO> CancelIssueRequest(@RequestParam(required = false) Long issueRequestId,@RequestParam(required = false)
