@@ -21,10 +21,6 @@ public class ChangePasswordFormDTO {
 	private String userName;
 
 	@NotBlank
-	@Size(min = 6, max = 100, message = "Old Password is required")
-	private String oldPassword;
-
-	@NotBlank
 	@Size(min = 6, max = 100, message = "New Password is required")
 	private String newPassword;
 }
