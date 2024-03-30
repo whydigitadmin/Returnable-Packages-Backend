@@ -79,6 +79,7 @@ public class WarehouseServiceImpl implements WarehouseService {
 		warehouseVO.setPincode(warehouseDTO.getPincode());
 		warehouseVO.setUnit(warehouseDTO.getUnit());
 		warehouseVO.setCode(warehouseDTO.getCode());
+		warehouseVO.setStockBranch(warehouseDTO.getStockBranch());
 		warehouseVO.setCity(warehouseDTO.getCity());
 		warehouseVO.setCountry(warehouseDTO.getCountry());
 		warehouseVO.setGst(warehouseDTO.getGst());

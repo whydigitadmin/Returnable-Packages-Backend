@@ -24,5 +24,6 @@ public class WarehouseDTO {
 	private String country;
 	private String gst;
 	private boolean active;
+	private String stockBranch;
 	
 }

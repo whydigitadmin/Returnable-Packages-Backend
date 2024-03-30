@@ -1299,7 +1299,9 @@ public class MasterServiceImpl implements MasterService {
 				assetTaggingDetails.setTaggingDocDd(assetTaggingVO.getDocid());
 				assetTaggingDetails.setAssetCode(taggingDetailsDTO.getAssetCode());
 				assetTaggingDetails.setAsset(taggingDetailsDTO.getAsset());
+				assetTaggingDetails.setOrgId(assetTaggingVO.getOrgId());
 				assetTaggingDetails.setTagCode(taggingDetailsDTO.getTagCode());
+				assetTaggingDetails.setTaggingVO(assetTaggingVO);
 				assetTaggingDetailsVO.add(assetTaggingDetails);
 			}
 		}
