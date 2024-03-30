@@ -15,4 +15,8 @@ public class IssueRequestQtyApprovelDTO {
 	List<IssueRequestItemApprovelDTO> issueRequestItemApprovelDTO= new ArrayList<>();
 	private Long approvedId;
 	private String approverName;
+	private String createdBy;
+	private String modifiedBy;	
+	private String stockBranch; 
+
 }
