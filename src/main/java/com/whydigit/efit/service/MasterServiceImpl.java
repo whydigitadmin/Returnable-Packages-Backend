@@ -1320,4 +1320,10 @@ public class MasterServiceImpl implements MasterService {
 		
 		return assetTaggingRepo.getTagCodeByAsset(assetcode,asset,startno,endno);
 	}
+
+	@Override
+	public Set<Object[]> getAvalKitQty(Long warehouseId, String Kitname) {
+		
+		return stockBranchRepo.findAvalKitQty(warehouseId,Kitname);
+	}
 }

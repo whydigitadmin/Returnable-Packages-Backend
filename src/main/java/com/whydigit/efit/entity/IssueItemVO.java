@@ -78,5 +78,7 @@ public class IssueItemVO {
 	@JsonManagedReference
 	@OneToMany(mappedBy = "issueItemVO", cascade = CascadeType.ALL)
 	private List<IssueRequestApprovedVO> issueRequestApprovedVO;
+	
+
 
 }

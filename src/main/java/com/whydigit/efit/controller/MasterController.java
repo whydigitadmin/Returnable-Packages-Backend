@@ -1800,4 +1800,45 @@ public class MasterController extends BaseController {
 		return assetTagCode;
 	}
 	
+	@GetMapping("/getAvalkitqty")
+	public ResponseEntity<ResponseDTO> getAvalkitqty(@RequestParam Long warehouseId,@RequestParam String Kitname) {
+		String methodName = "getAvalkitqty()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		Set<Object[]> avalKit = new HashSet<>();
+		try {
+			avalKit = masterService.getAvalKitQty(warehouseId, Kitname);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			List<Map<String, Object>> kit = getKitDetails(avalKit);
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Available Kit Qty Information get successfully");
+			responseObjectsMap.put("Avalkit", kit);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap,
+					"Available Kit Qty Information information receive failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+
+	}
+
+	private List<Map<String, Object>> getKitDetails(Set<Object[]> avalKit) {
+		List<Map<String, Object>> kit = new ArrayList<>();
+		for (Object[] w : avalKit) {
+			Map<String, Object> kitd = new HashMap<>();
+			kitd.put("stockBranch", w[0]);
+			kitd.put("kitCode", w[1].toString());
+			kitd.put("avlQty", w[2].toString());
+			kit.add(kitd);
+		}
+		return kit;
+	}
+
+	
 }
