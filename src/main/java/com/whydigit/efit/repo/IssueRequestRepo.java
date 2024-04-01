@@ -35,5 +35,8 @@ public interface IssueRequestRepo
 
 	@Query(nativeQuery = true,value="CALL bin_next_value()")
 	void updatesequence();
+
+	@Query(nativeQuery = true,value ="select a.stockbranch from warehouse a, issuerequest b where a.warehouseid=b.whlocationid and b.issuerequestid=?1")
+	String findStockBranchByIssurequestid(Long issueRequestId);
 	
 }

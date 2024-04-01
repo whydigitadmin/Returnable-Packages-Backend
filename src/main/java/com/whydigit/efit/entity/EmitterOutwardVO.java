@@ -41,10 +41,6 @@ public class EmitterOutwardVO {
 	
 	@Column(name="location",length = 25)
 	private String location;
-//	private String issuedTo;
-//	private String partNo;
-//	private String partName;
-//	private String partQty;
 	@Column(name="kitcode",length = 25)
 	private String kitNo;
 	@Column(name="kitqty",length = 10)

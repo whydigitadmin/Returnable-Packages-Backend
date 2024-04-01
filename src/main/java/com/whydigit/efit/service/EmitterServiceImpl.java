@@ -320,14 +320,14 @@ public class EmitterServiceImpl implements EmitterService {
 			assetStockDetailsVO.setCreatedBy(issueRequestQtyApprovelDTO.getCreatedBy());
 			assetStockDetailsVO.setModifiedBy(issueRequestQtyApprovelDTO.getModifiedBy());
 			assetStockDetailsVO.setSCode("");
-			assetStockDetailsVO.setStockBranch(issueRequestQtyApprovelDTO.getStockBranch());
+			assetStockDetailsVO.setStockBranch(issueRequestRepo.findStockBranchByIssurequestid(issueRequestQtyApprovelDTO.getIssueRequestId()));
 			assetStockDetailsVO.setStockRef(Long.toString(issueRequestQtyApprovelDTO.getIssueRequestId()));
 			assetStockDetailsVO.setSkuCode(kavo.getAssetCodeId());
 			assetStockDetailsVO.setSkuQty(kavo.getQuantity() * issuedQty*-1);
 			assetStockDetailsVO.setSku(kavo.getAssetName());
 			assetStockDetailsVO.setPm("M");
 			assetStockDetailsVO.setScreen("BIN_ALLOT");
-			assetStockDetailsVO.setStockSource("BNREQ");
+			assetStockDetailsVO.setSCode("BNREQ");
 			return assetStockDetailsVO;
 		}).collect(Collectors.toList());
 	}
@@ -368,7 +368,7 @@ public class EmitterServiceImpl implements EmitterService {
 
 	@Transactional
 	@Override
-	public InwardVO updateEmitterInward(InwardDTO inwardDTO) throws ApplicationException {
+	public InwardVO  updateEmitterInward(InwardDTO inwardDTO) throws ApplicationException {
 		IssueItemVO issueItemVO = new IssueItemVO();
 		InwardVO inwardVO = new InwardVO();
 //		MovementStockVO movementStockVO = new MovementStockVO();
@@ -417,6 +417,7 @@ public class EmitterServiceImpl implements EmitterService {
 		returnStockVO.setQty(inwardDTO.getNetQtyRecieved());
 		returnStockVO.setIssue_item_id(inwardDTO.getIssueItemId());
 		returnStockRepo.save(returnStockVO);
+		
 		}
 
 	@Override
@@ -640,6 +641,7 @@ public class EmitterServiceImpl implements EmitterService {
 
 	}
 
+	
 
 }
 
