@@ -45,7 +45,7 @@ public class SecurityConfig {
 						"api/emitter/updateOutwardKitQty", "/api/partStudy/logistics/{id}", "/api/partStudy/**",
 						"/api/inwardSku/**", "/api/master/updateCreateCnote", "/api/partStudy/stockDetail/{id}",
 						"/api/emitter/createIssueRequest", "/api/emitter/*", "/api/auth/createUser",
-						"/api/master/flow/getFlowByIds", "/api/master/getAllFlowName",
+						"/api/master/flow/getFlowByIds", "/api/master/getAllFlowName","/api/master/updateCreateTerms","/api/master/getAllTerms","/api/master/getAllTermsById",
 						"/api/emitter/getViewEmitterByWarehouse", "/api/emitter/getViewEmitter",
 						"/api/auth/changePassword", "/api/auth/userByOrgId", "/api/emitter/getViewEmitterByFlow",
 						"/api/emitter/viewEmitterInward", "/api/warehouse/getWarehouseByUserID",

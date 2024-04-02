@@ -347,7 +347,7 @@ public class PartStudyServiceImpl implements PartStudyService {
 				if (ObjectUtils.isNotEmpty(emitterId)) {
 					predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("emitterId"), emitterId)));
 				}
-				if (StringUtils.isNotBlank(partName)) {
+				if (StringUtils.isNotBlank(partName)) {	
 					predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("partName"), partName)));
 				}
 				if (StringUtils.isNotBlank(partNumber)) {

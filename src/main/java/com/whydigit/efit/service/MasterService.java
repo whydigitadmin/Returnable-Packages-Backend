@@ -18,6 +18,7 @@ import com.whydigit.efit.dto.KitDTO;
 import com.whydigit.efit.dto.KitResponseDTO;
 import com.whydigit.efit.dto.ServiceDTO;
 import com.whydigit.efit.dto.StockBranchDTO;
+import com.whydigit.efit.dto.TermsAndConditionsDTO;
 import com.whydigit.efit.dto.VendorDTO;
 import com.whydigit.efit.entity.AssetCategoryVO;
 import com.whydigit.efit.entity.AssetGroupVO;
@@ -34,6 +35,7 @@ import com.whydigit.efit.entity.ManufacturerProductVO;
 import com.whydigit.efit.entity.ManufacturerVO;
 import com.whydigit.efit.entity.ServiceVO;
 import com.whydigit.efit.entity.StockBranchVO;
+import com.whydigit.efit.entity.TermsAndConditionsVO;
 import com.whydigit.efit.entity.UnitVO;
 import com.whydigit.efit.entity.VendorAddressVO;
 import com.whydigit.efit.entity.VendorBankDetailsVO;
@@ -204,5 +206,11 @@ public interface MasterService {
 	Set<Object[]> getTagCodeByAsset(String assetcode, String asset, int startno, int endno);
 	
 	Set<Object[]>getAvalKitQty(Long warehouseId,String Kitname);
+
+	TermsAndConditionsVO updateCreateTerms(TermsAndConditionsDTO termsAndConditionsDTO) throws ApplicationException;
+
+	List<TermsAndConditionsVO> getAllTermsByOrgId(Long orgId);
+
+	List<TermsAndConditionsVO> getAllTermsById(Long termsId);
 
 }
