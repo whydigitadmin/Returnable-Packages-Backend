@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.InputStreamReader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -58,9 +59,11 @@ import com.whydigit.efit.dto.KitDTO;
 import com.whydigit.efit.dto.KitResponseDTO;
 import com.whydigit.efit.dto.ServiceDTO;
 import com.whydigit.efit.dto.StockBranchDTO;
+import com.whydigit.efit.dto.TermsAndConditionsDTO;
 import com.whydigit.efit.dto.VendorAddressDTO;
 import com.whydigit.efit.dto.VendorBankDetailsDTO;
 import com.whydigit.efit.dto.VendorDTO;
+import com.whydigit.efit.dto.WarehouseDTO;
 import com.whydigit.efit.entity.AssetCategoryVO;
 import com.whydigit.efit.entity.AssetGroupVO;
 import com.whydigit.efit.entity.AssetInwardDetailVO;
@@ -85,10 +88,12 @@ import com.whydigit.efit.entity.ManufacturerProductVO;
 import com.whydigit.efit.entity.ManufacturerVO;
 import com.whydigit.efit.entity.ServiceVO;
 import com.whydigit.efit.entity.StockBranchVO;
+import com.whydigit.efit.entity.TermsAndConditionsVO;
 import com.whydigit.efit.entity.UnitVO;
 import com.whydigit.efit.entity.VendorAddressVO;
 import com.whydigit.efit.entity.VendorBankDetailsVO;
 import com.whydigit.efit.entity.VendorVO;
+import com.whydigit.efit.entity.WarehouseVO;
 import com.whydigit.efit.exception.ApplicationException;
 import com.whydigit.efit.repo.AssetCategoryRepo;
 import com.whydigit.efit.repo.AssetGroupRepo;
@@ -112,6 +117,7 @@ import com.whydigit.efit.repo.ManufacturerProductRepo;
 import com.whydigit.efit.repo.ManufacturerRepo;
 import com.whydigit.efit.repo.ServiceRepo;
 import com.whydigit.efit.repo.StockBranchRepo;
+import com.whydigit.efit.repo.TermsAndConditionsRepo;
 import com.whydigit.efit.repo.UnitRepo;
 import com.whydigit.efit.repo.UserRepo;
 import com.whydigit.efit.repo.VendorAddressRepo;
@@ -154,6 +160,8 @@ public class MasterServiceImpl implements MasterService {
 	VendorBankDetailsRepo vendorBankDetailsRepo;
 	@Autowired
 	KitRepo kitRepo;
+	@Autowired
+	TermsAndConditionsRepo termsAndConditionsRepo;
 	
 	@PersistenceContext
 	private EntityManager entityManager;
@@ -1326,4 +1334,56 @@ public class MasterServiceImpl implements MasterService {
 		
 		return stockBranchRepo.findAvalKitQty(warehouseId,Kitname);
 	}
+
+	@Override
+	public TermsAndConditionsVO updateCreateTerms(TermsAndConditionsDTO termsAndConditionsDTO) throws ApplicationException {
+		TermsAndConditionsVO termsAndConditionsVO = new TermsAndConditionsVO();
+		if (ObjectUtils.isNotEmpty(termsAndConditionsDTO.getTermsId())) {
+			termsAndConditionsVO = termsAndConditionsRepo.findById(termsAndConditionsDTO.getTermsId())
+					.orElseThrow(() -> new ApplicationException("Invalid Terms details"));
+		}
+		getWarehouseVOFromWarehouseDTO(termsAndConditionsDTO, termsAndConditionsVO);
+		return termsAndConditionsRepo.save(termsAndConditionsVO);
+	}
+
+	private void getWarehouseVOFromWarehouseDTO(TermsAndConditionsDTO termsAndConditionsDTO,
+			TermsAndConditionsVO termsAndConditionsVO) {
+		
+		termsAndConditionsVO.setOrgId(termsAndConditionsDTO.getOrgId());
+		termsAndConditionsVO.setSCode("TERMS");
+		termsAndConditionsVO.setTermsCode(termsAndConditionsDTO.getTermsCode());
+		termsAndConditionsVO.setDetails(termsAndConditionsDTO.getDetails());
+		termsAndConditionsVO.setPrintRemarks(termsAndConditionsDTO.getPrintRemarks());
+		termsAndConditionsVO.setEffectiveFrom(LocalDate.now());
+		termsAndConditionsVO.setEffectiveTo(LocalDate.now());
+	
+	}
+
+	@Override
+	public List<TermsAndConditionsVO> getAllTermsByOrgId(Long orgId) {
+		List<TermsAndConditionsVO> termsAndConditionsVO = new ArrayList<>();
+		if (ObjectUtils.isNotEmpty(orgId)) {
+			LOGGER.info("Successfully Received  Terms BY OrgId : {}", orgId);
+			termsAndConditionsVO = termsAndConditionsRepo.getAllTermsByOrgId(orgId);
+		} else {
+			LOGGER.info("Successfully Received  Terms For All OrgId.");
+			termsAndConditionsVO = termsAndConditionsRepo.findAll();
+		}
+		return termsAndConditionsVO;
+	}
+
+	@Override
+	public List<TermsAndConditionsVO> getAllTermsById(Long termsId) {
+		List<TermsAndConditionsVO> termsAndConditionsVO = new ArrayList<>();
+		if (ObjectUtils.isNotEmpty(termsId)) {
+			LOGGER.info("Successfully Received  Terms BY TermsId : {}", termsId);
+			termsAndConditionsVO = termsAndConditionsRepo.getAllTermsByTermsId(termsId);
+		} else {
+			LOGGER.info("Successfully Received  Terms For All TermsId.");
+			termsAndConditionsVO = termsAndConditionsRepo.findAll();
+		}
+		return termsAndConditionsVO;
+	}
+
+	
 }
