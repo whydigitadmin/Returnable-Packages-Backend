@@ -37,12 +37,12 @@ import com.whydigit.efit.dto.DmapDTO;
 import com.whydigit.efit.dto.FlowDTO;
 import com.whydigit.efit.dto.KitDTO;
 import com.whydigit.efit.dto.KitResponseDTO;
+import com.whydigit.efit.dto.PoDTO;
 import com.whydigit.efit.dto.ResponseDTO;
 import com.whydigit.efit.dto.ServiceDTO;
 import com.whydigit.efit.dto.StockBranchDTO;
 import com.whydigit.efit.dto.TermsAndConditionsDTO;
 import com.whydigit.efit.dto.VendorDTO;
-import com.whydigit.efit.dto.WarehouseDTO;
 import com.whydigit.efit.entity.AssetCategoryVO;
 import com.whydigit.efit.entity.AssetGroupVO;
 import com.whydigit.efit.entity.AssetInwardVO;
@@ -56,6 +56,7 @@ import com.whydigit.efit.entity.FlowVO;
 import com.whydigit.efit.entity.KitVO;
 import com.whydigit.efit.entity.ManufacturerProductVO;
 import com.whydigit.efit.entity.ManufacturerVO;
+import com.whydigit.efit.entity.PoVO;
 import com.whydigit.efit.entity.ServiceVO;
 import com.whydigit.efit.entity.StockBranchVO;
 import com.whydigit.efit.entity.TermsAndConditionsVO;
@@ -63,7 +64,6 @@ import com.whydigit.efit.entity.UnitVO;
 import com.whydigit.efit.entity.VendorAddressVO;
 import com.whydigit.efit.entity.VendorBankDetailsVO;
 import com.whydigit.efit.entity.VendorVO;
-import com.whydigit.efit.entity.WarehouseVO;
 import com.whydigit.efit.service.MasterService;
 
 @CrossOrigin
@@ -1919,5 +1919,32 @@ public class MasterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 
 	}
+	
+	//PO
+	@PutMapping("/updateCreatePo")
+	public ResponseEntity<ResponseDTO> updateCreatePo(@RequestBody PoDTO poDTO) {
+		String methodName = "updateCreatePo()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		try {
+			PoVO updatedPoVO = masterService.updateCreatePo(poDTO);
+			if (updatedPoVO != null) {
+				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Po updated successfully");
+				responseObjectsMap.put("updatedPoVO", updatedPoVO);
+				responseDTO = createServiceResponse(responseObjectsMap);
+			} else {
+			}
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "Po update failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+	
 
 }

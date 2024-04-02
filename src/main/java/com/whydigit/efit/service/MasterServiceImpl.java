@@ -57,6 +57,7 @@ import com.whydigit.efit.dto.FlowDTO;
 import com.whydigit.efit.dto.KitAssetDTO;
 import com.whydigit.efit.dto.KitDTO;
 import com.whydigit.efit.dto.KitResponseDTO;
+import com.whydigit.efit.dto.PoDTO;
 import com.whydigit.efit.dto.ServiceDTO;
 import com.whydigit.efit.dto.StockBranchDTO;
 import com.whydigit.efit.dto.TermsAndConditionsDTO;
@@ -86,6 +87,7 @@ import com.whydigit.efit.entity.KitAssetVO;
 import com.whydigit.efit.entity.KitVO;
 import com.whydigit.efit.entity.ManufacturerProductVO;
 import com.whydigit.efit.entity.ManufacturerVO;
+import com.whydigit.efit.entity.PoVO;
 import com.whydigit.efit.entity.ServiceVO;
 import com.whydigit.efit.entity.StockBranchVO;
 import com.whydigit.efit.entity.TermsAndConditionsVO;
@@ -115,6 +117,7 @@ import com.whydigit.efit.repo.IssueItemRepo;
 import com.whydigit.efit.repo.KitRepo;
 import com.whydigit.efit.repo.ManufacturerProductRepo;
 import com.whydigit.efit.repo.ManufacturerRepo;
+import com.whydigit.efit.repo.PoRepo;
 import com.whydigit.efit.repo.ServiceRepo;
 import com.whydigit.efit.repo.StockBranchRepo;
 import com.whydigit.efit.repo.TermsAndConditionsRepo;
@@ -210,6 +213,9 @@ public class MasterServiceImpl implements MasterService {
 	
 	@Autowired
 	StockBranchRepo stockBranchRepo;
+	
+	@Autowired
+	PoRepo poRepo;
 
 	@Override
 	public List<AssetVO> getAllAsset(Long orgId) {
@@ -1383,6 +1389,26 @@ public class MasterServiceImpl implements MasterService {
 			termsAndConditionsVO = termsAndConditionsRepo.findAll();
 		}
 		return termsAndConditionsVO;
+	}
+
+	@Override
+	public PoVO updateCreatePo(PoDTO poDTO) throws ApplicationException {
+		PoVO poVO = new PoVO();
+		if (ObjectUtils.isNotEmpty(poDTO.getPoId())) {
+			poVO = poRepo.findById(poDTO.getPoId())
+					.orElseThrow(() -> new ApplicationException("Invalid po details"));
+		}
+		getPoVOFromPoDTO(poDTO, poVO);
+		return poRepo.save(poVO);
+	}
+
+	private void getPoVOFromPoDTO(PoDTO poDTO, PoVO poVO) {
+
+		
+		
+		
+		
+		
 	}
 
 	
