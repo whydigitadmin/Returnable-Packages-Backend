@@ -90,4 +90,6 @@ public class EmitterOutwardVO {
 	@Embedded
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
 
+	
+
 }

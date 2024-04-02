@@ -49,6 +49,9 @@ public class KitVO {
 	@Column(name="cancel")
 	private boolean cancel;
 	
+	@Column(name="finyear",length = 10)
+	private String finyr;
+	
 	@Column(name = "createdby", length = 25)
 	private String createdBy;
 

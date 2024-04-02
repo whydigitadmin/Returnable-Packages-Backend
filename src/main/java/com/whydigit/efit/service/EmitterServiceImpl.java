@@ -258,20 +258,21 @@ public class EmitterServiceImpl implements EmitterService {
 		for (IssueRequestItemApprovelDTO irItem : issueRequestQtyApprovelDTO.getIssueRequestItemApprovelDTO()) {
 			setIssueRequestItemQTY(issueRequestQtyApprovelDTO, issueRequestVO, assetStockDetailsVO, customersVO,
 					irItem.getIssuedQty(), irItem.getIssueItemId());
-		}
-		if (issueRequestVO.getIssueItemVO().stream()
-				.allMatch(flag -> flag.getIssueItemStatus() > EmitterConstant.ISSUE_REQUEST_ITEM_STATUS_INPROGRESS)) {
-			issueRequestVO.setIssueStatus(EmitterConstant.ISSUE_REQUEST_STATUS_ISSUED);
-		}
-		// Check if any status flag is equal to 1
-		else if (issueRequestVO.getIssueItemVO().stream()
-				.anyMatch(flag -> flag.getIssueItemStatus() == EmitterConstant.ISSUE_REQUEST_ITEM_STATUS_INPROGRESS)) {
-			issueRequestVO.setIssueStatus(EmitterConstant.ISSUE_REQUEST_STATUS_INPROGRESS);
-		}
-		// If none of the above conditions are met, return 0
-		else {
-			issueRequestVO.setIssueStatus(EmitterConstant.ISSUE_REQUEST_STATUS_PENDING);
-		}
+		}		
+		issueRequestVO.setIssueStatus(EmitterConstant.ISSUE_REQUEST_STATUS_ISSUED);
+//		if (issueRequestVO.getIssueItemVO().stream()
+//				.allMatch(flag -> flag.getIssueItemStatus() > EmitterConstant.ISSUE_REQUEST_ITEM_STATUS_INPROGRESS)) {
+//			issueRequestVO.setIssueStatus(EmitterConstant.ISSUE_REQUEST_STATUS_ISSUED);
+//		}
+//		// Check if any status flag is equal to 1
+//		else if (issueRequestVO.getIssueItemVO().stream()
+//				.anyMatch(flag -> flag.getIssueItemStatus() == EmitterConstant.ISSUE_REQUEST_ITEM_STATUS_INPROGRESS)) {
+//			issueRequestVO.setIssueStatus(EmitterConstant.ISSUE_REQUEST_STATUS_INPROGRESS);
+//		}
+//		// If none of the above conditions are met, return 0
+//		else {
+//			issueRequestVO.setIssueStatus(EmitterConstant.ISSUE_REQUEST_STATUS_PENDING);
+//		}
 		issueItemRepo.updateApptovedStatus(issueRequestQtyApprovelDTO.getIssueRequestId());
 		issueRequestVO= issueRequestRepo.save(issueRequestVO);
 		assetStockDetailsRepo.saveAll(assetStockDetailsVO);
@@ -588,18 +589,24 @@ public class EmitterServiceImpl implements EmitterService {
 	@Override
 	public OutwardKitDetailsVO updateOutwardKitQty(OutwardKitDetailsDTO outwardKitDetailsDTO) throws ApplicationException {
 
+//		OutwardKitDetailsVO outwardKitDetailVO = new OutwardKitDetailsVO();
+//		outwardKitDetailVO.setKitNO(outwardKitDetailsDTO.getKitNO());
+//		outwardKitDetailVO.setKitQty(outwardKitDetailsDTO.getKitQty());
+//		EmitterOutwardVO emitterOutwardVO = emitterOutwardRepo.findById(outwardKitDetailsDTO.getEmitterOutwarId())
+//				.orElseThrow(() -> new ApplicationException("EmitterId not found."));
+//		outwardKitDetailVO.setEmitterOutwardVO(emitterOutwardVO); 
+//		emitterOutwardVO.setKitNo(outwardKitDetailsDTO.getKitNO());
+//		emitterOutwardVO.setKitReturnqty(outwardKitDetailsDTO.getKitQty());
+		
 		OutwardKitDetailsVO outwardKitDetailVO = new OutwardKitDetailsVO();
 		outwardKitDetailVO.setKitNO(outwardKitDetailsDTO.getKitNO());
 		outwardKitDetailVO.setKitQty(outwardKitDetailsDTO.getKitQty());
-		EmitterOutwardVO emitterOutwardVO = emitterOutwardRepo.findById(outwardKitDetailsDTO.getEmitterOutwarId())
-				.orElseThrow(() -> new ApplicationException("EmitterId not found."));
+		EmitterOutwardVO emitterOutwardVO = emitterOutwardRepo.findOutwardByIssueItemId(outwardKitDetailsDTO.getIssueItemId());
 		outwardKitDetailVO.setEmitterOutwardVO(emitterOutwardVO); 
-		emitterOutwardVO.setKitNo(outwardKitDetailsDTO.getKitNO());
-		emitterOutwardVO.setKitReturnqty(outwardKitDetailsDTO.getKitQty());
+		int reqturnqty=outwardKitDetailsRepo.getReturnQty(emitterOutwardVO.getId());
+		emitterOutwardRepo.updatereturnQty(emitterOutwardVO.getId(),reqturnqty);
 		emitterOutwardRepo.save(emitterOutwardVO);
-		
 		ReturnStockVO returnStockVO=new ReturnStockVO();
-		
 		returnStockVO.setIssue_item_id(emitterOutwardVO.getIssueItemVO().getId());
 		returnStockVO.setQty(outwardKitDetailsDTO.getKitQty()*-1);
 		returnStockRepo.save(returnStockVO);		
