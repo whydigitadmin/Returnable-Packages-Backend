@@ -1530,7 +1530,7 @@ public class MasterServiceImpl implements MasterService {
 		podVO.setActive(podDTO.isActive());
 		podVO.setCancel(podDTO.isCancel());
 		podVO.setRefDate(podDTO.getRefDate());
-		podVO.setDocDate(podDTO.getDocdate());
+		podVO.setDocDate(podDTO.getDocdate()); 
 	}
 
 	@Override

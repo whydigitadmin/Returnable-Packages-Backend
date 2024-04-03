@@ -1972,7 +1972,7 @@ public class MasterController extends BaseController {
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
 		List<PodVO> podVO = new ArrayList<>();
-		try {
+		try { 
 			podVO = masterService.getAllPodByPodId(podId);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();

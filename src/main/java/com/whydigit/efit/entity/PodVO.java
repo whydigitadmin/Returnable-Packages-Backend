@@ -39,7 +39,7 @@ public class PodVO {
 	@Column(name = "docid", length = 30)
 	private String docId;
 	@Column(name = "docdate")
-	private LocalDate docDate;
+	private LocalDate docDate; 
 	@Column(name = "refno", length = 30)
 	private String refNo;
 	@Column(name = "refdate")
