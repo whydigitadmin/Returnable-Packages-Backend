@@ -3,8 +3,6 @@ package com.whydigit.efit.dto;
 import java.time.LocalDate;
 import java.util.List;
 
-import com.whydigit.efit.entity.PoVO1;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,7 +12,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class PoDTO {
 	private Long poId;
-	private String sCode;
+	private String sCode; 
+	private Long orgId;
 	private String company;
 	private String address;
 	private String selfGst;
@@ -33,6 +32,6 @@ public class PoDTO {
 	private boolean cancel;
 	private boolean active;
 	
-	private List<PoVO1> poVO1;
+	private List<Po1DTO> po1DTO;
 
 }

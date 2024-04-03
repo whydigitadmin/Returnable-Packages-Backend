@@ -32,8 +32,10 @@ public class PoVO {
 	@SequenceGenerator(name = "pogen", sequenceName = "poseq", initialValue = 1000000001, allocationSize = 1)
 	@Column(name = "poid")
 	private Long poId;
-	@Column(name = "sCode", length = 10)
+	@Column(name = "scode", length = 10)
 	private String sCode;
+	@Column(name="orgid")
+	private Long orgId;
 	@Column(name = "company", length = 50)
 	private String company;
 	@Column(name = "address", length = 200)

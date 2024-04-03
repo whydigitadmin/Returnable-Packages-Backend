@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Po1DTO {
-	private Long poId;
+	private Long po1Id;
 	private String itemId;
 	private String description;
 	private int hsnCode;

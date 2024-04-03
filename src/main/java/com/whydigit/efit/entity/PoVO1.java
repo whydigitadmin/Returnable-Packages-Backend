@@ -26,7 +26,7 @@ public class PoVO1 {
 	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "po1gen")
 	@SequenceGenerator(name = "po1gen", sequenceName = "po1seq", initialValue = 1000000001, allocationSize = 1)
 	@Column(name = "po1id")
-	private Long poId;
+	private Long po1Id;
 	@Column(name = "itemid", length = 25)
 	private String itemId;
 	@Column(name = "description", length = 100)

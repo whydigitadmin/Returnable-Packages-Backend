@@ -38,21 +38,23 @@ public class SecurityConfig {
 						"/api/warehouse/updateWarehose", "/api/master/asset", "/api/warehouse/view/{id}",
 						"/api/usersdetails/view", "/api/master/**", "​/api​/master​/addAddress",
 						"api/master/loadKitQty", "/api/warehouse/getWarehouseLocationByOrgID",
-						"/api/warehouse/updateCreateWarehouse", "/api/warehouse/view",
+						"/api/warehouse/updateCreateWarehouse", "/api/warehouse/view", "/api/master/updateCreatePo",
 						"/api/warehouse/getWarehouseById/{id}", "/api/partStudy/basicDetails",
 						"/api/partStudy/d}/searchPartStudyById", "/api/partStudy/packageDetail", "api/master/dmap",
 						"/api/partStudy/packageDetail/{id}", "/api/partStudy/logistics", "/api/company/setup",
 						"api/emitter/updateOutwardKitQty", "/api/partStudy/logistics/{id}", "/api/partStudy/**",
 						"/api/inwardSku/**", "/api/master/updateCreateCnote", "/api/partStudy/stockDetail/{id}",
 						"/api/emitter/createIssueRequest", "/api/emitter/*", "/api/auth/createUser",
-						"/api/master/flow/getFlowByIds", "/api/master/getAllFlowName","/api/master/updateCreateTerms","/api/master/getAllTerms","/api/master/getAllTermsById",
+						"/api/master/flow/getFlowByIds", "/api/master/getAllFlowName", "/api/master/updateCreateTerms",
+						"/api/master/getAllTerms", "/api/master/getAllTermsById",
 						"/api/emitter/getViewEmitterByWarehouse", "/api/emitter/getViewEmitter",
 						"/api/auth/changePassword", "/api/auth/userByOrgId", "/api/emitter/getViewEmitterByFlow",
 						"/api/emitter/viewEmitterInward", "/api/warehouse/getWarehouseByUserID",
-						"/api/emitter/getemitterByWarehouseId", "/api/auth/updateUser","api/master/createAssetInward",
+						"/api/emitter/getemitterByWarehouseId", "/api/auth/updateUser", "api/master/createAssetInward",
 						"/api/emitter/emitterOutward/v1", "/api/basicMaster/city", "/api/basicMaster/country",
-						"/api/master/dmap","/api/master/stockbranchByOrgId","/api/master/stockbranch","/api/master/assettagging","/api/master/Tagcode","/api/basicMaster/city",
-						"/api/emitter/getBinRequest","/api/master/kitDetails","/api/master/getAvalkitqty")
+						"/api/master/dmap", "/api/master/stockbranchByOrgId", "/api/master/stockbranch",
+						"/api/master/assettagging", "/api/master/Tagcode", "/api/basicMaster/city",
+						"/api/emitter/getBinRequest", "/api/master/kitDetails", "/api/master/getAvalkitqty")
 				.permitAll().antMatchers("/api/**").hasAnyRole("USER", "GUEST_USER").anyRequest().authenticated();
 
 		http.addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
