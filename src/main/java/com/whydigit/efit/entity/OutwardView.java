@@ -32,4 +32,5 @@ public class OutwardView {
     private LocalDate inwardConfirmDate;
 	private long emitterId;
 	private int balanceQTY;
+	private Long issueItemId;
 }

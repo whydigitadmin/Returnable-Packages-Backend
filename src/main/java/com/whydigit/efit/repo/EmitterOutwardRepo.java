@@ -15,6 +15,12 @@ public interface EmitterOutwardRepo extends JpaRepository<EmitterOutwardVO, Long
 
 	@Query(value="select * from emitteroutward where issue_item_id=?1",nativeQuery = true)
 	Optional<EmitterOutwardVO> findByIssueItemId(long issueItemId);
+	
+	@Query(value="select * from emitteroutward where issue_item_id=?1",nativeQuery = true)
+	EmitterOutwardVO findOutwardByIssueItemId(long issueItemId);
+
+	@Query(value="update emitteroutward set kitreturnqty=?2 where emitteroutwardid=?1",nativeQuery = true)
+	void updatereturnQty(Long id, int reqturnqty);
 
 
 }
