@@ -57,13 +57,14 @@ import com.whydigit.efit.dto.FlowDTO;
 import com.whydigit.efit.dto.KitAssetDTO;
 import com.whydigit.efit.dto.KitDTO;
 import com.whydigit.efit.dto.KitResponseDTO;
+import com.whydigit.efit.dto.Po1DTO;
+import com.whydigit.efit.dto.PoDTO;
 import com.whydigit.efit.dto.ServiceDTO;
 import com.whydigit.efit.dto.StockBranchDTO;
 import com.whydigit.efit.dto.TermsAndConditionsDTO;
 import com.whydigit.efit.dto.VendorAddressDTO;
 import com.whydigit.efit.dto.VendorBankDetailsDTO;
 import com.whydigit.efit.dto.VendorDTO;
-import com.whydigit.efit.dto.WarehouseDTO;
 import com.whydigit.efit.entity.AssetCategoryVO;
 import com.whydigit.efit.entity.AssetGroupVO;
 import com.whydigit.efit.entity.AssetInwardDetailVO;
@@ -86,6 +87,8 @@ import com.whydigit.efit.entity.KitAssetVO;
 import com.whydigit.efit.entity.KitVO;
 import com.whydigit.efit.entity.ManufacturerProductVO;
 import com.whydigit.efit.entity.ManufacturerVO;
+import com.whydigit.efit.entity.PoVO;
+import com.whydigit.efit.entity.PoVO1;
 import com.whydigit.efit.entity.ServiceVO;
 import com.whydigit.efit.entity.StockBranchVO;
 import com.whydigit.efit.entity.TermsAndConditionsVO;
@@ -93,7 +96,6 @@ import com.whydigit.efit.entity.UnitVO;
 import com.whydigit.efit.entity.VendorAddressVO;
 import com.whydigit.efit.entity.VendorBankDetailsVO;
 import com.whydigit.efit.entity.VendorVO;
-import com.whydigit.efit.entity.WarehouseVO;
 import com.whydigit.efit.exception.ApplicationException;
 import com.whydigit.efit.repo.AssetCategoryRepo;
 import com.whydigit.efit.repo.AssetGroupRepo;
@@ -115,6 +117,7 @@ import com.whydigit.efit.repo.IssueItemRepo;
 import com.whydigit.efit.repo.KitRepo;
 import com.whydigit.efit.repo.ManufacturerProductRepo;
 import com.whydigit.efit.repo.ManufacturerRepo;
+import com.whydigit.efit.repo.PoRepo;
 import com.whydigit.efit.repo.ServiceRepo;
 import com.whydigit.efit.repo.StockBranchRepo;
 import com.whydigit.efit.repo.TermsAndConditionsRepo;
@@ -210,6 +213,9 @@ public class MasterServiceImpl implements MasterService {
 	
 	@Autowired
 	StockBranchRepo stockBranchRepo;
+	
+	@Autowired
+	PoRepo poRepo;
 
 	@Override
 	public List<AssetVO> getAllAsset(Long orgId) {
@@ -1385,5 +1391,56 @@ public class MasterServiceImpl implements MasterService {
 		return termsAndConditionsVO;
 	}
 
+	@Override
+	public PoVO updateCreatePo(PoDTO poDTO) throws ApplicationException {
+		PoVO poVO = new PoVO();
+		if (ObjectUtils.isNotEmpty(poDTO.getPoId())) {
+			poVO = poRepo.findById(poDTO.getPoId()).orElseThrow(() -> new ApplicationException("Invalid po details"));
+		}
+
+		List<PoVO1> poVO1 = new ArrayList<>();
+		if (poDTO.getPo1DTO() != null) {
+			for (Po1DTO po1DTO : poDTO.getPo1DTO()) {
+				PoVO1 Po1 = new PoVO1();
+
+				Po1.setItemId(po1DTO.getItemId());
+				Po1.setDescription(po1DTO.getDescription());
+				Po1.setHsnCode(po1DTO.getHsnCode());
+				Po1.setQty(po1DTO.getQty());
+				Po1.setRate(po1DTO.getRate());
+				Po1.setExRate(po1DTO.getExRate());
+				Po1.setAmount(po1DTO.getAmount());
+				Po1.setCurrency(po1DTO.getCurrency());
+
+				poVO1.add(Po1);
+			}
+		}
+		poVO.setPoVO1(poVO1);
+		getPoVOFromPoDTO(poDTO, poVO);
+		return poRepo.save(poVO);
+	}
+
+	private void getPoVOFromPoDTO(PoDTO poDTO, PoVO poVO) {
+
+      	poVO.setOrgId(poDTO.getOrgId());
+      	poVO.setSCode("PO");
+		poVO.setCompany(poDTO.getCompany());
+		poVO.setAddress(poDTO.getAddress());
+		poVO.setSelfGst(poDTO.getSelfGst());
+		poVO.setPoNo(poDTO.getPoNo());
+		poVO.setDate(LocalDate.now());
+		poVO.setApId(poDTO.getApId());
+		poVO.setApGst(poDTO.getApGst());
+		poVO.setShipTo(poDTO.getShipTo());
+		poVO.setShipToRemarks(poDTO.getShipToRemarks());
+		poVO.setGstType(poDTO.getGstType());
+		poVO.setIGst(poDTO.getIGst());
+		poVO.setCGst(poDTO.getCGst());
+		poVO.setSGst(poDTO.getSGst());
+		poVO.setTerms(poDTO.getTerms());
+		poVO.setCancel(poDTO.isCancel());
+		poVO.setActive(poDTO.isActive());
+
+	}
 	
 }
