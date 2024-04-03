@@ -59,6 +59,9 @@ import com.whydigit.efit.dto.KitDTO;
 import com.whydigit.efit.dto.KitResponseDTO;
 import com.whydigit.efit.dto.Po1DTO;
 import com.whydigit.efit.dto.PoDTO;
+import com.whydigit.efit.dto.Pod1DTO;
+import com.whydigit.efit.dto.Pod2DTO;
+import com.whydigit.efit.dto.PodDTO;
 import com.whydigit.efit.dto.ServiceDTO;
 import com.whydigit.efit.dto.StockBranchDTO;
 import com.whydigit.efit.dto.TermsAndConditionsDTO;
@@ -89,6 +92,9 @@ import com.whydigit.efit.entity.ManufacturerProductVO;
 import com.whydigit.efit.entity.ManufacturerVO;
 import com.whydigit.efit.entity.PoVO;
 import com.whydigit.efit.entity.PoVO1;
+import com.whydigit.efit.entity.Pod1VO;
+import com.whydigit.efit.entity.Pod2VO;
+import com.whydigit.efit.entity.PodVO;
 import com.whydigit.efit.entity.ServiceVO;
 import com.whydigit.efit.entity.StockBranchVO;
 import com.whydigit.efit.entity.TermsAndConditionsVO;
@@ -117,7 +123,9 @@ import com.whydigit.efit.repo.IssueItemRepo;
 import com.whydigit.efit.repo.KitRepo;
 import com.whydigit.efit.repo.ManufacturerProductRepo;
 import com.whydigit.efit.repo.ManufacturerRepo;
+import com.whydigit.efit.repo.Po1Repo;
 import com.whydigit.efit.repo.PoRepo;
+import com.whydigit.efit.repo.PodRepo;
 import com.whydigit.efit.repo.ServiceRepo;
 import com.whydigit.efit.repo.StockBranchRepo;
 import com.whydigit.efit.repo.TermsAndConditionsRepo;
@@ -216,6 +224,13 @@ public class MasterServiceImpl implements MasterService {
 	
 	@Autowired
 	PoRepo poRepo;
+	
+	@Autowired
+	Po1Repo po1Repo;
+	
+	@Autowired
+	PodRepo podRepo;
+	
 
 	@Override
 	public List<AssetVO> getAllAsset(Long orgId) {
@@ -1402,7 +1417,6 @@ public class MasterServiceImpl implements MasterService {
 		if (poDTO.getPo1DTO() != null) {
 			for (Po1DTO po1DTO : poDTO.getPo1DTO()) {
 				PoVO1 Po1 = new PoVO1();
-
 				Po1.setItemId(po1DTO.getItemId());
 				Po1.setDescription(po1DTO.getDescription());
 				Po1.setHsnCode(po1DTO.getHsnCode());
@@ -1411,7 +1425,7 @@ public class MasterServiceImpl implements MasterService {
 				Po1.setExRate(po1DTO.getExRate());
 				Po1.setAmount(po1DTO.getAmount());
 				Po1.setCurrency(po1DTO.getCurrency());
-
+                Po1.setPoVO(poVO);
 				poVO1.add(Po1);
 			}
 		}
@@ -1442,5 +1456,107 @@ public class MasterServiceImpl implements MasterService {
 		poVO.setActive(poDTO.isActive());
 
 	}
-	
+
+	@Override
+	public List<PoVO> getPoByOrgId(Long orgId) {
+		List<PoVO> poVO = new ArrayList<>();
+		if (ObjectUtils.isNotEmpty(orgId)) {
+			LOGGER.info("Successfully Received  Po BY OrgId : {}", orgId);
+			poVO = poRepo.getAllPoByOrgId(orgId);
+		} else {
+			LOGGER.info("Successfully Received  Po For All OrgId.");
+			poVO = poRepo.findAll();
+		}
+		return poVO;
+	}
+
+	@Override
+	public List<PoVO> getAllPoByPoId(Long poId) {
+		List<PoVO> poVO = new ArrayList<>();
+		if (ObjectUtils.isNotEmpty(poId)) {
+			LOGGER.info("Successfully Received  Po BY TermsId : {}", poId);
+			poVO = poRepo.getAllPoByPoId(poId);
+		} else {
+			LOGGER.info("Successfully Received  PO For All poId.");
+			poVO = poRepo.findAll();
+		}
+		return poVO;
+	}
+
+	@Override
+	public PodVO updateCreatePod(PodDTO podDTO) throws ApplicationException {
+		PodVO podVO = new PodVO();
+		if (ObjectUtils.isNotEmpty(podDTO.getPodId())) {
+			podVO = podRepo.findById(podDTO.getPodId())
+					.orElseThrow(() -> new ApplicationException("Invalid po details"));
+		}
+		List<Pod1VO> pod1VO = new ArrayList<>();
+		if (podDTO.getPod1DTO() != null) {
+			for (Pod1DTO pod1DTO : podDTO.getPod1DTO()) {
+				Pod1VO pod1 = new Pod1VO();
+				pod1.setAssetCode(pod1DTO.getAssetCode());
+				pod1.setDescription(pod1DTO.getDescription());
+				pod1.setAllotQty(pod1DTO.getAllotQty());
+				pod1.setAcceptQty(pod1DTO.getAcceptQty());
+				pod1.setPodVO(podVO);
+				pod1VO.add(pod1);
+			}
+		}
+		List<Pod2VO> pod2VO = new ArrayList<>();
+		if (podDTO.getPod2DTO() != null) {
+			for (Pod2DTO pod2DTO : podDTO.getPod2DTO()) {
+				Pod2VO pod2 = new Pod2VO();
+				pod2.setAssetCode(pod2DTO.getAssetCode());
+				pod2.setDescription(pod2DTO.getDescription());
+				pod2.setRejectedQty(pod2DTO.getRejectedQty());
+				pod2.setReturnQty(pod2DTO.getReturnQty());
+				pod2.setPodVO(podVO);
+				pod2VO.add(pod2);
+			}
+		}
+		podVO.setPod2VO(pod2VO);
+		podVO.setPod1VO(pod1VO);
+		getPodVOFromPodDTO(podDTO, podVO);
+		return podRepo.save(podVO);
+	}
+
+	private void getPodVOFromPodDTO(PodDTO podDTO, PodVO podVO) {
+		podVO.setOrgId(podDTO.getOrgId());
+		podVO.setDocId(podDTO.getDocId());
+		podVO.setRefNo(podDTO.getRefNo());
+		podVO.setKitCode(podDTO.getKitCode());
+		podVO.setKitQty(podDTO.getKitQty());
+		podVO.setKitRqty(podDTO.getKitRqty());
+		podVO.setActive(podDTO.isActive());
+		podVO.setCancel(podDTO.isCancel());
+		podVO.setRefDate(podDTO.getRefDate());
+		podVO.setDocDate(podDTO.getDocdate());
+	}
+
+	@Override
+	public List<PodVO> getAllPodByPodId(Long podId) {
+		List<PodVO> podVO = new ArrayList<>();
+		if (ObjectUtils.isNotEmpty(podId)) {
+			LOGGER.info("Successfully Received  Pod BY TermsId : {}", podId);
+			podVO = podRepo.getAllPoByPoId(podId);
+		} else {
+			LOGGER.info("Successfully Received  POd For All poId.");
+			podVO = podRepo.findAll();
+		}
+		return podVO;
+	}
+
+	@Override
+	public List<PodVO> getAllPodByOrgId(Long orgId) {
+		List<PodVO> podVO = new ArrayList<>();
+		if (ObjectUtils.isNotEmpty(orgId)) {
+			LOGGER.info("Successfully Received  Pod BY TermsId : {}", orgId);
+			podVO = podRepo.getAllPodByPoId(orgId);
+		} else {
+			LOGGER.info("Successfully Received  POd For All poId.");
+			podVO = podRepo.findAll();
+		}
+		return podVO;
+	}
+
 }

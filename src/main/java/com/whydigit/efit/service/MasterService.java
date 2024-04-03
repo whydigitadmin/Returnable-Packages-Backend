@@ -17,6 +17,7 @@ import com.whydigit.efit.dto.FlowDTO;
 import com.whydigit.efit.dto.KitDTO;
 import com.whydigit.efit.dto.KitResponseDTO;
 import com.whydigit.efit.dto.PoDTO;
+import com.whydigit.efit.dto.PodDTO;
 import com.whydigit.efit.dto.ServiceDTO;
 import com.whydigit.efit.dto.StockBranchDTO;
 import com.whydigit.efit.dto.TermsAndConditionsDTO;
@@ -35,6 +36,7 @@ import com.whydigit.efit.entity.KitVO;
 import com.whydigit.efit.entity.ManufacturerProductVO;
 import com.whydigit.efit.entity.ManufacturerVO;
 import com.whydigit.efit.entity.PoVO;
+import com.whydigit.efit.entity.PodVO;
 import com.whydigit.efit.entity.ServiceVO;
 import com.whydigit.efit.entity.StockBranchVO;
 import com.whydigit.efit.entity.TermsAndConditionsVO;
@@ -216,5 +218,14 @@ public interface MasterService {
 	List<TermsAndConditionsVO> getAllTermsById(Long termsId);
 
 	PoVO updateCreatePo(PoDTO poDTO) throws ApplicationException;
+	
+	public List<PoVO> getPoByOrgId(Long orgId);
 
+	List<PoVO> getAllPoByPoId(Long poId);
+
+	PodVO updateCreatePod(PodDTO podDTO) throws ApplicationException;
+
+	List<PodVO> getAllPodByPodId(Long podId);
+
+	List<PodVO> getAllPodByOrgId(Long orgId);
 }

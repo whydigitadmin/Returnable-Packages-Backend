@@ -38,6 +38,7 @@ import com.whydigit.efit.dto.FlowDTO;
 import com.whydigit.efit.dto.KitDTO;
 import com.whydigit.efit.dto.KitResponseDTO;
 import com.whydigit.efit.dto.PoDTO;
+import com.whydigit.efit.dto.PodDTO;
 import com.whydigit.efit.dto.ResponseDTO;
 import com.whydigit.efit.dto.ServiceDTO;
 import com.whydigit.efit.dto.StockBranchDTO;
@@ -57,6 +58,7 @@ import com.whydigit.efit.entity.KitVO;
 import com.whydigit.efit.entity.ManufacturerProductVO;
 import com.whydigit.efit.entity.ManufacturerVO;
 import com.whydigit.efit.entity.PoVO;
+import com.whydigit.efit.entity.PodVO;
 import com.whydigit.efit.entity.ServiceVO;
 import com.whydigit.efit.entity.StockBranchVO;
 import com.whydigit.efit.entity.TermsAndConditionsVO;
@@ -471,68 +473,7 @@ public class MasterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
-//	@PostMapping("/customersAddress")
-//	public ResponseEntity<ResponseDTO> createUpdateCustomersAddress(
-//			@RequestBody CustomersAddressDTO customersAddressDTO) {
-//		String methodName = "updateCustomersAddress()";
-//		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
-//		String errorMsg = null;
-//		Map<String, Object> responseObjectsMap = new HashMap<>();
-//		ResponseDTO responseDTO = null;
-//		String action = StringUtils.EMPTY;
-//		try {
-//			action = ObjectUtils.isEmpty(customersAddressDTO.getId()) ? "create" : "update";
-//			CustomersAddressVO customersCustomersAddressVO = masterService
-//					.createUpdateCustomersAddress(customersAddressDTO);
-//			if (customersCustomersAddressVO != null) {
-//				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Customers Address " + action + " successfully");
-//				responseObjectsMap.put("customersAddressVO", customersCustomersAddressVO);
-//				responseDTO = createServiceResponse(responseObjectsMap);
-//			} else {
-//				responseDTO = createServiceResponseError(responseObjectsMap, "Customers Address " + action + " failed",
-//						errorMsg);
-//			}
-//		} catch (Exception e) {
-//			errorMsg = e.getMessage();
-//			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-//			responseDTO = createServiceResponseError(responseObjectsMap, "Customers Address " + action + " failed",
-//					errorMsg);
-//		}
-//		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
-//		return ResponseEntity.ok().body(responseDTO);
-//	}
 
-//	@PostMapping("/customersBankDetails")
-//	public ResponseEntity<ResponseDTO> createUpdateBankDetails(
-//			@RequestBody CustomersBankDetailsDTO customersBankDetailsDTO) {
-//		String methodName = "updateCustomersBankDetails()";
-//		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
-//		String errorMsg = null;
-//		Map<String, Object> responseObjectsMap = new HashMap<>();
-//		ResponseDTO responseDTO = null;
-//		String action = StringUtils.EMPTY;
-//		try {
-//			action = ObjectUtils.isEmpty(customersBankDetailsDTO.getId()) ? "create" : "update";
-//			CustomersBankDetailsVO customersBankDetailsVO = masterService
-//					.createUpdateBankDetails(customersBankDetailsDTO);
-//			if (customersBankDetailsVO != null) {
-//				responseObjectsMap.put(CommonConstant.STRING_MESSAGE,
-//						"Customers Bank Details " + action + " successfully");
-//				responseObjectsMap.put("customersBankDetailsVO", customersBankDetailsVO);
-//				responseDTO = createServiceResponse(responseObjectsMap);
-//			} else {
-//				responseDTO = createServiceResponseError(responseObjectsMap,
-//						"Customers BankDetails " + action + " failed", errorMsg);
-//			}
-//		} catch (Exception e) {
-//			errorMsg = e.getMessage();
-//			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-//			responseDTO = createServiceResponseError(responseObjectsMap, "Customers Bank Details" + " update failed",
-//					errorMsg);
-//		}
-//		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
-//		return ResponseEntity.ok().body(responseDTO);
-//	}
 
 	@DeleteMapping("/CustomersBankDetails/{id}")
 	public ResponseEntity<ResponseDTO> deleteCustomersBankDetails(@PathVariable Long id) {
@@ -981,32 +922,7 @@ public class MasterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
-	// VendorBankDetails
-//	@PutMapping("/vendorBankDetails")
-//	public ResponseEntity<ResponseDTO> updateCreatevendorBankDetails(@Valid @RequestBody VendorBankDetailsDTO vendorBankDetailsDTO) {
-//		String methodName = "updateCreatevendorBankDetails()";
-//		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
-//		String errorMsg = null;
-//		Map<String, Object> responseObjectsMap = new HashMap<>();
-//		ResponseDTO responseDTO = null;
-//		try {
-//			VendorBankDetailsVO updatedVendorBankDetailsVO = masterService.updateCreatevendorBankDetails(vendorBankDetailsDTO);
-//			if (updatedVendorBankDetailsVO != null) {
-//				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Vendor updated successfully");
-//				responseObjectsMap.put("updatedVendorBankDetailsVO", updatedVendorBankDetailsVO);
-//				responseDTO = createServiceResponse(responseObjectsMap);
-//			} else {
-//				errorMsg = "Vendor bank details not found for ID: " + vendorBankDetailsDTO.getId();
-//				responseDTO = createServiceResponseError(responseObjectsMap, "Vendor bank details update failed", errorMsg);
-//			}
-//		} catch (Exception e) {
-//			errorMsg = e.getMessage();
-//			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-//			responseDTO = createServiceResponseError(responseObjectsMap, "Vendor bank details update failed", errorMsg);
-//		}
-//		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
-//		return ResponseEntity.ok().body(responseDTO);
-//	}
+	
 
 	@GetMapping("/vendorBankDetails/{id}")
 	public ResponseEntity<ResponseDTO> getVendorBankDetailsById(@PathVariable Long id) {
@@ -1919,8 +1835,8 @@ public class MasterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 
 	}
-	
-	//PO
+
+	// PO
 	@PutMapping("/updateCreatePo")
 	public ResponseEntity<ResponseDTO> updateCreatePo(@RequestBody PoDTO poDTO) {
 		String methodName = "updateCreatePo()";
@@ -1939,12 +1855,141 @@ public class MasterController extends BaseController {
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-			responseDTO = createServiceResponseError(responseObjectsMap, "Po update failed",
-					errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "Po update failed", errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
+
+	@GetMapping("/getPoByOrgId")
+	public ResponseEntity<ResponseDTO> getPoByOrgId(@RequestParam(required = false) Long orgId) {
+		String methodName = "getPoByOrgId()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<PoVO> poVO = new ArrayList<>();
+		try {
+			poVO = masterService.getPoByOrgId(orgId);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "PO information get successfully");
+			responseObjectsMap.put("poVO", poVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "PO information receive failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+
+	}
+
+	@GetMapping("/getAllPoByPoId")
+	public ResponseEntity<ResponseDTO> getAllPoByPoId(@RequestParam(required = false) Long poId) {
+		String methodName = "getAllPoByPoId()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<PoVO> poVO = new ArrayList<>();
+		try {
+			poVO = masterService.getAllPoByPoId(poId);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Po information get successfully");
+			responseObjectsMap.put("poVO", poVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "Po information receive failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+
+	}
+	
+	//Pod
+	
+	@PutMapping("/updateCreatePod")
+	public ResponseEntity<ResponseDTO> updateCreatePod(@RequestBody PodDTO podDTO) {
+		String methodName = "updateCreatePod()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		try {
+			PodVO updatedPodVO = masterService.updateCreatePod(podDTO);
+			if (updatedPodVO != null) {
+				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Pod updated successfully");
+				responseObjectsMap.put("updatedPodVO", updatedPodVO);
+				responseDTO = createServiceResponse(responseObjectsMap);
+			} else {
+			}
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "Pod update failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+	@GetMapping("/getAllPodByOrgId")
+	public ResponseEntity<ResponseDTO> getAllPodByOrgId(@RequestParam(required = false) Long orgId) {
+		String methodName = "getAllPodByOrgId()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<PodVO> podVO = new ArrayList<>();
+		try {
+			podVO = masterService.getAllPodByOrgId(orgId);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "POd information get successfully");
+			responseObjectsMap.put("PodVO", podVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "POd information receive failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+
+	}
+
+	@GetMapping("/getAllPodByPodId")
+	public ResponseEntity<ResponseDTO> getAllPodByPodId(@RequestParam(required = false) Long podId) {
+		String methodName = "getAllPodByPodId()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<PodVO> podVO = new ArrayList<>();
+		try {
+			podVO = masterService.getAllPodByPodId(podId);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Pod information get successfully");
+			responseObjectsMap.put("podVO", podVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "Pod information receive failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+
+	}
+	
 	
 
 }
