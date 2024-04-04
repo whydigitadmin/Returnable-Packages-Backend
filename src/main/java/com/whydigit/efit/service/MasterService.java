@@ -230,4 +230,6 @@ public interface MasterService {
 	List<PodVO> getAllPodByOrgId(Long orgId);
 
 	AssetGroupVO getAssetGroupByAssetCode(Long orgId, String assetCodeId);
+
+	AssetVO getAssetByOrgId(Long orgId, String assetId);
 }
