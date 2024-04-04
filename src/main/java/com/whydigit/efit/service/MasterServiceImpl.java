@@ -1559,4 +1559,9 @@ public class MasterServiceImpl implements MasterService {
 		return podVO;
 	}
 
+	@Override
+	public  AssetGroupVO getAssetGroupByAssetCode(Long orgId, String assetCodeId) {
+		
+		return assetGroupRepo.findAssetByAssetCodeId(orgId,assetCodeId);
+	}
 }

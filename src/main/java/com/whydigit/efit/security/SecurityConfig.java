@@ -49,7 +49,7 @@ public class SecurityConfig {
 						"/api/master/getAllTerms", "/api/master/getAllTermsById","/api/master/updateCreatePod",
 						"/api/emitter/getViewEmitterByWarehouse", "/api/emitter/getViewEmitter",
 						"/api/auth/changePassword", "/api/auth/userByOrgId", "/api/emitter/getViewEmitterByFlow",
-						"/api/emitter/viewEmitterInward", "/api/warehouse/getWarehouseByUserID",
+						"/api/emitter/viewEmitterInward", "/api/warehouse/getWarehouseByUserID","api/master/getAssetGroupByAssetCode",
 						"/api/emitter/getemitterByWarehouseId", "/api/auth/updateUser", "api/master/createAssetInward",
 						"/api/emitter/emitterOutward/v1", "/api/basicMaster/city", "/api/basicMaster/country",
 						"/api/master/dmap", "/api/master/stockbranchByOrgId", "/api/master/stockbranch",

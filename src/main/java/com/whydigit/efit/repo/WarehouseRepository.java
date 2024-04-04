@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import com.whydigit.efit.entity.WarehouseVO;
 
 public interface WarehouseRepository extends JpaRepository<WarehouseVO, Long>{
+	
 @Query(value = "select w.warehouseLocation,w.warehouseId  from WarehouseVO w where w.orgId=?1")
 	Set<Object[]> getWarehouseLocationByOrgID(Long orgId);
 

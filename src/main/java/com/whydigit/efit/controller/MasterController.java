@@ -13,6 +13,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Required;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -103,7 +104,9 @@ public class MasterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 
 	}
-
+	
+	
+	
 	@PostMapping("/asset")
 	public ResponseEntity<ResponseDTO> createAsset(@RequestBody AssetVO assetVO) {
 		String methodName = "createAsset()";
@@ -226,6 +229,33 @@ public class MasterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
+	
+	@GetMapping("/getAssetGroupByAssetCode")
+	public ResponseEntity<ResponseDTO> getAssetGroupByAssetCode(@RequestParam(required = false) Long orgId,@RequestParam(required = false) String assetCodeId) {
+		String methodName = "getAssetGroupByAssetCode()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		AssetGroupVO assetGroupVO = null;
+		try {
+			assetGroupVO = masterService.getAssetGroupByAssetCode(orgId,assetCodeId);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "AssetGroup information get successfully");
+			responseObjectsMap.put("assetGroupVO", assetGroupVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "AssetGroup information receive failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
 
 	@GetMapping("/assetGroup/{id}")
 	public ResponseEntity<ResponseDTO> getAssetGroupById(@PathVariable String id) {
