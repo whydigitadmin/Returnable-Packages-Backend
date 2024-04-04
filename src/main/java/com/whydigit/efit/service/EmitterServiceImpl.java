@@ -603,8 +603,9 @@ public class EmitterServiceImpl implements EmitterService {
 		outwardKitDetailVO.setKitQty(outwardKitDetailsDTO.getKitQty());
 		EmitterOutwardVO emitterOutwardVO = emitterOutwardRepo.findOutwardByIssueItemId(outwardKitDetailsDTO.getIssueItemId());
 		outwardKitDetailVO.setEmitterOutwardVO(emitterOutwardVO); 
+		outwardKitDetailsRepo.save(outwardKitDetailVO);
 		int reqturnqty=outwardKitDetailsRepo.getReturnQty(emitterOutwardVO.getId());
-		emitterOutwardRepo.updatereturnQty(emitterOutwardVO.getId(),reqturnqty);
+		emitterOutwardVO.setKitReturnqty(reqturnqty);
 		emitterOutwardRepo.save(emitterOutwardVO);
 		ReturnStockVO returnStockVO=new ReturnStockVO();
 		returnStockVO.setIssue_item_id(emitterOutwardVO.getIssueItemVO().getId());
