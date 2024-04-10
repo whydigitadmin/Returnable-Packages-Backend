@@ -38,5 +38,7 @@ public interface IssueRequestRepo
 
 	@Query(nativeQuery = true,value ="select a.stockbranch from warehouse a, issuerequest b where a.warehouseid=b.whlocationid and b.issuerequestid=?1")
 	String findStockBranchByIssurequestid(Long issueRequestId);
+	@Query("select a.docId from IssueRequestVO a where a.id=?1")
+	String findDocid(Long issueRequestId);
 	
 }

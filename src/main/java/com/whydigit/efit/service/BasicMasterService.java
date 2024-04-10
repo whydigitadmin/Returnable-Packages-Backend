@@ -31,6 +31,8 @@ public interface BasicMasterService {
 	List<CountryVO> getAllgetAllcountries();
 
 	Optional<CountryVO> getCountryById(int id);
+	
+	List<CountryVO> getAllCountryByOrgId(Long orgId);
 
 	CountryVO createCountry(CountryVO countryVO);
 
@@ -41,13 +43,15 @@ public interface BasicMasterService {
 
 	List<StateVO> getAllgetAllStates();
 
-	Optional<StateVO> getStateById(int id);
+	Optional<StateVO> getStateById(Long id);
+	
+	List<StateVO> getAllStatesByCountry(String Country,Long orgId);
 
 	StateVO createState(StateVO stateVO);
 
 	Optional<StateVO> updateState(StateVO stateVO);
 
-	void deleteState(int id);
+	void deleteState(Long id);
 
 
 	List<CityVO> getAllgetAllCities();
@@ -93,6 +97,10 @@ public interface BasicMasterService {
 	Optional<CurrencyMasterVO> updateCurrencyMaster(CurrencyMasterVO currencyMasterVO);
 
 	void deleteCurrencyMaster(int id);
+
+	
+
+	
 
 
 

@@ -11,6 +11,8 @@ public class ServiceDTO {
 	private Long id;
 	private String code;
 	private String description;
+	private String createdBy;
+	private Long orgid;
 	
 	
 

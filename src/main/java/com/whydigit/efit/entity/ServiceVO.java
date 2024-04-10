@@ -39,6 +39,9 @@ public class ServiceVO {
 	@Column(name="description",length=25)
 	private String description;
 	
+	@Column(name="orgid")
+	private Long orgId;
+	
 	
 	
 	

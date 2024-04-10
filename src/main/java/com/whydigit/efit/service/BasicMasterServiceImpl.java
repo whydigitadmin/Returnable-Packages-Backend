@@ -88,6 +88,11 @@ public class BasicMasterServiceImpl implements BasicMasterService {
 	public Optional<CountryVO> getCountryById(int id) {
 		return countryRepo.findById(id);
 	}
+	
+	@Override
+	public List<CountryVO> getAllCountryByOrgId(Long orgId) {
+		return countryRepo.findAllByOrgId(orgId);
+	}
 
 	@Override
 	public CountryVO createCountry(CountryVO countryVO) {
@@ -117,20 +122,27 @@ public class BasicMasterServiceImpl implements BasicMasterService {
 	public List<StateVO> getAllgetAllStates() {
 		return stateRepo.findAll();
 	}
+	
+	@Override
+	public List<StateVO> getAllStatesByCountry(String Country,Long orgId) {
+		return stateRepo.findAllStateByCountryAndOrgId(Country,orgId);
+	}
 
 	@Override
-	public Optional<StateVO> getStateById(int id) {
+	public Optional<StateVO> getStateById(Long id) {
 		return stateRepo.findById(id);
 	}
 
 	@Override
 	public StateVO createState(StateVO stateVO) {
+		stateVO.setDupchk(stateVO.getOrgId()+ stateVO.getStateName()+stateVO.getStateCode());
 		return stateRepo.save(stateVO);
 	}
 
 	@Override
 	public Optional<StateVO> updateState(StateVO stateVO) {
 		if (stateRepo.existsById(stateVO.getId())) {
+			stateVO.setDupchk(stateVO.getOrgId()+ stateVO.getStateName()+stateVO.getStateCode());
 			return Optional.of(stateRepo.save(stateVO));
 		} else {
 			return Optional.empty();
@@ -138,7 +150,7 @@ public class BasicMasterServiceImpl implements BasicMasterService {
 	}
 
 	@Override
-	public void deleteState(int id) {
+	public void deleteState(Long id) {
 		stateRepo.deleteById(id);
 	}
 
@@ -269,5 +281,7 @@ public class BasicMasterServiceImpl implements BasicMasterService {
 	public void deleteCurrencyMaster(int id) {
 		currencyMasterRepo.deleteById(id);
 	}
+
+	
 
 }
