@@ -40,7 +40,7 @@ public class SecurityConfig {
 						"/api/master/getAllPoByPoId", "api/master/loadKitQty",
 						"/api/warehouse/getWarehouseLocationByOrgID", "/api/master/getPoByOrgId",
 						"/api/warehouse/updateCreateWarehouse", "/api/warehouse/view", "/api/master/updateCreatePo",
-						"/api/warehouse/getWarehouseById/{id}", "/api/partStudy/basicDetails",
+						"/api/warehouse/getWarehouseById/{id}", "/api/partStudy/basicDetails","api/warehouse/updateCreateWarehouse",
 						"/api/partStudy/d}/searchPartStudyById", "/api/partStudy/packageDetail", "api/master/dmap",
 						"/api/partStudy/packageDetail/{id}", "/api/partStudy/logistics", "/api/company/setup",
 						"api/emitter/updateOutwardKitQty", "/api/partStudy/logistics/{id}", "/api/partStudy/**",
