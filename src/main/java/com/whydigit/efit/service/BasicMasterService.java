@@ -45,7 +45,7 @@ public interface BasicMasterService {
 
 	Optional<StateVO> getStateById(Long id);
 	
-	List<StateVO> getAllStatesByCountry(String Country);
+	List<StateVO> getAllStatesByCountry(String Country,Long orgId);
 
 	StateVO createState(StateVO stateVO);
 

@@ -10,7 +10,8 @@ import com.whydigit.efit.entity.StateVO;
 @Repository
 public interface StateRepo extends JpaRepository<StateVO, Long> {
 
-	List<StateVO> findAllStateByCountry(String country);
+	List<StateVO> findAllStateByCountryAndOrgId (String country, Long orgId);
+
 
 	
 

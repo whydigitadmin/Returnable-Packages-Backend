@@ -124,8 +124,8 @@ public class BasicMasterServiceImpl implements BasicMasterService {
 	}
 	
 	@Override
-	public List<StateVO> getAllStatesByCountry(String Country) {
-		return stateRepo.findAllStateByCountry(Country);
+	public List<StateVO> getAllStatesByCountry(String Country,Long orgId) {
+		return stateRepo.findAllStateByCountryAndOrgId(Country,orgId);
 	}
 
 	@Override

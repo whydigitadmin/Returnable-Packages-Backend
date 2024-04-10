@@ -319,9 +319,8 @@ public class EmitterServiceImpl implements EmitterService {
 			assetStockDetailsVO.setCancel(false);
 			assetStockDetailsVO.setCreatedBy(issueRequestQtyApprovelDTO.getCreatedBy());
 			assetStockDetailsVO.setModifiedBy(issueRequestQtyApprovelDTO.getModifiedBy());
-			assetStockDetailsVO.setSCode("");
 			assetStockDetailsVO.setStockBranch(issueRequestRepo.findStockBranchByIssurequestid(issueRequestQtyApprovelDTO.getIssueRequestId()));
-			assetStockDetailsVO.setStockRef(Long.toString(issueRequestQtyApprovelDTO.getIssueRequestId()));
+			assetStockDetailsVO.setStockRef(issueRequestRepo.findDocid(issueRequestQtyApprovelDTO.getIssueRequestId()));
 			assetStockDetailsVO.setSkuCode(kavo.getAssetCodeId());
 			assetStockDetailsVO.setSkuQty(kavo.getQuantity() * issuedQty*-1);
 			assetStockDetailsVO.setSku(kavo.getAssetName());
