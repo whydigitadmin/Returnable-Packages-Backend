@@ -91,12 +91,14 @@ public class BasicMasterServiceImpl implements BasicMasterService {
 
 	@Override
 	public CountryVO createCountry(CountryVO countryVO) {
+		countryVO.setDupchk(countryVO.getOrgId()+countryVO.getCountry()+countryVO.getCountryCode());
 		return countryRepo.save(countryVO);
 	}
 
 	@Override
 	public Optional<CountryVO> updateCountry(CountryVO countryVO) {
 		if (countryRepo.existsById(countryVO.getId())) {
+			countryVO.setDupchk(countryVO.getOrgId()+countryVO.getCountry()+countryVO.getCountryCode());
 			return Optional.of(countryRepo.save(countryVO));
 		} else {
 			return Optional.empty();

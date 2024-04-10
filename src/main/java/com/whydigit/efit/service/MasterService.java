@@ -198,6 +198,8 @@ public interface MasterService {
 	// Stock Branch
 	
 	StockBranchVO createStockBranch(StockBranchDTO stockBranchDTO);
+	
+	StockBranchVO updateStockBranch(StockBranchDTO stockBranchDTO) throws ApplicationException;
 
 	List<StockBranchVO> getAllStockBranchByOrgId(Long orgId);
 
@@ -232,4 +234,10 @@ public interface MasterService {
 	AssetGroupVO getAssetGroupByAssetCode(Long orgId, String assetCodeId);
 
 	AssetVO getAssetByOrgId(Long orgId, String assetId);
+
+	
+
+	
+
+	
 }

@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class StockBranchDTO {
 	
+	private Long id;
 	private String branch;
 	private String branchCode;
 	private Long orgId;
