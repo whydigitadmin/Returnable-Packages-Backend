@@ -34,7 +34,7 @@ public class CustomersBankDetailsVO {
 	@Column(name="accountname",length =30 )
 	private String accountName;
 	
-	@Column(name="ifsc",length =10 )
+	@Column(name="ifsc",length =30 )
 	private String ifscCode;
 	
 	@Column(name="branch",length =30 )

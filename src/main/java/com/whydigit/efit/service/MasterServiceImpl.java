@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -1300,6 +1301,25 @@ public class MasterServiceImpl implements MasterService {
 		stockBranchVO.setActive(stockBranchDTO.isActive());
 		return stockBranchRepo.save(stockBranchVO);
 	}
+	
+	//Update Stock Branch
+	@Override
+	public StockBranchVO updateStockBranch(StockBranchDTO stockBranchDTO) throws ApplicationException {
+		
+		Optional<StockBranchVO> existingStockBranchOptional = stockBranchRepo.findById(stockBranchDTO.getId());
+	    
+	    if(existingStockBranchOptional.isPresent()) {
+	        StockBranchVO existingStockBranch = existingStockBranchOptional.get();
+	        existingStockBranch.setBranch(stockBranchDTO.getBranch());
+	        existingStockBranch.setBranchCode(stockBranchDTO.getBranchCode());
+	        existingStockBranch.setModifiedBy(stockBranchDTO.getCreatedby());
+	        return stockBranchRepo.save(existingStockBranch);
+	    } else {
+	        throw new NoSuchElementException("StockBranch with ID " + stockBranchDTO.getId() + " not found");
+	    }
+	}
+
+	
 
 	@Override
 	public List<StockBranchVO> getAllStockBranchByOrgId(Long orgId) {
@@ -1570,4 +1590,8 @@ public class MasterServiceImpl implements MasterService {
 		
 		return assetRepo.getAssetByOrgId(orgId,assetId);
 	}
+
+	
+	
+	
 }

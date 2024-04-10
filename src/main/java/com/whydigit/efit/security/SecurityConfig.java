@@ -40,7 +40,7 @@ public class SecurityConfig {
 						"/api/master/getAllPoByPoId", "api/master/loadKitQty",
 						"/api/warehouse/getWarehouseLocationByOrgID", "/api/master/getPoByOrgId",
 						"/api/warehouse/updateCreateWarehouse", "/api/warehouse/view", "/api/master/updateCreatePo",
-						"/api/warehouse/getWarehouseById/{id}", "/api/partStudy/basicDetails",
+						"/api/warehouse/getWarehouseById/{id}", "/api/partStudy/basicDetails","api/warehouse/updateCreateWarehouse",
 						"/api/partStudy/d}/searchPartStudyById", "/api/partStudy/packageDetail", "api/master/dmap",
 						"/api/partStudy/packageDetail/{id}", "/api/partStudy/logistics", "/api/company/setup",
 						"api/emitter/updateOutwardKitQty", "/api/partStudy/logistics/{id}", "/api/partStudy/**",
@@ -56,7 +56,7 @@ public class SecurityConfig {
 						"/api/emitter/emitterOutward/v1", "/api/basicMaster/city", "/api/basicMaster/country",
 						"/api/master/dmap", "/api/master/stockbranchByOrgId", "/api/master/stockbranch",
 						"/api/master/assettagging", "/api/master/Tagcode", "/api/basicMaster/city",
-						"/api/emitter/getBinRequest", "/api/master/kitDetails", "/api/master/getAvalkitqty")
+						"/api/emitter/getBinRequest", "/api/master/kitDetails", "/api/master/getAvalkitqty","/api/master/updateStockBranch")
 				.permitAll().antMatchers("/api/**").hasAnyRole("USER", "GUEST_USER").anyRequest().authenticated();
 
 		http.addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);

@@ -1681,6 +1681,35 @@ public class MasterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
+	
+	
+	//Update Stock branch
+	
+	@PutMapping("/updateStockBranch")
+	public ResponseEntity<ResponseDTO> updateStockBranch(@RequestBody StockBranchDTO stockBranchDTO) {
+		String methodName = "updateStockBranch()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		try {
+			StockBranchVO updateStockBranchVO = masterService.updateStockBranch(stockBranchDTO);
+			if (updateStockBranchVO != null) {
+				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Stock Branch updated successfully");
+				responseObjectsMap.put("stockBranchVO", updateStockBranchVO);
+				responseDTO = createServiceResponse(responseObjectsMap);
+			} else {
+				errorMsg = "Stock Branch not found for ID: " + updateStockBranchVO.getId();
+				responseDTO = createServiceResponseError(responseObjectsMap, "Stock Branch update failed", errorMsg);
+			}
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "Stock Branch update failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
 
 	@GetMapping("/stockbranchByOrgId")
 	public ResponseEntity<ResponseDTO> getStockBranchByOrgId(@RequestParam Long orgId) {
