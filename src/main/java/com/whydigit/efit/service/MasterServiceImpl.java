@@ -1194,19 +1194,23 @@ public class MasterServiceImpl implements MasterService {
 	@Override
 	public ServiceVO updateCreateService(ServiceDTO serviceDTO) throws ApplicationException {
 		ServiceVO serviceVO = new ServiceVO();
-		if (ObjectUtils.isNotEmpty(serviceDTO.getId())) {
-			serviceVO = serviceRepo.findById(serviceDTO.getId())
-					.orElseThrow(() -> new ApplicationException("Invalid service details"));
-		}
-
-		getServiceVOFromServiceDTO(serviceDTO, serviceVO);
-		return serviceRepo.save(serviceVO);
+	    if (ObjectUtils.isNotEmpty(serviceDTO.getId())) {
+	        serviceVO = serviceRepo.findById(serviceDTO.getId())
+	                                .orElseThrow(() -> new ApplicationException("Invalid service details"));
+	        serviceVO.setModifiedBy(serviceDTO.getCreatedBy()); // Set modifiedBy only during update
+	    } else {
+	        // Set createdBy only during creation
+	        serviceVO.setCreatedBy(serviceDTO.getCreatedBy());
+	        serviceVO.setModifiedBy(serviceDTO.getCreatedBy());
+	    }
+	    serviceVO.setOrgId(serviceDTO.getOrgid());
+	    getServiceVOFromServiceDTO(serviceDTO, serviceVO);
+	    return serviceRepo.save(serviceVO);
 	}
 
 	private void getServiceVOFromServiceDTO(@Valid ServiceDTO serviceDTO, ServiceVO serviceVO) {
-		serviceVO.setId(serviceDTO.getId());
-		serviceVO.setCode(serviceDTO.getCode());
-		serviceVO.setDescription(serviceDTO.getDescription());
+	    serviceVO.setCode(serviceDTO.getCode());
+	    serviceVO.setDescription(serviceDTO.getDescription());
 	}
 
 	@Override
@@ -1590,6 +1594,12 @@ public class MasterServiceImpl implements MasterService {
 		
 		return assetRepo.getAssetByOrgId(orgId,assetId);
 	}
+
+	@Override
+	public List<ServiceVO> getAllServiceByOrgId(Long OrgId) {
+		
+		return serviceRepo.findAllByOrgId(OrgId);
+			}
 
 	
 	

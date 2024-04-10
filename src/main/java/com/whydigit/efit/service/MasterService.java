@@ -189,6 +189,8 @@ public interface MasterService {
 	DmapVO createDmapVO(DmapDTO dmapDTO);
 
 	// service
+	
+	List<ServiceVO>getAllServiceByOrgId(Long OrgId);
 
 	ServiceVO updateCreateService(ServiceDTO serviceDTO) throws ApplicationException;
 

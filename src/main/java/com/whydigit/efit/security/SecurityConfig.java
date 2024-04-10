@@ -58,7 +58,7 @@ public class SecurityConfig {
 						"/api/master/assettagging", "/api/master/Tagcode", "/api/basicMaster/city",
 						"/api/emitter/getBinRequest", "/api/master/kitDetails", "/api/master/getAvalkitqty","/api/master/updateStockBranch",
 						"/api/basicMaster/country","/api/basicMaster/country/{id}","/api/basicMaster/city","/api/basicMaster/city/{id}",
-						"/api/basicMaster/state","/api/basicMaster/state/{id}")
+						"/api/basicMaster/state","/api/basicMaster/state/{id}","/api/master/Services","/api/basicMaster/state/Country")
 				.permitAll().antMatchers("/api/**").hasAnyRole("USER", "GUEST_USER").anyRequest().authenticated();
 
 		http.addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
