@@ -105,6 +105,31 @@ public class MasterController extends BaseController {
 
 	}
 	
+	@GetMapping("/getAssetByOrgId")
+	public ResponseEntity<ResponseDTO> getAssetByOrgId(@RequestParam(required = false) Long orgId,@RequestParam(required = false) String assetId) {
+		String methodName = "getAssetByOrgId()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		AssetVO assetVO = null;
+		try {
+			assetVO = masterService.getAssetByOrgId(orgId,assetId);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Asset information get successfully");
+			responseObjectsMap.put("assetVO", assetVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "Asset information receive failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
 	
 	
 	@PostMapping("/asset")
