@@ -65,6 +65,9 @@ public class VendorVO {
 	@Column(name="activeportal",length = 25)
 	private boolean venderActivePortal;
 	
+	@Column(name="country",length = 25)
+	private String country;
+	
 	private boolean active;
 	
 

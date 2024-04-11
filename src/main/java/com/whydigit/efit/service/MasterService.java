@@ -237,6 +237,8 @@ public interface MasterService {
 
 	AssetVO getAssetByOrgId(Long orgId, String assetId);
 
+	List<AssetInwardVO> getAllAssetInwardOrgId(Long orgId);
+
 	
 
 	

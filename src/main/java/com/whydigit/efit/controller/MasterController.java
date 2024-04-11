@@ -1682,6 +1682,32 @@ public class MasterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
+	
+	@GetMapping("/getAllAssetInwardOrgId")
+	public ResponseEntity<ResponseDTO> getAllAssetInwardOrgId(@RequestParam(required = false) Long orgId) {
+		String methodName = "getAllAssetInwardOrgId()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<AssetInwardVO> assetInwardVO = new ArrayList<>();
+		try {
+			assetInwardVO = masterService.getAllAssetInwardOrgId(orgId);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "AssetInward information get successfully");
+			responseObjectsMap.put("assetInwardVO", assetInwardVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "AssetInward information receive failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+
+	}
 
 	// Stock branch
 	@PostMapping("/stockbranch")

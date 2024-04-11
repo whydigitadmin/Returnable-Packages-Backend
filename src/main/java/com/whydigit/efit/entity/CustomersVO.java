@@ -58,6 +58,9 @@ public class CustomersVO {
 	@Column(name="activateportal",length = 25)
 	private boolean customerActivatePortal;
 	
+	@Column(name="country",length = 25)
+	private String country;
+	
 	@Column(name="active")
 	private boolean active;
 	

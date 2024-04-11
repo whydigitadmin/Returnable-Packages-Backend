@@ -21,6 +21,7 @@ public class CustomersDTO {
 	private String phoneNumber;
 	private boolean customerActivatePortal;
 	private boolean active;
+	private String country;
 	
 	private List<CustomersAddressDTO>customerAddressDTO;
 	

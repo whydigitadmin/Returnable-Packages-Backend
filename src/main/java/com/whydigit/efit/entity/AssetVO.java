@@ -1,6 +1,7 @@
 
 package com.whydigit.efit.entity;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -116,6 +117,12 @@ public class AssetVO {
 
 	@Column(name = "cancelremarks", length = 50)
 	private String cancelremarks;
+	
+	@Column(name="pono",length =25 )
+	private String poNo;
+	
+	@Column(name="podate",length =25 )
+	private LocalDate poDate=LocalDate.now();
 
 	private boolean active;
 

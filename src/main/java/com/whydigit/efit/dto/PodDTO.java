@@ -22,6 +22,7 @@ public class PodDTO {
 	private boolean active;
     private LocalDate refDate;
     private LocalDate docdate;
+    private String poNo;
     
 	private List<Pod1DTO> pod1DTO;
 	private List<Pod2DTO> pod2DTO;
