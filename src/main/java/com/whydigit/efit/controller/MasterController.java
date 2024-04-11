@@ -2158,7 +2158,7 @@ public class MasterController extends BaseController {
 		for(Object[] po1:pono) {
 			Map<String , String> po2= new HashMap<>();
 			po2.put("pono",po1[0].toString());
-			po2.put("pono",po1[1].toString());
+			po2.put("podate",po1[1].toString());
 			po.add(po2);
 		}
 		return po;
