@@ -416,6 +416,10 @@ public class MasterServiceImpl implements MasterService {
 
 	@Override
 	public CustomersVO createCustomers(CustomersDTO customersDTO) {
+	
+		if (customersRepo.existsByEntityLegalNameAndDisplayNameAndOrgId(customersDTO.getEntityLegalName(), customersDTO.getDisplayName(), customersDTO.getOrgId())) {
+	        throw new RuntimeException("The Customer LegalName or DisplayName already exists");
+	    }
 		CustomersVO customersVO = new CustomersVO();
 		customersVO.setOrgId(customersDTO.getOrgId());
 		customersVO.setCustomerType(customersDTO.getCustomerType());
