@@ -239,6 +239,8 @@ public interface MasterService {
 
 	List<AssetInwardVO> getAllAssetInwardOrgId(Long orgId);
 
+	Set<Object[]> getPoNoByCreateAsset(Long orgId);
+
 	
 
 	
