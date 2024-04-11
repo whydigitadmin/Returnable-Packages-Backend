@@ -35,7 +35,7 @@ public class AssetCategoryVO {
 	@Column(name="category",length = 25)
 	private String assetCategory;
 	
-	@Column(name="categorycode",length = 25)	
+	@Column(name="categorycode",length = 25)	                 
 	private String assetCategoryId;
 	
 	private boolean cancel;

@@ -48,7 +48,7 @@ public class SecurityConfig {
 						"/api/emitter/createIssueRequest", "/api/emitter/*", "/api/auth/createUser",
 						"/api/master/flow/getFlowByIds", "/api/master/getAllFlowName", "/api/master/updateCreateTerms",
 						"/api/master/getAllTerms", "/api/master/getAllTermsById", "/api/master/updateCreatePod",
-						"/api/emitter/getViewEmitterByWarehouse", "/api/emitter/getViewEmitter",
+						"/api/emitter/getViewEmitterByWarehouse", "/api/emitter/getViewEmitter","/api/master/getAllAssetInwardOrgId",
 						"/api/master/getAssetByOrgId", "/api/auth/changePassword", "/api/auth/userByOrgId",
 						"/api/emitter/getViewEmitterByFlow", "/api/emitter/viewEmitterInward",
 						"/api/warehouse/getWarehouseByUserID", "api/master/getAssetGroupByAssetCode",

@@ -36,12 +36,10 @@ public class AssetInwardVO {
 	private String sCode = "AINWD";
 	@Column(name = "docid", length = 10)
 	private String docId;
-	@Column(name = "docdate")
+	@Column(name = "docdate")    
 	private LocalDate docDate = LocalDate.now();
 	@Column(name="sourcefrom",length = 25)
 	private String sourceFrom;
-	
-	
 	@Column(name = "stockbranch", length = 40)
 	private String stockBranch;
 	private boolean cancel;
@@ -51,6 +49,9 @@ public class AssetInwardVO {
 	private String createdBy;
 	@Column(name = "modifiedby", length = 40)
 	private String modifiedBy;
+	@Column(name="orgid")
+	private Long orgId;
+	
 	
 	
 	@OneToMany(mappedBy ="assetInwardVO",cascade =CascadeType.ALL)

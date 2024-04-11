@@ -647,6 +647,9 @@ public class MasterServiceImpl implements MasterService {
 
 	@Override
 	public AssetCategoryVO createAssetCategory(AssetCategoryVO assetCategoryVO) {
+		if (assetCategoryRepo.existsByAssetCategoryAndOrgId(assetCategoryVO.getAssetCategory(), assetCategoryVO.getOrgId())) {
+	        throw new RuntimeException("Asset category already exists for this organization");
+	    }
 		return assetCategoryRepo.save(assetCategoryVO);
 	}
 
@@ -1600,6 +1603,12 @@ public class MasterServiceImpl implements MasterService {
 		
 		return serviceRepo.findAllByOrgId(OrgId);
 			}
+
+	@Override
+	public List<AssetInwardVO> getAllAssetInwardOrgId(Long orgId) {
+		
+		return assetInwardRepo.findAssetInwardByOrgId(orgId);
+	}
 
 	
 	

@@ -18,4 +18,6 @@ public interface AssetCategoryRepo extends JpaRepository<AssetCategoryVO, Long> 
 
 	List<AssetCategoryVO> findByAssetCategoryAndOrgId(String assetCategoryName, Long orgId);
 
+	boolean existsByAssetCategoryAndOrgId(String assetCategory, Long orgId);
+
 }
