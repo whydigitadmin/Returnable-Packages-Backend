@@ -20,6 +20,8 @@ public interface CustomersRepo extends JpaRepository<CustomersVO, Long> {
 	@Query(nativeQuery = true , value ="select code from customer where customerid=?1")
 	String findcustomercodeByEmitterId(long emitterId);
 
+	boolean existsByEntityLegalNameAndDisplayNameAndOrgId(String entityLegalName, String displayName, long orgId);
+
 	
 
 }
