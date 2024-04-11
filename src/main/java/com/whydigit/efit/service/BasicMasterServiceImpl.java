@@ -167,6 +167,12 @@ public class BasicMasterServiceImpl implements BasicMasterService {
 	public Optional<CityVO> getCityById(Long id) {
 		return cityRepo.findById(id);
 	}
+	
+	@Override
+	public List<CityVO> getAllCitiesByStateAndCountry(String state, String country, Long orgId) {
+		
+		return cityRepo.findAllByStateAndCountryAndOrgId(state,country,orgId);
+	}
 
 	@Override
 	public CityVO createCity(CityVO cityVO) {
@@ -281,6 +287,8 @@ public class BasicMasterServiceImpl implements BasicMasterService {
 	public void deleteCurrencyMaster(int id) {
 		currencyMasterRepo.deleteById(id);
 	}
+
+	
 
 	
 

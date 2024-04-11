@@ -57,6 +57,8 @@ public interface BasicMasterService {
 	List<CityVO> getAllgetAllCities();
 
 	Optional<CityVO> getCityById(Long id);
+	
+	List<CityVO> getAllCitiesByStateAndCountry(String state, String country, Long orgId);
 
 	CityVO createCity(CityVO cityVO);
 
@@ -97,6 +99,8 @@ public interface BasicMasterService {
 	Optional<CurrencyMasterVO> updateCurrencyMaster(CurrencyMasterVO currencyMasterVO);
 
 	void deleteCurrencyMaster(int id);
+
+	
 
 	
 
