@@ -313,6 +313,7 @@ public class EmitterServiceImpl implements EmitterService {
 	private List<AssetStockDetailsVO> getAssetStockDetailsVO(IssueItemVO issueItemVO, int issuedQty,
 			IssueRequestQtyApprovelDTO issueRequestQtyApprovelDTO) {
 		KitVO kitVO = kitRepo.findByKitCode(issueItemVO.getKitName()).get();
+		
 		return kitVO.getKitAssetVO().stream().map(kavo -> {
 			AssetStockDetailsVO assetStockDetailsVO = new AssetStockDetailsVO();
 			assetStockDetailsVO.setActive(true);

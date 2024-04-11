@@ -545,6 +545,31 @@ public class BasicMasterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
+	
+	@GetMapping("/city/getByStateAndCountry")
+	public ResponseEntity<ResponseDTO> getAllCitiesbyStateAndCountry(@RequestParam String state,@RequestParam String country,@RequestParam Long orgId) {
+		String methodName = "getAllCitiesbyStateAndCountry()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<CityVO> cityVO = new ArrayList<>();
+		try {
+			cityVO = basicMasterService.getAllCitiesByStateAndCountry(state,country,orgId);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "city information get successfully");
+			responseObjectsMap.put("cityVO", cityVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "city information receive failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
 
 	@PostMapping("/city")
 	public ResponseEntity<ResponseDTO> createCity(@RequestBody CityVO cityVO) {
