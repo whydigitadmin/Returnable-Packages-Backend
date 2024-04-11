@@ -2124,6 +2124,44 @@ public class MasterController extends BaseController {
 
 	}
 	
-	
+	@GetMapping("/getPoNoByCreateAsset")
+	public ResponseEntity<ResponseDTO> getPoNoByCreateAsset(@RequestParam(required = false) Long orgId) {
+		String methodName = "getPoNoByCreateAsset()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		Set<Object[]> pono=new HashSet<>();
+		try {
+			pono = masterService.getPoNoByCreateAsset(orgId);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			List<Map<String , String>> po=getPoNo(pono);
+			
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "PO information get successfully");
+			
+			responseObjectsMap.put("pono", po);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "PO information receive failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+
+	}
+
+	private List<Map<String, String>> getPoNo(Set<Object[]> pono) {
+		List<Map<String , String>> po=new ArrayList<>();
+		for(Object[] po1:pono) {
+			Map<String , String> po2= new HashMap<>();
+			po2.put("pono",po1[0].toString());
+			po2.put("pono",po1[1].toString());
+			po.add(po2);
+		}
+		return po;
+	}
 
 }
