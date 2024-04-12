@@ -449,6 +449,7 @@ public class MasterServiceImpl implements MasterService {
 				custAddress.setEmail(addressDTO.getEmail());
 				custAddress.setDesignation(addressDTO.getDesignation());
 				custAddress.setCustomersVO(customersVO);
+				custAddress.setCountry(addressDTO.getCountry());
 
 				customersAddressVO.add(custAddress);
 			}
@@ -1012,6 +1013,7 @@ public class MasterServiceImpl implements MasterService {
 				vendorAddress.setGstRegistrationStatus(vendorAddressDTO.getGstRegistrationStatus());
 				vendorAddress.setState(vendorAddressDTO.getState());
 				vendorAddress.setVendorVO(vendorVO);
+				vendorAddress.setCountry(vendorAddressDTO.getCountry());
 
 				vendorAddressVO.add(vendorAddress);
 			}
@@ -1254,6 +1256,7 @@ public class MasterServiceImpl implements MasterService {
 		assetInwardVO.setDocDate(assetInwardDTO.getDocDate());
 		assetInwardVO.setStockBranch(assetInwardDTO.getStockBranch());
 		assetInwardVO.setSourceFrom(assetInwardDTO.getSourceFrom());
+		assetInwardVO.setOrgId(assetInwardDTO.getOrgId());
 		List<AssetInwardDetailVO> assetInwardDetailVO = new ArrayList<>();
 		if (assetInwardDTO.getAssetInwardDetailDTO() != null) 
 		{
@@ -1500,6 +1503,7 @@ public class MasterServiceImpl implements MasterService {
 		}
 		return poVO;
 	}
+	
 
 	@Override
 	public List<PoVO> getAllPoByPoId(Long poId) {

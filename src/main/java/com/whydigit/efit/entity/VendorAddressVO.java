@@ -62,6 +62,9 @@ public class VendorAddressVO {
 	@Column(name="designation",length = 50)
     private String designation;
 	
+	@Column(name="country",length = 25)
+	private String country;
+	
 	
 
 //	private boolean markPrimary;
