@@ -1185,62 +1185,58 @@ public class MasterServiceImpl implements MasterService {
 	// Asset Tagging
 	@Override
 	public AssetTaggingVO createTagging(AssetTaggingDTO assetTaggingDTO) {
-		
-		AssetTaggingVO assetTaggingVO=new AssetTaggingVO();
-		assetTaggingVO.setDocid(assetTaggingDTO.getDocId());
-		assetTaggingVO.setDocDate(assetTaggingDTO.getDocDate());
-		assetTaggingVO.setCancel(false);
-		assetTaggingVO.setCreatedBy(assetTaggingDTO.getCreatedBy());
-		assetTaggingVO.setModifiedBy(assetTaggingDTO.getCreatedBy());
-		assetTaggingVO.setActive(true);
-		assetTaggingVO.setAsset(assetTaggingDTO.getAsset());
-		assetTaggingVO.setAssetCode(assetTaggingDTO.getAssetCode());
-		assetTaggingVO.setSeqFrom(assetTaggingDTO.getSeqFrom());
-		assetTaggingVO.setSeqTo(assetTaggingDTO.getSeqTo());
-		assetTaggingVO.setOrgId(assetTaggingDTO.getOrgId());
-		List<AssetTaggingDetailsVO>assetTaggingDetailsVO=new ArrayList<>();
-		if(assetTaggingDTO.getTaggingDetailsDTO()!=null) {
-			
-			for(AssetTaggingDetailsDTO taggingDetailsDTO: assetTaggingDTO.getTaggingDetailsDTO())
-			{
-				AssetTaggingDetailsVO assetTaggingDetails=new AssetTaggingDetailsVO();
-				assetTaggingDetails.setRfId(taggingDetailsDTO.getRfId());
-				assetTaggingDetails.setTaggingDocDd(assetTaggingVO.getDocid());
-				assetTaggingDetails.setAssetCode(taggingDetailsDTO.getAssetCode());
-				assetTaggingDetails.setAsset(taggingDetailsDTO.getAsset());
-				assetTaggingDetails.setOrgId(assetTaggingVO.getOrgId());
-				assetTaggingDetails.setTagCode(taggingDetailsDTO.getTagCode());
-				assetTaggingDetails.setTaggingVO(assetTaggingVO);
-				assetTaggingDetailsVO.add(assetTaggingDetails);
-			}
-		}
-		assetTaggingVO.setTaggingDetails(assetTaggingDetailsVO);
-		
-		AssetTaggingVO assetTaggingVO1= assetTaggingRepo.save(assetTaggingVO);
-		List<AssetTaggingDetailsVO> assetTaggingDetailsVOs=assetTaggingVO1.getTaggingDetails();
-		if(assetTaggingDetailsVOs!=null && assetTaggingDetailsVOs.isEmpty())
-		{
-			for(AssetTaggingDetailsVO AssetTagging:assetTaggingDetailsVOs)
-			{
-				AssetStockDetailsVO assetStockDetailsVO=new AssetStockDetailsVO();
-				
-				assetStockDetailsVO.setStockRef(assetTaggingVO1.getDocid());
-				assetStockDetailsVO.setStockDate(assetTaggingVO1.getDocDate());
-				assetStockDetailsVO.setSkuCode(AssetTagging.getAssetCode());
-				assetStockDetailsVO.setSku(AssetTagging.getAsset());
-				assetStockDetailsVO.setSkuQty(1);
-				assetStockDetailsVO.setStockSource("");
-				assetStockDetailsVO.setSCode(assetTaggingVO1.getScode());
-				assetStockDetailsVO.setScreen("Asset Tagging");
-				assetStockDetailsVO.setRfId(AssetTagging.getRfId());
-				assetStockDetailsVO.setPm("P");
-				assetStockDetailsVO.setStockBranch("AI POOL");
-				assetStockDetailsRepo.save(assetStockDetailsVO);
-			}
-		}
-		return assetTaggingRepo.save(assetTaggingVO);
-		
+	    
+	    AssetTaggingVO assetTaggingVO = new AssetTaggingVO();
+	    assetTaggingVO.setDocid(assetTaggingDTO.getDocId());
+	    assetTaggingVO.setDocDate(assetTaggingDTO.getDocDate());
+	    assetTaggingVO.setCancel(false);
+	    assetTaggingVO.setCreatedBy(assetTaggingDTO.getCreatedBy());
+	    assetTaggingVO.setModifiedBy(assetTaggingDTO.getCreatedBy());
+	    assetTaggingVO.setActive(true);
+	    assetTaggingVO.setAsset(assetTaggingDTO.getAsset());
+	    assetTaggingVO.setAssetCode(assetTaggingDTO.getAssetCode());
+	    assetTaggingVO.setSeqFrom(assetTaggingDTO.getSeqFrom());
+	    assetTaggingVO.setSeqTo(assetTaggingDTO.getSeqTo());
+	    assetTaggingVO.setOrgId(assetTaggingDTO.getOrgId());
+	    List<AssetTaggingDetailsVO> assetTaggingDetailsVO = new ArrayList<>();
+	    if (assetTaggingDTO.getTaggingDetailsDTO() != null) {
+	        
+	        for (AssetTaggingDetailsDTO taggingDetailsDTO : assetTaggingDTO.getTaggingDetailsDTO()) {
+	            AssetTaggingDetailsVO assetTaggingDetails = new AssetTaggingDetailsVO();
+	            assetTaggingDetails.setRfId(taggingDetailsDTO.getRfId());
+	            assetTaggingDetails.setTaggingDocDd(assetTaggingVO.getDocid());
+	            assetTaggingDetails.setAssetCode(taggingDetailsDTO.getAssetCode());
+	            assetTaggingDetails.setAsset(taggingDetailsDTO.getAsset());
+	            assetTaggingDetails.setOrgId(assetTaggingVO.getOrgId());
+	            assetTaggingDetails.setTagCode(taggingDetailsDTO.getTagCode());
+	            assetTaggingDetails.setTaggingVO(assetTaggingVO);
+	            assetTaggingDetailsVO.add(assetTaggingDetails);
+	        }
+	    }
+	    assetTaggingVO.setTaggingDetails(assetTaggingDetailsVO);
+	    AssetTaggingVO savedAssetTaggingVO = assetTaggingRepo.save(assetTaggingVO);
+	    List<AssetTaggingDetailsVO> savedAssetTaggingDetailsVOs = savedAssetTaggingVO.getTaggingDetails();
+	    
+	    if (savedAssetTaggingDetailsVOs != null && !savedAssetTaggingDetailsVOs.isEmpty()) {
+	        
+	        for (AssetTaggingDetailsVO assetTaggingDetails : savedAssetTaggingDetailsVOs) {
+	            AssetStockDetailsVO assetStockDetailsVO = new AssetStockDetailsVO();
+	            assetStockDetailsVO.setStockRef(savedAssetTaggingVO.getDocid());
+	            assetStockDetailsVO.setStockDate(savedAssetTaggingVO.getDocDate());
+	            assetStockDetailsVO.setSkuCode(assetTaggingDetails.getAssetCode());
+	            assetStockDetailsVO.setSku(assetTaggingDetails.getAsset());
+	            assetStockDetailsVO.setSkuQty(1);
+	            assetStockDetailsVO.setStockSource("");
+	            assetStockDetailsVO.setSCode(savedAssetTaggingVO.getScode()); // Assuming getScode() returns the correct value
+	            assetStockDetailsVO.setScreen("Asset Tagging");
+	            assetStockDetailsVO.setPm("P");
+	            assetStockDetailsVO.setStockBranch("AI POOL");
+	            assetStockDetailsRepo.save(assetStockDetailsVO);
+	        }
+	    }
+	    return savedAssetTaggingVO;
 	}
+
 		
 
 	
