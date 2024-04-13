@@ -69,6 +69,12 @@ public class PoVO {
 	private String createdBy;
 	@Column(name = "modified", length = 25)
 	private String modifiedBy;
+	@Column(name = "ap", length = 25)
+	private String ap;
+	@Column(name = "total", length = 15)
+	private int total;
+	
+	
 	private boolean cancel;
 	private boolean active;
 	

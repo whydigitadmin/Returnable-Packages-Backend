@@ -32,6 +32,9 @@ public class AssetTaggingDetailsVO {
 	@Column(name="orgid")
 	private Long orgId;
 	
+	@Column(name="rfid",length = 50)
+	private String rfId;
+	
 	
 	@Column(name="taggingdocid",length = 25)
 	private String taggingDocDd;
