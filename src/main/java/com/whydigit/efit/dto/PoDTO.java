@@ -29,6 +29,8 @@ public class PoDTO {
 	private Float cGst;
 	private Float sGst;
 	private String terms;
+	private int total;
+	private String ap;
 	private boolean cancel;
 	private boolean active;
 	

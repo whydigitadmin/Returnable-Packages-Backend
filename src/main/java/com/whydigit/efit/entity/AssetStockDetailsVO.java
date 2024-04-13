@@ -48,7 +48,7 @@ public class AssetStockDetailsVO {
 	@Column(name="stockref",length=10)
 	private String stockRef;
 	@Column(name="stockdate")
-	private LocalDate stockDate=LocalDate.now();
+	private LocalDate stockDate;
 	@Column(name="stockdatetime")
 	private LocalDateTime stockDateAndTime=LocalDateTime.now();
 	@Column(name="skucode",length=15)
@@ -65,6 +65,8 @@ public class AssetStockDetailsVO {
 	private String stockSource;
 	@Column(name="binlocation",length=20)
 	private String binLocation;
+	@Column(name="rfid",length=50)
+	private String rfId;        
 	
 	
 	

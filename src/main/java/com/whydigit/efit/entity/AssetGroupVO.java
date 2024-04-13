@@ -3,10 +3,7 @@ package com.whydigit.efit.entity;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -26,11 +23,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class AssetGroupVO {
 	
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "assetgroupgen")
-	@SequenceGenerator(name = "assetgroupgen", sequenceName = "assetgroupseq", initialValue = 1000000001, allocationSize = 1)
-	private Long assetgroupid;
-	
+    @Id	
 	@NotEmpty(message = "Asset Code id is required")
 	@Column(name="assetcode",length = 25)
 	private String assetCodeId;
