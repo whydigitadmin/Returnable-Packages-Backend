@@ -1486,55 +1486,10 @@ public class MasterServiceImpl implements MasterService {
 		return poRepo.getPoNoByCreateAsset(orgId);
 	}
 
-	private static final String UPLOAD_DIR = "D:\\Justin\\";
-
-//	@Override
-//	public String uploadFileAndCreateProofOfDelivery(MultipartFile file, ProofOfDeliveryDTO dto) {
-//		ProofOfDeliveryVO vo = createProofOfDeliveryVO(dto);
-//		// Call uploadFile method to handle file upload
-//        String uploadResult = uploadFile(file, vo);
-//        // Call createProofOfDeliveryVO method to create ProofOfDeliveryVO
-//        
-//        // Here you can do further processing or return both results combined
-//        return uploadResult + "\n" + vo.toString(); // Example: Combining both results into a single string
-//    }
-//
-//	public ProofOfDeliveryVO createProofOfDeliveryVO(ProofOfDeliveryDTO dto) {
-//		ProofOfDeliveryVO vo=new ProofOfDeliveryVO();
-//        vo.setDocId(dto.getDocId());
-//        vo.setDocDate(dto.getDocDate());
-//        vo.setRfNo(dto.getRfNo());
-//        vo.setRfDate(dto.getRfDate());
-//        vo.setKitCode(dto.getKitCode());
-//        vo.setKitQty(dto.getKitQty());
-//        vo.setKitRQty(dto.getKitRQty());
-//        proofOfDeliveryRepo.save(vo);
-//        return vo;
-//	}
-//	
-//    public String uploadFile(MultipartFile file,ProofOfDeliveryVO vo) {
-//        try {
-//            // Get the original filename
-//        	String fileName = vo.getDocId() + "_" + vo.getRfNo();
-//            // Create the directory if it doesn't exist
-//            File directory = new File(UPLOAD_DIR);
-//            if (!directory.exists()) {
-//                directory.mkdirs();
-//            }
-//            Path filePath = Paths.get(UPLOAD_DIR, fileName);
-//            // Save the file to the upload directory
-//            file.transferTo(new File(UPLOAD_DIR + fileName));
-//            vo.setUploadReceipt(filePath.toString());
-//            proofOfDeliveryRepo.save(vo);
-//            System.out.println(filePath);
-//            return "File uploaded successfully: " + fileName;
-//            
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            return "Failed to upload file: " + e.getMessage();
-//        }
-//    }
-
+//	private static final String UPLOAD_DIR = "D:\\Justin\\";
+	@Value("${proofOfDelivery.upload.dir}")
+    private String UPLOAD_DIR;
+	
 	public String uploadFileAndCreateProofOfDelivery(MultipartFile file, ProofOfDeliveryDTO dto) {
 		String uploadResult = uploadFile(file, dto); // Call uploadFile method with DTO
 		ProofOfDeliveryVO vo = createProofOfDeliveryVO(dto, Paths.get(UPLOAD_DIR)); // Create ProofOfDeliveryVO
