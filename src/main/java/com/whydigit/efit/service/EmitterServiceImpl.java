@@ -76,14 +76,19 @@ public class EmitterServiceImpl implements EmitterService {
 	public static final Logger LOGGER = LoggerFactory.getLogger(EmitterServiceImpl.class);
 	@Autowired
 	IssueRequestRepo issueRequestRepo;
+	
 	@Autowired
 	UserRepo userRepo;
+	
 	@Autowired
 	EmitterInwardRepo emitterInwardRepo;
+	
 	@Autowired
 	EmitterOutwardRepo emitterOutwardRepo;
+	
 	@Autowired
 	IssueItemRepo issueItemRepo;
+	
 	@Autowired
 	InwardRepo inwardRepo;
 

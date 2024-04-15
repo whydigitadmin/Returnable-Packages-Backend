@@ -1,5 +1,6 @@
 package com.whydigit.efit.service;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -18,6 +19,7 @@ import com.whydigit.efit.dto.KitDTO;
 import com.whydigit.efit.dto.KitResponseDTO;
 import com.whydigit.efit.dto.PoDTO;
 import com.whydigit.efit.dto.PodDTO;
+import com.whydigit.efit.dto.ProofOfDeliveryDTO;
 import com.whydigit.efit.dto.ServiceDTO;
 import com.whydigit.efit.dto.StockBranchDTO;
 import com.whydigit.efit.dto.TermsAndConditionsDTO;
@@ -37,6 +39,7 @@ import com.whydigit.efit.entity.ManufacturerProductVO;
 import com.whydigit.efit.entity.ManufacturerVO;
 import com.whydigit.efit.entity.PoVO;
 import com.whydigit.efit.entity.PodVO;
+import com.whydigit.efit.entity.ProofOfDeliveryVO;
 import com.whydigit.efit.entity.ServiceVO;
 import com.whydigit.efit.entity.StockBranchVO;
 import com.whydigit.efit.entity.TermsAndConditionsVO;
@@ -241,7 +244,12 @@ public interface MasterService {
 
 	Set<Object[]> getPoNoByCreateAsset(Long orgId);
 
-	
+
+
+
+	String uploadFileAndCreateProofOfDelivery(MultipartFile file, ProofOfDeliveryDTO dto);
+
+
 
 	
 

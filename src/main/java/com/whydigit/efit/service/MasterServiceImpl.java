@@ -2,7 +2,9 @@
 package com.whydigit.efit.service;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
@@ -34,6 +36,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -63,6 +66,7 @@ import com.whydigit.efit.dto.PoDTO;
 import com.whydigit.efit.dto.Pod1DTO;
 import com.whydigit.efit.dto.Pod2DTO;
 import com.whydigit.efit.dto.PodDTO;
+import com.whydigit.efit.dto.ProofOfDeliveryDTO;
 import com.whydigit.efit.dto.ServiceDTO;
 import com.whydigit.efit.dto.StockBranchDTO;
 import com.whydigit.efit.dto.TermsAndConditionsDTO;
@@ -96,6 +100,7 @@ import com.whydigit.efit.entity.PoVO1;
 import com.whydigit.efit.entity.Pod1VO;
 import com.whydigit.efit.entity.Pod2VO;
 import com.whydigit.efit.entity.PodVO;
+import com.whydigit.efit.entity.ProofOfDeliveryVO;
 import com.whydigit.efit.entity.ServiceVO;
 import com.whydigit.efit.entity.StockBranchVO;
 import com.whydigit.efit.entity.TermsAndConditionsVO;
@@ -127,6 +132,7 @@ import com.whydigit.efit.repo.ManufacturerRepo;
 import com.whydigit.efit.repo.Po1Repo;
 import com.whydigit.efit.repo.PoRepo;
 import com.whydigit.efit.repo.PodRepo;
+import com.whydigit.efit.repo.ProofOfDeliveryRepo;
 import com.whydigit.efit.repo.ServiceRepo;
 import com.whydigit.efit.repo.StockBranchRepo;
 import com.whydigit.efit.repo.TermsAndConditionsRepo;
@@ -174,10 +180,10 @@ public class MasterServiceImpl implements MasterService {
 	KitRepo kitRepo;
 	@Autowired
 	TermsAndConditionsRepo termsAndConditionsRepo;
-	
+
 	@PersistenceContext
 	private EntityManager entityManager;
-	
+
 	@Autowired
 	AssetStockDetailsRepo assetStockDetailsRepo;
 
@@ -213,25 +219,29 @@ public class MasterServiceImpl implements MasterService {
 
 	@Autowired
 	CnoteRepo cnoteRepo;
-	
+
 	@Autowired
 	AssetInwardRepo assetInwardRepo;
-	
+
 	@Autowired
 	AssetInwardDetailRepo assetInwardDetailRepo;
-	
+
 	@Autowired
 	StockBranchRepo stockBranchRepo;
-	
+
 	@Autowired
 	PoRepo poRepo;
-	
+
 	@Autowired
 	Po1Repo po1Repo;
-	
+
 	@Autowired
 	PodRepo podRepo;
-	
+
+	@Autowired
+	private ProofOfDeliveryRepo proofOfDeliveryRepo;
+
+	private final String uploadDir = "D:\\Justin"; // Specify the upload directory
 
 	@Override
 	public List<AssetVO> getAllAsset(Long orgId) {
@@ -416,10 +426,11 @@ public class MasterServiceImpl implements MasterService {
 
 	@Override
 	public CustomersVO createCustomers(CustomersDTO customersDTO) {
-	
-		if (customersRepo.existsByEntityLegalNameAndDisplayNameAndOrgId(customersDTO.getEntityLegalName(), customersDTO.getDisplayName(), customersDTO.getOrgId())) {
-	        throw new RuntimeException("The Customer LegalName or DisplayName already exists");
-	    }
+
+		if (customersRepo.existsByEntityLegalNameAndDisplayNameAndOrgId(customersDTO.getEntityLegalName(),
+				customersDTO.getDisplayName(), customersDTO.getOrgId())) {
+			throw new RuntimeException("The Customer LegalName or DisplayName already exists");
+		}
 		CustomersVO customersVO = new CustomersVO();
 		customersVO.setOrgId(customersDTO.getOrgId());
 		customersVO.setCustomerType(customersDTO.getCustomerType());
@@ -475,7 +486,6 @@ public class MasterServiceImpl implements MasterService {
 
 		return customersRepo.save(customersVO);
 	}
-
 
 	@Override
 	public CustomersVO updateCustomers(CustomersDTO customersDTO) throws ApplicationException {
@@ -641,9 +651,10 @@ public class MasterServiceImpl implements MasterService {
 
 	@Override
 	public AssetCategoryVO createAssetCategory(AssetCategoryVO assetCategoryVO) {
-		if (assetCategoryRepo.existsByAssetCategoryAndOrgId(assetCategoryVO.getAssetCategory(), assetCategoryVO.getOrgId())) {
-	        throw new RuntimeException("Asset category already exists for this organization");
-	    }
+		if (assetCategoryRepo.existsByAssetCategoryAndOrgId(assetCategoryVO.getAssetCategory(),
+				assetCategoryVO.getOrgId())) {
+			throw new RuntimeException("Asset category already exists for this organization");
+		}
 		return assetCategoryRepo.save(assetCategoryVO);
 	}
 
@@ -755,7 +766,7 @@ public class MasterServiceImpl implements MasterService {
 	public Optional<KitVO> getKitById(Long id) {
 		return kitRepo.findById(id);
 	}
-	
+
 	@Override
 	public Optional<KitVO> getKitByKitCode(String kitName) {
 		return kitRepo.findByKitCode(kitName);
@@ -775,9 +786,9 @@ public class MasterServiceImpl implements MasterService {
 					.quantity(kitAsset.getQuantity()).kitVO(kitVO).build());
 		}
 		kitRepo.save(kitVO);
-		String type=dmapdetailsRepo.finddoctype(kitVO.getScode());
-		Long ids=kitRepo.finddocid();
-		kitVO.setKno(type+ids);
+		String type = dmapdetailsRepo.finddoctype(kitVO.getScode());
+		Long ids = kitRepo.finddocid();
+		kitVO.setKno(type + ids);
 		kitRepo.updatesequence();
 		return kitRepo.save(kitVO);
 	}
@@ -828,12 +839,10 @@ public class MasterServiceImpl implements MasterService {
 				Collectors.groupingBy(AssetGroupVO::getAssetName)));
 	}
 
-
 	@Override
 	public void deleteCustomersAddress(Long id) {
 		customersAddressRepo.deleteById(id);
 	}
-
 
 	@Override
 	public void deleteCustomersBankDetails(Long id) {
@@ -958,7 +967,6 @@ public class MasterServiceImpl implements MasterService {
 		VendorRepo.deleteById(id);
 	}
 
-
 	@Override
 	public Optional<VendorAddressVO> getVendorAddressById(Long id) {
 		return vendorAddressRepo.findById(id);
@@ -968,7 +976,6 @@ public class MasterServiceImpl implements MasterService {
 	public void deletevendorAddress(Long id) {
 		vendorAddressRepo.deleteById(id);
 	}
-
 
 	@Override
 	public Optional<VendorBankDetailsVO> getVendorBankDetailsById(Long id) {
@@ -1028,7 +1035,7 @@ public class MasterServiceImpl implements MasterService {
 				detailsVO.setSequence(detailsDTO.getSequence());
 				detailsVO.setSufix(detailsDTO.getSufix());
 				detailsVO.setType(detailsDTO.getType());
-				detailsVO.setDocIdType(detailsDTO.getPrefix()+dmapDTO.getFinYear()+detailsDTO.getSufix());
+				detailsVO.setDocIdType(detailsDTO.getPrefix() + dmapDTO.getFinYear() + detailsDTO.getSufix());
 				detailsVO.setFinYear(dmapDTO.getFinYear());
 				detailsVO.setDmapVO(dmapVO);
 
@@ -1043,23 +1050,23 @@ public class MasterServiceImpl implements MasterService {
 	@Override
 	public ServiceVO updateCreateService(ServiceDTO serviceDTO) throws ApplicationException {
 		ServiceVO serviceVO = new ServiceVO();
-	    if (ObjectUtils.isNotEmpty(serviceDTO.getId())) {
-	        serviceVO = serviceRepo.findById(serviceDTO.getId())
-	                                .orElseThrow(() -> new ApplicationException("Invalid service details"));
-	        serviceVO.setModifiedBy(serviceDTO.getCreatedBy()); // Set modifiedBy only during update
-	    } else {
-	        // Set createdBy only during creation
-	        serviceVO.setCreatedBy(serviceDTO.getCreatedBy());
-	        serviceVO.setModifiedBy(serviceDTO.getCreatedBy());
-	    }
-	    serviceVO.setOrgId(serviceDTO.getOrgid());
-	    getServiceVOFromServiceDTO(serviceDTO, serviceVO);
-	    return serviceRepo.save(serviceVO);
+		if (ObjectUtils.isNotEmpty(serviceDTO.getId())) {
+			serviceVO = serviceRepo.findById(serviceDTO.getId())
+					.orElseThrow(() -> new ApplicationException("Invalid service details"));
+			serviceVO.setModifiedBy(serviceDTO.getCreatedBy()); // Set modifiedBy only during update
+		} else {
+			// Set createdBy only during creation
+			serviceVO.setCreatedBy(serviceDTO.getCreatedBy());
+			serviceVO.setModifiedBy(serviceDTO.getCreatedBy());
+		}
+		serviceVO.setOrgId(serviceDTO.getOrgid());
+		getServiceVOFromServiceDTO(serviceDTO, serviceVO);
+		return serviceRepo.save(serviceVO);
 	}
 
 	private void getServiceVOFromServiceDTO(@Valid ServiceDTO serviceDTO, ServiceVO serviceVO) {
-	    serviceVO.setCode(serviceDTO.getCode());
-	    serviceVO.setDescription(serviceDTO.getDescription());
+		serviceVO.setCode(serviceDTO.getCode());
+		serviceVO.setDescription(serviceDTO.getDescription());
 	}
 
 	@Override
@@ -1087,23 +1094,20 @@ public class MasterServiceImpl implements MasterService {
 
 	}
 
-
 	@Override
 	public AssetInwardVO createAssetInward(AssetInwardDTO assetInwardDTO) {
-		
-		AssetInwardVO assetInwardVO=new AssetInwardVO();
+
+		AssetInwardVO assetInwardVO = new AssetInwardVO();
 		assetInwardVO.setDocId(assetInwardDTO.getDocId());
 		assetInwardVO.setDocDate(assetInwardDTO.getDocDate());
 		assetInwardVO.setStockBranch(assetInwardDTO.getStockBranch());
 		assetInwardVO.setSourceFrom(assetInwardDTO.getSourceFrom());
 		assetInwardVO.setOrgId(assetInwardDTO.getOrgId());
 		List<AssetInwardDetailVO> assetInwardDetailVO = new ArrayList<>();
-		if (assetInwardDTO.getAssetInwardDetailDTO() != null) 
-		{
-			for (AssetInwardDetailDTO AssetInward : assetInwardDTO.getAssetInwardDetailDTO()) 
-			{
+		if (assetInwardDTO.getAssetInwardDetailDTO() != null) {
+			for (AssetInwardDetailDTO AssetInward : assetInwardDTO.getAssetInwardDetailDTO()) {
 				AssetInwardDetailVO assetInwardDetail = new AssetInwardDetailVO();
-				
+
 				assetInwardDetail.setBinLocation(AssetInward.getBinLocation());
 				assetInwardDetail.setSkuDetail(AssetInward.getSkuDetail());
 				assetInwardDetail.setSkuQty(AssetInward.getSkuQty());
@@ -1116,14 +1120,12 @@ public class MasterServiceImpl implements MasterService {
 		}
 		assetInwardVO.setAssetInwardDetailVO(assetInwardDetailVO);
 		AssetInwardVO assetInwardVO1 = assetInwardRepo.save(assetInwardVO);
-		List<AssetInwardDetailVO>assetInwardDetailVOs=assetInwardVO1.getAssetInwardDetailVO();
-		
-		if(assetInwardDetailVOs!=null && !assetInwardDetailVOs.isEmpty())
-		{
-			for(AssetInwardDetailVO assetdetails:assetInwardDetailVOs) 
-			{
-				
-				AssetStockDetailsVO assetStockDetailsVO=new AssetStockDetailsVO();
+		List<AssetInwardDetailVO> assetInwardDetailVOs = assetInwardVO1.getAssetInwardDetailVO();
+
+		if (assetInwardDetailVOs != null && !assetInwardDetailVOs.isEmpty()) {
+			for (AssetInwardDetailVO assetdetails : assetInwardDetailVOs) {
+
+				AssetStockDetailsVO assetStockDetailsVO = new AssetStockDetailsVO();
 				assetStockDetailsVO.setStockRef(assetInwardVO1.getDocId());
 				assetStockDetailsVO.setStockDate(assetInwardVO1.getDocDate());
 				assetStockDetailsVO.setStockBranch(assetInwardVO1.getStockBranch());
@@ -1132,21 +1134,21 @@ public class MasterServiceImpl implements MasterService {
 				assetStockDetailsVO.setSkuQty(assetdetails.getSkuQty());
 				assetStockDetailsVO.setStockValue(assetdetails.getStockValue());
 				assetStockDetailsVO.setStockLocation(assetdetails.getStockLocation());
-				assetStockDetailsVO.setBinLocation(assetdetails.getBinLocation());	
+				assetStockDetailsVO.setBinLocation(assetdetails.getBinLocation());
 				assetStockDetailsVO.setScreen(assetInwardVO1.getSCode());
 				assetStockDetailsVO.setPm("P");
 				assetStockDetailsRepo.save(assetStockDetailsVO);
-				
+
 			}
-		
-		}		
+
+		}
 		return assetInwardRepo.save(assetInwardVO);
 	}
-	
+
 	// Stock branch
 	@Override
 	public StockBranchVO createStockBranch(StockBranchDTO stockBranchDTO) {
-		StockBranchVO stockBranchVO=new StockBranchVO();
+		StockBranchVO stockBranchVO = new StockBranchVO();
 		stockBranchVO.setBranch(stockBranchDTO.getBranch());
 		stockBranchVO.setBranchCode(stockBranchDTO.getBranchCode());
 		stockBranchVO.setOrgId(stockBranchDTO.getOrgId());
@@ -1155,29 +1157,27 @@ public class MasterServiceImpl implements MasterService {
 		stockBranchVO.setActive(stockBranchDTO.isActive());
 		return stockBranchRepo.save(stockBranchVO);
 	}
-	
-	//Update Stock Branch
+
+	// Update Stock Branch
 	@Override
 	public StockBranchVO updateStockBranch(StockBranchDTO stockBranchDTO) throws ApplicationException {
-		
-		Optional<StockBranchVO> existingStockBranchOptional = stockBranchRepo.findById(stockBranchDTO.getId());
-	    
-	    if(existingStockBranchOptional.isPresent()) {
-	        StockBranchVO existingStockBranch = existingStockBranchOptional.get();
-	        existingStockBranch.setBranch(stockBranchDTO.getBranch());
-	        existingStockBranch.setBranchCode(stockBranchDTO.getBranchCode());
-	        existingStockBranch.setModifiedBy(stockBranchDTO.getCreatedby());
-	        return stockBranchRepo.save(existingStockBranch);
-	    } else {
-	        throw new NoSuchElementException("StockBranch with ID " + stockBranchDTO.getId() + " not found");
-	    }
-	}
 
-	
+		Optional<StockBranchVO> existingStockBranchOptional = stockBranchRepo.findById(stockBranchDTO.getId());
+
+		if (existingStockBranchOptional.isPresent()) {
+			StockBranchVO existingStockBranch = existingStockBranchOptional.get();
+			existingStockBranch.setBranch(stockBranchDTO.getBranch());
+			existingStockBranch.setBranchCode(stockBranchDTO.getBranchCode());
+			existingStockBranch.setModifiedBy(stockBranchDTO.getCreatedby());
+			return stockBranchRepo.save(existingStockBranch);
+		} else {
+			throw new NoSuchElementException("StockBranch with ID " + stockBranchDTO.getId() + " not found");
+		}
+	}
 
 	@Override
 	public List<StockBranchVO> getAllStockBranchByOrgId(Long orgId) {
-		
+
 		return stockBranchRepo.findByOrgId(orgId);
 
 	}
@@ -1185,75 +1185,74 @@ public class MasterServiceImpl implements MasterService {
 	// Asset Tagging
 	@Override
 	public AssetTaggingVO createTagging(AssetTaggingDTO assetTaggingDTO) {
-	    
-	    AssetTaggingVO assetTaggingVO = new AssetTaggingVO();
-	    assetTaggingVO.setDocid(assetTaggingDTO.getDocId());
-	    assetTaggingVO.setDocDate(assetTaggingDTO.getDocDate());
-	    assetTaggingVO.setCancel(false);
-	    assetTaggingVO.setCreatedBy(assetTaggingDTO.getCreatedBy());
-	    assetTaggingVO.setModifiedBy(assetTaggingDTO.getCreatedBy());
-	    assetTaggingVO.setActive(true);
-	    assetTaggingVO.setAsset(assetTaggingDTO.getAsset());
-	    assetTaggingVO.setAssetCode(assetTaggingDTO.getAssetCode());
-	    assetTaggingVO.setSeqFrom(assetTaggingDTO.getSeqFrom());
-	    assetTaggingVO.setSeqTo(assetTaggingDTO.getSeqTo());
-	    assetTaggingVO.setOrgId(assetTaggingDTO.getOrgId());
-	    List<AssetTaggingDetailsVO> assetTaggingDetailsVO = new ArrayList<>();
-	    if (assetTaggingDTO.getTaggingDetailsDTO() != null) {
-	        
-	        for (AssetTaggingDetailsDTO taggingDetailsDTO : assetTaggingDTO.getTaggingDetailsDTO()) {
-	            AssetTaggingDetailsVO assetTaggingDetails = new AssetTaggingDetailsVO();
-	            assetTaggingDetails.setRfId(taggingDetailsDTO.getRfId());
-	            assetTaggingDetails.setTaggingDocDd(assetTaggingVO.getDocid());
-	            assetTaggingDetails.setAssetCode(taggingDetailsDTO.getAssetCode());
-	            assetTaggingDetails.setAsset(taggingDetailsDTO.getAsset());
-	            assetTaggingDetails.setOrgId(assetTaggingVO.getOrgId());
-	            assetTaggingDetails.setTagCode(taggingDetailsDTO.getTagCode());
-	            assetTaggingDetails.setTaggingVO(assetTaggingVO);
-	            assetTaggingDetailsVO.add(assetTaggingDetails);
-	        }
-	    }
-	    assetTaggingVO.setTaggingDetails(assetTaggingDetailsVO);
-	    AssetTaggingVO savedAssetTaggingVO = assetTaggingRepo.save(assetTaggingVO);
-	    List<AssetTaggingDetailsVO> savedAssetTaggingDetailsVOs = savedAssetTaggingVO.getTaggingDetails();
-	    
-	    if (savedAssetTaggingDetailsVOs != null && !savedAssetTaggingDetailsVOs.isEmpty()) {
-	        
-	        for (AssetTaggingDetailsVO assetTaggingDetails : savedAssetTaggingDetailsVOs) {
-	            AssetStockDetailsVO assetStockDetailsVO = new AssetStockDetailsVO();
-	            assetStockDetailsVO.setStockRef(savedAssetTaggingVO.getDocid());
-	            assetStockDetailsVO.setStockDate(savedAssetTaggingVO.getDocDate());
-	            assetStockDetailsVO.setSkuCode(assetTaggingDetails.getAssetCode());
-	            assetStockDetailsVO.setSku(assetTaggingDetails.getAsset());
-	            assetStockDetailsVO.setSkuQty(1);
-	            assetStockDetailsVO.setStockSource("");
-	            assetStockDetailsVO.setSCode(savedAssetTaggingVO.getScode()); // Assuming getScode() returns the correct value
-	            assetStockDetailsVO.setScreen("Asset Tagging");
-	            assetStockDetailsVO.setPm("P");
-	            assetStockDetailsVO.setStockBranch("AI POOL");
-	            assetStockDetailsRepo.save(assetStockDetailsVO);
-	        }
-	    }
-	    return savedAssetTaggingVO;
+
+		AssetTaggingVO assetTaggingVO = new AssetTaggingVO();
+		assetTaggingVO.setDocid(assetTaggingDTO.getDocId());
+		assetTaggingVO.setDocDate(assetTaggingDTO.getDocDate());
+		assetTaggingVO.setCancel(false);
+		assetTaggingVO.setCreatedBy(assetTaggingDTO.getCreatedBy());
+		assetTaggingVO.setModifiedBy(assetTaggingDTO.getCreatedBy());
+		assetTaggingVO.setActive(true);
+		assetTaggingVO.setAsset(assetTaggingDTO.getAsset());
+		assetTaggingVO.setAssetCode(assetTaggingDTO.getAssetCode());
+		assetTaggingVO.setSeqFrom(assetTaggingDTO.getSeqFrom());
+		assetTaggingVO.setSeqTo(assetTaggingDTO.getSeqTo());
+		assetTaggingVO.setOrgId(assetTaggingDTO.getOrgId());
+		List<AssetTaggingDetailsVO> assetTaggingDetailsVO = new ArrayList<>();
+		if (assetTaggingDTO.getTaggingDetailsDTO() != null) {
+
+			for (AssetTaggingDetailsDTO taggingDetailsDTO : assetTaggingDTO.getTaggingDetailsDTO()) {
+				AssetTaggingDetailsVO assetTaggingDetails = new AssetTaggingDetailsVO();
+				assetTaggingDetails.setRfId(taggingDetailsDTO.getRfId());
+				assetTaggingDetails.setTaggingDocDd(assetTaggingVO.getDocid());
+				assetTaggingDetails.setAssetCode(taggingDetailsDTO.getAssetCode());
+				assetTaggingDetails.setAsset(taggingDetailsDTO.getAsset());
+				assetTaggingDetails.setOrgId(assetTaggingVO.getOrgId());
+				assetTaggingDetails.setTagCode(taggingDetailsDTO.getTagCode());
+				assetTaggingDetails.setTaggingVO(assetTaggingVO);
+				assetTaggingDetailsVO.add(assetTaggingDetails);
+			}
+		}
+		assetTaggingVO.setTaggingDetails(assetTaggingDetailsVO);
+		AssetTaggingVO savedAssetTaggingVO = assetTaggingRepo.save(assetTaggingVO);
+		List<AssetTaggingDetailsVO> savedAssetTaggingDetailsVOs = savedAssetTaggingVO.getTaggingDetails();
+
+		if (savedAssetTaggingDetailsVOs != null && !savedAssetTaggingDetailsVOs.isEmpty()) {
+
+			for (AssetTaggingDetailsVO assetTaggingDetails : savedAssetTaggingDetailsVOs) {
+				AssetStockDetailsVO assetStockDetailsVO = new AssetStockDetailsVO();
+				assetStockDetailsVO.setStockRef(savedAssetTaggingVO.getDocid());
+				assetStockDetailsVO.setStockDate(savedAssetTaggingVO.getDocDate());
+				assetStockDetailsVO.setSkuCode(assetTaggingDetails.getAssetCode());
+				assetStockDetailsVO.setSku(assetTaggingDetails.getAsset());
+				assetStockDetailsVO.setSkuQty(1);
+				assetStockDetailsVO.setStockSource("");
+				assetStockDetailsVO.setSCode(savedAssetTaggingVO.getScode()); // Assuming getScode() returns the correct
+																				// value
+				assetStockDetailsVO.setScreen("Asset Tagging");
+				assetStockDetailsVO.setPm("P");
+				assetStockDetailsVO.setStockBranch("AI POOL");
+				assetStockDetailsRepo.save(assetStockDetailsVO);
+			}
+		}
+		return savedAssetTaggingVO;
 	}
 
-		
-
-	
 	@Override
 	public Set<Object[]> getTagCodeByAsset(String assetcode, String asset, int startno, int endno) {
-		
-		return assetTaggingRepo.getTagCodeByAsset(assetcode,asset,startno,endno);
+
+		return assetTaggingRepo.getTagCodeByAsset(assetcode, asset, startno, endno);
 	}
 
 	@Override
 	public Set<Object[]> getAvalKitQty(Long warehouseId, String Kitname) {
-		
-		return stockBranchRepo.findAvalKitQty(warehouseId,Kitname);
+
+		return stockBranchRepo.findAvalKitQty(warehouseId, Kitname);
 	}
 
 	@Override
-	public TermsAndConditionsVO updateCreateTerms(TermsAndConditionsDTO termsAndConditionsDTO) throws ApplicationException {
+	public TermsAndConditionsVO updateCreateTerms(TermsAndConditionsDTO termsAndConditionsDTO)
+			throws ApplicationException {
 		TermsAndConditionsVO termsAndConditionsVO = new TermsAndConditionsVO();
 		if (ObjectUtils.isNotEmpty(termsAndConditionsDTO.getTermsId())) {
 			termsAndConditionsVO = termsAndConditionsRepo.findById(termsAndConditionsDTO.getTermsId())
@@ -1265,7 +1264,7 @@ public class MasterServiceImpl implements MasterService {
 
 	private void getWarehouseVOFromWarehouseDTO(TermsAndConditionsDTO termsAndConditionsDTO,
 			TermsAndConditionsVO termsAndConditionsVO) {
-		
+
 		termsAndConditionsVO.setOrgId(termsAndConditionsDTO.getOrgId());
 		termsAndConditionsVO.setSCode("TERMS");
 		termsAndConditionsVO.setTermsCode(termsAndConditionsDTO.getTermsCode());
@@ -1273,7 +1272,7 @@ public class MasterServiceImpl implements MasterService {
 		termsAndConditionsVO.setPrintRemarks(termsAndConditionsDTO.getPrintRemarks());
 		termsAndConditionsVO.setEffectiveFrom(LocalDate.now());
 		termsAndConditionsVO.setEffectiveTo(LocalDate.now());
-	
+
 	}
 
 	@Override
@@ -1321,7 +1320,7 @@ public class MasterServiceImpl implements MasterService {
 				Po1.setExRate(po1DTO.getExRate());
 				Po1.setAmount(po1DTO.getAmount());
 				Po1.setCurrency(po1DTO.getCurrency());
-                Po1.setPoVO(poVO);
+				Po1.setPoVO(poVO);
 				poVO1.add(Po1);
 			}
 		}
@@ -1332,8 +1331,8 @@ public class MasterServiceImpl implements MasterService {
 
 	private void getPoVOFromPoDTO(PoDTO poDTO, PoVO poVO) {
 
-      	poVO.setOrgId(poDTO.getOrgId());
-      	poVO.setSCode("PO");
+		poVO.setOrgId(poDTO.getOrgId());
+		poVO.setSCode("PO");
 		poVO.setCompany(poDTO.getCompany());
 		poVO.setAddress(poDTO.getAddress());
 		poVO.setSelfGst(poDTO.getSelfGst());
@@ -1367,7 +1366,6 @@ public class MasterServiceImpl implements MasterService {
 		}
 		return poVO;
 	}
-	
 
 	@Override
 	public List<PoVO> getAllPoByPoId(Long poId) {
@@ -1429,7 +1427,7 @@ public class MasterServiceImpl implements MasterService {
 		podVO.setActive(podDTO.isActive());
 		podVO.setCancel(podDTO.isCancel());
 		podVO.setRefDate(podDTO.getRefDate());
-		podVO.setDocDate(podDTO.getDocdate()); 
+		podVO.setDocDate(podDTO.getDocdate());
 	}
 
 	@Override
@@ -1459,36 +1457,99 @@ public class MasterServiceImpl implements MasterService {
 	}
 
 	@Override
-	public  AssetGroupVO getAssetGroupByAssetCode(Long orgId, String assetCodeId) {
-		
-		return assetGroupRepo.findAssetByAssetCodeId(orgId,assetCodeId);
+	public AssetGroupVO getAssetGroupByAssetCode(Long orgId, String assetCodeId) {
+
+		return assetGroupRepo.findAssetByAssetCodeId(orgId, assetCodeId);
 	}
 
 	@Override
 	public AssetVO getAssetByOrgId(Long orgId, String assetId) {
-		
-		return assetRepo.getAssetByOrgId(orgId,assetId);
+
+		return assetRepo.getAssetByOrgId(orgId, assetId);
 	}
 
 	@Override
 	public List<ServiceVO> getAllServiceByOrgId(Long OrgId) {
-		
+
 		return serviceRepo.findAllByOrgId(OrgId);
-			}
+	}
 
 	@Override
 	public List<AssetInwardVO> getAllAssetInwardOrgId(Long orgId) {
-		
+
 		return assetInwardRepo.findAssetInwardByOrgId(orgId);
 	}
 
 	@Override
 	public Set<Object[]> getPoNoByCreateAsset(Long orgId) {
-		
+
 		return poRepo.getPoNoByCreateAsset(orgId);
 	}
 
+//	private static final String UPLOAD_DIR = "D:\\Justin\\";
+	@Value("${proofOfDelivery.upload.dir}")
+    private String UPLOAD_DIR;
 	
-	
-	
+	public String uploadFileAndCreateProofOfDelivery(MultipartFile file, ProofOfDeliveryDTO dto) {
+		String uploadResult = uploadFile(file, dto); // Call uploadFile method with DTO
+		ProofOfDeliveryVO vo = createProofOfDeliveryVO(dto, Paths.get(UPLOAD_DIR)); // Create ProofOfDeliveryVO
+		// Here you can do further processing or return both results combined
+		return uploadResult + "\n" + vo.toString(); // Example: Combining both results into a single string
+	}
+
+	public String uploadFile(MultipartFile file, ProofOfDeliveryDTO dto) {
+		try {
+			// Get the original file name
+			String originalFileName = file.getOriginalFilename();
+			// Extract the original file extension
+			String fileExtension = getFileExtension(originalFileName);
+			// Customize the filename
+			String customizedFileName = getCustomizedFileName(dto) + fileExtension;
+			// Create the directory if it doesn't exist
+			File directory = new File(UPLOAD_DIR);
+			if (!directory.exists()) {
+				directory.mkdirs();
+			}
+			// Save the file to the upload directory with the customized filename
+			Path filePath = Paths.get(UPLOAD_DIR, customizedFileName);
+			file.transferTo(filePath);
+			System.out.println(filePath);
+			ProofOfDeliveryVO vo= createProofOfDeliveryVO(dto, Paths.get(UPLOAD_DIR));
+			vo.setUploadReceipt(filePath.toString());
+			proofOfDeliveryRepo.save(vo);
+			return filePath.toString();
+			
+
+		} catch (IOException e) {
+			e.printStackTrace();
+			return "Failed to upload file: " + e.getMessage();
+		}
+	}
+
+	private String getFileExtension(String fileName) {
+		if (fileName != null && fileName.contains(".")) {
+			return fileName.substring(fileName.lastIndexOf("."));
+		}
+		return "";
+	}
+
+	private String getCustomizedFileName(ProofOfDeliveryDTO dto) {
+		return dto.getDocId() + "-" + dto.getRfNo();
+	}
+
+	private ProofOfDeliveryVO createProofOfDeliveryVO(ProofOfDeliveryDTO dto, Path filePath) {
+		ProofOfDeliveryVO vo = new ProofOfDeliveryVO();
+		vo.setDocId(dto.getDocId());
+		vo.setDocDate(dto.getDocDate());
+		vo.setRfNo(dto.getRfNo());
+		vo.setRfDate(dto.getRfDate());
+		vo.setKitCode(dto.getKitCode());
+		vo.setKitQty(dto.getKitQty());
+		vo.setKitRQty(dto.getKitRQty());
+		vo.setCreatedBy(dto.getCreatedBy());
+		vo.setModifiedBy(dto.getCreatedBy());
+		vo.setUploadReceipt(filePath.toString()); // Set the filePath to UploadReceipt field
+		return vo;
+	}
+
 }
