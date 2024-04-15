@@ -1,4 +1,5 @@
 package com.whydigit.efit.entity;
+import java.nio.file.Path;
 import java.time.LocalDate;
 
 import javax.persistence.Column;
@@ -52,5 +53,8 @@ public class ProofOfDeliveryVO {
 	
 	@Embedded
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
+
+
+	
 	
 }

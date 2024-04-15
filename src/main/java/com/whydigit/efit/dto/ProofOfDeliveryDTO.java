@@ -2,6 +2,8 @@ package com.whydigit.efit.dto;
 
 import java.time.LocalDate;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,5 +19,6 @@ public class ProofOfDeliveryDTO {
 	private String kitCode;
 	private int kitQty;
 	private int kitRQty;
-	private String uploadReceipt;
+	private String createdBy;
+		
 }
