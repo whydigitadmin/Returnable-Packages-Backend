@@ -1,5 +1,6 @@
 package com.whydigit.efit.entity;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -42,6 +43,12 @@ public class IssueItemVO {
 	private int kitQty;
 	@Column(name = "partno", length = 25)
 	private String partNo;
+	@Column(name = "docid", length = 30)
+	private String docId;
+	
+	@Column(name = "docdate", length = 30)
+	private LocalDate docDate;
+	
 	@Column(name = "partname", length = 255)
 	private String partName;
 	@Column(name = "partqty", length = 15)

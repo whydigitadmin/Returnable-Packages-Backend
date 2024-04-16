@@ -49,6 +49,7 @@ public class CustomersVO {
 	@Column(name="code",length = 25)
 	private String customerCode;
 	
+	
 	@Column(name="displayname",length = 50)
 	private String displayName;
 	

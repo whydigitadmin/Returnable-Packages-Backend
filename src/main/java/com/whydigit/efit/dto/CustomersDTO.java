@@ -14,7 +14,6 @@ public class CustomersDTO {
 	private Long id;
 	private long orgId;
 	private int customerType;
-	private String customerCode;
 	private String entityLegalName;
 	private String displayName;
 	private String email;
