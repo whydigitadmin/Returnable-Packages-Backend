@@ -2166,27 +2166,5 @@ public class MasterController extends BaseController {
 		return po;
 	}
 
-	@PostMapping("/proofOfDelivery")
-	public ResponseEntity<ResponseDTO> createProofOfDelivery(@RequestParam("file") MultipartFile file,
-			@RequestPart("dto") ProofOfDeliveryDTO dto) {
-		String methodName = "createProofOfDelivery()";
-		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
-		String errorMsg = null;
-		Map<String, Object> responseObjectsMap = new HashMap<>();
-		ResponseDTO responseDTO = null;
-		try {
-			String result = masterService.uploadFileAndCreateProofOfDelivery(file, dto);
-			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Proof Of Delivery created successfully");
-			responseObjectsMap.put("proofOfDeliveryVO", result);
-			responseDTO = createServiceResponse(responseObjectsMap);
-		} catch (Exception e) {
-			errorMsg = e.getMessage();
-			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-			responseDTO = createServiceResponseError(responseObjectsMap, "Proof Of Delivery creation failed", errorMsg);
-		}
-		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
-		return ResponseEntity.ok().body(responseDTO);
-
-	}
-
+	
 }

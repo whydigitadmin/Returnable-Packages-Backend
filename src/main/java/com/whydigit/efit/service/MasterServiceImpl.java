@@ -1496,69 +1496,6 @@ public class MasterServiceImpl implements MasterService {
 		return poRepo.getPoNoByCreateAsset(orgId);
 	}
 
-//	private static final String UPLOAD_DIR = "D:\\Justin\\";
-	@Value("${proofOfDelivery.upload.dir}")
-	private String UPLOAD_DIR;
 
-	public String uploadFileAndCreateProofOfDelivery(MultipartFile file, ProofOfDeliveryDTO dto) {
-		String uploadResult = uploadFile(file, dto); // Call uploadFile method with DTO
-		ProofOfDeliveryVO vo = createProofOfDeliveryVO(dto, Paths.get(UPLOAD_DIR)); // Create ProofOfDeliveryVO
-		// Here you can do further processing or return both results combined
-		return uploadResult + "\n" + vo.toString(); // Example: Combining both results into a single string
-	}
-
-	public String uploadFile(MultipartFile file, ProofOfDeliveryDTO dto) {
-		try {
-			// Get the original file name
-			String originalFileName = file.getOriginalFilename();
-			// Extract the original file extension
-			String fileExtension = getFileExtension(originalFileName);
-			// Customize the filename
-			String customizedFileName = getCustomizedFileName(dto) + fileExtension;
-			// Create the directory if it doesn't exist
-			File directory = new File(UPLOAD_DIR);
-			if (!directory.exists()) {
-				directory.mkdirs();
-			}
-			// Save the file to the upload directory with the customized filename
-			Path filePath = Paths.get(UPLOAD_DIR, customizedFileName);
-			file.transferTo(filePath);
-			System.out.println(filePath);
-			ProofOfDeliveryVO vo = createProofOfDeliveryVO(dto, Paths.get(UPLOAD_DIR));
-			vo.setUploadReceipt(filePath.toString());
-			proofOfDeliveryRepo.save(vo);
-			return filePath.toString();
-
-		} catch (IOException e) {
-			e.printStackTrace();
-			return "Failed to upload file: " + e.getMessage();
-		}
-	}
-
-	private String getFileExtension(String fileName) {
-		if (fileName != null && fileName.contains(".")) {
-			return fileName.substring(fileName.lastIndexOf("."));
-		}
-		return "";
-	}
-
-	private String getCustomizedFileName(ProofOfDeliveryDTO dto) {
-		return dto.getDocId() + "-" + dto.getRfNo();
-	}
-
-	private ProofOfDeliveryVO createProofOfDeliveryVO(ProofOfDeliveryDTO dto, Path filePath) {
-		ProofOfDeliveryVO vo = new ProofOfDeliveryVO();
-		vo.setDocId(dto.getDocId());
-		vo.setDocDate(dto.getDocDate());
-		vo.setRfNo(dto.getRfNo());
-		vo.setRfDate(dto.getRfDate());
-		vo.setKitCode(dto.getKitCode());
-		vo.setKitQty(dto.getKitQty());
-		vo.setKitRQty(dto.getKitRQty());
-		vo.setCreatedBy(dto.getCreatedBy());
-		vo.setModifiedBy(dto.getCreatedBy());
-		vo.setUploadReceipt(filePath.toString()); // Set the filePath to UploadReceipt field
-		return vo;
-	}
 
 }
