@@ -1,4 +1,5 @@
 package com.whydigit.efit.entity;
+
 import java.time.LocalDate;
 
 import javax.persistence.Column;
@@ -15,14 +16,12 @@ import com.whydigit.efit.dto.CreatedUpdatedDate;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 @Entity
-@Table(name = "proofofdelivery")
+@Table(name = "proofOfdispatch")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-
-public class ProofOfDeliveryVO {
+public class ProofOfDispatchVO {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "proofofdeliverygen")
 	@SequenceGenerator(name = "proofofdeliverygen", sequenceName = "proofofdeliveryseq", initialValue = 1000000001, allocationSize = 1)
@@ -56,6 +55,4 @@ public class ProofOfDeliveryVO {
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
 
 
-	
-	
 }
