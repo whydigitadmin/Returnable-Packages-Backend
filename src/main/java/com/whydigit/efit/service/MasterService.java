@@ -247,7 +247,10 @@ public interface MasterService {
 
 
 
-	String uploadFileAndCreateProofOfDelivery(MultipartFile file, ProofOfDeliveryDTO dto);
+
+	ProofOfDeliveryVO createProofOfDelivery(ProofOfDeliveryDTO proofOfDeliveryDTO);
+
+	String uploadFileProofOfDelivery(MultipartFile file, String docId, String refNo);
 
 
 

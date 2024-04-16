@@ -6,4 +6,6 @@ import com.whydigit.efit.entity.ProofOfDeliveryVO;
 
 public interface ProofOfDeliveryRepo extends JpaRepository<ProofOfDeliveryVO, Long>{
 
+	ProofOfDeliveryVO findByDocIdAndRfNo(String docId, String refNo);
+
 }

@@ -1,6 +1,5 @@
 package com.whydigit.efit.controller;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -14,7 +13,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -2168,19 +2166,20 @@ public class MasterController extends BaseController {
 		return po;
 	}
 	
-	@PostMapping("/proofOfDelivery")
-    public ResponseEntity<ResponseDTO> createProofOfDelivery(@RequestParam("file") MultipartFile file,@RequestPart("dto") ProofOfDeliveryDTO dto) {
-		String methodName = "createProofOfDelivery()";
+	@PostMapping("/uploadFileProofOfDelivery")
+    public ResponseEntity<ResponseDTO> uploadFileProofOfDelivery(@RequestParam("file") MultipartFile file,@RequestParam String docId,@RequestParam String refNo) {
+		String methodName = "uploadFileProofOfDelivery()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
 		try {
-			String result = masterService.uploadFileAndCreateProofOfDelivery(file,dto);
+			String result = masterService.uploadFileProofOfDelivery(file,docId,refNo);
 			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Proof Of Delivery created successfully");
 			responseObjectsMap.put("proofOfDeliveryVO", result);
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} catch (Exception e) {
+			
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
 			responseDTO = createServiceResponseError(responseObjectsMap, "Proof Of Delivery creation failed",
@@ -2190,5 +2189,25 @@ public class MasterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 		
 		}
+	@PostMapping("/createProofOfDelivery")
+	public ResponseEntity<ResponseDTO> createProofOfDelivery(@RequestBody ProofOfDeliveryDTO proofOfDeliveryDTO) {
+		String methodName = "createProofOfDelivery()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		try {
+			ProofOfDeliveryVO proofOfDeliveryVO = masterService.createProofOfDelivery(proofOfDeliveryDTO);
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "ProofOfDelivery created successfully");
+			responseObjectsMap.put("proofOfDeliveryVO", proofOfDeliveryVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "ProofOfDelivery creation failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
 
 }
