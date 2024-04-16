@@ -439,7 +439,17 @@ public class MasterServiceImpl implements MasterService {
 		customersVO.setCustomerType(customersDTO.getCustomerType());
 		customersVO.setEntityLegalName(customersDTO.getEntityLegalName());
 		customersVO.setEmail(customersDTO.getEmail());
-		customersVO.setCustomerCode(customersDTO.getCustomerCode());
+		String customerCode = null;
+		if (0 == customersDTO.getCustomerType()) {
+			int custseq = customersRepo.getCustomerCodeSeq();
+			customerCode = "EM" + custseq;
+			customersRepo.nextCustomerCode();
+		} else {
+			int recseq = customersRepo.getRecCodeSeq();
+			customerCode = "RC" + recseq;
+			customersRepo.nextRecCode();
+		}
+		customersVO.setCustomerCode(customerCode);
 		customersVO.setDisplayName(customersDTO.getDisplayName());
 		customersVO.setPhoneNumber(customersDTO.getPhoneNumber());
 		customersVO.setCustomerActivatePortal(customersDTO.isCustomerActivatePortal());
@@ -488,6 +498,7 @@ public class MasterServiceImpl implements MasterService {
 		customersVO.setCustomersBankDetailsVO(customersBankDetailsVO);
 
 		return customersRepo.save(customersVO);
+
 	}
 
 	@Override
@@ -554,6 +565,7 @@ public class MasterServiceImpl implements MasterService {
 				.map(fdDTO -> FlowDetailVO.builder().active(fdDTO.isActive()).cycleTime(fdDTO.getCycleTime())
 						.emitterId(flowDTO.getEmitterId()).orgId(flowDTO.getOrgId()).partName(fdDTO.getPartName())
 						.kitName(fdDTO.getKitName()).partNumber(fdDTO.getPartNumber())
+						.partQty(kitRepo.findPartqty(fdDTO.getKitName()))
 						.emitter(flowRepo.findEmiterbyId(flowVO.getEmitterId())).flowVO(flowVO).build())
 				.collect(Collectors.toList());
 		flowVO.setFlowDetailVO(flowDetailVOList);
@@ -777,21 +789,19 @@ public class MasterServiceImpl implements MasterService {
 
 	@Override
 	public KitVO createkit(KitDTO kitDTO) throws ApplicationException {
-		if (StringUtils.isNotEmpty(kitRepo.findKitcode(kitDTO.getKitCode(), kitDTO.getOrgId()))) {
-			throw new ApplicationException("Kit code already exist. Please try with new kit code.");
-		}
+//		if (StringUtils.isNotEmpty(kitRepo.findKitcode(kitDTO.getKitCode(), kitDTO.getOrgId()))) {
+//			throw new ApplicationException("Kit code already exist. Please try with new kit code.");
+//		}
+		int finyr = kitRepo.getFinyr();
+		String kit = finyr + "KT" + kitRepo.finddocid();
 		List<KitAssetVO> kitAssetVO = new ArrayList<>();
-		KitVO kitVO = KitVO.builder().kitCode(kitDTO.getKitCode()).orgId(kitDTO.getOrgId())
-				.partQty(kitDTO.getPartQuantity()).kitAssetVO(kitAssetVO).build();
+		KitVO kitVO = KitVO.builder().kitCode(kit).orgId(kitDTO.getOrgId()).partQty(kitDTO.getPartQuantity())
+				.kitAssetVO(kitAssetVO).build();
 		for (KitAssetDTO kitAsset : kitDTO.getKitAssetDTO()) {
 			kitAssetVO.add(KitAssetVO.builder().assetCategory(kitAsset.getAssetCategory())
 					.assetCodeId(kitAsset.getAssetCodeId()).assetName(kitAsset.getAssetName())
 					.quantity(kitAsset.getQuantity()).kitVO(kitVO).build());
 		}
-		kitRepo.save(kitVO);
-		String type = dmapdetailsRepo.finddoctype(kitVO.getScode());
-		Long ids = kitRepo.finddocid();
-		kitVO.setKno(type + ids);
 		kitRepo.updatesequence();
 		return kitRepo.save(kitVO);
 	}
@@ -1489,6 +1499,7 @@ public class MasterServiceImpl implements MasterService {
 		return poRepo.getPoNoByCreateAsset(orgId);
 	}
 
+
 //	private static final String UPLOAD_DIR = "D:\\Justin\\";
 	@Value("${proofOfDelivery.upload.dir}")
 	private String UPLOAD_DIR;
@@ -1572,4 +1583,5 @@ public class MasterServiceImpl implements MasterService {
 	
 	
 	}
+
 

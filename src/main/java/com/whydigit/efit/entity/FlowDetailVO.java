@@ -44,6 +44,8 @@ public class FlowDetailVO {
 	private String emitter;
 	@Column(name="emitterid")
 	private Long emitterId;
+	@Column(name="partqty")
+	private int partQty;
 	@Column(name="partname",length = 25)
 	private String partName;
 	@Column(name="cycletime",length = 25)

@@ -153,18 +153,16 @@ public class EmitterServiceImpl implements EmitterService {
 			}
 			issueItemVO.add(issueItem);
 		}
+		int finyr = issueRequestRepo.getFinyr();
+		String requestnumber = finyr + "BR" + issueRequestRepo.finddocid();
+		issueRequestVO.setDocId(requestnumber);
+		issueRequestRepo.updatesequence();
+		issueRequestVO.setEmitterCode(customersRepo.findcustomercodeByEmitterId(issueRequestDTO.getEmitterId()));
 		issueRequestVO.setFlowName(flowVO.getFlowName());
 		issueRequestVO.setIssueItemVO(issueItemVO);
 		issueRequestVO.setTotalIssueItem(issueItemVO.size());
 		issueRequestVO.setWarehouseLocationId(issueRequestRepo.findWarehouseLocationId(issueRequestDTO.getFlowTo()));
 		issueRequestVO.setWarehouseLocation(issueRequestRepo.findWarehouseLocation(issueRequestDTO.getFlowTo()));
-		issueRequestVO = issueRequestRepo.save(issueRequestVO);
-		
-		String emittercode=customersRepo.findcustomercodeByEmitterId(issueRequestVO.getEmitterId());
-		String type=dmapdetailsRepo.finddoctype(issueRequestVO.getScode());
-		Long ids=issueRequestRepo.finddocid();
-		issueRequestVO.setDocId(type+emittercode+ids);
-		issueRequestRepo.updatesequence();
 		issueRequestVO = issueRequestRepo.save(issueRequestVO);
 		return issueRequestVO;
 	}
@@ -302,6 +300,11 @@ public class EmitterServiceImpl implements EmitterService {
 							new StringBuilder(Long.toString(issueRequestQtyApprovelDTO.getIssueRequestId())).append("-")
 									.append(itemId).append("-")
 									.append(issueRequestApprovedVO.size() + ct).toString());
+					item.setDocDate(LocalDate.now());
+					int finyr = issueItemRepo.getFinyr();
+					String binallotment = finyr + "BA" + issueItemRepo.finddocid();
+					item.setDocId(binallotment);
+					issueItemRepo.nextDocseq();
 					item.setIssuedQty(qty);
 					item.setIssueItemStatus(getItemStatus(qty, item.getKitQty()));
 					issueRequestApprovedVO.add(issueRequestApproved);

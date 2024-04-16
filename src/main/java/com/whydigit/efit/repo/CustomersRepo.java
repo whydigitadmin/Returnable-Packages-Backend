@@ -23,6 +23,21 @@ public interface CustomersRepo extends JpaRepository<CustomersVO, Long> {
 	boolean existsByEntityLegalNameAndDisplayNameAndOrgId(String entityLegalName, String displayName, long orgId);
 
 	
+	@Query(nativeQuery = true,value="select custcode from customercodeseq")
+	int getCustomerCodeSeq();
+	
+	@Query(nativeQuery = true,value="CALL next_custcode()")
+	void nextCustomerCode();
+	
+	@Query(nativeQuery = true,value="select reccode from receivercodeseq")
+	int getRecCodeSeq();
+	
+	@Query(nativeQuery = true,value="CALL next_reccode()")
+	void nextRecCode();
+
+	
+
+	
 
 }
 

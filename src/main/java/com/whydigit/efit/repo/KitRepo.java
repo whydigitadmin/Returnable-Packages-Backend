@@ -26,6 +26,19 @@ public interface KitRepo  extends JpaRepository<KitVO, Long>{
 	@Query(nativeQuery = true,value="CALL next_sequence_value()")
 	void updatesequence();
 
+	@Query("select a.partQty from KitVO a where a.kitCode=?1 ")
+	int findPartqty(String kitName);
+
+	@Query(nativeQuery = true,value="SELECT RIGHT(\r\n"
+			+ "    IF(\r\n"
+			+ "        DATE_FORMAT(CURDATE(), '%m%d') > '0331', \r\n"
+			+ "        DATE_FORMAT(CURDATE(), '%Y'), \r\n"
+			+ "        DATE_FORMAT(DATE_SUB(CURDATE(), INTERVAL 1 YEAR), '%Y')\r\n"
+			+ "    ), \r\n"
+			+ "    2\r\n"
+			+ ") AS finyr")
+	int getFinyr();
+
 	
 	
 

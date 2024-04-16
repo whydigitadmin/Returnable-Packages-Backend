@@ -38,7 +38,18 @@ public interface IssueRequestRepo
 
 	@Query(nativeQuery = true,value ="select a.stockbranch from warehouse a, issuerequest b where a.warehouseid=b.whlocationid and b.issuerequestid=?1")
 	String findStockBranchByIssurequestid(Long issueRequestId);
+	
 	@Query("select a.docId from IssueRequestVO a where a.id=?1")
 	String findDocid(Long issueRequestId);
+
+	@Query(nativeQuery = true,value="SELECT RIGHT(\r\n"
+			+ "    IF(\r\n"
+			+ "        DATE_FORMAT(CURDATE(), '%m%d') > '0331', \r\n"
+			+ "        DATE_FORMAT(CURDATE(), '%Y'), \r\n"
+			+ "        DATE_FORMAT(DATE_SUB(CURDATE(), INTERVAL 1 YEAR), '%Y')\r\n"
+			+ "    ), \r\n"
+			+ "    2\r\n"
+			+ ") AS finyr")
+	int getFinyr();
 	
 }
