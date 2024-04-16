@@ -37,8 +37,9 @@ public class SecurityConfig {
 						"/api/auth/user/{userId}", "/api/auth/getRefreshToken", "/api/basicSetting/companyInfo",
 						"/api/warehouse/updateWarehose", "/api/master/asset", "/api/warehouse/view/{id}",
 						"/api/usersdetails/view", "/api/master/**", "​/api​/master​/addAddress",
-						"/api/master/getAllPoByPoId", "api/master/loadKitQty", "/api/master/getPoNoByCreateAsset",
-						"/api/warehouse/getWarehouseLocationByOrgID", "/api/master/getPoByOrgId",
+						"/api/master/uploadFileProofOfDelivery", "/api/master/getAllPoByPoId", "api/master/loadKitQty",
+						"/api/master/getPoNoByCreateAsset", "/api/warehouse/getWarehouseLocationByOrgID",
+						"/api/master/getPoByOrgId", "/api/master/createProofOfDelivery",
 						"/api/warehouse/updateCreateWarehouse", "/api/warehouse/view", "/api/master/updateCreatePo",
 						"/api/warehouse/getWarehouseById/{id}", "/api/partStudy/basicDetails",
 						"api/warehouse/updateCreateWarehouse", "/api/partStudy/d}/searchPartStudyById",
@@ -61,7 +62,7 @@ public class SecurityConfig {
 						"/api/master/updateStockBranch", "/api/basicMaster/country", "/api/basicMaster/country/{id}",
 						"/api/basicMaster/city", "/api/basicMaster/city/{id}", "/api/basicMaster/state",
 						"/api/basicMaster/state/{id}", "/api/master/Services", "/api/basicMaster/state/Country",
-						"/api/basicMaster/city/getByStateAndCountry","/api/emitter/proofOfDelivery")
+						"/api/basicMaster/city/getByStateAndCountry", "/api/emitter/proofOfDelivery")
 				.permitAll().antMatchers("/api/**").hasAnyRole("USER", "GUEST_USER").anyRequest().authenticated();
 
 		http.addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
