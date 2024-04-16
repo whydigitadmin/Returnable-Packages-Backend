@@ -2207,5 +2207,29 @@ public class MasterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-	
+	@GetMapping("/getAllProofOfDelivery")
+	public ResponseEntity<ResponseDTO> getAllProofOfDelivery(@RequestParam(required = false) Long orgId) {
+		String methodName = "getAllProofOfDelivery()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<ProofOfDeliveryVO> proofOfDeliveryVO = new ArrayList<>();
+		try {
+			proofOfDeliveryVO = masterService.getAllProofOfDelivery(orgId);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "ProofOfDelivery information get successfully");
+			responseObjectsMap.put("proofOfDeliveryVO", proofOfDeliveryVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "ProofOfDelivery information receive failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+
+	}
 }

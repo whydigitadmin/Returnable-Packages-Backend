@@ -8,8 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProofOfDeliveryDTO {
-
+public class ProofOfDispatchDTO {
 	private String docId;
 	private long orgId;
 	private LocalDate docDate;
@@ -19,5 +18,4 @@ public class ProofOfDeliveryDTO {
 	private int kitQty;
 	private int kitRQty;
 	private String createdBy;
-		
 }

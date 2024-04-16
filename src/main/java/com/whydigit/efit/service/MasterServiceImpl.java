@@ -1576,8 +1576,22 @@ public class MasterServiceImpl implements MasterService {
 		vo.setKitRQty(proofOfDeliveryDTO.getKitRQty());
 		vo.setCreatedBy(proofOfDeliveryDTO.getCreatedBy());
 		vo.setModifiedBy(proofOfDeliveryDTO.getCreatedBy());
+		vo.setOrgId(proofOfDeliveryDTO.getOrgId());
 		
 		return proofOfDeliveryRepo.save(vo);
+	}
+
+	@Override
+	public List<ProofOfDeliveryVO> getAllProofOfDelivery(Long orgId) {
+		List<ProofOfDeliveryVO> proofOfDeliveryVO = new ArrayList<>();
+		if (ObjectUtils.isNotEmpty(orgId)) {
+			LOGGER.info("Successfully Received  proofOfDelivery BY orgId : {}", orgId);
+			proofOfDeliveryVO = proofOfDeliveryRepo.getAllProofOfDeliveryBy(orgId);
+		} else {
+			LOGGER.info("Successfully Received  proofOfDelivery For All orgId.");
+			proofOfDeliveryVO = proofOfDeliveryRepo.findAll();
+		}
+		return proofOfDeliveryVO;
 	}
 
 	

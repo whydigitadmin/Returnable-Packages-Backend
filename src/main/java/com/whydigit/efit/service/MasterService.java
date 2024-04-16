@@ -245,13 +245,11 @@ public interface MasterService {
 	Set<Object[]> getPoNoByCreateAsset(Long orgId);
 
 
-
-
-
-
 	ProofOfDeliveryVO createProofOfDelivery(ProofOfDeliveryDTO proofOfDeliveryDTO);
 
 	String uploadFileProofOfDelivery(MultipartFile file, String docId, String refNo);
+
+	List<ProofOfDeliveryVO> getAllProofOfDelivery(Long orgId);
 
 
 
