@@ -4,7 +4,6 @@ package com.whydigit.efit.service;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
@@ -33,7 +32,6 @@ import javax.validation.Valid;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.aspectj.apache.bcel.generic.RET;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -143,8 +141,6 @@ import com.whydigit.efit.repo.VendorAddressRepo;
 import com.whydigit.efit.repo.VendorBankDetailsRepo;
 import com.whydigit.efit.repo.VendorRepo;
 import com.whydigit.efit.util.CommonUtils;
-
-import net.bytebuddy.asm.Advice.Return;
 
 @Service
 public class MasterServiceImpl implements MasterService {
@@ -503,16 +499,90 @@ public class MasterServiceImpl implements MasterService {
 
 	@Override
 	public CustomersVO updateCustomers(CustomersDTO customersDTO) throws ApplicationException {
-		CustomersVO customersVO = new CustomersVO();
-		if (ObjectUtils.isNotEmpty(customersDTO) && ObjectUtils.isNotEmpty(customersDTO.getId())) {
-			customersVO = customersRepo.findById(customersDTO.getId())
-					.orElseThrow(() -> new ApplicationException("Customer information not found."));
-		} else {
-			throw new ApplicationException("Invalid customer information");
-		}
-//		getCustomersVOFromCustomersDTO(customersDTO, customersVO);
-		return customersRepo.save(customersVO);
+	    if (customersRepo.existsById(customersDTO.getId())) {
+	        CustomersVO customersVO = customersRepo.findById(customersDTO.getId())
+	                .orElseThrow(() -> new ApplicationException("Customer information not found."));
+
+	        // Update customer details excluding customer type and customer code
+	        customersVO.setOrgId(customersDTO.getOrgId());
+	        customersVO.setEntityLegalName(customersDTO.getEntityLegalName());
+	        customersVO.setEmail(customersDTO.getEmail());
+	        customersVO.setDisplayName(customersDTO.getDisplayName());
+	        customersVO.setPhoneNumber(customersDTO.getPhoneNumber());
+	        customersVO.setCustomerActivatePortal(customersDTO.isCustomerActivatePortal());
+	        customersVO.setActive(customersDTO.isActive());
+
+	        // Update or add new address details
+	        List<CustomersAddressVO> customersAddressVO = customersVO.getCustomersAddressVO();
+	        if (customersDTO.getCustomerAddressDTO() != null) {
+	            for (CustomersAddressDTO addressDTO : customersDTO.getCustomerAddressDTO()) {
+	            	if(ObjectUtils.isNotEmpty(addressDTO.getId()))
+	            	{
+						CustomersAddressVO custAddress = customersAddressRepo.findById(addressDTO.getId()).get();
+						custAddress.setGstRegistrationStatus(addressDTO.getGstRegistrationStatus());
+						custAddress.setStreet1(addressDTO.getStreet1());
+						custAddress.setStreet2(addressDTO.getStreet2());
+						custAddress.setPinCode(addressDTO.getPinCode());
+						custAddress.setPhoneNumber(addressDTO.getPhoneNumber());
+						custAddress.setGstNumber(addressDTO.getGstNumber());
+						custAddress.setCity(addressDTO.getCity());
+						custAddress.setContactName(addressDTO.getContactName());
+						custAddress.setState(addressDTO.getState());
+						custAddress.setEmail(addressDTO.getEmail());
+						custAddress.setDesignation(addressDTO.getDesignation());
+						custAddress.setCountry(addressDTO.getCountry());
+	            	}
+	            	else
+	            	{
+	            		CustomersAddressVO custAddress=new CustomersAddressVO();
+	            		custAddress.setGstRegistrationStatus(addressDTO.getGstRegistrationStatus());
+						custAddress.setStreet1(addressDTO.getStreet1());
+						custAddress.setStreet2(addressDTO.getStreet2());
+						custAddress.setPinCode(addressDTO.getPinCode());
+						custAddress.setPhoneNumber(addressDTO.getPhoneNumber());
+						custAddress.setGstNumber(addressDTO.getGstNumber());
+						custAddress.setCity(addressDTO.getCity());
+						custAddress.setContactName(addressDTO.getContactName());
+						custAddress.setState(addressDTO.getState());
+						custAddress.setEmail(addressDTO.getEmail());
+						custAddress.setDesignation(addressDTO.getDesignation());
+						custAddress.setCountry(addressDTO.getCountry());
+	            	}
+	            }
+	        }
+
+	        // Update or add new bank details
+	        List<CustomersBankDetailsVO> customersBankDetailsVO = customersVO.getCustomersBankDetailsVO();
+	        if (customersDTO.getCustomerBankDetailsDTO() != null) {
+	            for (CustomersBankDetailsDTO bankDetailsDTO : customersDTO.getCustomerBankDetailsDTO()) {
+	            	if(ObjectUtils.isNotEmpty(bankDetailsDTO.getId()))
+	            		{
+	            			CustomersBankDetailsVO bankdetails = customersBankDetailsRepo.findById(bankDetailsDTO.getId()).get();
+	            			bankdetails.setBank(bankDetailsDTO.getBank());
+	            			bankdetails.setAccountName(bankDetailsDTO.getAccountName());
+	            			bankdetails.setIfscCode(bankDetailsDTO.getIfscCode());
+	            			bankdetails.setBranch(bankDetailsDTO.getBranch());
+	            			bankdetails.setAccountNo(bankDetailsDTO.getAccountNo());
+	            		}
+	            	else
+	            	{
+	            		CustomersBankDetailsVO bankdetails= new CustomersBankDetailsVO();
+	            		bankdetails.setBank(bankDetailsDTO.getBank());
+            			bankdetails.setAccountName(bankDetailsDTO.getAccountName());
+            			bankdetails.setIfscCode(bankDetailsDTO.getIfscCode());
+            			bankdetails.setBranch(bankDetailsDTO.getBranch());
+            			bankdetails.setAccountNo(bankDetailsDTO.getAccountNo());
+	            	}
+	            }
+	        }
+
+	        customersRepo.save(customersVO);
+	        return customersVO;
+	    } else {
+	        throw new ApplicationException("Customer information Not Found");
+	    }
 	}
+
 
 	@Override
 	public void deleteCustomers(Long id) {
@@ -1239,9 +1309,10 @@ public class MasterServiceImpl implements MasterService {
 				assetStockDetailsVO.setSkuCode(assetTaggingDetails.getAssetCode());
 				assetStockDetailsVO.setSku(assetTaggingDetails.getAsset());
 				assetStockDetailsVO.setSkuQty(1);
+				assetStockDetailsVO.setRfId(assetTaggingDetails.getRfId());
 				assetStockDetailsVO.setStockSource("");
 				assetStockDetailsVO.setSCode(savedAssetTaggingVO.getScode()); // Assuming getScode() returns the correct
-																				// value
+				assetStockDetailsVO.setSourceId(assetTaggingDetails.getId());															// value
 				assetStockDetailsVO.setScreen("Asset Tagging");
 				assetStockDetailsVO.setPm("P");
 				assetStockDetailsVO.setStockBranch("AI POOL");
@@ -1253,8 +1324,9 @@ public class MasterServiceImpl implements MasterService {
 
 	@Override
 	public Set<Object[]> getTagCodeByAsset(String assetcode, String asset, int startno, int endno) {
-
-		return assetTaggingRepo.getTagCodeByAsset(assetcode, asset, startno, endno);
+		
+		int finyr=assetTaggingRepo.getFinyr();
+		return assetTaggingRepo.getTagCodeByAsset(assetcode, asset, startno, endno,finyr);
 	}
 
 	@Override
