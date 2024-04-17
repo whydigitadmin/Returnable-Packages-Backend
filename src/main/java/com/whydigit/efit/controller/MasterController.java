@@ -505,7 +505,7 @@ public class MasterController extends BaseController {
 
 	@PutMapping("/customers")
 	public ResponseEntity<ResponseDTO> updateCustomers(@RequestBody CustomersDTO customersDTO) {
-		String methodName = "updateAssetGroup()";
+		String methodName = "updateCustomers()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();

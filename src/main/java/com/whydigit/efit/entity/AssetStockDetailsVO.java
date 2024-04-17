@@ -65,6 +65,13 @@ public class AssetStockDetailsVO {
 	private String stockSource;
 	@Column(name="binlocation",length=20)
 	private String binLocation;
+	@Column(name="rfid",length=100)
+	private String rfId;
+	@Column(name="sourceid",length=100)
+	private Long sourceId;
+	
+	
+	
 	      
 	
 	

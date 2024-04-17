@@ -18,7 +18,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "Vendorbankdetails")
+@Table(name = "Vendor3")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -27,7 +27,7 @@ public class VendorBankDetailsVO {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "vendorbankgen")
 	@SequenceGenerator(name = "vendorbankgen", sequenceName = "vendorbankseq", initialValue = 1000000001, allocationSize = 1)
-	@Column(name="vendorbankdetailsid")
+	@Column(name="vendor3")
 	private Long id;
 	
 	@Column(name="bank",length = 25)

@@ -101,7 +101,7 @@ public class PackingDetailVO {
 	@JsonBackReference
 	@OneToOne
 	@MapsId
-  @JoinColumn(name = "partstudyid")
+	@JoinColumn(name = "partstudyid")
 	private BasicDetailVO basicDetailVO;
 	@JsonManagedReference
 	@OneToMany(mappedBy = "packingDetailVO",cascade = CascadeType.ALL)

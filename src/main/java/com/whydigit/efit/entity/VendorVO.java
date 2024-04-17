@@ -30,7 +30,7 @@ public class VendorVO {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "vendorgen")
 	@SequenceGenerator(name = "vendorgen", sequenceName = "vendorseq", initialValue = 1000000001, allocationSize = 1)
-	@Column(name="vednorid")
+	@Column(name="vendorid")
 	private Long id;
 	
 	@Column(name="orgid")
