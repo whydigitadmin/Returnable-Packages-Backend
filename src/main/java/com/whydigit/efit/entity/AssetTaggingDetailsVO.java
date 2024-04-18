@@ -32,7 +32,7 @@ public class AssetTaggingDetailsVO {
 	@Column(name="orgid")
 	private Long orgId;
 	
-	@Column(name="rfid",length = 50)
+	@Column(name="rfid",length = 50,unique = true)
 	private String rfId;
 	
 	
@@ -47,7 +47,7 @@ public class AssetTaggingDetailsVO {
 	private String asset;
 	
 	
-	@Column(name = "tagcode",length = 30)
+	@Column(name = "tagcode",length = 30,unique = true)
 	private String tagCode;
 
 	@ManyToOne

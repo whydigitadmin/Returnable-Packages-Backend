@@ -1285,6 +1285,19 @@ public class MasterServiceImpl implements MasterService {
 		if (assetTaggingDTO.getTaggingDetailsDTO() != null) {
 
 			for (AssetTaggingDetailsDTO taggingDetailsDTO : assetTaggingDTO.getTaggingDetailsDTO()) {
+
+				boolean isRfidExists = assetTaggingDetailsRepo.existsByRfId(taggingDetailsDTO.getRfId());
+				boolean isTagCodeExists = assetTaggingDetailsRepo.existsByTagCode(taggingDetailsDTO.getTagCode());
+
+				// Check if RFID or Tag Code already exists
+				if (isRfidExists) {
+				    throw new RuntimeException("RFID " + taggingDetailsDTO.getRfId() + " already exists.");
+				}
+
+				if (isTagCodeExists) {
+				    throw new RuntimeException("Tag Code " + taggingDetailsDTO.getTagCode() + " already exists.");
+				}
+				
 				AssetTaggingDetailsVO assetTaggingDetails = new AssetTaggingDetailsVO();
 				assetTaggingDetails.setRfId(taggingDetailsDTO.getRfId());
 				assetTaggingDetails.setTaggingDocDd(assetTaggingVO.getDocid());
@@ -1310,11 +1323,13 @@ public class MasterServiceImpl implements MasterService {
 				assetStockDetailsVO.setSku(assetTaggingDetails.getAsset());
 				assetStockDetailsVO.setSkuQty(1);
 				assetStockDetailsVO.setRfId(assetTaggingDetails.getRfId());
+				assetStockDetailsVO.setTagCode(assetTaggingDetails.getTagCode());
 				assetStockDetailsVO.setStockSource("");
 				assetStockDetailsVO.setSCode(savedAssetTaggingVO.getScode()); // Assuming getScode() returns the correct
 				assetStockDetailsVO.setSourceId(assetTaggingDetails.getId());															// value
 				assetStockDetailsVO.setScreen("Asset Tagging");
 				assetStockDetailsVO.setPm("P");
+				assetStockDetailsVO.setFinyr(savedAssetTaggingVO.getFinyr());
 				assetStockDetailsVO.setStockBranch("AI POOL");
 				assetStockDetailsRepo.save(assetStockDetailsVO);
 			}

@@ -9,11 +9,13 @@ import java.util.Set;
 
 import org.springframework.stereotype.Service;
 
+import com.whydigit.efit.dto.BinAllotmentDTO;
 import com.whydigit.efit.dto.EmitterAddressDTO;
 import com.whydigit.efit.dto.InwardDTO;
 import com.whydigit.efit.dto.IssueRequestDTO;
 import com.whydigit.efit.dto.IssueRequestQtyApprovelDTO;
 import com.whydigit.efit.dto.OutwardKitDetailsDTO;
+import com.whydigit.efit.entity.BinAllotmentNewVO;
 import com.whydigit.efit.entity.EmitterInwardVO;
 import com.whydigit.efit.entity.EmitterOutwardVO;
 import com.whydigit.efit.entity.InwardVO;
@@ -87,6 +89,9 @@ public interface EmitterService {
 
 	// Avalible Kit Qty
 	
+	
+	// Bin Allotment
+	BinAllotmentNewVO createBinAllotment(BinAllotmentDTO allotmentDTO);
 	
 	
 	

@@ -27,6 +27,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.whydigit.efit.common.EmitterConstant;
+import com.whydigit.efit.dto.BinAllotmentDTO;
+import com.whydigit.efit.dto.BinAllotmentDetailsDTO;
 import com.whydigit.efit.dto.EmitterAddressDTO;
 import com.whydigit.efit.dto.InwardDTO;
 import com.whydigit.efit.dto.IssueItemDTO;
@@ -37,6 +39,8 @@ import com.whydigit.efit.dto.IssueRequestType;
 import com.whydigit.efit.dto.OutwardKitDetailsDTO;
 import com.whydigit.efit.dto.Role;
 import com.whydigit.efit.entity.AssetStockDetailsVO;
+import com.whydigit.efit.entity.BinAllotmentDetailsVO;
+import com.whydigit.efit.entity.BinAllotmentNewVO;
 import com.whydigit.efit.entity.CustomersVO;
 import com.whydigit.efit.entity.EmitterInwardVO;
 import com.whydigit.efit.entity.EmitterOutwardVO;
@@ -54,6 +58,8 @@ import com.whydigit.efit.entity.ReturnStockVO;
 import com.whydigit.efit.entity.VwEmitterInwardVO;
 import com.whydigit.efit.exception.ApplicationException;
 import com.whydigit.efit.repo.AssetStockDetailsRepo;
+import com.whydigit.efit.repo.BinAllotmentDetailsRepo;
+import com.whydigit.efit.repo.BinAllotmentNewRepo;
 import com.whydigit.efit.repo.BinAllotmentRepo;
 import com.whydigit.efit.repo.CustomersRepo;
 import com.whydigit.efit.repo.DmapDetailsRepo;
@@ -114,6 +120,12 @@ public class EmitterServiceImpl implements EmitterService {
 	
 	@Autowired
 	BinAllotmentRepo binAllotmentRepo;
+	
+	@Autowired
+	BinAllotmentNewRepo binAllotmentNewRepo;
+	
+	@Autowired
+	BinAllotmentDetailsRepo binAllotmentDetailsRepo;
 	
 	@Autowired
 	OutwardViewRepo outwardViewRepo;
@@ -622,6 +634,82 @@ public class EmitterServiceImpl implements EmitterService {
 		
 		return outwardKitDetailsRepo.save(outwardKitDetailVO);
 
+	}
+
+	@Override
+	public BinAllotmentNewVO createBinAllotment(BinAllotmentDTO binAllotmentDTO) {
+		
+		boolean isBinReqNoExist = binAllotmentNewRepo.existsByBinReqNo(binAllotmentDTO.getBinReqNo());
+		
+		if (isBinReqNoExist) {
+		    throw new RuntimeException("ReqNo " + binAllotmentDTO.getBinReqNo() + " already exists.");
+		}
+		
+		BinAllotmentNewVO binAllotmentNewVO=new BinAllotmentNewVO();
+		// Set Docid for Bin Allotment
+		int finyr = binAllotmentNewRepo.getFinyr();
+		String binallotment = finyr + "BA" + binAllotmentNewRepo.finddocid();
+		binAllotmentNewVO.setDocId(binallotment);
+		binAllotmentNewRepo.nextDocseq();
+		
+		binAllotmentNewVO.setDocDate(binAllotmentDTO.getDocDate());
+		binAllotmentNewVO.setBinReqNo(binAllotmentDTO.getBinReqNo());
+		binAllotmentNewVO.setBinReqDate(binAllotmentDTO.getBinReqDate());
+		binAllotmentNewVO.setCreatedBy(binAllotmentDTO.getCreatedby());
+		binAllotmentNewVO.setModifiedBy(binAllotmentDTO.getCreatedby());
+		binAllotmentNewVO.setOrgId(binAllotmentDTO.getOrgId());
+		binAllotmentNewVO.setEmitterId(binAllotmentDTO.getEmitterId());
+		CustomersVO customer=customersRepo.findById(binAllotmentDTO.getEmitterId()).get();
+		binAllotmentNewVO.setEmitter(customer.getEntityLegalName());
+		binAllotmentNewVO.setPartName(binAllotmentDTO.getPartName());
+		binAllotmentNewVO.setPartCode(binAllotmentDTO.getPartCode());
+		binAllotmentNewVO.setStockBranch(binAllotmentDTO.getStockBranch());
+		binAllotmentNewVO.setKitCode(binAllotmentDTO.getKitCode());
+		binAllotmentNewVO.setReqKitQty(binAllotmentDTO.getReqKitQty());
+		binAllotmentNewVO.setAvlKitQty(binAllotmentDTO.getAvlKitQty());
+		binAllotmentNewVO.setAllotkKitQty(binAllotmentDTO.getAllotKitQty());
+		
+		List<BinAllotmentDetailsVO>binAllotmentDetailsVO=new ArrayList<>();
+		if(binAllotmentDTO.getBinAllotmentDetailsDTO()!=null)
+		{
+			for(BinAllotmentDetailsDTO binAllotmentDetailsDTO: binAllotmentDTO.getBinAllotmentDetailsDTO())
+			{
+				BinAllotmentDetailsVO binAllotmentDetails=new BinAllotmentDetailsVO();
+				binAllotmentDetails.setRfId(binAllotmentDetailsDTO.getRfId());
+				binAllotmentDetails.setTagCode(binAllotmentDetailsDTO.getTagCode());
+				binAllotmentDetails.setAssetCode(binAllotmentDetailsDTO.getAssetCode());
+				binAllotmentDetails.setAsset(binAllotmentDetailsDTO.getAsset());
+				binAllotmentDetails.setQty(binAllotmentDetailsDTO.getQty());
+				binAllotmentDetails.setBinAllotmentNewVO(binAllotmentNewVO);
+				binAllotmentDetailsVO.add(binAllotmentDetails);
+			}
+		}
+		binAllotmentNewVO.setBinAllotmentDetailsVO(binAllotmentDetailsVO);
+		BinAllotmentNewVO allotmentNewVO=binAllotmentNewRepo.save(binAllotmentNewVO);
+		List<BinAllotmentDetailsVO>allotmentDetailsVO=allotmentNewVO.getBinAllotmentDetailsVO();
+		if(allotmentDetailsVO!=null && ! allotmentDetailsVO.isEmpty())
+		{
+			for(BinAllotmentDetailsVO allotmentDetailsVO2:allotmentDetailsVO) {
+				AssetStockDetailsVO assetStockDetailsVO = new AssetStockDetailsVO();
+				assetStockDetailsVO.setStockRef(allotmentNewVO.getDocId());
+				assetStockDetailsVO.setStockDate(allotmentNewVO.getDocDate());
+				assetStockDetailsVO.setSkuCode(allotmentDetailsVO2.getAssetCode());
+				assetStockDetailsVO.setSku(allotmentDetailsVO2.getAsset());
+				assetStockDetailsVO.setSkuQty(-1);
+				assetStockDetailsVO.setRfId(allotmentDetailsVO2.getRfId());
+				assetStockDetailsVO.setTagCode(allotmentDetailsVO2.getTagCode());
+				assetStockDetailsVO.setStockSource("");
+				assetStockDetailsVO.setSCode(allotmentNewVO.getScode()); // Assuming getScode() returns the correct
+				assetStockDetailsVO.setSourceId(allotmentDetailsVO2.getId());															// value
+				assetStockDetailsVO.setScreen("BIN ALLOTMENT");
+				assetStockDetailsVO.setPm("M");
+				assetStockDetailsVO.setFinyr(allotmentNewVO.getFinyr());
+				assetStockDetailsVO.setStockBranch(allotmentNewVO.getStockBranch());
+				assetStockDetailsRepo.save(assetStockDetailsVO);
+			}
+		}
+		return binAllotmentNewVO;
+		
 	}
 	
 //	@Override

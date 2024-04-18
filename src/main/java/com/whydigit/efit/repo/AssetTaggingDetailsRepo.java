@@ -6,4 +6,8 @@ import com.whydigit.efit.entity.AssetTaggingDetailsVO;
 
 public interface AssetTaggingDetailsRepo extends JpaRepository<AssetTaggingDetailsVO, Long> {
 
+	boolean existsByRfId(String rfId);
+
+	boolean existsByTagCode(String tagCode);
+
 }

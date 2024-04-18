@@ -61,6 +61,8 @@ public class AssetStockDetailsVO {
 	private String pm;
 	@Column(name="screen",length=20)
 	private String screen;
+	@Column(name="tagcode",length=30)
+	private String tagCode;
 	@Column(name="stocksource",length=20) 
 	private String stockSource;
 	@Column(name="binlocation",length=20)
@@ -69,6 +71,8 @@ public class AssetStockDetailsVO {
 	private String rfId;
 	@Column(name="sourceid",length=100)
 	private Long sourceId;
+	@Column(name="finyr")
+	private String finyr;
 	
 	
 	
