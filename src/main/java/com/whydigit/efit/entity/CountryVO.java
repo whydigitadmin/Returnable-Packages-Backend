@@ -26,7 +26,7 @@ public class CountryVO {
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "countryseqgen")
     @SequenceGenerator(name = "countryseqgen", sequenceName = "seqname", initialValue = 1000000001, allocationSize = 1)
 	@Column(name="countryid")
-	private int id;
+	private Long id;
 	
 	@Column(name="code")
 	private String countryCode;

@@ -13,6 +13,7 @@ import com.whydigit.efit.entity.EmployeeVO;
 import com.whydigit.efit.entity.FinancialYearVO;
 import com.whydigit.efit.entity.LocalCurrencyVO;
 import com.whydigit.efit.entity.StateVO;
+import com.whydigit.efit.exception.ApplicationException;
 import com.whydigit.efit.repo.CityRepo;
 import com.whydigit.efit.repo.CountryRepo;
 import com.whydigit.efit.repo.CurrencyMasterRepo;
@@ -26,8 +27,6 @@ public class BasicMasterServiceImpl implements BasicMasterService {
 
 	@Autowired
 	private LocalCurrencyRepo localCurrencyRepo;
-	
-	
 
 	@Autowired
 	private CountryRepo countryRepo;
@@ -43,7 +42,7 @@ public class BasicMasterServiceImpl implements BasicMasterService {
 
 	@Autowired
 	private FinancialRepo financialRepo;
-	
+
 	@Autowired
 	private CurrencyMasterRepo currencyMasterRepo;
 
@@ -75,9 +74,6 @@ public class BasicMasterServiceImpl implements BasicMasterService {
 	public void deleteLocalCurrency(int id) {
 		localCurrencyRepo.deleteById(id);
 	}
-	
-	
-	
 
 	@Override
 	public List<CountryVO> getAllgetAllcountries() {
@@ -85,25 +81,50 @@ public class BasicMasterServiceImpl implements BasicMasterService {
 	}
 
 	@Override
-	public Optional<CountryVO> getCountryById(int id) {
+	public Optional<CountryVO> getCountryById(Long id) {
 		return countryRepo.findById(id);
 	}
-	
+
 	@Override
 	public List<CountryVO> getAllCountryByOrgId(Long orgId) {
 		return countryRepo.findAllByOrgId(orgId);
 	}
 
 	@Override
-	public CountryVO createCountry(CountryVO countryVO) {
-		countryVO.setDupchk(countryVO.getOrgId()+countryVO.getCountry()+countryVO.getCountryCode());
+	public CountryVO createCountry(CountryVO countryVO) throws ApplicationException {
+
+		if (countryRepo.existsByCountryAndCountryCodeAndOrgId(countryVO.getCountry(), countryVO.getCountryCode(),
+				countryVO.getOrgId())) {
+			throw new ApplicationException("A Country And CountryCode already exists for this organization.");
+		}
+		// Check if a country with the same name or code already exists for the same
+		// orgId
+		if (countryRepo.existsByCountryAndOrgId(countryVO.getCountry(), countryVO.getOrgId())) {
+			throw new ApplicationException("A Country already exists for this organization");
+		}
+
+		if (countryRepo.existsByCountryCodeAndOrgId(countryVO.getCountryCode(), countryVO.getOrgId())) {
+			throw new ApplicationException("A CountryCode already exists for this organization.");
+		}
 		return countryRepo.save(countryVO);
 	}
 
 	@Override
-	public Optional<CountryVO> updateCountry(CountryVO countryVO) {
+	public Optional<CountryVO> updateCountry(CountryVO countryVO) throws ApplicationException {
 		if (countryRepo.existsById(countryVO.getId())) {
-			countryVO.setDupchk(countryVO.getOrgId()+countryVO.getCountry()+countryVO.getCountryCode());
+			if (countryRepo.existsByCountryAndCountryCodeAndOrgId(countryVO.getCountry(), countryVO.getCountryCode(),
+					countryVO.getOrgId())) {
+				throw new ApplicationException("A Country And CountryCode already exists for this organization.");
+			}
+			// Check if a country with the same name or code already exists for the same
+			// orgId
+			if (countryRepo.existsByCountryAndOrgId(countryVO.getCountry(), countryVO.getOrgId())) {
+				throw new ApplicationException("A Country already exists for this organization");
+			}
+
+			if (countryRepo.existsByCountryCodeAndOrgId(countryVO.getCountryCode(), countryVO.getOrgId())) {
+				throw new ApplicationException("A CountryCode already exists for this organization.");
+			}
 			return Optional.of(countryRepo.save(countryVO));
 		} else {
 			return Optional.empty();
@@ -111,10 +132,9 @@ public class BasicMasterServiceImpl implements BasicMasterService {
 	}
 
 	@Override
-	public void deleteCountry(int id) {
+	public void deleteCountry(Long id) {
 		countryRepo.deleteById(id);
 	}
-
 
 //	state
 
@@ -122,10 +142,10 @@ public class BasicMasterServiceImpl implements BasicMasterService {
 	public List<StateVO> getAllgetAllStates() {
 		return stateRepo.findAll();
 	}
-	
+
 	@Override
-	public List<StateVO> getAllStatesByCountry(String Country,Long orgId) {
-		return stateRepo.findAllStateByCountryAndOrgId(Country,orgId);
+	public List<StateVO> getAllStatesByCountry(String Country, Long orgId) {
+		return stateRepo.findAllStateByCountryAndOrgId(Country, orgId);
 	}
 
 	@Override
@@ -134,15 +154,42 @@ public class BasicMasterServiceImpl implements BasicMasterService {
 	}
 
 	@Override
-	public StateVO createState(StateVO stateVO) {
-		stateVO.setDupchk(stateVO.getOrgId()+ stateVO.getStateName()+stateVO.getStateCode());
+	public StateVO createState(StateVO stateVO) throws ApplicationException {
+		// Check if a state with the same name or code already exists for the same
+		// country and region
+		if (stateRepo.existsByStateNameAndStateCodeAndCountryAndOrgId(stateVO.getStateName(), stateVO.getStateCode(),
+				stateVO.getCountry(), stateVO.getOrgId())) {
+			throw new ApplicationException("A StateName and StateCode  already exists for this country");
+		}
+		if (stateRepo.existsByStateNameAndCountryAndOrgId(stateVO.getStateName(), stateVO.getCountry(),
+				stateVO.getOrgId())) {
+			throw new ApplicationException("A StateName already exists for this country and region.");
+		}
+
+		if (stateRepo.existsByStateCodeAndCountryAndOrgId(stateVO.getStateCode(), stateVO.getCountry(),
+				stateVO.getOrgId())) {
+			throw new ApplicationException("A StateCode already exists for this country and region.");
+		}
 		return stateRepo.save(stateVO);
 	}
 
 	@Override
-	public Optional<StateVO> updateState(StateVO stateVO) {
+	public Optional<StateVO> updateState(StateVO stateVO) throws ApplicationException {
 		if (stateRepo.existsById(stateVO.getId())) {
-			stateVO.setDupchk(stateVO.getOrgId()+ stateVO.getStateName()+stateVO.getStateCode());
+			if (stateRepo.existsByStateNameAndStateCodeAndCountryAndOrgId(stateVO.getStateName(),
+					stateVO.getStateCode(), stateVO.getCountry(), stateVO.getOrgId())) {
+				throw new ApplicationException(
+						"A StateName and StateCode  already exists for this country and region.");
+			}
+			if (stateRepo.existsByStateNameAndCountryAndOrgId(stateVO.getStateName(), stateVO.getCountry(),
+					stateVO.getOrgId())) {
+				throw new ApplicationException("A StateName already exists for this country and region.");
+			}
+
+			if (stateRepo.existsByStateCodeAndCountryAndOrgId(stateVO.getStateCode(), stateVO.getCountry(),
+					stateVO.getOrgId())) {
+				throw new ApplicationException("A StateCode already exists for this country and region.");
+			}
 			return Optional.of(stateRepo.save(stateVO));
 		} else {
 			return Optional.empty();
@@ -153,8 +200,6 @@ public class BasicMasterServiceImpl implements BasicMasterService {
 	public void deleteState(Long id) {
 		stateRepo.deleteById(id);
 	}
-
-
 
 //	city
 
@@ -167,21 +212,46 @@ public class BasicMasterServiceImpl implements BasicMasterService {
 	public Optional<CityVO> getCityById(Long id) {
 		return cityRepo.findById(id);
 	}
-	
+
 	@Override
 	public List<CityVO> getAllCitiesByStateAndCountry(String state, String country, Long orgId) {
-		
-		return cityRepo.findAllByStateAndCountryAndOrgId(state,country,orgId);
+
+		return cityRepo.findAllByStateAndCountryAndOrgId(state, country, orgId);
 	}
 
 	@Override
-	public CityVO createCity(CityVO cityVO) {
+	public CityVO createCity(CityVO cityVO) throws ApplicationException {
+
+		// Check if a city with the same name or code already exists for the same
+		// country and state
+		if (cityRepo.existsByCityNameAndCityCodeAndCountryAndStateAndOrgId(cityVO.getCityName(), cityVO.getCityCode(),cityVO.getCountry(), cityVO.getState(),cityVO.getOrgId())) {
+			throw new ApplicationException("A CityName and CityCode already exists for this country and state.");
+		}
+		if (cityRepo.existsByCityNameAndCountryAndStateAndOrgId(cityVO.getCityName(), cityVO.getCountry(), cityVO.getState(),cityVO.getOrgId())) {
+			throw new ApplicationException("A CityName already exists for this country and state.");
+		}
+
+		if (cityRepo.existsByCityCodeAndCountryAndStateAndOrgId(cityVO.getCityCode(), cityVO.getCountry(), cityVO.getState(),cityVO.getOrgId())) {
+			throw new ApplicationException("A CityCode already exists for this country and state.");
+		}
 		return cityRepo.save(cityVO);
 	}
 
 	@Override
-	public Optional<CityVO> updateCity(CityVO cityVO) {
+	public Optional<CityVO> updateCity(CityVO cityVO) throws ApplicationException {
 		if (cityRepo.existsById(cityVO.getCityid())) {
+			// Check if a city with the same name or code already exists for the same
+			// country and state
+			if (cityRepo.existsByCityNameAndCityCodeAndCountryAndStateAndOrgId(cityVO.getCityName(), cityVO.getCityCode(),cityVO.getCountry(), cityVO.getState(),cityVO.getOrgId())) {
+				throw new ApplicationException("A city and CityCode already exists for this country and state.");
+			}
+			if (cityRepo.existsByCityCodeAndCountryAndStateAndOrgId(cityVO.getCityName(), cityVO.getCountry(), cityVO.getState(),cityVO.getOrgId())) {
+				throw new ApplicationException("A CityCode already exists for this country and state.");
+			}
+
+			if (cityRepo.existsByCityCodeAndCountryAndStateAndOrgId(cityVO.getCityCode(), cityVO.getCountry(), cityVO.getState(),cityVO.getOrgId())) {
+				throw new ApplicationException("A CityName already exists for this country and state.");
+			}
 			return Optional.of(cityRepo.save(cityVO));
 		} else {
 			return Optional.empty();
@@ -192,7 +262,6 @@ public class BasicMasterServiceImpl implements BasicMasterService {
 	public void deleteCity(Long id) {
 		cityRepo.deleteById(id);
 	}
-
 
 //	employee
 
@@ -255,8 +324,7 @@ public class BasicMasterServiceImpl implements BasicMasterService {
 	public void deleteFinancialYear(int id) {
 		financialRepo.deleteById(id);
 	}
-	
-	
+
 //	currencyMaster
 
 	@Override
@@ -287,9 +355,5 @@ public class BasicMasterServiceImpl implements BasicMasterService {
 	public void deleteCurrencyMaster(int id) {
 		currencyMasterRepo.deleteById(id);
 	}
-
-	
-
-	
 
 }

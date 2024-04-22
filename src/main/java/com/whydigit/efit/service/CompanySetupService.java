@@ -25,7 +25,6 @@ public interface CompanySetupService {
 
 	BranchVO createBranch(BranchDTO branchDTO) throws ApplicationException;
 
-	
 
 	void deleteBranch(Long id);
 

@@ -130,13 +130,13 @@ public interface MasterService {
 
 	List<UnitVO> getAllUnit(Long orgId);
 
-	Optional<UnitVO> getUnitById(int id);
+	Optional<UnitVO> getUnitById(Long id);
 
-	UnitVO createUnit(UnitVO unitVO);
+	UnitVO createUnit(UnitVO unitVO) throws ApplicationException;
 
-	Optional<UnitVO> updateUnit(UnitVO unitVO);
+	Optional<UnitVO> updateUnit(UnitVO unitVO) throws ApplicationException;
 
-	void deleteUnit(int id);
+	void deleteUnit(Long id);
 
 	// Create Kit
 	List<KitResponseDTO> getAllKit(Long orgId);
@@ -250,6 +250,8 @@ public interface MasterService {
 	String uploadFileProofOfDelivery(MultipartFile file, String docId, String refNo);
 
 	List<ProofOfDeliveryVO> getAllProofOfDelivery(Long orgId);
+
+
 
 
 
