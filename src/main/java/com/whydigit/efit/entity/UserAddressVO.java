@@ -29,7 +29,9 @@ public class UserAddressVO {
 	private String country;
 	private String state;
 	private String pin;
-    @Embedded
+	private String city;
+
+	@Embedded
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
 
 }

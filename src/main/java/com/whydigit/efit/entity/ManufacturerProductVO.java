@@ -28,6 +28,7 @@ public class ManufacturerProductVO {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	private long orgId;
+	private String assetCodeId;
 	private String assetCategory;
 	private String assetName;
 	private String brand;
@@ -37,10 +38,10 @@ public class ManufacturerProductVO {
 	private String maintananceFrequency;
 	private String notes;
 	private boolean active;
-//	@ManyToOne
-//	@JsonBackReference
-//	@JoinColumn(name="manufacture_id")
-//	private ManufacturerVO manufacturerVO;
+	@ManyToOne
+	@JsonBackReference
+	@JoinColumn(name="manufacturer_id")
+	private ManufacturerVO manufacturerVO;
 	
 	
 	

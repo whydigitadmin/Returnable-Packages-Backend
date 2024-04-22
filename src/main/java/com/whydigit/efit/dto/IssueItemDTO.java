@@ -9,9 +9,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class IssueItemDTO {
 
-	private String kitNo;
+	private String kitName;
 	private int kitQty;
 	private String partNo;
+	private String partName;
 	private int partQty;
 	private int issueItemStatus;
 	private String remark;

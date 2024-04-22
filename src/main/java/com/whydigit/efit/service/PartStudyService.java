@@ -1,32 +1,41 @@
 package com.whydigit.efit.service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
+import org.springframework.web.multipart.MultipartFile;
+
+import com.whydigit.efit.dto.BasicDetailDTO;
+import com.whydigit.efit.dto.LogisticsDTO;
+import com.whydigit.efit.dto.PDAttachmentType;
+import com.whydigit.efit.dto.PackingDetailDTO;
+import com.whydigit.efit.dto.StockDetailDTO;
 import com.whydigit.efit.entity.BasicDetailVO;
 import com.whydigit.efit.entity.LogisticsVO;
 import com.whydigit.efit.entity.PackingDetailVO;
 import com.whydigit.efit.entity.StockDetailVO;
+import com.whydigit.efit.exception.ApplicationException;
 
 public interface PartStudyService {
 
 	List<BasicDetailVO> getAllBasicDetail(Long orgId);
 
-	Optional<BasicDetailVO> getBasicDetailById(Long id);
+	BasicDetailVO getBasicDetailById(Long id) throws ApplicationException;
 
-	BasicDetailVO createBasicDetail(BasicDetailVO basicDetailVO);
+	BasicDetailVO createBasicDetail(BasicDetailDTO basicDetailDTO);
 
-	Optional<BasicDetailVO> updateBasicDetail(BasicDetailVO basicDetailVO);
+	BasicDetailVO updateBasicDetail(BasicDetailDTO basicDetailDTO) throws ApplicationException;
 
 	void deleteBasicDetail(Long id);
 
 	List<PackingDetailVO> getAllpackingDetail(Long orgId);
 
-	Optional<PackingDetailVO> getPackingDetailById(Long id);
+	PackingDetailVO getPackingDetailById(Long id) throws ApplicationException;
 
 	PackingDetailVO createPackingDetail(PackingDetailVO packingDetailVO);
 
-	Optional<PackingDetailVO> updatePackingDetail(PackingDetailVO packingDetailVO);
+	PackingDetailVO updatePackingDetail(PackingDetailDTO packingDetailDTO) throws ApplicationException;
 
 	void deletePackingDetail(Long id);
 
@@ -36,7 +45,7 @@ public interface PartStudyService {
 
 	LogisticsVO createLogistics(LogisticsVO logisticsVO);
 
-	Optional<LogisticsVO> updateLogistics(LogisticsVO logisticsVO);
+	LogisticsVO updateLogistics(LogisticsDTO logisticsDTO) throws ApplicationException;
 
 	void deleteLogistics(Long id);
 
@@ -46,8 +55,14 @@ public interface PartStudyService {
 
 	StockDetailVO createStockDetail(StockDetailVO stockDetailVO);
 
-	Optional<StockDetailVO> updateStockDetail(StockDetailVO stockDetailVO);
+	StockDetailVO updateStockDetail(StockDetailDTO stockDetailDTO) throws ApplicationException;
 
 	void deleteStockDetail(Long id);
+
+	boolean generatePartStudyId(String refPsId);
+
+	 Map<String, Object> searchPartStudy(Long emitterId, Long refPsId, Long orgId, String partName,String partNumber);
+
+	void saveAttachments(MultipartFile[] files, PDAttachmentType type, Long refPsId) throws ApplicationException;
 
 }

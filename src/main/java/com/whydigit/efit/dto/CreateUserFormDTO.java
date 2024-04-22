@@ -12,14 +12,19 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CreateUserFormDTO {
-	
+
 	@NotBlank(message = "First Name is required")
 	private String firstName;
-
+	private Long userId;
 	private String lastName;
-
+	private Long emitterId;
 	private String userName;
-	
+	private Long[] accessaddId;
+	private Long[] accessWarehouse;
+	private Long[] accessFlowId;
+	private Long pNo;
+	private boolean isActive;
+
 	@NotBlank(message = "Email is required")
 	@Size(max = 30)
 	@Email
@@ -28,12 +33,12 @@ public class CreateUserFormDTO {
 	@NotBlank
 	@Size(min = 6, max = 100, message = "Password is required")
 	private String password;
-	
+
 	private Role role;
 
 	private long orgId;
 
 	private UserAddressDTO userAddressDTO;
-	
+
 	private long accessRightsRoleId;
 }

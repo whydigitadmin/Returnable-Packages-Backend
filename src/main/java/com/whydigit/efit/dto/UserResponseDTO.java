@@ -1,9 +1,7 @@
 package com.whydigit.efit.dto;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 
-import javax.persistence.Embedded;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 
@@ -28,12 +26,10 @@ public class UserResponseDTO {
 	private boolean isActive;
 	@Enumerated(EnumType.STRING)
 	private Role role;
-	@Embedded
-	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
 	private Date accountRemovedDate;
 	private String token;
 	private String tokenId;
-	private LocalDateTime lastLogin;
+	private String lastLogin;
 	private AccessRightsVO accessRightsVO;
 	private UserAddressVO userAddressVO;
 }

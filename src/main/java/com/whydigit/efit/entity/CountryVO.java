@@ -1,10 +1,12 @@
 package com.whydigit.efit.entity;
 
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.whydigit.efit.dto.CreatedUpdatedDate;
@@ -14,18 +16,46 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "cm_country")
+@Table(name = "country")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class CountryVO {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "countryseqgen")
+    @SequenceGenerator(name = "countryseqgen", sequenceName = "seqname", initialValue = 1000000001, allocationSize = 1)
+	@Column(name="countryid")
 	private int id;
+	
+	@Column(name="code")
 	private String countryCode;
+	
+	@Column(name="country")
 	private String country;
-    private boolean active;
+	
+	@Column(name = "active")
+	private boolean active;
+
+	@Column(name = "cancel")
+	private boolean cancel;
+
+	@Column(name = "createdby")
+	private String createdBy;
+
+	@Column(name = "modifiedby")
+	private String modifiedBy;
+
+	@Column(name = "cancelremarks")
+	private String cancelRemarks;
+	
+	@Column(name="orgid")
+	private Long orgId;
+	
+	@Column(name="dupchk",unique = true)
+	private String dupchk;
+	
+	
     @Embedded
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
 }

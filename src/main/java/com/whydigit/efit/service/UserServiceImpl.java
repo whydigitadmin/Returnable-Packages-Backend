@@ -123,7 +123,6 @@ public class UserServiceImpl implements UserService {
 		userDTO.setLoginStatus(userVO.isLoginStatus());
 		userDTO.setActive(userVO.isActive());
 		userDTO.setRole(userVO.getRole());
-		userDTO.setCommonDate(userVO.getCommonDate());
 		userDTO.setAccountRemovedDate(userVO.getAccountRemovedDate());
 		return userDTO;
 	}

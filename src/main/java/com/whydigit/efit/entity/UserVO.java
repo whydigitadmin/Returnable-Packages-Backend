@@ -1,6 +1,5 @@
 package com.whydigit.efit.entity;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 
 import javax.persistence.Embedded;
@@ -40,8 +39,12 @@ public class UserVO {
 	private String userName;
 	private String password;
 	private boolean loginStatus;
+	private String accessaddId;
+	private String accessWarehouse;
+	private String accessFlowId;
+	private Long pNo;
 	private boolean isActive;
-	private LocalDateTime lastLogin;
+	private String lastLogin;
 	@Enumerated(EnumType.STRING)
 	private Role role;
 	private long accessRightsRoleId;
@@ -54,4 +57,10 @@ public class UserVO {
 	@Embedded
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
 	private Date accountRemovedDate;
+	@ManyToOne
+	@JoinColumn(name = "emitter_id")
+	private CustomersVO customersVO;
+
+	
+	
 }

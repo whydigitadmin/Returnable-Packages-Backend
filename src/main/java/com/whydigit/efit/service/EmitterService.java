@@ -3,16 +3,26 @@ package com.whydigit.efit.service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.stereotype.Service;
 
+import com.whydigit.efit.dto.BinAllotmentDTO;
 import com.whydigit.efit.dto.EmitterAddressDTO;
+import com.whydigit.efit.dto.InwardDTO;
 import com.whydigit.efit.dto.IssueRequestDTO;
 import com.whydigit.efit.dto.IssueRequestQtyApprovelDTO;
+import com.whydigit.efit.dto.OutwardKitDetailsDTO;
+import com.whydigit.efit.entity.BinAllotmentNewVO;
 import com.whydigit.efit.entity.EmitterInwardVO;
 import com.whydigit.efit.entity.EmitterOutwardVO;
+import com.whydigit.efit.entity.InwardVO;
 import com.whydigit.efit.entity.IssueRequestVO;
+import com.whydigit.efit.entity.OutwardKitDetailsVO;
+import com.whydigit.efit.entity.OutwardView;
+import com.whydigit.efit.entity.VwEmitterInwardVO;
 import com.whydigit.efit.exception.ApplicationException;
 
 @Service
@@ -20,7 +30,8 @@ public interface EmitterService {
 
 	IssueRequestVO createIssueRequest(IssueRequestDTO issueRequestDTO) throws ApplicationException;
 
-	public List<IssueRequestVO> getIssueRequest(Long emitterId, Long orgId, LocalDate startDate, LocalDate endDate);
+//	public List<IssueRequestVO> getIssueRequest(Long emitterId, Long orgId, LocalDate startDate, LocalDate endDate,
+//			Long warehouseLocationId, String warehouseLocation);
 
 	List<EmitterAddressDTO> getEmitterAddress(Long orgId);
 
@@ -31,21 +42,58 @@ public interface EmitterService {
 
 	EmitterInwardVO createEmitterInward(EmitterInwardVO emitterInwardVO);
 
-	Optional<EmitterInwardVO> updateEmitterInward(EmitterInwardVO emitterInwardVO);
-
 	void deleteEmitterInward(int id);
 
 	// emitter outward
 	List<EmitterOutwardVO> getAllEmitterOutward(Long orgId);
 
-	Optional<EmitterOutwardVO> getEmitterOutwardById(int id);
+	Optional<EmitterOutwardVO> getEmitterOutwardById(long id);
 
 	EmitterOutwardVO createEmitterOutward(EmitterOutwardVO emitterOutwardVO);
 
 	Optional<EmitterOutwardVO> updateEmitterOutward(EmitterOutwardVO emitterOutwardVO);
 
-	void deleteEmitterOutward(int id);
+	void deleteEmitterOutward(long id);
 
 	IssueRequestVO issueRequestQtyApprovel(IssueRequestQtyApprovelDTO issueRequestQtyApprovelDTO) throws ApplicationException;
+
+	void cancelIssueRequest(Long issueRequestId, Long issueRequestItemId) throws ApplicationException;
+
+	InwardVO updateEmitterInward(InwardDTO inwardDTO) throws ApplicationException;
+
+	List<VwEmitterInwardVO> getVwEmtInwardByOrgIdAndEmtId(Long orgId, Long emitterId);
+
+	List<VwEmitterInwardVO> getVwEmtInwardByOrgIdAndEmtIdAndFlow(Long orgId, Long emitterId, Long flowid);
+
+	List<VwEmitterInwardVO> getVwEmtInwardByOrgIdAndWarehouse(Long orgId, Long warehouseid);
+
+	Map<String, Object> getAllViewEmitterInward(Long orgId,Long emitterId, Long flowId,
+			Long warehouseLocationId);
+	
+	Set<Object[]>getEmitterByWarehouseId(Long orgId,Long warehouseId);
+
+	Map<String, Object> getAllMaxPartQtyPerKit(Long orgId, Long emitterId, Long flowId, String partNumber);
+
+	List<IssueRequestVO> getIssueRequest(Long emitterId, String warehouseLocation, Long orgId, LocalDate startDate,
+			LocalDate endDate, Long warehouseLoacationId);
+
+	List<OutwardView> getAllEmitterOutwardView(Long orgId, Long flowId);
+
+	OutwardKitDetailsVO updateOutwardKitQty(OutwardKitDetailsDTO outwardKitDetailsDTO) throws ApplicationException;
+
+	
+	//get Issue request
+	
+//	List<BinAllotmentVO> getBinRequest(Long emitterId, String warehouseLocation, Long orgId, LocalDate startDate,
+//			LocalDate endDate, Long warehouseLoacationId);
+
+	// Avalible Kit Qty
+	
+	
+	// Bin Allotment
+	BinAllotmentNewVO createBinAllotment(BinAllotmentDTO allotmentDTO);
+	
+	
+	
 
 }

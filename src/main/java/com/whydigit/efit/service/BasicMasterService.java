@@ -6,7 +6,6 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import com.whydigit.efit.entity.CityVO;
-import com.whydigit.efit.entity.CountryListVO;
 import com.whydigit.efit.entity.CountryVO;
 import com.whydigit.efit.entity.CurrencyMasterVO;
 import com.whydigit.efit.entity.EmployeeVO;
@@ -27,19 +26,13 @@ public interface BasicMasterService {
 
 	void deleteLocalCurrency(int id);
 	
-	List<CountryListVO> getAllCountryList();
-
-	Optional<CountryListVO> getCountryListById(int id);
-
-	CountryListVO createCountryList(CountryListVO countryListVO);
-
-	Optional<CountryListVO> updateCountryList(CountryListVO countryListVO);
-
-	void deleteCountryList(int id);
+	
 
 	List<CountryVO> getAllgetAllcountries();
 
 	Optional<CountryVO> getCountryById(int id);
+	
+	List<CountryVO> getAllCountryByOrgId(Long orgId);
 
 	CountryVO createCountry(CountryVO countryVO);
 
@@ -50,24 +43,28 @@ public interface BasicMasterService {
 
 	List<StateVO> getAllgetAllStates();
 
-	Optional<StateVO> getStateById(int id);
+	Optional<StateVO> getStateById(Long id);
+	
+	List<StateVO> getAllStatesByCountry(String Country,Long orgId);
 
 	StateVO createState(StateVO stateVO);
 
 	Optional<StateVO> updateState(StateVO stateVO);
 
-	void deleteState(int id);
+	void deleteState(Long id);
 
 
 	List<CityVO> getAllgetAllCities();
 
-	Optional<CityVO> getCityById(int id);
+	Optional<CityVO> getCityById(Long id);
+	
+	List<CityVO> getAllCitiesByStateAndCountry(String state, String country, Long orgId);
 
 	CityVO createCity(CityVO cityVO);
 
 	Optional<CityVO> updateCity(CityVO cityVO);
 
-	void deleteCity(int id);
+	void deleteCity(Long id);
 
 
 
@@ -102,6 +99,12 @@ public interface BasicMasterService {
 	Optional<CurrencyMasterVO> updateCurrencyMaster(CurrencyMasterVO currencyMasterVO);
 
 	void deleteCurrencyMaster(int id);
+
+	
+
+	
+
+	
 
 
 

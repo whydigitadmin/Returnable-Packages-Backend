@@ -1,5 +1,7 @@
 package com.whydigit.efit.dto;
+
 import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,9 +12,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class KitDTO {
-	private String id;
+	private String kitCode;
 	private long orgId;
-	private String partId;
-	private String partQty;
+	private int partQuantity;
 	private List<KitAssetDTO> kitAssetDTO;
 }

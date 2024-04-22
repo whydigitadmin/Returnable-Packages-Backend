@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.whydigit.efit.entity.CityVO;
-import com.whydigit.efit.entity.CountryListVO;
 import com.whydigit.efit.entity.CountryVO;
 import com.whydigit.efit.entity.CurrencyMasterVO;
 import com.whydigit.efit.entity.EmployeeVO;
@@ -15,7 +14,6 @@ import com.whydigit.efit.entity.FinancialYearVO;
 import com.whydigit.efit.entity.LocalCurrencyVO;
 import com.whydigit.efit.entity.StateVO;
 import com.whydigit.efit.repo.CityRepo;
-import com.whydigit.efit.repo.CountryListRepo;
 import com.whydigit.efit.repo.CountryRepo;
 import com.whydigit.efit.repo.CurrencyMasterRepo;
 import com.whydigit.efit.repo.EmployeeRepo;
@@ -29,8 +27,7 @@ public class BasicMasterServiceImpl implements BasicMasterService {
 	@Autowired
 	private LocalCurrencyRepo localCurrencyRepo;
 	
-	@Autowired
-	private CountryListRepo countryListRepo;
+	
 
 	@Autowired
 	private CountryRepo countryRepo;
@@ -80,34 +77,7 @@ public class BasicMasterServiceImpl implements BasicMasterService {
 	}
 	
 	
-	@Override
-	public List<CountryListVO> getAllCountryList() {
-		return countryListRepo.findAll();
-	}
-
-	@Override
-	public Optional<CountryListVO> getCountryListById(int id) {
-		return countryListRepo.findById(id);
-	}
-
-	@Override
-	public CountryListVO createCountryList(CountryListVO countryListVO) {
-		return countryListRepo.save(countryListVO);
-	}
-
-	@Override
-	public Optional<CountryListVO> updateCountryList(CountryListVO countryListVO) {
-		if (countryListRepo.existsById(countryListVO.getId())) {
-			return Optional.of(countryListRepo.save(countryListVO));
-		} else {
-			return Optional.empty();
-		}
-	}
-
-	@Override
-	public void deleteCountryList(int id) {
-		localCurrencyRepo.deleteById(id);
-	}
+	
 
 	@Override
 	public List<CountryVO> getAllgetAllcountries() {
@@ -118,15 +88,22 @@ public class BasicMasterServiceImpl implements BasicMasterService {
 	public Optional<CountryVO> getCountryById(int id) {
 		return countryRepo.findById(id);
 	}
+	
+	@Override
+	public List<CountryVO> getAllCountryByOrgId(Long orgId) {
+		return countryRepo.findAllByOrgId(orgId);
+	}
 
 	@Override
 	public CountryVO createCountry(CountryVO countryVO) {
+		countryVO.setDupchk(countryVO.getOrgId()+countryVO.getCountry()+countryVO.getCountryCode());
 		return countryRepo.save(countryVO);
 	}
 
 	@Override
 	public Optional<CountryVO> updateCountry(CountryVO countryVO) {
 		if (countryRepo.existsById(countryVO.getId())) {
+			countryVO.setDupchk(countryVO.getOrgId()+countryVO.getCountry()+countryVO.getCountryCode());
 			return Optional.of(countryRepo.save(countryVO));
 		} else {
 			return Optional.empty();
@@ -145,20 +122,27 @@ public class BasicMasterServiceImpl implements BasicMasterService {
 	public List<StateVO> getAllgetAllStates() {
 		return stateRepo.findAll();
 	}
+	
+	@Override
+	public List<StateVO> getAllStatesByCountry(String Country,Long orgId) {
+		return stateRepo.findAllStateByCountryAndOrgId(Country,orgId);
+	}
 
 	@Override
-	public Optional<StateVO> getStateById(int id) {
+	public Optional<StateVO> getStateById(Long id) {
 		return stateRepo.findById(id);
 	}
 
 	@Override
 	public StateVO createState(StateVO stateVO) {
+		stateVO.setDupchk(stateVO.getOrgId()+ stateVO.getStateName()+stateVO.getStateCode());
 		return stateRepo.save(stateVO);
 	}
 
 	@Override
 	public Optional<StateVO> updateState(StateVO stateVO) {
 		if (stateRepo.existsById(stateVO.getId())) {
+			stateVO.setDupchk(stateVO.getOrgId()+ stateVO.getStateName()+stateVO.getStateCode());
 			return Optional.of(stateRepo.save(stateVO));
 		} else {
 			return Optional.empty();
@@ -166,7 +150,7 @@ public class BasicMasterServiceImpl implements BasicMasterService {
 	}
 
 	@Override
-	public void deleteState(int id) {
+	public void deleteState(Long id) {
 		stateRepo.deleteById(id);
 	}
 
@@ -180,8 +164,14 @@ public class BasicMasterServiceImpl implements BasicMasterService {
 	}
 
 	@Override
-	public Optional<CityVO> getCityById(int id) {
+	public Optional<CityVO> getCityById(Long id) {
 		return cityRepo.findById(id);
+	}
+	
+	@Override
+	public List<CityVO> getAllCitiesByStateAndCountry(String state, String country, Long orgId) {
+		
+		return cityRepo.findAllByStateAndCountryAndOrgId(state,country,orgId);
 	}
 
 	@Override
@@ -191,7 +181,7 @@ public class BasicMasterServiceImpl implements BasicMasterService {
 
 	@Override
 	public Optional<CityVO> updateCity(CityVO cityVO) {
-		if (cityRepo.existsById(cityVO.getId())) {
+		if (cityRepo.existsById(cityVO.getCityid())) {
 			return Optional.of(cityRepo.save(cityVO));
 		} else {
 			return Optional.empty();
@@ -199,7 +189,7 @@ public class BasicMasterServiceImpl implements BasicMasterService {
 	}
 
 	@Override
-	public void deleteCity(int id) {
+	public void deleteCity(Long id) {
 		cityRepo.deleteById(id);
 	}
 
@@ -297,5 +287,9 @@ public class BasicMasterServiceImpl implements BasicMasterService {
 	public void deleteCurrencyMaster(int id) {
 		currencyMasterRepo.deleteById(id);
 	}
+
+	
+
+	
 
 }

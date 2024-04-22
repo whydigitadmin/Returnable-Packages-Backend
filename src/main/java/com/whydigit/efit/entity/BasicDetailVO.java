@@ -4,12 +4,14 @@ package com.whydigit.efit.entity;
 import java.time.LocalDate;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -20,30 +22,48 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "ps_basic_detail")
+@Table(name = "partstudy")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class BasicDetailVO {
-
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long partStudyId;
-	private long orgId;
+	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "partstudygen")
+	@SequenceGenerator(name = "partstudygen", sequenceName = "partstudyseq", initialValue = 1000000001, allocationSize = 1)
+	@Column(name = "partstudyid")
+	private Long refPsId;
+	@Column(name = "orgid" )
+	private Long orgId;
+	@Column(name = "docdate" )
 	private LocalDate partStudyDate;
-	private String emitterId;
-	private String receiverId;
+	@Column(name = "emitterid" )
+	private Long emitterId;
+	@Column(name = "receiverid")
+	private Long receiverId;
+	@Column(name = "part",length =50)
 	private String partName;
+	@Column(name = "code",length =25)
 	private String partNumber;
-	private float weight;
+	@Column(name = "weight",precision =4,scale =2)
+	private Float weight;
+	@Column(name = "weightunit",length =25 )
 	private String weightUnit;
-	private String partVolume;
-	private String highestVolume;
-	private String lowestVolume;
-
+	@Column(name = "partvol",length =16)
+	private int partVolume;
+	@Column(name = "maxvol",length =15)
+	private int highestVolume;
+	@Column(name = "minvol",length =15 )
+	private int lowestVolume;
+	@Column(name = "createdby",length = 25)
+	private String createdBy;
+	@Column(name = "modifiedby",length = 25)
+	private String modifiedBy;
+	private boolean cancel;
+	
+	
 	@Embedded
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
-	
+
 	@JsonManagedReference
 	@OneToOne(mappedBy = "basicDetailVO", cascade = CascadeType.ALL)
 	private PackingDetailVO packingDetailVO;
