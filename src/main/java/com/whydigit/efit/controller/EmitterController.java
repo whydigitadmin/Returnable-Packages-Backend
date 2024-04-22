@@ -741,7 +741,7 @@ public class EmitterController extends BaseController {
 		if (StringUtils.isEmpty(errorMsg)) {
 			List<Map<String, String>> allEmitter = findPartStudy(partstudy);
 			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Bin Allotment found by ID");
-			responseObjectsMap.put("Bin Allotment", allEmitter);
+			responseObjectsMap.put("BinAllotment", allEmitter);
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} else {
 			errorMsg = " not found for ID: ";

@@ -710,7 +710,6 @@ public class EmitterServiceImpl implements EmitterService {
 			}
 		}
 		return binAllotmentNewVO;
-		
 	}
 
 	@Override
@@ -720,7 +719,6 @@ public class EmitterServiceImpl implements EmitterService {
 	
 //	@Override
 //	public List<BinAllotmentVO> getBinRequest(Long emitterId,String warehouseLocation, Long orgId, LocalDate startDate, LocalDate endDate,Long warehouseLocationId) {
-//
 //		return binAllotmentRepo.findAll(new Specification<IssueRequestVO>() {
 //
 //			@Override
@@ -747,11 +745,5 @@ public class EmitterServiceImpl implements EmitterService {
 //				return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
 //			}
 //		});
-//
 //	}
-
-	
-
 }
-
-
