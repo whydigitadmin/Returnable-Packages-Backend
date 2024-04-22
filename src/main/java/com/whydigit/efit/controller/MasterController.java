@@ -1270,7 +1270,7 @@ public class MasterController extends BaseController {
 	}
 
 	@GetMapping("/unit/{id}")
-	public ResponseEntity<ResponseDTO> getUnitById(@PathVariable int id) {
+	public ResponseEntity<ResponseDTO> getUnitById(@PathVariable Long id) {
 		String methodName = "getUnitById()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -1343,7 +1343,7 @@ public class MasterController extends BaseController {
 	}
 
 	@DeleteMapping("/unit/{id}")
-	public ResponseEntity<ResponseDTO> deleteunit(@PathVariable int id) {
+	public ResponseEntity<ResponseDTO> deleteunit(@PathVariable Long id) {
 		String methodName = "deleteUnit()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
