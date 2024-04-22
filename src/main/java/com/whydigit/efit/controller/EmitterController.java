@@ -27,12 +27,14 @@ import org.springframework.web.bind.annotation.RestController;
 import com.whydigit.efit.common.CommonConstant;
 import com.whydigit.efit.common.EmitterConstant;
 import com.whydigit.efit.common.UserConstants;
+import com.whydigit.efit.dto.BinAllotmentDTO;
 import com.whydigit.efit.dto.EmitterAddressDTO;
 import com.whydigit.efit.dto.InwardDTO;
 import com.whydigit.efit.dto.IssueRequestDTO;
 import com.whydigit.efit.dto.IssueRequestQtyApprovelDTO;
 import com.whydigit.efit.dto.OutwardKitDetailsDTO;
 import com.whydigit.efit.dto.ResponseDTO;
+import com.whydigit.efit.entity.BinAllotmentNewVO;
 import com.whydigit.efit.entity.EmitterInwardVO;
 import com.whydigit.efit.entity.EmitterOutwardVO;
 import com.whydigit.efit.entity.InwardVO;
@@ -689,4 +691,31 @@ public class EmitterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
+	
+	// Bin Allotment
+	
+	@PostMapping("/binAllotment")
+	public ResponseEntity<ResponseDTO> createBinAllotment(@RequestBody BinAllotmentDTO binAllotmentDTO) {
+		String methodName = "createBinAllotment()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		BinAllotmentNewVO binAllotmentVO = new BinAllotmentNewVO();
+		try {
+			binAllotmentVO = emitterService.createBinAllotment(binAllotmentDTO);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(CommonConstant.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE,"Bin Allotment Created Successfully");
+			responseObjectsMap.put("binAllotmentVO", binAllotmentVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap,"Bin Allotment Failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
 }
