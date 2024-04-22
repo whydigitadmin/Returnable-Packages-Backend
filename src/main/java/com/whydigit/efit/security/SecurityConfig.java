@@ -63,7 +63,7 @@ public class SecurityConfig {
 						"/api/basicMaster/city", "/api/basicMaster/city/{id}", "/api/basicMaster/state",
 						"/api/basicMaster/state/{id}", "/api/master/Services", "/api/basicMaster/state/Country",
 						"/api/basicMaster/city/getByStateAndCountry", "/api/emitter/proofOfDelivery","/api/emitter/getAllProofOfDelivery",
-						"/api/emitter/binAllotment")
+						"/api/emitter/binAllotment","/api/company/branch")
 				.permitAll().antMatchers("/api/**").hasAnyRole("USER", "GUEST_USER").anyRequest().authenticated();
 
 		http.addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);

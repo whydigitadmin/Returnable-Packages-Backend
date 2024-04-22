@@ -7,7 +7,13 @@ import com.whydigit.efit.entity.BranchVO;
 
 
 @Repository
-public interface BranchRepo extends JpaRepository<BranchVO, Integer> {
+public interface BranchRepo extends JpaRepository<BranchVO, Long> {
+
+	boolean existsByBranchNameAndBranchCodeAndOrgId(String branchName, String branchCode, String orgId);
+
+	boolean existsByBranchCodeAndOrgId(String branchCode, String orgId);
+
+	boolean existsByBranchNameAndOrgId(String branchName, String orgId);
 
 }
 
