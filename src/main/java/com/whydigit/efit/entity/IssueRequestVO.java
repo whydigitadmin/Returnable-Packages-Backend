@@ -53,10 +53,8 @@ public class IssueRequestVO {
 	private String warehouseLocation;
 	@Column(name = "emitterid")
 	private long emitterId;
-	
 	@Column(name = "customercode", length = 30)
 	private String emitterCode;
-	
 	@Column(name = "reqaddressid")
 	private long reqAddressId;
 	@Column(name = "flowid")
@@ -85,6 +83,7 @@ public class IssueRequestVO {
 	private boolean active;
 	private boolean cancel;
 	private String finyr;
+	private String emitter;
 
 	@OneToMany(mappedBy = "issueRequestVO", cascade = CascadeType.ALL, orphanRemoval = true)
 	@JsonManagedReference

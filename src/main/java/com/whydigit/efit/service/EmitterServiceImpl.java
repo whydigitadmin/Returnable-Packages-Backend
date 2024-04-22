@@ -169,6 +169,7 @@ public class EmitterServiceImpl implements EmitterService {
 		String requestnumber = finyr + "BR" + issueRequestRepo.finddocid();
 		issueRequestVO.setDocId(requestnumber);
 		issueRequestRepo.updatesequence();
+		issueRequestVO.setEmitter(customersRepo.findCustomerLegalnameByEmitterId(issueRequestDTO.getEmitterId()));
 		issueRequestVO.setEmitterCode(customersRepo.findcustomercodeByEmitterId(issueRequestDTO.getEmitterId()));
 		issueRequestVO.setFlowName(flowVO.getFlowName());
 		issueRequestVO.setIssueItemVO(issueItemVO);
@@ -710,6 +711,11 @@ public class EmitterServiceImpl implements EmitterService {
 		}
 		return binAllotmentNewVO;
 		
+	}
+
+	@Override
+	public Set<Object[]> getReqDetailsByOrgId(Long orgId) {
+		return binAllotmentNewRepo.findReqDetailsByOrgId(orgId);
 	}
 	
 //	@Override
