@@ -766,4 +766,6 @@ public class EmitterServiceImpl implements EmitterService {
 		return taggingDetailsRepo.findByTagCode(tagCode);
 	}
 
+	
+
 }

@@ -120,6 +120,8 @@ import com.whydigit.efit.repo.AssetRepo;
 import com.whydigit.efit.repo.AssetStockDetailsRepo;
 import com.whydigit.efit.repo.AssetTaggingDetailsRepo;
 import com.whydigit.efit.repo.AssetTaggingRepo;
+import com.whydigit.efit.repo.BinAllotmentNewRepo;
+import com.whydigit.efit.repo.BinAllotmentRepo;
 import com.whydigit.efit.repo.BinInwardRepo;
 import com.whydigit.efit.repo.CnoteRepo;
 import com.whydigit.efit.repo.CustomerAttachmentRepo;
@@ -182,6 +184,13 @@ public class MasterServiceImpl implements MasterService {
 	VendorBankDetailsRepo vendorBankDetailsRepo;
 	@Autowired
 	KitRepo kitRepo;
+	
+	@Autowired
+	BinAllotmentRepo binAllotmentRepo;
+	
+	@Autowired
+	BinAllotmentNewRepo binAllotmentNewRepo;
+	
 	@Autowired
 	TermsAndConditionsRepo termsAndConditionsRepo;
 
@@ -1704,6 +1713,18 @@ public class MasterServiceImpl implements MasterService {
 	}
 	
 	@Override
+	public Set<Object[]> getAllotmentNoByEmitterIdAndOrgId(Long orgId, Long emitterId) {
+		
+		return binAllotmentNewRepo.getAllotmentNoByEmitterIdAndOrgId(orgId,emitterId);
+	}
+
+	@Override
+	public Set<Object[]> getAllotmentDetailsByAllotmentNoAndOrgId(Long orgId, String docid) {
+		
+		return binAllotmentNewRepo.getAllotmentDetailsByAllotmentNoAndOrgId(orgId,docid);
+	}
+	
+	@Override
 	public BinInwardVO updateCreateBinInward(BinInwardDTO binInwardDTO) throws ApplicationException {
 		BinInwardVO binInwardVO = new BinInwardVO();
 		if (ObjectUtils.isNotEmpty(binInwardDTO.getBinInwardId())) {
@@ -1720,6 +1741,7 @@ public class MasterServiceImpl implements MasterService {
 				binInwardDetails.setRecQty(binInwardDetailsDTO.getRecQty());
 				binInwardDetails.setReturnQty(binInwardDetailsDTO.getReturnQty());
 				binInwardDetails.setTagCode(binInwardDetailsDTO.getTagCode());
+				binInwardDetails.setBinInwardVO(binInwardVO);
 				binInwardDetails.setRfId(assetTaggingDetailsRepo.findRfIdByTagCode(binInwardDetailsDTO.getTagCode()));
 
 				binInwardDetailsVO.add(binInwardDetails);
@@ -1759,7 +1781,13 @@ public class MasterServiceImpl implements MasterService {
 	}
 
 	private void getBinInwardVOFromBinInwardDTO(BinInwardDTO binInwardDTO, BinInwardVO binInwardVO) {
-
+		
+		int finyr = binInwardRepo.getFinyr();
+		String binInward = finyr + "BI" + binInwardRepo.finddocid();
+		binInwardVO.setDocid(binInward);
+		binInwardRepo.nextDocseq();
+		binInwardVO.setAllotDate(binInwardDTO.getAllotDate());
+		binInwardVO.setBinReqDate(binInwardDTO.getBinReqDate());
 		binInwardVO.setOrgId(binInwardDTO.getOrgId());
 		binInwardVO.setAllotmentNo(binInwardDTO.getAllotmentNo());
 		binInwardVO.setReqNo(binInwardDTO.getReqNo());
@@ -1767,6 +1795,12 @@ public class MasterServiceImpl implements MasterService {
 		binInwardVO.setKitCode(binInwardDTO.getKitCode());
 		binInwardVO.setAllotedQty(binInwardDTO.getAllotedQty());
 
+	}
+
+	@Override
+	public Set<Object[]> getAllotmentAssetDetailsByAllotmentNoAndOrgId(Long orgId, String docid) {
+	
+		return binAllotmentNewRepo.getAllotmentAssetDetailsByAllotmentNoAndOrgId(orgId,docid);
 	}
 	
 }

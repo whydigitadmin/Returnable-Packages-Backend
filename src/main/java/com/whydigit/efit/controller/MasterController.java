@@ -2276,6 +2276,85 @@ public class MasterController extends BaseController {
 	
 	//BININWARD
 	
+	@GetMapping("/getAllotmentNo")
+	public ResponseEntity<ResponseDTO> getAllotmentByOrgIdAndEmitterId(@RequestParam Long orgid,@RequestParam Long emitterId) {
+		String methodName = "getAllotmentByOrgIdAndEmitterId()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		Set<Object[]> partstudy = new HashSet<>();
+		try {
+			partstudy = masterService.getAllotmentNoByEmitterIdAndOrgId(orgid, emitterId);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			List<Map<String, String>> allotno = findallotno(partstudy);
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Bin Allotment No found by ID");
+			responseObjectsMap.put("allotno", allotno);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			errorMsg = " not found for ID: ";
+			responseDTO = createServiceResponseError(responseObjectsMap, "Bin Allotment No not found", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+		
+		private List<Map<String, String>> findallotno(Set<Object[]> partstudy) {
+		    List<Map<String, String>> allotno = new ArrayList<>();
+		    for (Object[] ps : partstudy) {
+		        Map<String, String> part = new HashMap<>();
+		            part.put("allotNo", ps[0] != null ? ps[0].toString() : "");
+		            allotno.add(part);
+		    }
+		return allotno;
+	}
+		
+		@GetMapping("/getAllotmentDetailsByOrgIdAndDocid")
+		public ResponseEntity<ResponseDTO> getAllotmentDetailsByOrgIdAndDocid(@RequestParam Long orgid,@RequestParam String docid) {
+			String methodName = "getAllotmentDetailsByOrgIdAndDocid()";
+			LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+			String errorMsg = null;
+			Map<String, Object> responseObjectsMap = new HashMap<>();
+			ResponseDTO responseDTO = null;
+			Set<Object[]> partstudy = new HashSet<>();
+			try {
+				partstudy = masterService.getAllotmentDetailsByAllotmentNoAndOrgId(orgid, docid);
+			} catch (Exception e) {
+				errorMsg = e.getMessage();
+				LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			}
+			if (StringUtils.isEmpty(errorMsg)) {
+				List<Map<String, String>> allotDetails = findAllotdetails(partstudy);
+				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Bin Allotment Details found by ID");
+				responseObjectsMap.put("allotDetails", allotDetails);
+				responseDTO = createServiceResponse(responseObjectsMap);
+			} else {
+				errorMsg = " not found for ID: ";
+				responseDTO = createServiceResponseError(responseObjectsMap, "Bin Allotment Details not found", errorMsg);
+			}
+			LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+			return ResponseEntity.ok().body(responseDTO);
+		}
+			
+			private List<Map<String, String>> findAllotdetails(Set<Object[]> partstudy) {
+			    List<Map<String, String>> allotDetails = new ArrayList<>();
+			    for (Object[] ps : partstudy) {
+			        Map<String, String> part = new HashMap<>();
+			            part.put("allotDate", ps[0] != null ? ps[0].toString() : "");
+			            part.put("reqNo", ps[1] != null ? ps[1].toString() : "");
+			            part.put("reqDate", ps[2] != null ? ps[2].toString() : "");
+			            part.put("flow", ps[3] != null ? ps[3].toString() : "");
+			            part.put("kitCode", ps[4] != null ? ps[4].toString() : "");
+			            part.put("allotKitQty", ps[5] != null ? ps[5].toString() : "");
+			            allotDetails.add(part);
+			    }
+			return allotDetails;
+		}
+	
 		@PutMapping("/updateCreateBinInward")
 		public ResponseEntity<ResponseDTO> updateCreateBinInward(@RequestBody BinInwardDTO binInwardDTO) {
 			String methodName = "updateCreateBinInward()";
@@ -2298,5 +2377,47 @@ public class MasterController extends BaseController {
 			}
 			LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 			return ResponseEntity.ok().body(responseDTO);
+		}
+		
+		@GetMapping("/getAllotmentAssetDetailsByOrgIdAndDocid")
+		public ResponseEntity<ResponseDTO> getAllotmentAssetDetailsByOrgIdAndDocid(@RequestParam Long orgid,@RequestParam String docid) {
+			String methodName = "getAllotmentAssetDetailsByOrgIdAndDocid()";
+			LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+			String errorMsg = null;
+			Map<String, Object> responseObjectsMap = new HashMap<>();
+			ResponseDTO responseDTO = null;
+			Set<Object[]> partstudy = new HashSet<>();
+			try {
+				partstudy = masterService.getAllotmentAssetDetailsByAllotmentNoAndOrgId(orgid, docid);
+			} catch (Exception e) {
+				errorMsg = e.getMessage();
+				LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			}
+			if (StringUtils.isEmpty(errorMsg)) {
+				List<Map<String, String>> allotAssetDetails = findAllotAssetdetails(partstudy);
+				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Bin Allotment Asset Details found by ID");
+				responseObjectsMap.put("allotAssetDetails", allotAssetDetails);
+				responseDTO = createServiceResponse(responseObjectsMap);
+			} else {
+				errorMsg = " not found for ID: ";
+				responseDTO = createServiceResponseError(responseObjectsMap, "Bin Allotment Asset Details not found", errorMsg);
+			}
+			LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+			return ResponseEntity.ok().body(responseDTO);
+		}
+			
+			private List<Map<String, String>> findAllotAssetdetails(Set<Object[]> partstudy) {
+			    List<Map<String, String>> allotAssetDetails = new ArrayList<>();
+			    for (Object[] ps : partstudy) {
+			        Map<String, String> part = new HashMap<>();
+			            part.put("asset", ps[0] != null ? ps[0].toString() : "");
+			            part.put("assetCode", ps[1] != null ? ps[1].toString() : "");
+			            part.put("rfId", ps[2] != null ? ps[2].toString() : "");
+			            part.put("tagCode", ps[3] != null ? ps[3].toString() : "");
+			            part.put("skuQty", ps[4] != null ? ps[4].toString() : "");
+			            part.put("recQty", ps[4] != null ? ps[4].toString() : "");
+			            allotAssetDetails.add(part);
+			    }
+			return allotAssetDetails;
 		}
 }

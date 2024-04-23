@@ -143,7 +143,7 @@ public interface MasterService {
 	List<KitResponseDTO> getAllKit(Long orgId);
 
 	Optional<KitVO> getKitById(Long id);
-	
+
 	Optional<KitVO> getKitByKitCode(String kitName);
 
 	KitVO createkit(KitDTO kitDTO) throws ApplicationException;
@@ -193,32 +193,31 @@ public interface MasterService {
 	DmapVO createDmapVO(DmapDTO dmapDTO);
 
 	// service
-	
-	List<ServiceVO>getAllServiceByOrgId(Long OrgId);
+
+	List<ServiceVO> getAllServiceByOrgId(Long OrgId);
 
 	ServiceVO updateCreateService(ServiceDTO serviceDTO) throws ApplicationException;
 
 	CnoteVO updateCreateCnote(CnoteDTO cnoteDTO) throws ApplicationException;
-	
-	
+
 	// Stock Branch
-	
+
 	StockBranchVO createStockBranch(StockBranchDTO stockBranchDTO);
-	
+
 	StockBranchVO updateStockBranch(StockBranchDTO stockBranchDTO) throws ApplicationException;
 
 	List<StockBranchVO> getAllStockBranchByOrgId(Long orgId);
 
 	AssetInwardVO createAssetInward(AssetInwardDTO assetInwardDTO);
-	
+
 	// Create Asset Tagging
-	
-	AssetTaggingVO createTagging(AssetTaggingDTO assetTaggingDTO); 
+
+	AssetTaggingVO createTagging(AssetTaggingDTO assetTaggingDTO);
 
 	Set<Object[]> getTagCodeByAsset(String assetcode, String asset, int startno, int endno);
-	
-	Set<Object[]>getAvalKitQty(Long warehouseId,String Kitname);
-	
+
+	Set<Object[]> getAvalKitQty(Long warehouseId, String Kitname);
+
 	Set<Object[]> getAvalKitQtyByBranch(String branch, String Kitname);
 
 	TermsAndConditionsVO updateCreateTerms(TermsAndConditionsDTO termsAndConditionsDTO) throws ApplicationException;
@@ -228,7 +227,7 @@ public interface MasterService {
 	List<TermsAndConditionsVO> getAllTermsById(Long termsId);
 
 	PoVO updateCreatePo(PoDTO poDTO) throws ApplicationException;
-	
+
 	public List<PoVO> getPoByOrgId(Long orgId);
 
 	List<PoVO> getAllPoByPoId(Long poId);
@@ -247,21 +246,20 @@ public interface MasterService {
 
 	Set<Object[]> getPoNoByCreateAsset(Long orgId);
 
-
 	ProofOfDeliveryVO createProofOfDelivery(ProofOfDeliveryDTO proofOfDeliveryDTO);
 
 	String uploadFileProofOfDelivery(MultipartFile file, String docId, String refNo);
 
 	List<ProofOfDeliveryVO> getAllProofOfDelivery(Long orgId);
+	
+	// Bin Allotmentdetails
+
+	Set<Object[]> getAllotmentNoByEmitterIdAndOrgId(Long orgId, Long emitterId);
+
+	Set<Object[]> getAllotmentDetailsByAllotmentNoAndOrgId(Long orgId, String docid);
 
 	BinInwardVO updateCreateBinInward(BinInwardDTO binInwardDTO) throws ApplicationException;
-
-
-
-
-
-
 	
+	Set<Object[]> getAllotmentAssetDetailsByAllotmentNoAndOrgId(Long orgId, String docid);
 
-	
 }
