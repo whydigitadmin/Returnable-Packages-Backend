@@ -112,24 +112,25 @@ public class BasicMasterServiceImpl implements BasicMasterService {
 	@Override
 	public Optional<CountryVO> updateCountry(CountryVO countryVO) throws ApplicationException {
 		if (countryRepo.existsById(countryVO.getId())) {
-			if (countryRepo.existsByCountryAndCountryCodeAndOrgId(countryVO.getCountry(), countryVO.getCountryCode(),
-					countryVO.getOrgId())) {
-				throw new ApplicationException("A Country And CountryCode already exists for this organization.");
-			}
-			// Check if a country with the same name or code already exists for the same
-			// orgId
-			if (countryRepo.existsByCountryAndOrgId(countryVO.getCountry(), countryVO.getOrgId())) {
-				throw new ApplicationException("A Country already exists for this organization");
-			}
-
-			if (countryRepo.existsByCountryCodeAndOrgId(countryVO.getCountryCode(), countryVO.getOrgId())) {
-				throw new ApplicationException("A CountryCode already exists for this organization.");
-			}
-			return Optional.of(countryRepo.save(countryVO));
-		} else {
-			return Optional.empty();
-		}
+			
+			 if (countryRepo.existsByCountryAndCountryCodeAndOrgIdAndIdNot(countryVO.getCountry(),countryVO.getCountryCode(), countryVO.getOrgId(), countryVO.getId())) {
+		            throw new ApplicationException("A Country and CountryCode already exists for this organization.");
+		        }
+	        // Check if a country with the same name already exists for this organization
+	        if (countryRepo.existsByCountryAndOrgIdAndIdNot(countryVO.getCountry(), countryVO.getOrgId(), countryVO.getId())) {
+	            throw new ApplicationException("A Country already exists for this organization.");
+	        }
+	        // Check if a country with the same code already exists for this organization
+	        if (countryRepo.existsByCountryCodeAndOrgIdAndIdNot(countryVO.getCountryCode(), countryVO.getOrgId(), countryVO.getId())) {
+	            throw new ApplicationException("A CountryCode already exists for this organization.");
+	        }
+	        // Update the country
+	        return Optional.of(countryRepo.save(countryVO));
+	    } else {
+	        return Optional.empty(); // Country not found
+	    }
 	}
+
 
 	@Override
 	public void deleteCountry(Long id) {
@@ -175,26 +176,31 @@ public class BasicMasterServiceImpl implements BasicMasterService {
 
 	@Override
 	public Optional<StateVO> updateState(StateVO stateVO) throws ApplicationException {
-		if (stateRepo.existsById(stateVO.getId())) {
-			if (stateRepo.existsByStateNameAndStateCodeAndCountryAndOrgId(stateVO.getStateName(),
-					stateVO.getStateCode(), stateVO.getCountry(), stateVO.getOrgId())) {
-				throw new ApplicationException(
-						"A StateName and StateCode  already exists for this country and region.");
-			}
-			if (stateRepo.existsByStateNameAndCountryAndOrgId(stateVO.getStateName(), stateVO.getCountry(),
-					stateVO.getOrgId())) {
-				throw new ApplicationException("A StateName already exists for this country and region.");
-			}
-
-			if (stateRepo.existsByStateCodeAndCountryAndOrgId(stateVO.getStateCode(), stateVO.getCountry(),
-					stateVO.getOrgId())) {
-				throw new ApplicationException("A StateCode already exists for this country and region.");
-			}
-			return Optional.of(stateRepo.save(stateVO));
-		} else {
-			return Optional.empty();
-		}
+	    if (stateRepo.existsById(stateVO.getId())) {
+	        // Check if a state with the same name and code already exists for this country
+	        if (stateRepo.existsByStateNameAndStateCodeAndCountryAndOrgIdAndIdNot(
+	                stateVO.getStateName(), stateVO.getStateCode(), stateVO.getCountry(),
+	                stateVO.getOrgId(), stateVO.getId())) {
+	            throw new ApplicationException("A StateName and StateCode already exists for this country.");
+	        }
+	        // Check if a state with the same name already exists for this country
+	        if (stateRepo.existsByStateNameAndCountryAndOrgIdAndIdNot(
+	                stateVO.getStateName(), stateVO.getCountry(), stateVO.getOrgId(), stateVO.getId())) {
+	            throw new ApplicationException("A StateName already exists for this country.");
+	        }
+	        // Check if a state with the same code already exists for this country
+	        if (stateRepo.existsByStateCodeAndCountryAndOrgIdAndIdNot(
+	                stateVO.getStateCode(), stateVO.getCountry(), stateVO.getOrgId(), stateVO.getId())) {
+	            throw new ApplicationException("A StateCode already exists for this country.");
+	        }
+	        // Update the state
+	        return Optional.of(stateRepo.save(stateVO));
+	    } else {
+	        return Optional.empty();
+	    }
 	}
+
+
 
 	@Override
 	public void deleteState(Long id) {
@@ -239,24 +245,32 @@ public class BasicMasterServiceImpl implements BasicMasterService {
 
 	@Override
 	public Optional<CityVO> updateCity(CityVO cityVO) throws ApplicationException {
-		if (cityRepo.existsById(cityVO.getCityid())) {
-			// Check if a city with the same name or code already exists for the same
-			// country and state
-			if (cityRepo.existsByCityNameAndCityCodeAndCountryAndStateAndOrgId(cityVO.getCityName(), cityVO.getCityCode(),cityVO.getCountry(), cityVO.getState(),cityVO.getOrgId())) {
-				throw new ApplicationException("A city and CityCode already exists for this country and state.");
-			}
-			if (cityRepo.existsByCityCodeAndCountryAndStateAndOrgId(cityVO.getCityName(), cityVO.getCountry(), cityVO.getState(),cityVO.getOrgId())) {
-				throw new ApplicationException("A CityCode already exists for this country and state.");
-			}
-
-			if (cityRepo.existsByCityCodeAndCountryAndStateAndOrgId(cityVO.getCityCode(), cityVO.getCountry(), cityVO.getState(),cityVO.getOrgId())) {
-				throw new ApplicationException("A CityName already exists for this country and state.");
-			}
-			return Optional.of(cityRepo.save(cityVO));
-		} else {
-			return Optional.empty();
-		}
+	    if (cityRepo.existsById(cityVO.getCityid())) {
+	        // Check if a city with the same name and code already exists for the same country and state
+	        if (cityRepo.existsByCityNameAndCityCodeAndCountryAndStateAndOrgIdAndCityidNot(
+	                cityVO.getCityName(), cityVO.getCityCode(), cityVO.getCountry(), cityVO.getState(),
+	                cityVO.getOrgId(), cityVO.getCityid())) {
+	            throw new ApplicationException("A city and CityCode already exists for this country and state.");
+	        }
+	        // Check if a city with the same code already exists for this country and state
+	        if (cityRepo.existsByCityCodeAndCountryAndStateAndOrgIdAndCityidNot(
+	                cityVO.getCityCode(), cityVO.getCountry(), cityVO.getState(),
+	                cityVO.getOrgId(), cityVO.getCityid())) {
+	            throw new ApplicationException("A CityCode already exists for this country and state.");
+	        }
+	        // Check if a city with the same name already exists for this country and state
+	        if (cityRepo.existsByCityNameAndCountryAndStateAndOrgIdAndCityidNot(
+	                cityVO.getCityName(), cityVO.getCountry(), cityVO.getState(),
+	                cityVO.getOrgId(), cityVO.getCityid())) {
+	            throw new ApplicationException("A CityName already exists for this country and state.");
+	        }
+	        // Update the city
+	        return Optional.of(cityRepo.save(cityVO));
+	    } else {
+	        return Optional.empty();
+	    }
 	}
+
 
 	@Override
 	public void deleteCity(Long id) {
