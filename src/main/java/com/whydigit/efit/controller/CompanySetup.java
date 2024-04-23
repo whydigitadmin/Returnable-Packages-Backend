@@ -166,7 +166,7 @@ public class CompanySetup  extends BaseController{
 	
 //	Branch
 	
-	@PostMapping("/branch")
+	@PutMapping("/branch")
 	public ResponseEntity<ResponseDTO> createBranch(@RequestBody BranchDTO branchDTO) {
 		String methodName = "createBranch()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);

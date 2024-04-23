@@ -36,7 +36,7 @@ public class BranchVO {
 	@Column(name = "address2")
 	private String address2;
 	@Column(name = "orgid")
-    private String orgId;
+    private Long orgId;
 	@Column(name = "city")
     private String city;
 	@Column(name = "state")

@@ -18,7 +18,7 @@ public class BranchDTO {
 	private String branchCode;
     private String address1;
 	private String address2;
-    private String orgId;
+    private Long orgId;
     private String city;
     private String state;
     private String country;

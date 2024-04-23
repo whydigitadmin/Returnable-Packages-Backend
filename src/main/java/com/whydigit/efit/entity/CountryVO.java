@@ -52,9 +52,6 @@ public class CountryVO {
 	@Column(name="orgid")
 	private Long orgId;
 	
-	@Column(name="dupchk",unique = true)
-	private String dupchk;
-	
 	
     @Embedded
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();

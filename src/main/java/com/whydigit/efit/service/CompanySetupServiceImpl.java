@@ -69,27 +69,32 @@ public class CompanySetupServiceImpl implements CompanySetupService {
 	}
 
 	@Override
-	public BranchVO createBranch(BranchDTO branchDTO)throws ApplicationException {
-		
-		 // Check if a branch with the same branchName and orgId already exists
-	    boolean branchAndBranchCodeExists = branchRepo.existsByBranchNameAndBranchCodeAndOrgId(branchDTO.getBranchName(),branchDTO.getBranchCode(),branchDTO.getOrgId());
-	    boolean branchCodeExists = branchRepo.existsByBranchCodeAndOrgId(branchDTO.getBranchCode(),branchDTO.getOrgId());
-	    boolean branchExists = branchRepo.existsByBranchNameAndOrgId(branchDTO.getBranchName(),branchDTO.getOrgId());
-	    
-	    if (branchAndBranchCodeExists) {
-	        throw new ApplicationException("A branchName and BranchCode already exists for this Organization.");
+	public BranchVO createBranch(BranchDTO branchDTO) throws ApplicationException {
+	    // Check if a branch with the same branchName and orgId already exists
+	    boolean branchAndBranchCodeExists = branchRepo.existsByBranchNameAndBranchCodeAndOrgId(branchDTO.getBranchName(), branchDTO.getBranchCode(), branchDTO.getOrgId());
+	    boolean branchCodeExists = branchRepo.existsByBranchCodeAndOrgId(branchDTO.getBranchCode(), branchDTO.getOrgId());
+	    boolean branchExists = branchRepo.existsByBranchNameAndOrgId(branchDTO.getBranchName(), branchDTO.getOrgId());
+
+	    // If the branch is being updated, exclude the current branch from the existence check
+	    if (branchDTO.getId() != null) {
+	        branchExists = branchExists && !branchRepo.existsByIdAndBranchNameAndOrgId(branchDTO.getId(), branchDTO.getBranchName(), branchDTO.getOrgId());
+	        branchCodeExists = branchCodeExists && !branchRepo.existsByIdAndBranchCodeAndOrgId(branchDTO.getId(), branchDTO.getBranchCode(), branchDTO.getOrgId());
+	        branchAndBranchCodeExists = branchAndBranchCodeExists && !branchRepo.existsByIdAndBranchNameAndBranchCodeAndOrgId(branchDTO.getId(), branchDTO.getBranchName(), branchDTO.getBranchCode(), branchDTO.getOrgId());
 	    }
-	    
+
+	    if (branchAndBranchCodeExists) {
+	        throw new ApplicationException("A branchName and BranchCode already exist for this Organization.");
+	    }
+
 	    if (branchCodeExists) {
 	        throw new ApplicationException("A BranchCode already exists for this Organization.");
 	    }
-	    
+
 	    if (branchExists) {
 	        throw new ApplicationException("A BranchName already exists for this Organization.");
 	    }
-	    
-	    BranchVO branchVO = new BranchVO();
 
+	    BranchVO branchVO = new BranchVO();
 	    if (branchDTO.getId() != null) {
 	        // Update existing branch
 	        branchVO = branchRepo.findById(branchDTO.getId())
@@ -123,6 +128,7 @@ public class CompanySetupServiceImpl implements CompanySetupService {
 	    branchVO.setCurrency(branchDTO.getCurrency());
 	    // Add other properties as needed
 	}
+
 		
 	@Override
 	public void deleteBranch(Long id) {
