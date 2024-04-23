@@ -74,6 +74,10 @@ public class AssetStockDetailsVO {
 	@Column(name="finyr")
 	private String finyr;
 	
+	@Column(name="status")
+	private String status;
+	
+	
 	
 	
 	      

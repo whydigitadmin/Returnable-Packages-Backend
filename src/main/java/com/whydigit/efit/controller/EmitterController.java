@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
@@ -34,11 +35,13 @@ import com.whydigit.efit.dto.IssueRequestDTO;
 import com.whydigit.efit.dto.IssueRequestQtyApprovelDTO;
 import com.whydigit.efit.dto.OutwardKitDetailsDTO;
 import com.whydigit.efit.dto.ResponseDTO;
+import com.whydigit.efit.entity.AssetTaggingDetailsVO;
 import com.whydigit.efit.entity.BinAllotmentNewVO;
 import com.whydigit.efit.entity.EmitterInwardVO;
 import com.whydigit.efit.entity.EmitterOutwardVO;
 import com.whydigit.efit.entity.InwardVO;
 import com.whydigit.efit.entity.IssueRequestVO;
+import com.whydigit.efit.entity.LocalCurrencyVO;
 import com.whydigit.efit.entity.OutwardKitDetailsVO;
 import com.whydigit.efit.entity.OutwardView;
 import com.whydigit.efit.entity.ProofOfDeliveryVO;
@@ -740,9 +743,9 @@ public class EmitterController extends BaseController {
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
 		}
 		if (StringUtils.isEmpty(errorMsg)) {
-			List<Map<String, String>> allEmitter = findPartStudy(partstudy);
+			List<Map<String, String>> binReqDetails = findPartStudy(partstudy);
 			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Bin Allotment found by ID");
-			responseObjectsMap.put("Bin Allotment", allEmitter);
+			responseObjectsMap.put("BinAllotment", binReqDetails);
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} else {
 			errorMsg = " not found for ID: ";
@@ -753,7 +756,7 @@ public class EmitterController extends BaseController {
 	}
 		
 		private List<Map<String, String>> findPartStudy(Set<Object[]> partstudy) {
-		    List<Map<String, String>> allPartstudy = new ArrayList<>();
+		    List<Map<String, String>> binReqDetails = new ArrayList<>();
 		    for (Object[] ps : partstudy) {
 		        Map<String, String> part = new HashMap<>();
 		            part.put("reqNo", ps[0] != null ? ps[0].toString() : "");
@@ -766,9 +769,9 @@ public class EmitterController extends BaseController {
 		            part.put("partname", ps[7] != null ? ps[7].toString() : "");
 		            part.put("flow", ps[8] != null ? ps[8].toString() : "");
 		            part.put("flowid", ps[9] != null ? ps[9].toString() : "");
-		        allPartstudy.add(part);
+		            binReqDetails.add(part);
 		    }
-		return allPartstudy;
+		return binReqDetails;
 	}
 	
 	@GetMapping("/getAllBinAllotmentByOrgId")
@@ -795,5 +798,57 @@ public class EmitterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 
+	}
+	
+	@GetMapping("/getTaggingDetailsByRfId")
+	public ResponseEntity<ResponseDTO> getTaggingDetailsByRfId(@RequestParam String rfId) {
+		String methodName = "getTaggingDetailsByRfId()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		Optional<AssetTaggingDetailsVO> assetTaggingDetailsVO = null;
+		try {
+			assetTaggingDetailsVO = emitterService.getTaggingDetailsByRfId(rfId);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "TaggingDetails found by RfID");
+			responseObjectsMap.put("assetTaggingDetailsVO", assetTaggingDetailsVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			errorMsg = "TaggingDetails not found for RfID: " + rfId;
+			responseDTO = createServiceResponseError(responseObjectsMap, "TaggingDetails not found", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+	
+	@GetMapping("/getTaggingDetailsByTagCode")
+	public ResponseEntity<ResponseDTO> getTaggingDetailsByTagCode(@RequestParam String tagCode) {
+		String methodName = "getTaggingDetailsByTagCode()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		Optional<AssetTaggingDetailsVO> assetTaggingDetailsVO = null;
+		try {
+			assetTaggingDetailsVO = emitterService.getTaggingDetailsByTagCode(tagCode);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "TaggingDetails found by TagCode");
+			responseObjectsMap.put("assetTaggingDetailsVO", assetTaggingDetailsVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			errorMsg = "TaggingDetails not found for TagCode: " + tagCode;
+			responseDTO = createServiceResponseError(responseObjectsMap, "TaggingDetails not found", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
 	}
 }

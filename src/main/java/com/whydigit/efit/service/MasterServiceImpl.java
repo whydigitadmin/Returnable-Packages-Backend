@@ -1336,6 +1336,7 @@ public class MasterServiceImpl implements MasterService {
 				assetStockDetailsVO.setSourceId(assetTaggingDetails.getId());															// value
 				assetStockDetailsVO.setScreen("Asset Tagging");
 				assetStockDetailsVO.setPm("P");
+				assetStockDetailsVO.setStatus("S");
 				assetStockDetailsVO.setFinyr(savedAssetTaggingVO.getFinyr());
 				assetStockDetailsVO.setStockBranch("AI POOL");
 				assetStockDetailsRepo.save(assetStockDetailsVO);
@@ -1355,6 +1356,12 @@ public class MasterServiceImpl implements MasterService {
 	public Set<Object[]> getAvalKitQty(Long warehouseId, String Kitname) {
 
 		return stockBranchRepo.findAvalKitQty(warehouseId, Kitname);
+	}
+	
+	@Override
+	public Set<Object[]> getAvalKitQtyByBranch(String branch, String Kitname) {
+
+		return stockBranchRepo.findAvalKitQtyByBranch(branch, Kitname);
 	}
 
 	@Override

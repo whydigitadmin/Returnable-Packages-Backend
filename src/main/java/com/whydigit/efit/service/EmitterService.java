@@ -15,11 +15,13 @@ import com.whydigit.efit.dto.InwardDTO;
 import com.whydigit.efit.dto.IssueRequestDTO;
 import com.whydigit.efit.dto.IssueRequestQtyApprovelDTO;
 import com.whydigit.efit.dto.OutwardKitDetailsDTO;
+import com.whydigit.efit.entity.AssetTaggingDetailsVO;
 import com.whydigit.efit.entity.BinAllotmentNewVO;
 import com.whydigit.efit.entity.EmitterInwardVO;
 import com.whydigit.efit.entity.EmitterOutwardVO;
 import com.whydigit.efit.entity.InwardVO;
 import com.whydigit.efit.entity.IssueRequestVO;
+import com.whydigit.efit.entity.LocalCurrencyVO;
 import com.whydigit.efit.entity.OutwardKitDetailsVO;
 import com.whydigit.efit.entity.OutwardView;
 import com.whydigit.efit.entity.VwEmitterInwardVO;
@@ -93,6 +95,10 @@ public interface EmitterService {
 	BinAllotmentNewVO createBinAllotment(BinAllotmentDTO allotmentDTO);
 	
 	Set<Object[]> getReqDetailsByOrgId(Long orgId);
+	
+	Optional<AssetTaggingDetailsVO> getTaggingDetailsByRfId(String rfId);
+	
+	Optional<AssetTaggingDetailsVO> getTaggingDetailsByTagCode(String tagCode);
 	
 	List<BinAllotmentNewVO> getAllBinAllotment(Long orgId);
 	

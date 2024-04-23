@@ -217,6 +217,8 @@ public interface MasterService {
 	Set<Object[]> getTagCodeByAsset(String assetcode, String asset, int startno, int endno);
 	
 	Set<Object[]>getAvalKitQty(Long warehouseId,String Kitname);
+	
+	Set<Object[]> getAvalKitQtyByBranch(String branch, String Kitname);
 
 	TermsAndConditionsVO updateCreateTerms(TermsAndConditionsDTO termsAndConditionsDTO) throws ApplicationException;
 
@@ -250,6 +252,8 @@ public interface MasterService {
 	String uploadFileProofOfDelivery(MultipartFile file, String docId, String refNo);
 
 	List<ProofOfDeliveryVO> getAllProofOfDelivery(Long orgId);
+
+	
 
 
 
