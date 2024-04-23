@@ -64,7 +64,7 @@ public class SecurityConfig {
 						"/api/basicMaster/state/{id}", "/api/master/Services", "/api/basicMaster/state/Country",
 						"/api/basicMaster/city/getByStateAndCountry", "/api/emitter/proofOfDelivery","/api/emitter/getAllProofOfDelivery",
 						"/api/emitter/binAllotment","/api/company/branch","/api/company/getBranchById","/api/emitter/getTaggingDetailsByRfId",
-						"/api/emitter/getTaggingDetailsByTagCode","/api/master/getAvalkitqtyByBranch")
+						"/api/emitter/getTaggingDetailsByTagCode","/api/master/getAvalkitqtyByBranch","/api/master/updateCreateBinInward")
 				.permitAll().antMatchers("/api/**").hasAnyRole("USER", "GUEST_USER").anyRequest().authenticated();
 
 		http.addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
