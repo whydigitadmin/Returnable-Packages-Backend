@@ -17,11 +17,5 @@ public interface BasicDetailRepo extends JpaRepository<BasicDetailVO, Long> {
 
 	List<BasicDetailVO> findAll(Specification<BasicDetailVO> specification);
 
-	@Query(nativeQuery = true,value = "select sequence_value from basicdetailseq")
-	String finddocid();
-
-	@Query(nativeQuery = true,value = "CALL next_basicdetail_sequence_value()")
-	void updatesequence();
-
 	
 }

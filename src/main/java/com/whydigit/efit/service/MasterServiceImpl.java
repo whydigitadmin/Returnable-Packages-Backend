@@ -759,25 +759,18 @@ public class MasterServiceImpl implements MasterService {
 	}
 
 	@Override
-	public Optional<UnitVO> getUnitById(Long id) {
+	public Optional<UnitVO> getUnitById(int id) {
 		return unitRepo.findById(id);
 	}
 
 	@Override
-	public UnitVO createUnit(UnitVO unitVO) throws ApplicationException {
-		
-		if(unitRepo.existsByUnitAndOrgId(unitVO.getUnit(),unitVO.getOrgId())){
-			throw new ApplicationException("A Unit already exists for this Organization");
-		}
+	public UnitVO createUnit(UnitVO unitVO) {
 		return unitRepo.save(unitVO);
 	}
 
 	@Override
-	public Optional<UnitVO> updateUnit(UnitVO unitVO) throws ApplicationException {
-		if (unitRepo.existsById((long) unitVO.getId())) {
-			if(unitRepo.existsByUnitAndOrgId(unitVO.getUnit(),unitVO.getOrgId())){
-				throw new ApplicationException("A Unit already exists for this Organization");
-			}
+	public Optional<UnitVO> updateUnit(UnitVO unitVO) {
+		if (unitRepo.existsById(unitVO.getId())) {
 			return Optional.of(unitRepo.save(unitVO));
 		} else {
 			return Optional.empty();
@@ -785,7 +778,7 @@ public class MasterServiceImpl implements MasterService {
 	}
 
 	@Override
-	public void deleteUnit(Long id) {
+	public void deleteUnit(int id) {
 		// TODO Auto-generated method stub
 		unitRepo.deleteById(id);
 	}

@@ -87,14 +87,12 @@ public interface EmitterService {
 //	List<BinAllotmentVO> getBinRequest(Long emitterId, String warehouseLocation, Long orgId, LocalDate startDate,
 //			LocalDate endDate, Long warehouseLoacationId);
 
+	// Avalible Kit Qty
 	
 	
 	// Bin Allotment
 	BinAllotmentNewVO createBinAllotment(BinAllotmentDTO allotmentDTO);
 	
-	Set<Object[]> getReqDetailsByOrgId(Long orgId);
-	
-	List<BinAllotmentNewVO> getAllBinAllotment(Long orgId);
 	
 	
 

@@ -65,10 +65,10 @@ public class PartStudyServiceImpl implements PartStudyService {
 	@Autowired
 	Environment env;
 	@Autowired
-	PDAttachmentRepo pdAttachmentRepo;
+	PDAttachmentRepo pdAttachmentRepo; 
 	@Autowired
 	CustomersRepo customersRepo;
-
+	
 	public static final Logger LOGGER = LoggerFactory.getLogger(PartStudyServiceImpl.class);
 
 	@Override
@@ -97,12 +97,8 @@ public class PartStudyServiceImpl implements PartStudyService {
 
 	@Override
 	public BasicDetailVO createBasicDetail(BasicDetailDTO basicDetailDTO) {
-
-		String partstudy = "PS" + basicDetailRepo.finddocid();
-		
 		BasicDetailVO basicDetailVO = new BasicDetailVO();
 		getBasicDetailVOFromBasicDetailDTO(basicDetailDTO, basicDetailVO);
-		basicDetailVO.setDocid(partstudy);
 		basicDetailRepo.save(basicDetailVO);
 		PackingDetailVO packingDetailVO = new PackingDetailVO();
 		StockDetailVO stockdetailVO = new StockDetailVO();
@@ -116,11 +112,11 @@ public class PartStudyServiceImpl implements PartStudyService {
 		basicDetailVO.setPackingDetailVO(packingDetailVO);
 		basicDetailVO.setStockDetailVO(stockdetailVO);
 		basicDetailVO.setLogisticsVO(logisticsVO);
-		basicDetailRepo.updatesequence();
 		return basicDetailRepo.save(basicDetailVO);
 	}
 
-	private void getBasicDetailVOFromBasicDetailDTO(BasicDetailDTO basicDetailDTO, BasicDetailVO basicDetailVO) {
+	private void getBasicDetailVOFromBasicDetailDTO(BasicDetailDTO basicDetailDTO,
+			BasicDetailVO basicDetailVO) {
 		basicDetailVO.setOrgId(basicDetailDTO.getOrgId());
 		basicDetailVO.setPartStudyDate(LocalDate.now());
 		basicDetailVO.setEmitterId(basicDetailDTO.getEmitterId());
@@ -325,7 +321,7 @@ public class PartStudyServiceImpl implements PartStudyService {
 
 	@Override
 	public boolean generatePartStudyId(String refPsId) {
-		boolean status = false;
+		boolean status=false;
 		if (StringUtils.isNotBlank(refPsId)) {
 			LOGGER.info("Successfully Received  Generate PartStudy Id Information BY RefPsId : {}", refPsId);
 //			basicDetailVO = basicDetailRepo.generatePartStudyId(refPsId);
@@ -351,7 +347,7 @@ public class PartStudyServiceImpl implements PartStudyService {
 				if (ObjectUtils.isNotEmpty(emitterId)) {
 					predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("emitterId"), emitterId)));
 				}
-				if (StringUtils.isNotBlank(partName)) {
+				if (StringUtils.isNotBlank(partName)) {	
 					predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("partName"), partName)));
 				}
 				if (StringUtils.isNotBlank(partNumber)) {
@@ -426,7 +422,7 @@ public class PartStudyServiceImpl implements PartStudyService {
 			}
 		}
 	}
-
+	
 	private String constructUniqueFileName(String originalFilename, String type, int fileCount, String date) {
 		String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
 		return new StringBuilder(type).append(CommonConstant.UNDERSCORE).append(date).append(CommonConstant.UNDERSCORE)

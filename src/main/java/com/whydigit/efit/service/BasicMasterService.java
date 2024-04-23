@@ -12,7 +12,6 @@ import com.whydigit.efit.entity.EmployeeVO;
 import com.whydigit.efit.entity.FinancialYearVO;
 import com.whydigit.efit.entity.LocalCurrencyVO;
 import com.whydigit.efit.entity.StateVO;
-import com.whydigit.efit.exception.ApplicationException;
 
 @Service
 public interface BasicMasterService {
@@ -31,15 +30,15 @@ public interface BasicMasterService {
 
 	List<CountryVO> getAllgetAllcountries();
 
-	Optional<CountryVO> getCountryById(Long id);
+	Optional<CountryVO> getCountryById(int id);
 	
 	List<CountryVO> getAllCountryByOrgId(Long orgId);
 
-	CountryVO createCountry(CountryVO countryVO) throws ApplicationException;
+	CountryVO createCountry(CountryVO countryVO);
 
-	Optional<CountryVO> updateCountry(CountryVO countryVO) throws ApplicationException;
+	Optional<CountryVO> updateCountry(CountryVO countryVO);
 
-	void deleteCountry(Long id);
+	void deleteCountry(int id);
 
 
 	List<StateVO> getAllgetAllStates();
@@ -48,9 +47,9 @@ public interface BasicMasterService {
 	
 	List<StateVO> getAllStatesByCountry(String Country,Long orgId);
 
-	StateVO createState(StateVO stateVO) throws ApplicationException;
+	StateVO createState(StateVO stateVO);
 
-	Optional<StateVO> updateState(StateVO stateVO) throws ApplicationException;
+	Optional<StateVO> updateState(StateVO stateVO);
 
 	void deleteState(Long id);
 
@@ -61,9 +60,9 @@ public interface BasicMasterService {
 	
 	List<CityVO> getAllCitiesByStateAndCountry(String state, String country, Long orgId);
 
-	CityVO createCity(CityVO cityVO) throws ApplicationException;
+	CityVO createCity(CityVO cityVO);
 
-	Optional<CityVO> updateCity(CityVO cityVO) throws ApplicationException;
+	Optional<CityVO> updateCity(CityVO cityVO);
 
 	void deleteCity(Long id);
 
