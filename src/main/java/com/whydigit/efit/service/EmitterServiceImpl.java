@@ -39,6 +39,7 @@ import com.whydigit.efit.dto.IssueRequestType;
 import com.whydigit.efit.dto.OutwardKitDetailsDTO;
 import com.whydigit.efit.dto.Role;
 import com.whydigit.efit.entity.AssetStockDetailsVO;
+import com.whydigit.efit.entity.AssetTaggingDetailsVO;
 import com.whydigit.efit.entity.BinAllotmentDetailsVO;
 import com.whydigit.efit.entity.BinAllotmentNewVO;
 import com.whydigit.efit.entity.CustomersVO;
@@ -58,6 +59,7 @@ import com.whydigit.efit.entity.ReturnStockVO;
 import com.whydigit.efit.entity.VwEmitterInwardVO;
 import com.whydigit.efit.exception.ApplicationException;
 import com.whydigit.efit.repo.AssetStockDetailsRepo;
+import com.whydigit.efit.repo.AssetTaggingDetailsRepo;
 import com.whydigit.efit.repo.BinAllotmentDetailsRepo;
 import com.whydigit.efit.repo.BinAllotmentNewRepo;
 import com.whydigit.efit.repo.BinAllotmentRepo;
@@ -97,6 +99,9 @@ public class EmitterServiceImpl implements EmitterService {
 	
 	@Autowired
 	InwardRepo inwardRepo;
+	
+	@Autowired
+	AssetTaggingDetailsRepo taggingDetailsRepo;
 
 	@Autowired
 	FlowRepo flowRepo;
@@ -169,6 +174,7 @@ public class EmitterServiceImpl implements EmitterService {
 		String requestnumber = finyr + "BR" + issueRequestRepo.finddocid();
 		issueRequestVO.setDocId(requestnumber);
 		issueRequestRepo.updatesequence();
+		issueRequestVO.setEmitter(customersRepo.findCustomerLegalnameByEmitterId(issueRequestDTO.getEmitterId()));
 		issueRequestVO.setEmitterCode(customersRepo.findcustomercodeByEmitterId(issueRequestDTO.getEmitterId()));
 		issueRequestVO.setFlowName(flowVO.getFlowName());
 		issueRequestVO.setIssueItemVO(issueItemVO);
@@ -660,7 +666,7 @@ public class EmitterServiceImpl implements EmitterService {
 		binAllotmentNewVO.setOrgId(binAllotmentDTO.getOrgId());
 		binAllotmentNewVO.setEmitterId(binAllotmentDTO.getEmitterId());
 		CustomersVO customer=customersRepo.findById(binAllotmentDTO.getEmitterId()).get();
-		binAllotmentNewVO.setEmitter(customer.getEntityLegalName());
+		binAllotmentNewVO.setEmitter(customer.getDisplayName());
 		binAllotmentNewVO.setPartName(binAllotmentDTO.getPartName());
 		binAllotmentNewVO.setPartCode(binAllotmentDTO.getPartCode());
 		binAllotmentNewVO.setStockBranch(binAllotmentDTO.getStockBranch());
@@ -703,49 +709,61 @@ public class EmitterServiceImpl implements EmitterService {
 				assetStockDetailsVO.setSourceId(allotmentDetailsVO2.getId());															// value
 				assetStockDetailsVO.setScreen("BIN ALLOTMENT");
 				assetStockDetailsVO.setPm("M");
+				assetStockDetailsVO.setStatus("S");
 				assetStockDetailsVO.setFinyr(allotmentNewVO.getFinyr());
 				assetStockDetailsVO.setStockBranch(allotmentNewVO.getStockBranch());
 				assetStockDetailsRepo.save(assetStockDetailsVO);
 			}
+			for(BinAllotmentDetailsVO allotmentDetailsVO2:allotmentDetailsVO) {
+				AssetStockDetailsVO assetStockDetailsVO = new AssetStockDetailsVO();
+				assetStockDetailsVO.setStockRef(allotmentNewVO.getDocId());
+				assetStockDetailsVO.setStockDate(allotmentNewVO.getDocDate());
+				assetStockDetailsVO.setSkuCode(allotmentDetailsVO2.getAssetCode());
+				assetStockDetailsVO.setSku(allotmentDetailsVO2.getAsset());
+				assetStockDetailsVO.setSkuQty(1);
+				assetStockDetailsVO.setRfId(allotmentDetailsVO2.getRfId());
+				assetStockDetailsVO.setTagCode(allotmentDetailsVO2.getTagCode());
+				assetStockDetailsVO.setStockSource("");
+				assetStockDetailsVO.setSCode(allotmentNewVO.getScode()); // Assuming getScode() returns the correct
+				assetStockDetailsVO.setSourceId(allotmentDetailsVO2.getId());															// value
+				assetStockDetailsVO.setScreen("BIN ALLOTMENT");
+				assetStockDetailsVO.setPm("P");
+				assetStockDetailsVO.setStatus("M");
+				assetStockDetailsVO.setFinyr(allotmentNewVO.getFinyr());
+				assetStockDetailsVO.setStockBranch(allotmentNewVO.getEmitter()+"-"+allotmentNewVO.getStockBranch());
+				assetStockDetailsRepo.save(assetStockDetailsVO);
+			}
 		}
 		return binAllotmentNewVO;
-		
 	}
-	
-//	@Override
-//	public List<BinAllotmentVO> getBinRequest(Long emitterId,String warehouseLocation, Long orgId, LocalDate startDate, LocalDate endDate,Long warehouseLocationId) {
-//
-//		return binAllotmentRepo.findAll(new Specification<IssueRequestVO>() {
-//
-//			@Override
-//			public Predicate toPredicate(Root<IssueRequestVO> root, CriteriaQuery<?> query,
-//					CriteriaBuilder criteriaBuilder) {
-//				List<Predicate> predicates = new ArrayList<>();
-//				if (ObjectUtils.isNotEmpty(emitterId)) {
-//					predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("emitterId"), emitterId)));
-//				}
-//				if (ObjectUtils.isNotEmpty(orgId)) {
-//					predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("orgId"), orgId)));
-//				}
-//				if (ObjectUtils.isNotEmpty(startDate) && ObjectUtils.isNotEmpty(endDate)) {
-//					predicates.add(criteriaBuilder.between(root.get("requestedDate"),
-//							LocalDateTime.of(startDate, LocalTime.MIDNIGHT),
-//							LocalDateTime.of(endDate, LocalTime.MIDNIGHT)));
-//				} 
-//				if (StringUtils.isNoneBlank(warehouseLocation)) {
-//					predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("WarehouseLocation"), warehouseLocation)));
-//				}
-//				if (ObjectUtils.isNotEmpty(warehouseLocationId)) {
-//					predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("warehouseLocationId"), warehouseLocationId)));
-//				}
-//				return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
-//			}
-//		});
-//
-//	}
 
-	
+	@Override
+	public Set<Object[]> getReqDetailsByOrgId(Long orgId) {
+		return binAllotmentNewRepo.findReqDetailsByOrgId(orgId);
+	}
+	@Override
+	public List<BinAllotmentNewVO> getAllBinAllotment(Long orgId) {
+		List<BinAllotmentNewVO> binAllotmentNewVO= new ArrayList<>();
+		if (ObjectUtils.isNotEmpty(orgId)) {
+			LOGGER.info("Successfully Received  BinAllotment BY orgId : {}", orgId);
+			binAllotmentNewVO = binAllotmentNewRepo.getAllBinAllotment(orgId);
+		} else {
+			LOGGER.info("Successfully Received  BinAllotment For All orgId.");
+			binAllotmentNewVO = binAllotmentNewRepo.findAll();
+		}
+		return binAllotmentNewVO;
+	}
+
+	@Override
+	public Optional<AssetTaggingDetailsVO> getTaggingDetailsByRfId(String rfId) {
+		
+		return taggingDetailsRepo.findByRfId(rfId);
+	}
+
+	@Override
+	public Optional<AssetTaggingDetailsVO> getTaggingDetailsByTagCode(String tagCode) {
+		
+		return taggingDetailsRepo.findByTagCode(tagCode);
+	}
 
 }
-
-

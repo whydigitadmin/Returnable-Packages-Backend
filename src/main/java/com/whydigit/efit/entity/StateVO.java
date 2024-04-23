@@ -33,10 +33,6 @@ public class StateVO {
 	private String stateName;
 	@Column(name="country",length = 30)
     private String country;
-	@Column(name="region",length = 30)
-    private String region;
-	@Column(name="dupchk",length = 100)
-    private String dupchk;
 	@Column(name="active",length = 30)
     private boolean active;
 	

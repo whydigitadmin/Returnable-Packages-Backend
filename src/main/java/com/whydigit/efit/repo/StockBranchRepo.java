@@ -16,4 +16,7 @@ public interface StockBranchRepo extends JpaRepository<StockBranchVO, Long> {
 	@Query(nativeQuery = true,value="select b.* from warehouse a, availablekit b where a.stockbranch=b.stockbranch and a.warehouseid=?1 and b.kitcode=?2")
 	Set<Object[]> findAvalKitQty(Long warehouseId, String kitname);
 
+	@Query(nativeQuery = true,value="select b.* from availablekit b where  b.stockbranch=?1 and b.kitcode=?2")
+	Set<Object[]> findAvalKitQtyByBranch(String branch, String kitname);
+
 }
