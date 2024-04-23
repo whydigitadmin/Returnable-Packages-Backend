@@ -28,6 +28,7 @@ import com.whydigit.efit.common.CommonConstant;
 import com.whydigit.efit.common.EmitterConstant;
 import com.whydigit.efit.common.UserConstants;
 import com.whydigit.efit.dto.BinAllotmentDTO;
+import com.whydigit.efit.dto.BinOutwardDTO;
 import com.whydigit.efit.dto.EmitterAddressDTO;
 import com.whydigit.efit.dto.InwardDTO;
 import com.whydigit.efit.dto.IssueRequestDTO;
@@ -35,13 +36,13 @@ import com.whydigit.efit.dto.IssueRequestQtyApprovelDTO;
 import com.whydigit.efit.dto.OutwardKitDetailsDTO;
 import com.whydigit.efit.dto.ResponseDTO;
 import com.whydigit.efit.entity.BinAllotmentNewVO;
+import com.whydigit.efit.entity.BinOutwardVO;
 import com.whydigit.efit.entity.EmitterInwardVO;
 import com.whydigit.efit.entity.EmitterOutwardVO;
 import com.whydigit.efit.entity.InwardVO;
 import com.whydigit.efit.entity.IssueRequestVO;
 import com.whydigit.efit.entity.OutwardKitDetailsVO;
 import com.whydigit.efit.entity.OutwardView;
-import com.whydigit.efit.entity.ProofOfDeliveryVO;
 import com.whydigit.efit.entity.VwEmitterInwardVO;
 import com.whydigit.efit.service.EmitterService;
 
@@ -751,26 +752,26 @@ public class EmitterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-		
-		private List<Map<String, String>> findPartStudy(Set<Object[]> partstudy) {
-		    List<Map<String, String>> allPartstudy = new ArrayList<>();
-		    for (Object[] ps : partstudy) {
-		        Map<String, String> part = new HashMap<>();
-		            part.put("reqNo", ps[0] != null ? ps[0].toString() : "");
-		            part.put("reqDate", ps[1] != null ? ps[1].toString() : "");
-		            part.put("emitter", ps[2] != null ? ps[2].toString() : "");
-		            part.put("emitterid", ps[3] != null ? ps[3].toString() : "");
-		            part.put("kitcode", ps[4] != null ? ps[4].toString() : "");
-		            part.put("reqKitQty", ps[5] != null ? ps[5].toString() : "");
-		            part.put("partno", ps[6] != null ? ps[6].toString() : "");
-		            part.put("partname", ps[7] != null ? ps[7].toString() : "");
-		            part.put("flow", ps[8] != null ? ps[8].toString() : "");
-		            part.put("flowid", ps[9] != null ? ps[9].toString() : "");
-		        allPartstudy.add(part);
-		    }
+
+	private List<Map<String, String>> findPartStudy(Set<Object[]> partstudy) {
+		List<Map<String, String>> allPartstudy = new ArrayList<>();
+		for (Object[] ps : partstudy) {
+			Map<String, String> part = new HashMap<>();
+			part.put("reqNo", ps[0] != null ? ps[0].toString() : "");
+			part.put("reqDate", ps[1] != null ? ps[1].toString() : "");
+			part.put("emitter", ps[2] != null ? ps[2].toString() : "");
+			part.put("emitterid", ps[3] != null ? ps[3].toString() : "");
+			part.put("kitcode", ps[4] != null ? ps[4].toString() : "");
+			part.put("reqKitQty", ps[5] != null ? ps[5].toString() : "");
+			part.put("partno", ps[6] != null ? ps[6].toString() : "");
+			part.put("partname", ps[7] != null ? ps[7].toString() : "");
+			part.put("flow", ps[8] != null ? ps[8].toString() : "");
+			part.put("flowid", ps[9] != null ? ps[9].toString() : "");
+			allPartstudy.add(part);
+		}
 		return allPartstudy;
 	}
-	
+
 	@GetMapping("/getAllBinAllotmentByOrgId")
 	public ResponseEntity<ResponseDTO> getAllBinAllotment(@RequestParam(required = false) Long orgId) {
 		String methodName = "getAllBinAllotment()";
@@ -790,10 +791,38 @@ public class EmitterController extends BaseController {
 			responseObjectsMap.put("binAllotmentNewVO", binAllotmentNewVO);
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} else {
-			responseDTO = createServiceResponseError(responseObjectsMap, "BinAllotment information receive failed", errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "BinAllotment information receive failed",
+					errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 
+	}
+
+	// Bin Outward
+
+	@PostMapping("/binOutward")
+	public ResponseEntity<ResponseDTO> createBinOutward(@RequestBody BinOutwardDTO binOutwardDTO) {
+		String methodName = "createBinOutward()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		BinOutwardVO binOutwardVO = new BinOutwardVO();
+		try {
+			binOutwardVO = emitterService.createBinOutward(binOutwardDTO);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(CommonConstant.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Bin Outward Created Successfully");
+			responseObjectsMap.put("binOutwardVO", binOutwardVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "Bin Outward Failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
 	}
 }

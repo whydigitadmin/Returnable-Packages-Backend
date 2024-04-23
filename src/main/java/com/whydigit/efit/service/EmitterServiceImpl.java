@@ -29,6 +29,7 @@ import org.springframework.stereotype.Service;
 import com.whydigit.efit.common.EmitterConstant;
 import com.whydigit.efit.dto.BinAllotmentDTO;
 import com.whydigit.efit.dto.BinAllotmentDetailsDTO;
+import com.whydigit.efit.dto.BinOutwardDTO;
 import com.whydigit.efit.dto.EmitterAddressDTO;
 import com.whydigit.efit.dto.InwardDTO;
 import com.whydigit.efit.dto.IssueItemDTO;
@@ -41,6 +42,8 @@ import com.whydigit.efit.dto.Role;
 import com.whydigit.efit.entity.AssetStockDetailsVO;
 import com.whydigit.efit.entity.BinAllotmentDetailsVO;
 import com.whydigit.efit.entity.BinAllotmentNewVO;
+import com.whydigit.efit.entity.BinOutwardDetailsVO;
+import com.whydigit.efit.entity.BinOutwardVO;
 import com.whydigit.efit.entity.CustomersVO;
 import com.whydigit.efit.entity.EmitterInwardVO;
 import com.whydigit.efit.entity.EmitterOutwardVO;
@@ -61,6 +64,8 @@ import com.whydigit.efit.repo.AssetStockDetailsRepo;
 import com.whydigit.efit.repo.BinAllotmentDetailsRepo;
 import com.whydigit.efit.repo.BinAllotmentNewRepo;
 import com.whydigit.efit.repo.BinAllotmentRepo;
+import com.whydigit.efit.repo.BinOutwardDetailsRepo;
+import com.whydigit.efit.repo.BinOutwardRepo;
 import com.whydigit.efit.repo.CustomersRepo;
 import com.whydigit.efit.repo.DmapDetailsRepo;
 import com.whydigit.efit.repo.EmitterInwardRepo;
@@ -82,60 +87,66 @@ public class EmitterServiceImpl implements EmitterService {
 	public static final Logger LOGGER = LoggerFactory.getLogger(EmitterServiceImpl.class);
 	@Autowired
 	IssueRequestRepo issueRequestRepo;
-	
+
 	@Autowired
 	UserRepo userRepo;
-	
+
 	@Autowired
 	EmitterInwardRepo emitterInwardRepo;
-	
+
 	@Autowired
 	EmitterOutwardRepo emitterOutwardRepo;
-	
+
 	@Autowired
 	IssueItemRepo issueItemRepo;
-	
+
 	@Autowired
 	InwardRepo inwardRepo;
 
 	@Autowired
 	FlowRepo flowRepo;
-	
+
 	@Autowired
 	ReturnStockRepo returnStockRepo;
-	
+
 	@Autowired
 	DmapDetailsRepo dmapdetailsRepo;
 
 	@Autowired
 	VwEmitterInwardRepo vwEmitterInwardRepo;
-	
+
 	@Autowired
 	MaxPartQtyPerKitRepo maxPartQtyPerKitRepo;
 	@Autowired
 	CustomersRepo customersRepo;
-	
+
 	@Autowired
 	KitRepo kitRepo;
-	
+
 	@Autowired
 	BinAllotmentRepo binAllotmentRepo;
-	
+
 	@Autowired
 	BinAllotmentNewRepo binAllotmentNewRepo;
-	
+
 	@Autowired
 	BinAllotmentDetailsRepo binAllotmentDetailsRepo;
-	
+
 	@Autowired
 	OutwardViewRepo outwardViewRepo;
-	
+
 	@Autowired
 	OutwardKitDetailsRepo outwardKitDetailsRepo;
-	
+
 	@Autowired
 	AssetStockDetailsRepo assetStockDetailsRepo;
-	
+
+	@Autowired
+	BinOutwardRepo binOutwardRepo;
+
+	@Autowired
+	BinOutwardDetailsRepo binOutwardDetailsRepo;
+
 	@Override
 	public IssueRequestVO createIssueRequest(IssueRequestDTO issueRequestDTO) throws ApplicationException {
 		IssueRequestVO issueRequestVO = new IssueRequestVO();
@@ -211,7 +222,8 @@ public class EmitterServiceImpl implements EmitterService {
 	}
 
 	@Override
-	public List<IssueRequestVO> getIssueRequest(Long emitterId,String warehouseLocation, Long orgId, LocalDate startDate, LocalDate endDate,Long warehouseLocationId) {
+	public List<IssueRequestVO> getIssueRequest(Long emitterId, String warehouseLocation, Long orgId,
+			LocalDate startDate, LocalDate endDate, Long warehouseLocationId) {
 
 		return issueRequestRepo.findAll(new Specification<IssueRequestVO>() {
 
@@ -229,12 +241,14 @@ public class EmitterServiceImpl implements EmitterService {
 					predicates.add(criteriaBuilder.between(root.get("requestedDate"),
 							LocalDateTime.of(startDate, LocalTime.MIDNIGHT),
 							LocalDateTime.of(endDate, LocalTime.MIDNIGHT)));
-				} 
+				}
 				if (StringUtils.isNoneBlank(warehouseLocation)) {
-					predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("WarehouseLocation"), warehouseLocation)));
+					predicates.add(criteriaBuilder
+							.and(criteriaBuilder.equal(root.get("WarehouseLocation"), warehouseLocation)));
 				}
 				if (ObjectUtils.isNotEmpty(warehouseLocationId)) {
-					predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("warehouseLocationId"), warehouseLocationId)));
+					predicates.add(criteriaBuilder
+							.and(criteriaBuilder.equal(root.get("warehouseLocationId"), warehouseLocationId)));
 				}
 				return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
 			}
@@ -269,12 +283,13 @@ public class EmitterServiceImpl implements EmitterService {
 			throws ApplicationException {
 		IssueRequestVO issueRequestVO = issueRequestRepo.findById(issueRequestQtyApprovelDTO.getIssueRequestId())
 				.orElseThrow(() -> new ApplicationException("Invalid issueRequest information."));
-		List<AssetStockDetailsVO> assetStockDetailsVO=new ArrayList<>();
-		CustomersVO customersVO=customersRepo.findById(issueRequestVO.getEmitterId()).orElseThrow(()-> new ApplicationException("Emitter not found for this issueRequestId."));
+		List<AssetStockDetailsVO> assetStockDetailsVO = new ArrayList<>();
+		CustomersVO customersVO = customersRepo.findById(issueRequestVO.getEmitterId())
+				.orElseThrow(() -> new ApplicationException("Emitter not found for this issueRequestId."));
 		for (IssueRequestItemApprovelDTO irItem : issueRequestQtyApprovelDTO.getIssueRequestItemApprovelDTO()) {
 			setIssueRequestItemQTY(issueRequestQtyApprovelDTO, issueRequestVO, assetStockDetailsVO, customersVO,
 					irItem.getIssuedQty(), irItem.getIssueItemId());
-		}		
+		}
 		issueRequestVO.setIssueStatus(EmitterConstant.ISSUE_REQUEST_STATUS_ISSUED);
 //		if (issueRequestVO.getIssueItemVO().stream()
 //				.allMatch(flag -> flag.getIssueItemStatus() > EmitterConstant.ISSUE_REQUEST_ITEM_STATUS_INPROGRESS)) {
@@ -290,61 +305,60 @@ public class EmitterServiceImpl implements EmitterService {
 //			issueRequestVO.setIssueStatus(EmitterConstant.ISSUE_REQUEST_STATUS_PENDING);
 //		}
 		issueItemRepo.updateApptovedStatus(issueRequestQtyApprovelDTO.getIssueRequestId());
-		issueRequestVO= issueRequestRepo.save(issueRequestVO);
+		issueRequestVO = issueRequestRepo.save(issueRequestVO);
 		assetStockDetailsRepo.saveAll(assetStockDetailsVO);
 		return issueRequestVO;
 	}
 
 	private void setIssueRequestItemQTY(IssueRequestQtyApprovelDTO issueRequestQtyApprovelDTO,
-			IssueRequestVO issueRequestVO, List<AssetStockDetailsVO> assetStockDetailsVO, CustomersVO customersVO,int itemQTY,long itemId) {
-		issueRequestVO.getIssueItemVO().stream()
-				.filter(item -> item.getId() == itemId).forEach(item -> {
-					List<IssueRequestApprovedVO> issueRequestApprovedVO = item.getIssueRequestApprovedVO();
-					IssueRequestApprovedVO issueRequestApproved = new IssueRequestApprovedVO();
-					issueRequestApproved.setApprovedDate(LocalDateTime.now());
-					issueRequestApproved.setApprovedId(issueRequestQtyApprovelDTO.getApprovedId());
-					issueRequestApproved.setApproverName(issueRequestQtyApprovelDTO.getApproverName());
-					issueRequestApproved.setIssueItemVO(item);
-					issueRequestApproved.setQuantity(itemQTY);
-					int qty = issueRequestApprovedVO.stream().mapToInt(IssueRequestApprovedVO::getQuantity).sum()
-							+ itemQTY;
-					int ct = issueRequestApprovedVO.size() == 0 && qty == item.getKitQty() ? 0 : 1;
-					issueRequestApproved.setIrApprovedId(
-							new StringBuilder(Long.toString(issueRequestQtyApprovelDTO.getIssueRequestId())).append("-")
-									.append(itemId).append("-")
-									.append(issueRequestApprovedVO.size() + ct).toString());
-					item.setDocDate(LocalDate.now());
-					int finyr = issueItemRepo.getFinyr();
-					String binallotment = finyr + "BA" + issueItemRepo.finddocid();
-					item.setDocId(binallotment);
-					issueItemRepo.nextDocseq();
-					item.setIssuedQty(qty);
-					item.setIssueItemStatus(getItemStatus(qty, item.getKitQty()));
-					issueRequestApprovedVO.add(issueRequestApproved);
-					item.setIssueRequestApprovedVO(issueRequestApprovedVO);
-					if (ObjectUtils.isEmpty(item.getInwardVO())) {
-						InwardVO inwardVO = new InwardVO();
-						inwardVO.setIssueItemVO(item);
-						item.setInwardVO(inwardVO);
-					}
-					assetStockDetailsVO.addAll(getAssetStockDetailsVO(item,itemQTY,issueRequestQtyApprovelDTO));
-				});
+			IssueRequestVO issueRequestVO, List<AssetStockDetailsVO> assetStockDetailsVO, CustomersVO customersVO,
+			int itemQTY, long itemId) {
+		issueRequestVO.getIssueItemVO().stream().filter(item -> item.getId() == itemId).forEach(item -> {
+			List<IssueRequestApprovedVO> issueRequestApprovedVO = item.getIssueRequestApprovedVO();
+			IssueRequestApprovedVO issueRequestApproved = new IssueRequestApprovedVO();
+			issueRequestApproved.setApprovedDate(LocalDateTime.now());
+			issueRequestApproved.setApprovedId(issueRequestQtyApprovelDTO.getApprovedId());
+			issueRequestApproved.setApproverName(issueRequestQtyApprovelDTO.getApproverName());
+			issueRequestApproved.setIssueItemVO(item);
+			issueRequestApproved.setQuantity(itemQTY);
+			int qty = issueRequestApprovedVO.stream().mapToInt(IssueRequestApprovedVO::getQuantity).sum() + itemQTY;
+			int ct = issueRequestApprovedVO.size() == 0 && qty == item.getKitQty() ? 0 : 1;
+			issueRequestApproved.setIrApprovedId(
+					new StringBuilder(Long.toString(issueRequestQtyApprovelDTO.getIssueRequestId())).append("-")
+							.append(itemId).append("-").append(issueRequestApprovedVO.size() + ct).toString());
+			item.setDocDate(LocalDate.now());
+			int finyr = issueItemRepo.getFinyr();
+			String binallotment = finyr + "BA" + issueItemRepo.finddocid();
+			item.setDocId(binallotment);
+			issueItemRepo.nextDocseq();
+			item.setIssuedQty(qty);
+			item.setIssueItemStatus(getItemStatus(qty, item.getKitQty()));
+			issueRequestApprovedVO.add(issueRequestApproved);
+			item.setIssueRequestApprovedVO(issueRequestApprovedVO);
+			if (ObjectUtils.isEmpty(item.getInwardVO())) {
+				InwardVO inwardVO = new InwardVO();
+				inwardVO.setIssueItemVO(item);
+				item.setInwardVO(inwardVO);
+			}
+			assetStockDetailsVO.addAll(getAssetStockDetailsVO(item, itemQTY, issueRequestQtyApprovelDTO));
+		});
 	}
 
 	private List<AssetStockDetailsVO> getAssetStockDetailsVO(IssueItemVO issueItemVO, int issuedQty,
 			IssueRequestQtyApprovelDTO issueRequestQtyApprovelDTO) {
 		KitVO kitVO = kitRepo.findByKitCode(issueItemVO.getKitName()).get();
-		
+
 		return kitVO.getKitAssetVO().stream().map(kavo -> {
 			AssetStockDetailsVO assetStockDetailsVO = new AssetStockDetailsVO();
 			assetStockDetailsVO.setActive(true);
 			assetStockDetailsVO.setCancel(false);
 			assetStockDetailsVO.setCreatedBy(issueRequestQtyApprovelDTO.getCreatedBy());
 			assetStockDetailsVO.setModifiedBy(issueRequestQtyApprovelDTO.getModifiedBy());
-			assetStockDetailsVO.setStockBranch(issueRequestRepo.findStockBranchByIssurequestid(issueRequestQtyApprovelDTO.getIssueRequestId()));
+			assetStockDetailsVO.setStockBranch(
+					issueRequestRepo.findStockBranchByIssurequestid(issueRequestQtyApprovelDTO.getIssueRequestId()));
 			assetStockDetailsVO.setStockRef(issueRequestRepo.findDocid(issueRequestQtyApprovelDTO.getIssueRequestId()));
 			assetStockDetailsVO.setSkuCode(kavo.getAssetCodeId());
-			assetStockDetailsVO.setSkuQty(kavo.getQuantity() * issuedQty*-1);
+			assetStockDetailsVO.setSkuQty(kavo.getQuantity() * issuedQty * -1);
 			assetStockDetailsVO.setSku(kavo.getAssetName());
 			assetStockDetailsVO.setPm("M");
 			assetStockDetailsVO.setScreen("BIN_ALLOT");
@@ -389,7 +403,7 @@ public class EmitterServiceImpl implements EmitterService {
 
 	@Transactional
 	@Override
-	public InwardVO  updateEmitterInward(InwardDTO inwardDTO) throws ApplicationException {
+	public InwardVO updateEmitterInward(InwardDTO inwardDTO) throws ApplicationException {
 		IssueItemVO issueItemVO = new IssueItemVO();
 		InwardVO inwardVO = new InwardVO();
 //		MovementStockVO movementStockVO = new MovementStockVO();
@@ -427,19 +441,19 @@ public class EmitterServiceImpl implements EmitterService {
 	}
 
 	private void getInwardVOFromInwardDTO(InwardDTO inwardDTO, InwardVO inwardVO) {
-		
-		ReturnStockVO returnStockVO=new ReturnStockVO();
-		
+
+		ReturnStockVO returnStockVO = new ReturnStockVO();
+
 		inwardVO.setNetQtyRecieved(inwardDTO.getNetQtyRecieved());
 		inwardVO.setReturnQty(inwardDTO.getReturnQty());
 		inwardVO.setStatus(inwardDTO.getStatus());
 		inwardVO.setNetRecAcceptStatus(true);
-		
+
 		returnStockVO.setQty(inwardDTO.getNetQtyRecieved());
 		returnStockVO.setIssue_item_id(inwardDTO.getIssueItemId());
 		returnStockRepo.save(returnStockVO);
-		
-		}
+
+	}
 
 	@Override
 	public void deleteEmitterInward(int id) {
@@ -566,38 +580,40 @@ public class EmitterServiceImpl implements EmitterService {
 	@Override
 	public Map<String, Object> getAllMaxPartQtyPerKit(Long orgId, Long emitterId, Long flowId, String partNumber) {
 		Map<String, Object> maxPrtQty = new HashMap<>();
-	    List<MaxPartQtyPerKitVO>maxPartQtyPerKitVO = maxPartQtyPerKitRepo.findAll(new Specification<MaxPartQtyPerKitVO>() {
-	        @Override
-	        public Predicate toPredicate(Root<MaxPartQtyPerKitVO> root, CriteriaQuery<?> query,
-	                                     CriteriaBuilder criteriaBuilder) {
-	            List<Predicate> predicates = new ArrayList<>();
-	            if (ObjectUtils.isNotEmpty(orgId)) {
-	                predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("orgId"), orgId)));
-	            }
-	            if (ObjectUtils.isNotEmpty(emitterId)) { // Corrected from orgId to emitterId
-	                predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("emitterId"), emitterId)));
-	            }
-	            if (ObjectUtils.isNotEmpty(flowId)) { // Corrected from orgId to flowId
-	                predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("flowId"), flowId)));
-	            }
-	            if (StringUtils.isNotBlank(partNumber)) {
-	                predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("partNumber"), partNumber)));
-	            }
-	            return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
-	        }
-	    });
-	    maxPrtQty.put("MaxPartQtyPerKitVO", maxPartQtyPerKitVO);
+		List<MaxPartQtyPerKitVO> maxPartQtyPerKitVO = maxPartQtyPerKitRepo
+				.findAll(new Specification<MaxPartQtyPerKitVO>() {
+					@Override
+					public Predicate toPredicate(Root<MaxPartQtyPerKitVO> root, CriteriaQuery<?> query,
+							CriteriaBuilder criteriaBuilder) {
+						List<Predicate> predicates = new ArrayList<>();
+						if (ObjectUtils.isNotEmpty(orgId)) {
+							predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("orgId"), orgId)));
+						}
+						if (ObjectUtils.isNotEmpty(emitterId)) { // Corrected from orgId to emitterId
+							predicates
+									.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("emitterId"), emitterId)));
+						}
+						if (ObjectUtils.isNotEmpty(flowId)) { // Corrected from orgId to flowId
+							predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("flowId"), flowId)));
+						}
+						if (StringUtils.isNotBlank(partNumber)) {
+							predicates.add(
+									criteriaBuilder.and(criteriaBuilder.equal(root.get("partNumber"), partNumber)));
+						}
+						return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
+					}
+				});
+		maxPrtQty.put("MaxPartQtyPerKitVO", maxPartQtyPerKitVO);
 		return maxPrtQty;
 	}
 
 	@Override
 	public List<OutwardView> getAllEmitterOutwardView(Long orgId, Long flowId) {
 		List<OutwardView> outwardView = new ArrayList<>();
-		if(ObjectUtils.isNotEmpty(orgId) && ObjectUtils.isNotEmpty(flowId)) {
-			LOGGER.info("Successfully Received  EmitterOutward Information BY OrgId : {} flowId : {}", orgId,flowId);
-			outwardView = outwardViewRepo.getOutwardViewByOrgIdAndFlowId(orgId,flowId);	
-		}
-		else if (ObjectUtils.isNotEmpty(orgId)) {
+		if (ObjectUtils.isNotEmpty(orgId) && ObjectUtils.isNotEmpty(flowId)) {
+			LOGGER.info("Successfully Received  EmitterOutward Information BY OrgId : {} flowId : {}", orgId, flowId);
+			outwardView = outwardViewRepo.getOutwardViewByOrgIdAndFlowId(orgId, flowId);
+		} else if (ObjectUtils.isNotEmpty(orgId)) {
 			LOGGER.info("Successfully Received  EmitterOutward Information BY OrgId : {}", orgId);
 			outwardView = outwardViewRepo.getOutwardViewByOrgId(orgId);
 		} else {
@@ -608,7 +624,8 @@ public class EmitterServiceImpl implements EmitterService {
 	}
 
 	@Override
-	public OutwardKitDetailsVO updateOutwardKitQty(OutwardKitDetailsDTO outwardKitDetailsDTO) throws ApplicationException {
+	public OutwardKitDetailsVO updateOutwardKitQty(OutwardKitDetailsDTO outwardKitDetailsDTO)
+			throws ApplicationException {
 
 //		OutwardKitDetailsVO outwardKitDetailVO = new OutwardKitDetailsVO();
 //		outwardKitDetailVO.setKitNO(outwardKitDetailsDTO.getKitNO());
@@ -618,41 +635,42 @@ public class EmitterServiceImpl implements EmitterService {
 //		outwardKitDetailVO.setEmitterOutwardVO(emitterOutwardVO); 
 //		emitterOutwardVO.setKitNo(outwardKitDetailsDTO.getKitNO());
 //		emitterOutwardVO.setKitReturnqty(outwardKitDetailsDTO.getKitQty());
-		
+
 		OutwardKitDetailsVO outwardKitDetailVO = new OutwardKitDetailsVO();
 		outwardKitDetailVO.setKitNO(outwardKitDetailsDTO.getKitNO());
 		outwardKitDetailVO.setKitQty(outwardKitDetailsDTO.getKitQty());
-		EmitterOutwardVO emitterOutwardVO = emitterOutwardRepo.findOutwardByIssueItemId(outwardKitDetailsDTO.getIssueItemId());
-		outwardKitDetailVO.setEmitterOutwardVO(emitterOutwardVO); 
+		EmitterOutwardVO emitterOutwardVO = emitterOutwardRepo
+				.findOutwardByIssueItemId(outwardKitDetailsDTO.getIssueItemId());
+		outwardKitDetailVO.setEmitterOutwardVO(emitterOutwardVO);
 		outwardKitDetailsRepo.save(outwardKitDetailVO);
-		int reqturnqty=outwardKitDetailsRepo.getReturnQty(emitterOutwardVO.getId());
+		int reqturnqty = outwardKitDetailsRepo.getReturnQty(emitterOutwardVO.getId());
 		emitterOutwardVO.setKitReturnqty(reqturnqty);
 		emitterOutwardRepo.save(emitterOutwardVO);
-		ReturnStockVO returnStockVO=new ReturnStockVO();
+		ReturnStockVO returnStockVO = new ReturnStockVO();
 		returnStockVO.setIssue_item_id(emitterOutwardVO.getIssueItemVO().getId());
-		returnStockVO.setQty(outwardKitDetailsDTO.getKitQty()*-1);
-		returnStockRepo.save(returnStockVO);		
-		
+		returnStockVO.setQty(outwardKitDetailsDTO.getKitQty() * -1);
+		returnStockRepo.save(returnStockVO);
+
 		return outwardKitDetailsRepo.save(outwardKitDetailVO);
 
 	}
 
 	@Override
 	public BinAllotmentNewVO createBinAllotment(BinAllotmentDTO binAllotmentDTO) {
-		
+
 		boolean isBinReqNoExist = binAllotmentNewRepo.existsByBinReqNo(binAllotmentDTO.getBinReqNo());
-		
+
 		if (isBinReqNoExist) {
-		    throw new RuntimeException("ReqNo " + binAllotmentDTO.getBinReqNo() + " already exists.");
+			throw new RuntimeException("ReqNo " + binAllotmentDTO.getBinReqNo() + " already exists.");
 		}
-		
-		BinAllotmentNewVO binAllotmentNewVO=new BinAllotmentNewVO();
+
+		BinAllotmentNewVO binAllotmentNewVO = new BinAllotmentNewVO();
 		// Set Docid for Bin Allotment
 		int finyr = binAllotmentNewRepo.getFinyr();
 		String binallotment = finyr + "BA" + binAllotmentNewRepo.finddocid();
 		binAllotmentNewVO.setDocId(binallotment);
 		binAllotmentNewRepo.nextDocseq();
-		
+
 		binAllotmentNewVO.setDocDate(binAllotmentDTO.getDocDate());
 		binAllotmentNewVO.setBinReqNo(binAllotmentDTO.getBinReqNo());
 		binAllotmentNewVO.setBinReqDate(binAllotmentDTO.getBinReqDate());
@@ -660,7 +678,7 @@ public class EmitterServiceImpl implements EmitterService {
 		binAllotmentNewVO.setModifiedBy(binAllotmentDTO.getCreatedby());
 		binAllotmentNewVO.setOrgId(binAllotmentDTO.getOrgId());
 		binAllotmentNewVO.setEmitterId(binAllotmentDTO.getEmitterId());
-		CustomersVO customer=customersRepo.findById(binAllotmentDTO.getEmitterId()).get();
+		CustomersVO customer = customersRepo.findById(binAllotmentDTO.getEmitterId()).get();
 		binAllotmentNewVO.setEmitter(customer.getEntityLegalName());
 		binAllotmentNewVO.setPartName(binAllotmentDTO.getPartName());
 		binAllotmentNewVO.setPartCode(binAllotmentDTO.getPartCode());
@@ -669,13 +687,11 @@ public class EmitterServiceImpl implements EmitterService {
 		binAllotmentNewVO.setReqKitQty(binAllotmentDTO.getReqKitQty());
 		binAllotmentNewVO.setAvlKitQty(binAllotmentDTO.getAvlKitQty());
 		binAllotmentNewVO.setAllotkKitQty(binAllotmentDTO.getAllotKitQty());
-		
-		List<BinAllotmentDetailsVO>binAllotmentDetailsVO=new ArrayList<>();
-		if(binAllotmentDTO.getBinAllotmentDetailsDTO()!=null)
-		{
-			for(BinAllotmentDetailsDTO binAllotmentDetailsDTO: binAllotmentDTO.getBinAllotmentDetailsDTO())
-			{
-				BinAllotmentDetailsVO binAllotmentDetails=new BinAllotmentDetailsVO();
+
+		List<BinAllotmentDetailsVO> binAllotmentDetailsVO = new ArrayList<>();
+		if (binAllotmentDTO.getBinAllotmentDetailsDTO() != null) {
+			for (BinAllotmentDetailsDTO binAllotmentDetailsDTO : binAllotmentDTO.getBinAllotmentDetailsDTO()) {
+				BinAllotmentDetailsVO binAllotmentDetails = new BinAllotmentDetailsVO();
 				binAllotmentDetails.setRfId(binAllotmentDetailsDTO.getRfId());
 				binAllotmentDetails.setTagCode(binAllotmentDetailsDTO.getTagCode());
 				binAllotmentDetails.setAssetCode(binAllotmentDetailsDTO.getAssetCode());
@@ -686,11 +702,10 @@ public class EmitterServiceImpl implements EmitterService {
 			}
 		}
 		binAllotmentNewVO.setBinAllotmentDetailsVO(binAllotmentDetailsVO);
-		BinAllotmentNewVO allotmentNewVO=binAllotmentNewRepo.save(binAllotmentNewVO);
-		List<BinAllotmentDetailsVO>allotmentDetailsVO=allotmentNewVO.getBinAllotmentDetailsVO();
-		if(allotmentDetailsVO!=null && ! allotmentDetailsVO.isEmpty())
-		{
-			for(BinAllotmentDetailsVO allotmentDetailsVO2:allotmentDetailsVO) {
+		BinAllotmentNewVO allotmentNewVO = binAllotmentNewRepo.save(binAllotmentNewVO);
+		List<BinAllotmentDetailsVO> allotmentDetailsVO = allotmentNewVO.getBinAllotmentDetailsVO();
+		if (allotmentDetailsVO != null && !allotmentDetailsVO.isEmpty()) {
+			for (BinAllotmentDetailsVO allotmentDetailsVO2 : allotmentDetailsVO) {
 				AssetStockDetailsVO assetStockDetailsVO = new AssetStockDetailsVO();
 				assetStockDetailsVO.setStockRef(allotmentNewVO.getDocId());
 				assetStockDetailsVO.setStockDate(allotmentNewVO.getDocDate());
@@ -701,7 +716,7 @@ public class EmitterServiceImpl implements EmitterService {
 				assetStockDetailsVO.setTagCode(allotmentDetailsVO2.getTagCode());
 				assetStockDetailsVO.setStockSource("");
 				assetStockDetailsVO.setSCode(allotmentNewVO.getScode()); // Assuming getScode() returns the correct
-				assetStockDetailsVO.setSourceId(allotmentDetailsVO2.getId());															// value
+				assetStockDetailsVO.setSourceId(allotmentDetailsVO2.getId()); // value
 				assetStockDetailsVO.setScreen("BIN ALLOTMENT");
 				assetStockDetailsVO.setPm("M");
 				assetStockDetailsVO.setFinyr(allotmentNewVO.getFinyr());
@@ -716,9 +731,10 @@ public class EmitterServiceImpl implements EmitterService {
 	public Set<Object[]> getReqDetailsByOrgId(Long orgId) {
 		return binAllotmentNewRepo.findReqDetailsByOrgId(orgId);
 	}
+
 	@Override
 	public List<BinAllotmentNewVO> getAllBinAllotment(Long orgId) {
-		List<BinAllotmentNewVO> binAllotmentNewVO= new ArrayList<>();
+		List<BinAllotmentNewVO> binAllotmentNewVO = new ArrayList<>();
 		if (ObjectUtils.isNotEmpty(orgId)) {
 			LOGGER.info("Successfully Received  BinAllotment BY orgId : {}", orgId);
 			binAllotmentNewVO = binAllotmentNewRepo.getAllBinAllotment(orgId);
@@ -729,7 +745,55 @@ public class EmitterServiceImpl implements EmitterService {
 		return binAllotmentNewVO;
 	}
 
-	
+	// Bin Outward
+
+	@Override
+	public BinOutwardVO createBinOutward(BinOutwardDTO binOutwardDTO) {
+		
+		
+		BinOutwardVO binOutwardVO = createBinOutwardVOByBinOutwardDTO(binOutwardDTO);
+		int finyr = binOutwardRepo.findfinyr();
+		String binoutward = finyr + "BO" + binOutwardRepo.finddocid();
+		binOutwardVO.setDocid(binoutward);
+		binOutwardRepo.nextseq();
+		binOutwardRepo.save(binOutwardVO);
+		BinOutwardVO savedBinOutwardVO = binOutwardRepo.save(binOutwardVO);
+
+		List<BinOutwardDetailsVO> binOutwardDetailsVOLists = savedBinOutwardVO.getBinOutwardDetails();
+		if (binOutwardDetailsVOLists != null && !binOutwardDetailsVOLists.isEmpty())
+			for (BinOutwardDetailsVO binOutwardDetailsVO : binOutwardDetailsVOLists) {
+
+				AssetStockDetailsVO stockDetailsVO = new AssetStockDetailsVO();
+				stockDetailsVO.setStockRef(savedBinOutwardVO.getDocid());
+				stockDetailsVO.setStockDate(savedBinOutwardVO.getDocdate());
+				stockDetailsVO.setSku(binOutwardDetailsVO.getAsset());
+				stockDetailsVO.setSkuCode(binOutwardDetailsVO.getAssetcode());
+				stockDetailsVO.setSkuQty(-binOutwardDetailsVO.getQty());
+				stockDetailsVO.setSCode(savedBinOutwardVO.getScode());
+				stockDetailsVO.setPm(savedBinOutwardVO.getPm());
+				stockDetailsVO.setScreen(savedBinOutwardVO.getScreen());
+				stockDetailsVO.setSourceId(binOutwardDetailsVO.getId());
+				stockDetailsVO.setFinyr(savedBinOutwardVO.getFinyr());;
+				assetStockDetailsRepo.save(stockDetailsVO);
+			}
+		return binOutwardVO;
+	}
+
+	private BinOutwardVO createBinOutwardVOByBinOutwardDTO(BinOutwardDTO binOutwardDTO) {
+		List<BinOutwardDetailsVO> binOutwardDetailsVOList = new ArrayList<>();
+		BinOutwardVO binOutwardVO = BinOutwardVO.builder().docdate(binOutwardDTO.getDocdate())
+				.flow(binOutwardDTO.getFlow()).kit(binOutwardDTO.getKit())
+				.outwardkitqty(binOutwardDTO.getOutwardkitqty()).binOutwardDetails(binOutwardDetailsVOList).build();
+
+		binOutwardDetailsVOList = binOutwardDTO.getBinOutwardDetails().stream()
+				.map(binoutward -> BinOutwardDetailsVO.builder().asset(binoutward.getAsset())
+						.assetcode(binoutward.getAssetcode()).qty(binoutward.getQty()).binoutwardVO(binOutwardVO)
+						.build())
+				.collect(Collectors.toList());
+		binOutwardVO.setBinOutwardDetails(binOutwardDetailsVOList);
+		return binOutwardVO;
+	}
+
 //	@Override
 //	public List<BinAllotmentVO> getBinRequest(Long emitterId,String warehouseLocation, Long orgId, LocalDate startDate, LocalDate endDate,Long warehouseLocationId) {
 //		return binAllotmentRepo.findAll(new Specification<IssueRequestVO>() {
