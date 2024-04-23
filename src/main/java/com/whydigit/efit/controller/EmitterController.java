@@ -41,6 +41,7 @@ import com.whydigit.efit.entity.InwardVO;
 import com.whydigit.efit.entity.IssueRequestVO;
 import com.whydigit.efit.entity.OutwardKitDetailsVO;
 import com.whydigit.efit.entity.OutwardView;
+import com.whydigit.efit.entity.ProofOfDeliveryVO;
 import com.whydigit.efit.entity.VwEmitterInwardVO;
 import com.whydigit.efit.service.EmitterService;
 
@@ -91,7 +92,8 @@ public class EmitterController extends BaseController {
 		ResponseDTO responseDTO = null;
 		List<IssueRequestVO> issueRequestVO = new ArrayList<>();
 		try {
-			issueRequestVO = emitterService.getIssueRequest(emitterId, warehouseLocation,orgId, startDate, endDate,warehouseLoacationId);
+			issueRequestVO = emitterService.getIssueRequest(emitterId, warehouseLocation, orgId, startDate, endDate,
+					warehouseLoacationId);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(CommonConstant.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
@@ -107,7 +109,7 @@ public class EmitterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-	
+
 //	// get Bin Allotment
 //	@GetMapping("/getBinRequest")
 //	public ResponseEntity<ResponseDTO> getBinRequest(@RequestParam(required = false) Long emitterId,
@@ -140,15 +142,15 @@ public class EmitterController extends BaseController {
 //	}
 
 	@GetMapping("/cancelIssueRequest")
-	public ResponseEntity<ResponseDTO> CancelIssueRequest(@RequestParam(required = false) Long issueRequestId,@RequestParam(required = false)
-			Long issueRequestItemId ) {
+	public ResponseEntity<ResponseDTO> CancelIssueRequest(@RequestParam(required = false) Long issueRequestId,
+			@RequestParam(required = false) Long issueRequestItemId) {
 		String methodName = "CancelIssueRequest()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
 		try {
-			 emitterService.cancelIssueRequest(issueRequestId, issueRequestItemId);
+			emitterService.cancelIssueRequest(issueRequestId, issueRequestItemId);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(CommonConstant.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
@@ -163,7 +165,7 @@ public class EmitterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-	
+
 	@GetMapping("/getEmitterAddress")
 	public ResponseEntity<ResponseDTO> getEmitterAddress(@RequestParam(required = false) Long orgId) {
 		String methodName = "getEmitterAddress()";
@@ -338,10 +340,10 @@ public class EmitterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-	
+
 	@GetMapping("/getViewEmitter")
-	public ResponseEntity<ResponseDTO> getVwEmtInwardByOrgIdAndEmtId(@RequestParam(required = true) Long orgId,@RequestParam(required = true) Long emitterId
-			) {
+	public ResponseEntity<ResponseDTO> getVwEmtInwardByOrgIdAndEmtId(@RequestParam(required = true) Long orgId,
+			@RequestParam(required = true) Long emitterId) {
 		String methodName = "getVwEmtInwardByOrgIdAndEmtId()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -349,7 +351,7 @@ public class EmitterController extends BaseController {
 		ResponseDTO responseDTO = null;
 		List<VwEmitterInwardVO> ewEmitterInwardVO = new ArrayList<>();
 		try {
-			ewEmitterInwardVO = emitterService.getVwEmtInwardByOrgIdAndEmtId(orgId,emitterId);
+			ewEmitterInwardVO = emitterService.getVwEmtInwardByOrgIdAndEmtId(orgId, emitterId);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
@@ -365,10 +367,10 @@ public class EmitterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-	
+
 	@GetMapping("/getViewEmitterByFlow")
-	public ResponseEntity<ResponseDTO> getVwEmtInwardByOrgIdAndEmtIdAndFlow(@RequestParam(required = true) Long orgId,@RequestParam(required = true) Long emitterId,@RequestParam(required = true) Long flowid
-			) {
+	public ResponseEntity<ResponseDTO> getVwEmtInwardByOrgIdAndEmtIdAndFlow(@RequestParam(required = true) Long orgId,
+			@RequestParam(required = true) Long emitterId, @RequestParam(required = true) Long flowid) {
 		String methodName = "getVwEmtInwardByOrgIdAndEmtIdAndFlow()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -392,10 +394,10 @@ public class EmitterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-	
+
 	@GetMapping("/getViewEmitterByWarehouse")
-	public ResponseEntity<ResponseDTO> getVwEmtInwardByOrgIdAndWarehouse(@RequestParam(required = true) Long orgId,@RequestParam(required = true) Long warehouseid
-			) {
+	public ResponseEntity<ResponseDTO> getVwEmtInwardByOrgIdAndWarehouse(@RequestParam(required = true) Long orgId,
+			@RequestParam(required = true) Long warehouseid) {
 		String methodName = "getVwEmtInwardByOrgIdAndWarehouse()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -422,8 +424,8 @@ public class EmitterController extends BaseController {
 
 	@GetMapping("/viewEmitterInward")
 	public ResponseEntity<ResponseDTO> getAllViewEmitterInward(@RequestParam(required = false) Long orgId,
-			 @RequestParam(required = false) Long emitterId,@RequestParam(required = false) Long flowId,
-			 @RequestParam(required = false) Long warehouseLocationId) {
+			@RequestParam(required = false) Long emitterId, @RequestParam(required = false) Long flowId,
+			@RequestParam(required = false) Long warehouseLocationId) {
 		String methodName = "getAllViewEmitterInward()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -431,7 +433,7 @@ public class EmitterController extends BaseController {
 		ResponseDTO responseDTO = null;
 		Map<String, Object> vwEmitterInwardVO = new HashMap<>();
 		try {
-			vwEmitterInwardVO = emitterService.getAllViewEmitterInward(orgId ,emitterId, flowId, warehouseLocationId);
+			vwEmitterInwardVO = emitterService.getAllViewEmitterInward(orgId, emitterId, flowId, warehouseLocationId);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
@@ -447,6 +449,7 @@ public class EmitterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
+
 //emitter outward
 	@GetMapping("/emitterOutward")
 	public ResponseEntity<ResponseDTO> getAllEmitterOutward(@RequestParam(required = false) Long orgId) {
@@ -571,7 +574,8 @@ public class EmitterController extends BaseController {
 
 	// Get Emitter By WarehouseId
 	@GetMapping("/getemitterByWarehouseId")
-	public ResponseEntity<ResponseDTO>getEmitterByWarehouseId(@RequestParam Long orgid,@RequestParam Long warehouseid) {
+	public ResponseEntity<ResponseDTO> getEmitterByWarehouseId(@RequestParam Long orgid,
+			@RequestParam Long warehouseid) {
 		String methodName = "getemitterByWarehouseId()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -585,7 +589,7 @@ public class EmitterController extends BaseController {
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
 		}
 		if (StringUtils.isEmpty(errorMsg)) {
-			List<Map<String, String>>allEmitter=findEmitter(emitter);
+			List<Map<String, String>> allEmitter = findEmitter(emitter);
 			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Emitters found by ID");
 			responseObjectsMap.put("emitters", allEmitter);
 			responseDTO = createServiceResponse(responseObjectsMap);
@@ -598,10 +602,10 @@ public class EmitterController extends BaseController {
 	}
 
 	private List<Map<String, String>> findEmitter(Set<Object[]> emitter) {
-		List<Map<String, String>>allEmitter=new ArrayList<>();
-		for(Object[]emi:emitter) {
-			Map<String, String> emiter=new HashMap<>();
-			emiter.put("emitterId",emi[0].toString());
+		List<Map<String, String>> allEmitter = new ArrayList<>();
+		for (Object[] emi : emitter) {
+			Map<String, String> emiter = new HashMap<>();
+			emiter.put("emitterId", emi[0].toString());
 			emiter.put("emitterName", emi[1].toString());
 			allEmitter.add(emiter);
 		}
@@ -621,24 +625,27 @@ public class EmitterController extends BaseController {
 		ResponseDTO responseDTO = null;
 		Map<String, Object> maxPartQtyPerKitVO = new HashMap<>();
 		try {
-			maxPartQtyPerKitVO = emitterService.getAllMaxPartQtyPerKit(orgId,emitterId,flowId,partNumber);
+			maxPartQtyPerKitVO = emitterService.getAllMaxPartQtyPerKit(orgId, emitterId, flowId, partNumber);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
 		}
 		if (StringUtils.isBlank(errorMsg)) {
-			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Maximum part qty per kit information get successfully");
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE,
+					"Maximum part qty per kit information get successfully");
 			responseObjectsMap.put("maxPartQtyPerKitVO", maxPartQtyPerKitVO);
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} else {
-			responseDTO = createServiceResponseError(responseObjectsMap, "Maximum part qty per kit information receive failed",
-					errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap,
+					"Maximum part qty per kit information receive failed", errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
+
 	@GetMapping("/emitterOutward/v1")
-	public ResponseEntity<ResponseDTO> getAllEmitterOutwardView(@RequestParam(required = false) Long orgId,@RequestParam(required = false) Long flowId ) {
+	public ResponseEntity<ResponseDTO> getAllEmitterOutwardView(@RequestParam(required = false) Long orgId,
+			@RequestParam(required = false) Long flowId) {
 		String methodName = "getAllEmitterOutwardView()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -646,7 +653,7 @@ public class EmitterController extends BaseController {
 		ResponseDTO responseDTO = null;
 		List<OutwardView> outwardView = new ArrayList<>();
 		try {
-			outwardView = emitterService.getAllEmitterOutwardView(orgId,flowId);
+			outwardView = emitterService.getAllEmitterOutwardView(orgId, flowId);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
@@ -663,7 +670,7 @@ public class EmitterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 
 	}
-	
+
 	@PostMapping("/updateOutwardKitQty")
 	public ResponseEntity<ResponseDTO> updateOutwardKitQty(@RequestBody OutwardKitDetailsDTO OutwardKitDetailsDTO) {
 		String methodName = "updateOutwardKitQty()";
@@ -691,9 +698,8 @@ public class EmitterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
-	
 	// Bin Allotment
-	
+
 	@PostMapping("/binAllotment")
 	public ResponseEntity<ResponseDTO> createBinAllotment(@RequestBody BinAllotmentDTO binAllotmentDTO) {
 		String methodName = "createBinAllotment()";
@@ -709,13 +715,85 @@ public class EmitterController extends BaseController {
 			LOGGER.error(CommonConstant.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
 		}
 		if (StringUtils.isBlank(errorMsg)) {
-			responseObjectsMap.put(CommonConstant.STRING_MESSAGE,"Bin Allotment Created Successfully");
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Bin Allotment Created Successfully");
 			responseObjectsMap.put("binAllotmentVO", binAllotmentVO);
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} else {
-			responseDTO = createServiceResponseError(responseObjectsMap,"Bin Allotment Failed", errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "Bin Allotment Failed", errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
+	}
+
+	@GetMapping("/getReqDetailsByOrgId")
+	public ResponseEntity<ResponseDTO> getReqDetailsByOrgId(@RequestParam Long orgid) {
+		String methodName = "getReqDetailsByOrgId()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		Set<Object[]> partstudy = new HashSet<>();
+		try {
+			partstudy = emitterService.getReqDetailsByOrgId(orgid);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			List<Map<String, String>> allEmitter = findPartStudy(partstudy);
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Bin Allotment found by ID");
+			responseObjectsMap.put("Bin Allotment", allEmitter);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			errorMsg = " not found for ID: ";
+			responseDTO = createServiceResponseError(responseObjectsMap, "Bin Allotment not found", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+		
+		private List<Map<String, String>> findPartStudy(Set<Object[]> partstudy) {
+		    List<Map<String, String>> allPartstudy = new ArrayList<>();
+		    for (Object[] ps : partstudy) {
+		        Map<String, String> part = new HashMap<>();
+		            part.put("reqNo", ps[0] != null ? ps[0].toString() : "");
+		            part.put("reqDate", ps[1] != null ? ps[1].toString() : "");
+		            part.put("emitter", ps[2] != null ? ps[2].toString() : "");
+		            part.put("emitterid", ps[3] != null ? ps[3].toString() : "");
+		            part.put("kitcode", ps[4] != null ? ps[4].toString() : "");
+		            part.put("reqKitQty", ps[5] != null ? ps[5].toString() : "");
+		            part.put("partno", ps[6] != null ? ps[6].toString() : "");
+		            part.put("partname", ps[7] != null ? ps[7].toString() : "");
+		            part.put("flow", ps[8] != null ? ps[8].toString() : "");
+		            part.put("flowid", ps[9] != null ? ps[9].toString() : "");
+		        allPartstudy.add(part);
+		    }
+		return allPartstudy;
+	}
+	
+	@GetMapping("/getAllBinAllotmentByOrgId")
+	public ResponseEntity<ResponseDTO> getAllBinAllotment(@RequestParam(required = false) Long orgId) {
+		String methodName = "getAllBinAllotment()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<BinAllotmentNewVO> binAllotmentNewVO = new ArrayList<>();
+		try {
+			binAllotmentNewVO = emitterService.getAllBinAllotment(orgId);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "BinAllotment get successfully");
+			responseObjectsMap.put("binAllotmentNewVO", binAllotmentNewVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "BinAllotment information receive failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+
 	}
 }
