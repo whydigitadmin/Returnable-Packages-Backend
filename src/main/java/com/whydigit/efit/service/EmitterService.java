@@ -94,6 +94,7 @@ public interface EmitterService {
 	
 	Set<Object[]> getReqDetailsByOrgId(Long orgId);
 	
+	List<BinAllotmentNewVO> getAllBinAllotment(Long orgId);
 	
 	
 

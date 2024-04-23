@@ -710,17 +710,28 @@ public class EmitterServiceImpl implements EmitterService {
 			}
 		}
 		return binAllotmentNewVO;
-		
 	}
 
 	@Override
 	public Set<Object[]> getReqDetailsByOrgId(Long orgId) {
 		return binAllotmentNewRepo.findReqDetailsByOrgId(orgId);
 	}
+	@Override
+	public List<BinAllotmentNewVO> getAllBinAllotment(Long orgId) {
+		List<BinAllotmentNewVO> binAllotmentNewVO= new ArrayList<>();
+		if (ObjectUtils.isNotEmpty(orgId)) {
+			LOGGER.info("Successfully Received  BinAllotment BY orgId : {}", orgId);
+			binAllotmentNewVO = binAllotmentNewRepo.getAllBinAllotment(orgId);
+		} else {
+			LOGGER.info("Successfully Received  BinAllotment For All orgId.");
+			binAllotmentNewVO = binAllotmentNewRepo.findAll();
+		}
+		return binAllotmentNewVO;
+	}
+
 	
 //	@Override
 //	public List<BinAllotmentVO> getBinRequest(Long emitterId,String warehouseLocation, Long orgId, LocalDate startDate, LocalDate endDate,Long warehouseLocationId) {
-//
 //		return binAllotmentRepo.findAll(new Specification<IssueRequestVO>() {
 //
 //			@Override
@@ -747,11 +758,5 @@ public class EmitterServiceImpl implements EmitterService {
 //				return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
 //			}
 //		});
-//
 //	}
-
-	
-
 }
-
-

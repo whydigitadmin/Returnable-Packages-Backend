@@ -41,6 +41,7 @@ import com.whydigit.efit.entity.InwardVO;
 import com.whydigit.efit.entity.IssueRequestVO;
 import com.whydigit.efit.entity.OutwardKitDetailsVO;
 import com.whydigit.efit.entity.OutwardView;
+import com.whydigit.efit.entity.ProofOfDeliveryVO;
 import com.whydigit.efit.entity.VwEmitterInwardVO;
 import com.whydigit.efit.service.EmitterService;
 
@@ -741,7 +742,7 @@ public class EmitterController extends BaseController {
 		if (StringUtils.isEmpty(errorMsg)) {
 			List<Map<String, String>> allEmitter = findPartStudy(partstudy);
 			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Bin Allotment found by ID");
-			responseObjectsMap.put("Bin Allotment", allEmitter);
+			responseObjectsMap.put("BinAllotment", allEmitter);
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} else {
 			errorMsg = " not found for ID: ";
@@ -768,5 +769,31 @@ public class EmitterController extends BaseController {
 		        allPartstudy.add(part);
 		    }
 		return allPartstudy;
+	}
+	
+	@GetMapping("/getAllBinAllotmentByOrgId")
+	public ResponseEntity<ResponseDTO> getAllBinAllotment(@RequestParam(required = false) Long orgId) {
+		String methodName = "getAllBinAllotment()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<BinAllotmentNewVO> binAllotmentNewVO = new ArrayList<>();
+		try {
+			binAllotmentNewVO = emitterService.getAllBinAllotment(orgId);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "BinAllotment get successfully");
+			responseObjectsMap.put("binAllotmentNewVO", binAllotmentNewVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "BinAllotment information receive failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+
 	}
 }
