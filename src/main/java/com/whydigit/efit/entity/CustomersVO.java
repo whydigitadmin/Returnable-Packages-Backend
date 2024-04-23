@@ -1,5 +1,6 @@
 package com.whydigit.efit.entity;
 
+
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -88,6 +89,8 @@ public class CustomersVO {
 
 	@Embedded
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
+
+	
 
 	
 

@@ -49,6 +49,8 @@ import com.whydigit.efit.dto.AssetInwardDTO;
 import com.whydigit.efit.dto.AssetInwardDetailDTO;
 import com.whydigit.efit.dto.AssetTaggingDTO;
 import com.whydigit.efit.dto.AssetTaggingDetailsDTO;
+import com.whydigit.efit.dto.BinInwardDTO;
+import com.whydigit.efit.dto.BinInwardDetailsDTO;
 import com.whydigit.efit.dto.CnoteDTO;
 import com.whydigit.efit.dto.CustomerAttachmentType;
 import com.whydigit.efit.dto.CustomersAddressDTO;
@@ -81,6 +83,8 @@ import com.whydigit.efit.entity.AssetStockDetailsVO;
 import com.whydigit.efit.entity.AssetTaggingDetailsVO;
 import com.whydigit.efit.entity.AssetTaggingVO;
 import com.whydigit.efit.entity.AssetVO;
+import com.whydigit.efit.entity.BinInwardDetailsVO;
+import com.whydigit.efit.entity.BinInwardVO;
 import com.whydigit.efit.entity.CnoteVO;
 import com.whydigit.efit.entity.CustomerAttachmentVO;
 import com.whydigit.efit.entity.CustomersAddressVO;
@@ -116,6 +120,7 @@ import com.whydigit.efit.repo.AssetRepo;
 import com.whydigit.efit.repo.AssetStockDetailsRepo;
 import com.whydigit.efit.repo.AssetTaggingDetailsRepo;
 import com.whydigit.efit.repo.AssetTaggingRepo;
+import com.whydigit.efit.repo.BinInwardRepo;
 import com.whydigit.efit.repo.CnoteRepo;
 import com.whydigit.efit.repo.CustomerAttachmentRepo;
 import com.whydigit.efit.repo.CustomersAddressRepo;
@@ -239,6 +244,9 @@ public class MasterServiceImpl implements MasterService {
 
 	@Autowired
 	private ProofOfDeliveryRepo proofOfDeliveryRepo;
+	
+	@Autowired
+	BinInwardRepo binInwardRepo;
 
 	private final String uploadDir = "D:\\Justin"; // Specify the upload directory
 
@@ -499,25 +507,24 @@ public class MasterServiceImpl implements MasterService {
 
 	@Override
 	public CustomersVO updateCustomers(CustomersDTO customersDTO) throws ApplicationException {
-	    if (customersRepo.existsById(customersDTO.getId())) {
-	        CustomersVO customersVO = customersRepo.findById(customersDTO.getId())
-	                .orElseThrow(() -> new ApplicationException("Customer information not found."));
+		if (customersRepo.existsById(customersDTO.getId())) {
+			CustomersVO customersVO = customersRepo.findById(customersDTO.getId())
+					.orElseThrow(() -> new ApplicationException("Customer information not found."));
 
-	        // Update customer details excluding customer type and customer code
-	        customersVO.setOrgId(customersDTO.getOrgId());
-	        customersVO.setEntityLegalName(customersDTO.getEntityLegalName());
-	        customersVO.setEmail(customersDTO.getEmail());
-	        customersVO.setDisplayName(customersDTO.getDisplayName());
-	        customersVO.setPhoneNumber(customersDTO.getPhoneNumber());
-	        customersVO.setCustomerActivatePortal(customersDTO.isCustomerActivatePortal());
-	        customersVO.setActive(customersDTO.isActive());
+			// Update customer details excluding customer type and customer code
+			customersVO.setOrgId(customersDTO.getOrgId());
+			customersVO.setEntityLegalName(customersDTO.getEntityLegalName());
+			customersVO.setEmail(customersDTO.getEmail());
+			customersVO.setDisplayName(customersDTO.getDisplayName());
+			customersVO.setPhoneNumber(customersDTO.getPhoneNumber());
+			customersVO.setCustomerActivatePortal(customersDTO.isCustomerActivatePortal());
+			customersVO.setActive(customersDTO.isActive());
 
-	        // Update or add new address details
-	        List<CustomersAddressVO> customersAddressVO = customersVO.getCustomersAddressVO();
-	        if (customersDTO.getCustomerAddressDTO() != null) {
-	            for (CustomersAddressDTO addressDTO : customersDTO.getCustomerAddressDTO()) {
-	            	if(ObjectUtils.isNotEmpty(addressDTO.getId()))
-	            	{
+			// Update or add new address details
+			List<CustomersAddressVO> customersAddressVO = customersVO.getCustomersAddressVO();
+			if (customersDTO.getCustomerAddressDTO() != null) {
+				for (CustomersAddressDTO addressDTO : customersDTO.getCustomerAddressDTO()) {
+					if (ObjectUtils.isNotEmpty(addressDTO.getId())) {
 						CustomersAddressVO custAddress = customersAddressRepo.findById(addressDTO.getId()).get();
 						custAddress.setGstRegistrationStatus(addressDTO.getGstRegistrationStatus());
 						custAddress.setStreet1(addressDTO.getStreet1());
@@ -531,11 +538,9 @@ public class MasterServiceImpl implements MasterService {
 						custAddress.setEmail(addressDTO.getEmail());
 						custAddress.setDesignation(addressDTO.getDesignation());
 						custAddress.setCountry(addressDTO.getCountry());
-	            	}
-	            	else
-	            	{
-	            		CustomersAddressVO custAddress=new CustomersAddressVO();
-	            		custAddress.setGstRegistrationStatus(addressDTO.getGstRegistrationStatus());
+					} else {
+						CustomersAddressVO custAddress = new CustomersAddressVO();
+						custAddress.setGstRegistrationStatus(addressDTO.getGstRegistrationStatus());
 						custAddress.setStreet1(addressDTO.getStreet1());
 						custAddress.setStreet2(addressDTO.getStreet2());
 						custAddress.setPinCode(addressDTO.getPinCode());
@@ -547,42 +552,39 @@ public class MasterServiceImpl implements MasterService {
 						custAddress.setEmail(addressDTO.getEmail());
 						custAddress.setDesignation(addressDTO.getDesignation());
 						custAddress.setCountry(addressDTO.getCountry());
-	            	}
-	            }
-	        }
+					}
+				}
+			}
 
-	        // Update or add new bank details
-	        List<CustomersBankDetailsVO> customersBankDetailsVO = customersVO.getCustomersBankDetailsVO();
-	        if (customersDTO.getCustomerBankDetailsDTO() != null) {
-	            for (CustomersBankDetailsDTO bankDetailsDTO : customersDTO.getCustomerBankDetailsDTO()) {
-	            	if(ObjectUtils.isNotEmpty(bankDetailsDTO.getId()))
-	            		{
-	            			CustomersBankDetailsVO bankdetails = customersBankDetailsRepo.findById(bankDetailsDTO.getId()).get();
-	            			bankdetails.setBank(bankDetailsDTO.getBank());
-	            			bankdetails.setAccountName(bankDetailsDTO.getAccountName());
-	            			bankdetails.setIfscCode(bankDetailsDTO.getIfscCode());
-	            			bankdetails.setBranch(bankDetailsDTO.getBranch());
-	            			bankdetails.setAccountNo(bankDetailsDTO.getAccountNo());
-	            		}
-	            	else
-	            	{
-	            		CustomersBankDetailsVO bankdetails= new CustomersBankDetailsVO();
-	            		bankdetails.setBank(bankDetailsDTO.getBank());
-            			bankdetails.setAccountName(bankDetailsDTO.getAccountName());
-            			bankdetails.setIfscCode(bankDetailsDTO.getIfscCode());
-            			bankdetails.setBranch(bankDetailsDTO.getBranch());
-            			bankdetails.setAccountNo(bankDetailsDTO.getAccountNo());
-	            	}
-	            }
-	        }
+			// Update or add new bank details
+			List<CustomersBankDetailsVO> customersBankDetailsVO = customersVO.getCustomersBankDetailsVO();
+			if (customersDTO.getCustomerBankDetailsDTO() != null) {
+				for (CustomersBankDetailsDTO bankDetailsDTO : customersDTO.getCustomerBankDetailsDTO()) {
+					if (ObjectUtils.isNotEmpty(bankDetailsDTO.getId())) {
+						CustomersBankDetailsVO bankdetails = customersBankDetailsRepo.findById(bankDetailsDTO.getId())
+								.get();
+						bankdetails.setBank(bankDetailsDTO.getBank());
+						bankdetails.setAccountName(bankDetailsDTO.getAccountName());
+						bankdetails.setIfscCode(bankDetailsDTO.getIfscCode());
+						bankdetails.setBranch(bankDetailsDTO.getBranch());
+						bankdetails.setAccountNo(bankDetailsDTO.getAccountNo());
+					} else {
+						CustomersBankDetailsVO bankdetails = new CustomersBankDetailsVO();
+						bankdetails.setBank(bankDetailsDTO.getBank());
+						bankdetails.setAccountName(bankDetailsDTO.getAccountName());
+						bankdetails.setIfscCode(bankDetailsDTO.getIfscCode());
+						bankdetails.setBranch(bankDetailsDTO.getBranch());
+						bankdetails.setAccountNo(bankDetailsDTO.getAccountNo());
+					}
+				}
+			}
 
-	        customersRepo.save(customersVO);
-	        return customersVO;
-	    } else {
-	        throw new ApplicationException("Customer information Not Found");
-	    }
+			customersRepo.save(customersVO);
+			return customersVO;
+		} else {
+			throw new ApplicationException("Customer information Not Found");
+		}
 	}
-
 
 	@Override
 	public void deleteCustomers(Long id) {
@@ -759,25 +761,18 @@ public class MasterServiceImpl implements MasterService {
 	}
 
 	@Override
-	public Optional<UnitVO> getUnitById(Long id) {
+	public Optional<UnitVO> getUnitById(int id) {
 		return unitRepo.findById(id);
 	}
 
 	@Override
-	public UnitVO createUnit(UnitVO unitVO) throws ApplicationException {
-		
-		if(unitRepo.existsByUnitAndOrgId(unitVO.getUnit(),unitVO.getOrgId())){
-			throw new ApplicationException("A Unit already exists for this Organization");
-		}
+	public UnitVO createUnit(UnitVO unitVO) {
 		return unitRepo.save(unitVO);
 	}
 
 	@Override
-	public Optional<UnitVO> updateUnit(UnitVO unitVO) throws ApplicationException {
-		if (unitRepo.existsById((long) unitVO.getId())) {
-			if(unitRepo.existsByUnitAndOrgId(unitVO.getUnit(),unitVO.getOrgId())){
-				throw new ApplicationException("A Unit already exists for this Organization");
-			}
+	public Optional<UnitVO> updateUnit(UnitVO unitVO) {
+		if (unitRepo.existsById(unitVO.getId())) {
 			return Optional.of(unitRepo.save(unitVO));
 		} else {
 			return Optional.empty();
@@ -785,7 +780,7 @@ public class MasterServiceImpl implements MasterService {
 	}
 
 	@Override
-	public void deleteUnit(Long id) {
+	public void deleteUnit(int id) {
 		// TODO Auto-generated method stub
 		unitRepo.deleteById(id);
 	}
@@ -1298,13 +1293,13 @@ public class MasterServiceImpl implements MasterService {
 
 				// Check if RFID or Tag Code already exists
 				if (isRfidExists) {
-				    throw new RuntimeException("RFID " + taggingDetailsDTO.getRfId() + " already exists.");
+					throw new RuntimeException("RFID " + taggingDetailsDTO.getRfId() + " already exists.");
 				}
 
 				if (isTagCodeExists) {
-				    throw new RuntimeException("Tag Code " + taggingDetailsDTO.getTagCode() + " already exists.");
+					throw new RuntimeException("Tag Code " + taggingDetailsDTO.getTagCode() + " already exists.");
 				}
-				
+
 				AssetTaggingDetailsVO assetTaggingDetails = new AssetTaggingDetailsVO();
 				assetTaggingDetails.setRfId(taggingDetailsDTO.getRfId());
 				assetTaggingDetails.setTaggingDocDd(assetTaggingVO.getDocid());
@@ -1333,7 +1328,7 @@ public class MasterServiceImpl implements MasterService {
 				assetStockDetailsVO.setTagCode(assetTaggingDetails.getTagCode());
 				assetStockDetailsVO.setStockSource("");
 				assetStockDetailsVO.setSCode(savedAssetTaggingVO.getScode()); // Assuming getScode() returns the correct
-				assetStockDetailsVO.setSourceId(assetTaggingDetails.getId());															// value
+				assetStockDetailsVO.setSourceId(assetTaggingDetails.getId()); // value
 				assetStockDetailsVO.setScreen("Asset Tagging");
 				assetStockDetailsVO.setPm("P");
 				assetStockDetailsVO.setFinyr(savedAssetTaggingVO.getFinyr());
@@ -1346,9 +1341,9 @@ public class MasterServiceImpl implements MasterService {
 
 	@Override
 	public Set<Object[]> getTagCodeByAsset(String assetcode, String asset, int startno, int endno) {
-		
-		int finyr=assetTaggingRepo.getFinyr();
-		return assetTaggingRepo.getTagCodeByAsset(assetcode, asset, startno, endno,finyr);
+
+		int finyr = assetTaggingRepo.getFinyr();
+		return assetTaggingRepo.getTagCodeByAsset(assetcode, asset, startno, endno, finyr);
 	}
 
 	@Override
@@ -1593,70 +1588,67 @@ public class MasterServiceImpl implements MasterService {
 		return poRepo.getPoNoByCreateAsset(orgId);
 	}
 
-
 //	private static final String UPLOAD_DIR = "D:\\Justin\\";
 	@Value("${proofOfDelivery.upload.dir}")
 	private String UPLOAD_DIR;
 
 	public String uploadFileProofOfDelivery(MultipartFile file, String docId, String refNo) {
-	    String uploadResult = uploadFile(file, docId, refNo); // Call uploadFile method with docId and refNo
-	    // Create ProofOfDeliveryVO
-	    ProofOfDeliveryVO vo = createProofOfDeliveryVO(docId, refNo, Paths.get(UPLOAD_DIR));
-	    // Here you can do further processing or return both results combined
-	    return uploadResult + "\n" + vo.toString(); // Example: Combining both results into a single string
+		String uploadResult = uploadFile(file, docId, refNo); // Call uploadFile method with docId and refNo
+		// Create ProofOfDeliveryVO
+		ProofOfDeliveryVO vo = createProofOfDeliveryVO(docId, refNo, Paths.get(UPLOAD_DIR));
+		// Here you can do further processing or return both results combined
+		return uploadResult + "\n" + vo.toString(); // Example: Combining both results into a single string
 	}
 
 	public String uploadFile(MultipartFile file, String docId, String refNo) {
-	    try {
-	    	
-	    	ProofOfDeliveryVO proofOfDeliveryVO=proofOfDeliveryRepo.findByDocIdAndRfNo(docId,refNo);
-	        // Get the original file name
-	        String originalFileName = file.getOriginalFilename();
-	        // Extract the original file extension
-	        String fileExtension = getFileExtension(originalFileName);
-	        // Customize the filename
-	        String customizedFileName = getCustomizedFileName(docId, refNo) + fileExtension;
-	        // Create the directory if it doesn't exist
-	        File directory = new File(UPLOAD_DIR);
-	        if (!directory.exists()) {
-	            directory.mkdirs();
-	        }
-	        // Save the file to the upload directory with the customized filename
-	        Path filePath = Paths.get(UPLOAD_DIR, customizedFileName);
-	        file.transferTo(filePath);
-	        System.out.println(filePath);
-	        // Create ProofOfDeliveryVO and set uploadReceipt
-	        ProofOfDeliveryVO vo = createProofOfDeliveryVO(docId, refNo, Paths.get(UPLOAD_DIR));
-	        proofOfDeliveryVO.setUploadReceipt(filePath.toString());
-	        proofOfDeliveryRepo.save(proofOfDeliveryVO);
-	        return filePath.toString();
-	    } catch (IOException e) {
-	        e.printStackTrace();
-	        return "Failed to upload file: " + e.getMessage();
-	    }
+		try {
+
+			ProofOfDeliveryVO proofOfDeliveryVO = proofOfDeliveryRepo.findByDocIdAndRfNo(docId, refNo);
+			// Get the original file name
+			String originalFileName = file.getOriginalFilename();
+			// Extract the original file extension
+			String fileExtension = getFileExtension(originalFileName);
+			// Customize the filename
+			String customizedFileName = getCustomizedFileName(docId, refNo) + fileExtension;
+			// Create the directory if it doesn't exist
+			File directory = new File(UPLOAD_DIR);
+			if (!directory.exists()) {
+				directory.mkdirs();
+			}
+			// Save the file to the upload directory with the customized filename
+			Path filePath = Paths.get(UPLOAD_DIR, customizedFileName);
+			file.transferTo(filePath);
+			System.out.println(filePath);
+			// Create ProofOfDeliveryVO and set uploadReceipt
+			ProofOfDeliveryVO vo = createProofOfDeliveryVO(docId, refNo, Paths.get(UPLOAD_DIR));
+			proofOfDeliveryVO.setUploadReceipt(filePath.toString());
+			proofOfDeliveryRepo.save(proofOfDeliveryVO);
+			return filePath.toString();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return "Failed to upload file: " + e.getMessage();
+		}
 	}
 
 	private String getFileExtension(String fileName) {
-	    if (fileName != null && fileName.contains(".")) {
-	        return fileName.substring(fileName.lastIndexOf("."));
-	    }
-	    return "";
+		if (fileName != null && fileName.contains(".")) {
+			return fileName.substring(fileName.lastIndexOf("."));
+		}
+		return "";
 	}
 
 	private String getCustomizedFileName(String docId, String refNo) {
-	    return docId + "-" + refNo;
+		return docId + "-" + refNo;
 	}
 
 	private ProofOfDeliveryVO createProofOfDeliveryVO(String docId, String refNo, Path filePath) {
-	    ProofOfDeliveryVO vo = new ProofOfDeliveryVO();
-	    // Set other attributes as needed
-	    vo.setDocId(docId);
-	    vo.setRfNo(refNo);
-	    vo.setUploadReceipt(filePath.toString());
-	    return vo;
+		ProofOfDeliveryVO vo = new ProofOfDeliveryVO();
+		// Set other attributes as needed
+		vo.setDocId(docId);
+		vo.setRfNo(refNo);
+		vo.setUploadReceipt(filePath.toString());
+		return vo;
 	}
-
-	
 
 	@Override
 	public ProofOfDeliveryVO createProofOfDelivery(ProofOfDeliveryDTO proofOfDeliveryDTO) {
@@ -1671,7 +1663,7 @@ public class MasterServiceImpl implements MasterService {
 		vo.setCreatedBy(proofOfDeliveryDTO.getCreatedBy());
 		vo.setModifiedBy(proofOfDeliveryDTO.getCreatedBy());
 		vo.setOrgId(proofOfDeliveryDTO.getOrgId());
-		
+
 		return proofOfDeliveryRepo.save(vo);
 	}
 
@@ -1688,8 +1680,132 @@ public class MasterServiceImpl implements MasterService {
 		return proofOfDeliveryVO;
 	}
 
-	
-	
+	@Override
+	public CustomersVO updateCreateCustomer(CustomersDTO customersDTO) throws ApplicationException {
+	    CustomersVO customersVO;
+	    if (ObjectUtils.isNotEmpty(customersDTO.getId())) {
+	        customersVO = customersRepo.findById(customersDTO.getId())
+	                                    .orElseThrow(() -> new ApplicationException("Invalid Customers details"));
+	    } else {
+	        customersVO = new CustomersVO();
+	    }
+
+	    List<CustomersAddressVO> customersAddress = new ArrayList<>();
+	    if (customersDTO.getCustomerAddressDTO() != null) {
+	        for (CustomersAddressDTO customerAddressDTO : customersDTO.getCustomerAddressDTO()) {
+	        	CustomersAddressVO customersAddressVO1 = new CustomersAddressVO();
+	            customersAddressVO1.setGstRegistrationStatus(customerAddressDTO.getGstRegistrationStatus());
+	            customersAddressVO1.setStreet1(customerAddressDTO.getStreet1());
+	            customersAddressVO1.setStreet2(customerAddressDTO.getStreet2());
+	            customersAddressVO1.setPinCode(customerAddressDTO.getPinCode());
+	            customersAddressVO1.setPhoneNumber(customerAddressDTO.getPhoneNumber());
+	            customersAddressVO1.setGstNumber(customerAddressDTO.getGstNumber());
+	            customersAddressVO1.setCity(customerAddressDTO.getCity());
+	            customersAddressVO1.setContactName(customerAddressDTO.getContactName());
+	            customersAddressVO1.setState(customerAddressDTO.getState());
+	            customersAddressVO1.setEmail(customerAddressDTO.getEmail());
+	            customersAddressVO1.setDesignation(customerAddressDTO.getDesignation());
+	            customersAddressVO1.setCountry(customerAddressDTO.getCountry());
+	            customersAddress.add(customersAddressVO1);
+	        }
+	          }
+
+	    List<CustomersBankDetailsVO> customersBankDetails = new ArrayList<>();
+	    if (customersDTO.getCustomerBankDetailsDTO() != null) {
+	        for (CustomersBankDetailsDTO customersBankDetailsDTO : customersDTO.getCustomerBankDetailsDTO()) {
+	            CustomersBankDetailsVO customersBankDetailsVO = new CustomersBankDetailsVO();
+	            customersBankDetailsVO.setAccountName(customersBankDetailsDTO.getAccountName());
+	            customersBankDetailsVO.setAccountNo(customersBankDetailsDTO.getAccountNo());
+	            customersBankDetailsVO.setBank(customersBankDetailsDTO.getBank());
+	            customersBankDetailsVO.setDefault(true);
+	            customersBankDetailsVO.setIfscCode(customersBankDetailsDTO.getIfscCode());
+
+	            customersBankDetails.add(customersBankDetailsVO);
+	        }
+	    }
+
+	    customersVO.setCustomersAddressVO(customersAddress);
+	    customersVO.setCustomersBankDetailsVO(customersBankDetails);
+	    getCustomersVOFromCustomersDTO(customersDTO, customersVO);
+	    return customersRepo.save(customersVO);
 	}
 
+	private void getCustomersVOFromCustomersDTO(CustomersDTO customersDTO, CustomersVO customersVO) {
+	    customersVO.setOrgId(customersDTO.getOrgId());
+	    customersVO.setCustomerType(customersDTO.getCustomerType());
+	    customersVO.setEntityLegalName(customersDTO.getEntityLegalName());
+	    customersVO.setDisplayName(customersDTO.getDisplayName());
+	    customersVO.setEmail(customersDTO.getEmail());
+	    customersVO.setPhoneNumber(customersDTO.getPhoneNumber());
+	    customersVO.setCustomerActivatePortal(true);
+	    customersVO.setActive(true);
+	}
+
+	@Override
+	public BinInwardVO updateCreateBinInward(BinInwardDTO binInwardDTO) throws ApplicationException {
+		BinInwardVO binInwardVO = new BinInwardVO();
+		if (ObjectUtils.isNotEmpty(binInwardDTO.getBinInwardId())) {
+			binInwardVO = binInwardRepo.findById(binInwardDTO.getBinInwardId())
+					.orElseThrow(() -> new ApplicationException("Invalid BinInward details"));
+		}
+		List<BinInwardDetailsVO> binInwardDetailsVO = new ArrayList<>();
+		if (binInwardDTO.getBinInwardDetailsDTO() != null) {
+			for (BinInwardDetailsDTO binInwardDetailsDTO : binInwardDTO.getBinInwardDetailsDTO()) {
+				BinInwardDetailsVO binInwardDetails = new BinInwardDetailsVO();
+				binInwardDetails.setAllotQty(binInwardDetailsDTO.getAllotQty());
+				binInwardDetails.setAsset(binInwardDetailsDTO.getAsset());
+				binInwardDetails.setAssetCode(binInwardDetailsDTO.getAssetCode());
+				binInwardDetails.setRecQty(binInwardDetailsDTO.getRecQty());
+				binInwardDetails.setReturnQty(binInwardDetailsDTO.getReturnQty());
+				binInwardDetails.setTagCode(binInwardDetailsDTO.getTagCode());
+				binInwardDetails.setRfId(assetTaggingDetailsRepo.findRfIdByTagCode(binInwardDetailsDTO.getTagCode()));
+
+				binInwardDetailsVO.add(binInwardDetails);
+			}
+		}
+		binInwardVO.setBinInwardDetailsVO(binInwardDetailsVO);
+		getBinInwardVOFromBinInwardDTO(binInwardDTO, binInwardVO);
+		
+		BinInwardVO savedBinInwardVO = binInwardRepo.save(binInwardVO);
+		List<BinInwardDetailsVO> savedBinInwardDetailsVO = savedBinInwardVO.getBinInwardDetailsVO();
+
+		if (savedBinInwardDetailsVO != null && !savedBinInwardDetailsVO.isEmpty()) {
+
+			for (BinInwardDetailsVO binInwardDetails : savedBinInwardDetailsVO) {
+				AssetStockDetailsVO assetStockDetailsVO = new AssetStockDetailsVO();
+				assetStockDetailsVO.setStockRef(savedBinInwardVO.getDocid());
+				assetStockDetailsVO.setStockDate(savedBinInwardVO.getDocDate());
+				assetStockDetailsVO.setSkuCode(binInwardDetails.getAssetCode());
+				assetStockDetailsVO.setSku(binInwardDetails.getAsset());
+				assetStockDetailsVO.setSkuQty(binInwardDetails.getRecQty());
+				assetStockDetailsVO.setRfId(binInwardDetails.getRfId());
+				assetStockDetailsVO.setTagCode(binInwardDetails.getTagCode());
+				assetStockDetailsVO.setStockSource("");
+				assetStockDetailsVO.setSCode(savedBinInwardVO.getScode()); // Assuming getScode() returns the correct
+				assetStockDetailsVO.setSourceId(binInwardDetails.getBinInwardDetailsId()); // value
+				assetStockDetailsVO.setScreen("Bin Inward");
+				assetStockDetailsVO.setPm("P");
+				//assetStockDetailsVO.setStatus("S");
+				assetStockDetailsVO.setFinyr(savedBinInwardVO.getFinYr());
+				assetStockDetailsVO.setStockBranch("");
+				assetStockDetailsRepo.save(assetStockDetailsVO);
+			}
+		}
+		
+		
+		return binInwardVO;
+	}
+
+	private void getBinInwardVOFromBinInwardDTO(BinInwardDTO binInwardDTO, BinInwardVO binInwardVO) {
+
+		binInwardVO.setOrgId(binInwardDTO.getOrgId());
+		binInwardVO.setAllotmentNo(binInwardDTO.getAllotmentNo());
+		binInwardVO.setReqNo(binInwardDTO.getReqNo());
+		binInwardVO.setFlow(binInwardDTO.getFlow());
+		binInwardVO.setKitCode(binInwardDTO.getKitCode());
+		binInwardVO.setAllotedQty(binInwardDTO.getAllotedQty());
+
+	}
+
+}
 
