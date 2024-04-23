@@ -188,7 +188,7 @@ public class BasicMasterController extends BaseController {
 	}
 
 	@GetMapping("/country/{id}")
-	public ResponseEntity<ResponseDTO> getCountryById(@PathVariable Long id) {
+	public ResponseEntity<ResponseDTO> getCountryById(@PathVariable int id) {
 		String methodName = "getCountryById()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -286,7 +286,7 @@ public class BasicMasterController extends BaseController {
 	}
 
 	@DeleteMapping("/country/{id}")
-	public ResponseEntity<ResponseDTO> deleteCountry(@PathVariable Long id) {
+	public ResponseEntity<ResponseDTO> deleteCountry(@PathVariable int id) {
 		String methodName = "deleteCountry()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;

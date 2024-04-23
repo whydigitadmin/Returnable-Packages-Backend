@@ -22,7 +22,7 @@ public class UnitVO {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	private int id;
 	private long orgId;
 	private String unit;
 	private boolean active;
