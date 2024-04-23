@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -30,7 +31,6 @@ import com.whydigit.efit.common.CommonConstant;
 import com.whydigit.efit.common.UserConstants;
 import com.whydigit.efit.dto.AssetInwardDTO;
 import com.whydigit.efit.dto.AssetTaggingDTO;
-import com.whydigit.efit.dto.BinInwardDTO;
 import com.whydigit.efit.dto.CnoteDTO;
 import com.whydigit.efit.dto.CustomerAttachmentType;
 import com.whydigit.efit.dto.CustomersDTO;
@@ -51,7 +51,6 @@ import com.whydigit.efit.entity.AssetGroupVO;
 import com.whydigit.efit.entity.AssetInwardVO;
 import com.whydigit.efit.entity.AssetTaggingVO;
 import com.whydigit.efit.entity.AssetVO;
-import com.whydigit.efit.entity.BinInwardVO;
 import com.whydigit.efit.entity.CnoteVO;
 import com.whydigit.efit.entity.CustomersAddressVO;
 import com.whydigit.efit.entity.CustomersVO;
@@ -481,31 +480,6 @@ public class MasterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-	
-	@PutMapping("/updateCreateCustomer")
-	public ResponseEntity<ResponseDTO> updateCreateCustomer(@RequestBody CustomersDTO customersDTO) {
-		String methodName = "updateCreateCustomer()";
-		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
-		String errorMsg = null;
-		Map<String, Object> responseObjectsMap = new HashMap<>();
-		ResponseDTO responseDTO = null;
-		try {
-			CustomersVO customersVO = masterService.updateCreateCustomer(customersDTO);
-			if (customersVO != null) {
-				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "customers updated successfully");
-				responseObjectsMap.put("customersVO", customersVO);
-				responseDTO = createServiceResponse(responseObjectsMap);
-			} else {
-			}
-		} catch (Exception e) {
-			errorMsg = e.getMessage();
-			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-			responseDTO = createServiceResponseError(responseObjectsMap, "customers update failed", errorMsg);
-		}
-		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
-		return ResponseEntity.ok().body(responseDTO);
-	}
-
 
 	@PostMapping("/customersAttachmentDoc")
 	public ResponseEntity<ResponseDTO> uploadCustomerAttachmentDoc(@RequestParam MultipartFile[] files,
@@ -1296,7 +1270,7 @@ public class MasterController extends BaseController {
 	}
 
 	@GetMapping("/unit/{id}")
-	public ResponseEntity<ResponseDTO> getUnitById(@PathVariable int id) {
+	public ResponseEntity<ResponseDTO> getUnitById(@PathVariable Long id) {
 		String methodName = "getUnitById()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -1369,7 +1343,7 @@ public class MasterController extends BaseController {
 	}
 
 	@DeleteMapping("/unit/{id}")
-	public ResponseEntity<ResponseDTO> deleteunit(@PathVariable int id) {
+	public ResponseEntity<ResponseDTO> deleteunit(@PathVariable Long id) {
 		String methodName = "deleteUnit()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -2258,33 +2232,4 @@ public class MasterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 
 	}
-	
-	//BININWARD
-	
-	@PutMapping("/updateCreateBinInward")
-	public ResponseEntity<ResponseDTO> updateCreateBinInward(@RequestBody BinInwardDTO binInwardDTO) {
-		String methodName = "updateCreateBinInward()";
-		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
-		String errorMsg = null;
-		Map<String, Object> responseObjectsMap = new HashMap<>();
-		ResponseDTO responseDTO = null;
-		try {
-			BinInwardVO updatedBinInwardVO = masterService.updateCreateBinInward(binInwardDTO);
-			if (updatedBinInwardVO != null) {
-				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "BinInward updated successfully");
-				responseObjectsMap.put("BinInwardVO", updatedBinInwardVO);
-				responseDTO = createServiceResponse(responseObjectsMap);
-			} else {
-			}
-		} catch (Exception e) {
-			errorMsg = e.getMessage();
-			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-			responseDTO = createServiceResponseError(responseObjectsMap, "BinInward update failed", errorMsg);
-		}
-		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
-		return ResponseEntity.ok().body(responseDTO);
-	}
-	
-	
-	
 }

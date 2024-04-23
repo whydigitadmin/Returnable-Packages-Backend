@@ -21,5 +21,6 @@ public class CustomersAddressDTO {
 	private String state;
 	private String email;
 	private String designation;
+	private String customerid;
 	private String country;
 }
