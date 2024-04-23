@@ -12,6 +12,20 @@ public interface StateRepo extends JpaRepository<StateVO, Long> {
 
 	List<StateVO> findAllStateByCountryAndOrgId (String country, Long orgId);
 
+	boolean existsByStateNameAndStateCodeAndCountryAndOrgId(String stateName, String stateCode, String country,
+			Long orgId);
+
+	boolean existsByStateNameAndCountryAndOrgId(String stateName, String country, Long orgId);
+
+	boolean existsByStateCodeAndCountryAndOrgId(String stateCode, String country, Long orgId);
+
+	boolean existsByStateNameAndStateCodeAndCountryAndOrgIdAndIdNot(String stateName, String stateCode, String country,
+			Long orgId, Long id);
+
+	boolean existsByStateNameAndCountryAndOrgIdAndIdNot(String stateName, String country, Long orgId, Long id);
+
+	boolean existsByStateCodeAndCountryAndOrgIdAndIdNot(String stateCode, String country, Long orgId, Long id);
+
 
 	
 

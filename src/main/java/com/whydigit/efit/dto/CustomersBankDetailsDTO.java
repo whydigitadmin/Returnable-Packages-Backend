@@ -16,4 +16,5 @@ public class CustomersBankDetailsDTO {
 	private String branch;
 	private Long accountNo;
 	private boolean isDefault;
+	private String customerid;
 }

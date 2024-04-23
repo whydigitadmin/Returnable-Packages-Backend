@@ -72,6 +72,4 @@ public class StockDetailVO {
 	@Embedded
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
 
-	
-	
 }

@@ -39,7 +39,7 @@ public class SecurityConfig {
 						"/api/usersdetails/view", "/api/master/**", "​/api​/master​/addAddress",
 						"/api/master/uploadFileProofOfDelivery", "/api/master/getAllPoByPoId", "api/master/loadKitQty",
 						"/api/master/getPoNoByCreateAsset", "/api/warehouse/getWarehouseLocationByOrgID",
-						"/api/master/getPoByOrgId", "/api/master/createProofOfDelivery","api/master/updateCreateBinInward",
+						"/api/master/getPoByOrgId", "/api/master/createProofOfDelivery",
 						"/api/warehouse/updateCreateWarehouse", "/api/warehouse/view", "/api/master/updateCreatePo",
 						"/api/warehouse/getWarehouseById/{id}", "/api/partStudy/basicDetails",
 						"api/warehouse/updateCreateWarehouse", "/api/partStudy/d}/searchPartStudyById",
@@ -63,7 +63,7 @@ public class SecurityConfig {
 						"/api/basicMaster/city", "/api/basicMaster/city/{id}", "/api/basicMaster/state",
 						"/api/basicMaster/state/{id}", "/api/master/Services", "/api/basicMaster/state/Country",
 						"/api/basicMaster/city/getByStateAndCountry", "/api/emitter/proofOfDelivery","/api/emitter/getAllProofOfDelivery",
-						"/api/emitter/binAllotment")
+						"/api/emitter/binAllotment","/api/company/branch","/api/company/getBranchById")
 				.permitAll().antMatchers("/api/**").hasAnyRole("USER", "GUEST_USER").anyRequest().authenticated();
 
 		http.addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
