@@ -39,7 +39,7 @@ public class SecurityConfig {
 						"/api/usersdetails/view", "/api/master/**", "​/api​/master​/addAddress",
 						"/api/master/uploadFileProofOfDelivery", "/api/master/getAllPoByPoId", "api/master/loadKitQty",
 						"/api/master/getPoNoByCreateAsset", "/api/warehouse/getWarehouseLocationByOrgID",
-						"/api/master/getPoByOrgId", "/api/master/createProofOfDelivery",
+						"/api/master/getPoByOrgId", "/api/master/createProofOfDelivery","api/master/updateCreateBinInward",
 						"/api/warehouse/updateCreateWarehouse", "/api/warehouse/view", "/api/master/updateCreatePo",
 						"/api/warehouse/getWarehouseById/{id}", "/api/partStudy/basicDetails",
 						"api/warehouse/updateCreateWarehouse", "/api/partStudy/d}/searchPartStudyById",
