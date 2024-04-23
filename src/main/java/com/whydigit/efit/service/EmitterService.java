@@ -10,6 +10,7 @@ import java.util.Set;
 import org.springframework.stereotype.Service;
 
 import com.whydigit.efit.dto.BinAllotmentDTO;
+import com.whydigit.efit.dto.BinOutwardDTO;
 import com.whydigit.efit.dto.EmitterAddressDTO;
 import com.whydigit.efit.dto.InwardDTO;
 import com.whydigit.efit.dto.IssueRequestDTO;
@@ -17,6 +18,7 @@ import com.whydigit.efit.dto.IssueRequestQtyApprovelDTO;
 import com.whydigit.efit.dto.OutwardKitDetailsDTO;
 import com.whydigit.efit.entity.AssetTaggingDetailsVO;
 import com.whydigit.efit.entity.BinAllotmentNewVO;
+import com.whydigit.efit.entity.BinOutwardVO;
 import com.whydigit.efit.entity.EmitterInwardVO;
 import com.whydigit.efit.entity.EmitterOutwardVO;
 import com.whydigit.efit.entity.InwardVO;
@@ -103,8 +105,9 @@ public interface EmitterService {
 	List<BinAllotmentNewVO> getAllBinAllotment(Long orgId);
 	
 	
-	
-	
-	
+
+	//Bin Outward
+	BinOutwardVO createBinOutward(BinOutwardDTO binOutwardDTO);
+
 
 }

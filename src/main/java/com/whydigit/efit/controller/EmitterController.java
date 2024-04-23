@@ -29,6 +29,7 @@ import com.whydigit.efit.common.CommonConstant;
 import com.whydigit.efit.common.EmitterConstant;
 import com.whydigit.efit.common.UserConstants;
 import com.whydigit.efit.dto.BinAllotmentDTO;
+import com.whydigit.efit.dto.BinOutwardDTO;
 import com.whydigit.efit.dto.EmitterAddressDTO;
 import com.whydigit.efit.dto.InwardDTO;
 import com.whydigit.efit.dto.IssueRequestDTO;
@@ -37,6 +38,7 @@ import com.whydigit.efit.dto.OutwardKitDetailsDTO;
 import com.whydigit.efit.dto.ResponseDTO;
 import com.whydigit.efit.entity.AssetTaggingDetailsVO;
 import com.whydigit.efit.entity.BinAllotmentNewVO;
+import com.whydigit.efit.entity.BinOutwardVO;
 import com.whydigit.efit.entity.EmitterInwardVO;
 import com.whydigit.efit.entity.EmitterOutwardVO;
 import com.whydigit.efit.entity.InwardVO;
@@ -44,7 +46,6 @@ import com.whydigit.efit.entity.IssueRequestVO;
 import com.whydigit.efit.entity.LocalCurrencyVO;
 import com.whydigit.efit.entity.OutwardKitDetailsVO;
 import com.whydigit.efit.entity.OutwardView;
-import com.whydigit.efit.entity.ProofOfDeliveryVO;
 import com.whydigit.efit.entity.VwEmitterInwardVO;
 import com.whydigit.efit.service.EmitterService;
 
@@ -754,7 +755,7 @@ public class EmitterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-		
+
 		private List<Map<String, String>> findPartStudy(Set<Object[]> partstudy) {
 		    List<Map<String, String>> binReqDetails = new ArrayList<>();
 		    for (Object[] ps : partstudy) {
@@ -773,7 +774,7 @@ public class EmitterController extends BaseController {
 		    }
 		return binReqDetails;
 	}
-	
+
 	@GetMapping("/getAllBinAllotmentByOrgId")
 	public ResponseEntity<ResponseDTO> getAllBinAllotment(@RequestParam(required = false) Long orgId) {
 		String methodName = "getAllBinAllotment()";
@@ -793,7 +794,8 @@ public class EmitterController extends BaseController {
 			responseObjectsMap.put("binAllotmentNewVO", binAllotmentNewVO);
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} else {
-			responseDTO = createServiceResponseError(responseObjectsMap, "BinAllotment information receive failed", errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "BinAllotment information receive failed",
+					errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
@@ -803,11 +805,7 @@ public class EmitterController extends BaseController {
 	@GetMapping("/getTaggingDetailsByRfId")
 	public ResponseEntity<ResponseDTO> getTaggingDetailsByRfId(@RequestParam String rfId) {
 		String methodName = "getTaggingDetailsByRfId()";
-		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
-		String errorMsg = null;
-		Map<String, Object> responseObjectsMap = new HashMap<>();
-		ResponseDTO responseDTO = null;
-		Optional<AssetTaggingDetailsVO> assetTaggingDetailsVO = null;
+  Optional<AssetTaggingDetailsVO> assetTaggingDetailsVO = null;
 		try {
 			assetTaggingDetailsVO = emitterService.getTaggingDetailsByRfId(rfId);
 		} catch (Exception e) {
@@ -821,11 +819,39 @@ public class EmitterController extends BaseController {
 		} else {
 			errorMsg = "TaggingDetails not found for RfID: " + rfId;
 			responseDTO = createServiceResponseError(responseObjectsMap, "TaggingDetails not found", errorMsg);
+      }
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
+
+	// Bin Outward
+
+	@PostMapping("/binOutward")
+	public ResponseEntity<ResponseDTO> createBinOutward(@RequestBody BinOutwardDTO binOutwardDTO) {
+		String methodName = "createBinOutward()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		BinOutwardVO binOutwardVO = new BinOutwardVO();
+		try {
+			binOutwardVO = emitterService.createBinOutward(binOutwardDTO);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(CommonConstant.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Bin Outward Created Successfully");
+			responseObjectsMap.put("binOutwardVO", binOutwardVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "Bin Outward Failed", errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-	
+
 	@GetMapping("/getTaggingDetailsByTagCode")
 	public ResponseEntity<ResponseDTO> getTaggingDetailsByTagCode(@RequestParam String tagCode) {
 		String methodName = "getTaggingDetailsByTagCode()";
@@ -851,6 +877,5 @@ public class EmitterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-	
 	
 }
