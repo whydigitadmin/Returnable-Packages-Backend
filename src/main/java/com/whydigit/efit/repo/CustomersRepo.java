@@ -33,7 +33,7 @@ public interface CustomersRepo extends JpaRepository<CustomersVO, Long> {
 	@Query(nativeQuery = true, value = "CALL next_reccode()")
 	void nextRecCode();
 
-	@Query(nativeQuery = true, value = "select legalname from customer where customerid =?1")
+	@Query(nativeQuery = true, value = "select displayname from customer where customerid =?1")
 	String findCustomerLegalnameByEmitterId(long emitterId);
 
 }

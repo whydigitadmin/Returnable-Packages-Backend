@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -31,6 +30,7 @@ import com.whydigit.efit.common.CommonConstant;
 import com.whydigit.efit.common.UserConstants;
 import com.whydigit.efit.dto.AssetInwardDTO;
 import com.whydigit.efit.dto.AssetTaggingDTO;
+import com.whydigit.efit.dto.BinInwardDTO;
 import com.whydigit.efit.dto.CnoteDTO;
 import com.whydigit.efit.dto.CustomerAttachmentType;
 import com.whydigit.efit.dto.CustomersDTO;
@@ -51,6 +51,7 @@ import com.whydigit.efit.entity.AssetGroupVO;
 import com.whydigit.efit.entity.AssetInwardVO;
 import com.whydigit.efit.entity.AssetTaggingVO;
 import com.whydigit.efit.entity.AssetVO;
+import com.whydigit.efit.entity.BinInwardVO;
 import com.whydigit.efit.entity.CnoteVO;
 import com.whydigit.efit.entity.CustomersAddressVO;
 import com.whydigit.efit.entity.CustomersVO;
@@ -1889,6 +1890,46 @@ public class MasterController extends BaseController {
 		}
 		return kit;
 	}
+	
+	@GetMapping("/getAvalkitqtyByBranch")
+	public ResponseEntity<ResponseDTO> getAvalkitqtyByBranch(@RequestParam String branch, @RequestParam String Kitname) {
+		String methodName = "getAvalkitqtyByBranch()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		Set<Object[]> avalKit = new HashSet<>();
+		try {
+			avalKit = masterService.getAvalKitQtyByBranch(branch, Kitname);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			List<Map<String, Object>> kit = getKitDetailsByBranch(avalKit);
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Available Kit Qty Information get successfully");
+			responseObjectsMap.put("Avalkit", kit);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap,
+					"Available Kit Qty Information information receive failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+
+	}
+
+	private List<Map<String, Object>> getKitDetailsByBranch(Set<Object[]> avalKit) {
+		List<Map<String, Object>> kit = new ArrayList<>();
+		for (Object[] w : avalKit) {
+			Map<String, Object> kitd = new HashMap<>();
+			kitd.put("stockBranch", w[0]);
+			kitd.put("kitCode", w[1].toString());
+			kitd.put("avlQty", w[2].toString());
+			kit.add(kitd);
+		}
+		return kit;
+	}
 
 	// TermsAndConditions
 
@@ -2232,4 +2273,151 @@ public class MasterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 
 	}
+	
+	//BININWARD
+	
+	@GetMapping("/getAllotmentNo")
+	public ResponseEntity<ResponseDTO> getAllotmentByOrgIdAndEmitterId(@RequestParam Long orgid,@RequestParam Long emitterId) {
+		String methodName = "getAllotmentByOrgIdAndEmitterId()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		Set<Object[]> partstudy = new HashSet<>();
+		try {
+			partstudy = masterService.getAllotmentNoByEmitterIdAndOrgId(orgid, emitterId);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			List<Map<String, String>> allotno = findallotno(partstudy);
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Bin Allotment No found by ID");
+			responseObjectsMap.put("allotno", allotno);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			errorMsg = " not found for ID: ";
+			responseDTO = createServiceResponseError(responseObjectsMap, "Bin Allotment No not found", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+		
+		private List<Map<String, String>> findallotno(Set<Object[]> partstudy) {
+		    List<Map<String, String>> allotno = new ArrayList<>();
+		    for (Object[] ps : partstudy) {
+		        Map<String, String> part = new HashMap<>();
+		            part.put("allotNo", ps[0] != null ? ps[0].toString() : "");
+		            allotno.add(part);
+		    }
+		return allotno;
+	}
+		
+		@GetMapping("/getAllotmentDetailsByOrgIdAndDocid")
+		public ResponseEntity<ResponseDTO> getAllotmentDetailsByOrgIdAndDocid(@RequestParam Long orgid,@RequestParam String docid) {
+			String methodName = "getAllotmentDetailsByOrgIdAndDocid()";
+			LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+			String errorMsg = null;
+			Map<String, Object> responseObjectsMap = new HashMap<>();
+			ResponseDTO responseDTO = null;
+			Set<Object[]> partstudy = new HashSet<>();
+			try {
+				partstudy = masterService.getAllotmentDetailsByAllotmentNoAndOrgId(orgid, docid);
+			} catch (Exception e) {
+				errorMsg = e.getMessage();
+				LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			}
+			if (StringUtils.isEmpty(errorMsg)) {
+				List<Map<String, String>> allotDetails = findAllotdetails(partstudy);
+				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Bin Allotment Details found by ID");
+				responseObjectsMap.put("allotDetails", allotDetails);
+				responseDTO = createServiceResponse(responseObjectsMap);
+			} else {
+				errorMsg = " not found for ID: ";
+				responseDTO = createServiceResponseError(responseObjectsMap, "Bin Allotment Details not found", errorMsg);
+			}
+			LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+			return ResponseEntity.ok().body(responseDTO);
+		}
+			
+			private List<Map<String, String>> findAllotdetails(Set<Object[]> partstudy) {
+			    List<Map<String, String>> allotDetails = new ArrayList<>();
+			    for (Object[] ps : partstudy) {
+			        Map<String, String> part = new HashMap<>();
+			            part.put("allotDate", ps[0] != null ? ps[0].toString() : "");
+			            part.put("reqNo", ps[1] != null ? ps[1].toString() : "");
+			            part.put("reqDate", ps[2] != null ? ps[2].toString() : "");
+			            part.put("flow", ps[3] != null ? ps[3].toString() : "");
+			            part.put("kitCode", ps[4] != null ? ps[4].toString() : "");
+			            part.put("allotKitQty", ps[5] != null ? ps[5].toString() : "");
+			            allotDetails.add(part);
+			    }
+			return allotDetails;
+		}
+	
+		@PutMapping("/updateCreateBinInward")
+		public ResponseEntity<ResponseDTO> updateCreateBinInward(@RequestBody BinInwardDTO binInwardDTO) {
+			String methodName = "updateCreateBinInward()";
+			LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+			String errorMsg = null;
+			Map<String, Object> responseObjectsMap = new HashMap<>();
+			ResponseDTO responseDTO = null;
+			try {
+				BinInwardVO updatedBinInwardVO = masterService.updateCreateBinInward(binInwardDTO);
+				if (updatedBinInwardVO != null) {
+					responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "BinInward updated successfully");
+					responseObjectsMap.put("BinInwardVO", updatedBinInwardVO);
+					responseDTO = createServiceResponse(responseObjectsMap);
+				} else {
+				}
+			} catch (Exception e) {
+				errorMsg = e.getMessage();
+				LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+				responseDTO = createServiceResponseError(responseObjectsMap, "BinInward update failed", errorMsg);
+			}
+			LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+			return ResponseEntity.ok().body(responseDTO);
+		}
+		
+		@GetMapping("/getAllotmentAssetDetailsByOrgIdAndDocid")
+		public ResponseEntity<ResponseDTO> getAllotmentAssetDetailsByOrgIdAndDocid(@RequestParam Long orgid,@RequestParam String docid) {
+			String methodName = "getAllotmentAssetDetailsByOrgIdAndDocid()";
+			LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+			String errorMsg = null;
+			Map<String, Object> responseObjectsMap = new HashMap<>();
+			ResponseDTO responseDTO = null;
+			Set<Object[]> partstudy = new HashSet<>();
+			try {
+				partstudy = masterService.getAllotmentAssetDetailsByAllotmentNoAndOrgId(orgid, docid);
+			} catch (Exception e) {
+				errorMsg = e.getMessage();
+				LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			}
+			if (StringUtils.isEmpty(errorMsg)) {
+				List<Map<String, String>> allotAssetDetails = findAllotAssetdetails(partstudy);
+				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Bin Allotment Asset Details found by ID");
+				responseObjectsMap.put("allotAssetDetails", allotAssetDetails);
+				responseDTO = createServiceResponse(responseObjectsMap);
+			} else {
+				errorMsg = " not found for ID: ";
+				responseDTO = createServiceResponseError(responseObjectsMap, "Bin Allotment Asset Details not found", errorMsg);
+			}
+			LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+			return ResponseEntity.ok().body(responseDTO);
+		}
+			
+			private List<Map<String, String>> findAllotAssetdetails(Set<Object[]> partstudy) {
+			    List<Map<String, String>> allotAssetDetails = new ArrayList<>();
+			    for (Object[] ps : partstudy) {
+			        Map<String, String> part = new HashMap<>();
+			            part.put("asset", ps[0] != null ? ps[0].toString() : "");
+			            part.put("assetCode", ps[1] != null ? ps[1].toString() : "");
+			            part.put("rfId", ps[2] != null ? ps[2].toString() : "");
+			            part.put("tagCode", ps[3] != null ? ps[3].toString() : "");
+			            part.put("skuQty", ps[4] != null ? ps[4].toString() : "");
+			            part.put("recQty", ps[4] != null ? ps[4].toString() : "");
+			            allotAssetDetails.add(part);
+			    }
+			return allotAssetDetails;
+		}
 }
