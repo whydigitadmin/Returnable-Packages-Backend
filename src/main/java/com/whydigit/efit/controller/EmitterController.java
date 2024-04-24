@@ -43,7 +43,7 @@ import com.whydigit.efit.entity.EmitterInwardVO;
 import com.whydigit.efit.entity.EmitterOutwardVO;
 import com.whydigit.efit.entity.InwardVO;
 import com.whydigit.efit.entity.IssueRequestVO;
-import com.whydigit.efit.entity.LocalCurrencyVO;
+import com.whydigit.efit.entity.KitAssetVO;
 import com.whydigit.efit.entity.OutwardKitDetailsVO;
 import com.whydigit.efit.entity.OutwardView;
 import com.whydigit.efit.entity.VwEmitterInwardVO;
@@ -879,6 +879,73 @@ public class EmitterController extends BaseController {
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
+	}
+	
+	@GetMapping("/getAllAllotmentById")
+	public ResponseEntity<ResponseDTO> getAllAllotmentById(@RequestParam(required = false) String docId) {
+		String methodName = "getAllAllotmentById()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<BinAllotmentNewVO> binAllotmentNewVO = new ArrayList<>();
+		try {
+			binAllotmentNewVO = emitterService.getAllAllotmentById(docId);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Allotment information get successfully");
+			responseObjectsMap.put("binAllotmentNewVO", binAllotmentNewVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "Allotment information receive failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+
+	}
+	
+	@GetMapping("/getkitAssetDetailsByKitId")
+	public ResponseEntity<ResponseDTO> getkitAssetDetailsByKitId(@RequestParam(required = false) String kitCode,@RequestParam (required =false )int quantity) {
+		String methodName = "getkitAssetDetailsByKitId()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		Set<Object[]> kitAssetVO = new HashSet<>();
+		try {
+			kitAssetVO = emitterService.getkitAssetDetailsByKitId(kitCode,quantity);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			List<Map<String, String>>getAssetDetails=findAsset(kitAssetVO);
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Kit Asset information get successfully");
+			responseObjectsMap.put("kitAssetVO", getAssetDetails);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "Kit Asset information receive failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+
+	}
+
+	private List<Map<String, String>> findAsset(Set<Object[]> kitAssetVO) {
+		List<Map<String, String>>getAssetDetails=new ArrayList<>();
+		for(Object[] asset:kitAssetVO)
+		{
+			Map<String, String> part = new HashMap<>();
+			part.put("assetCategory", asset[0] != null ? asset[0].toString() : "");
+			part.put("asset", asset[1] != null ? asset[1].toString() : "");
+			part.put("assetCode", asset[2] != null ? asset[2].toString() : "");
+			part.put("assetQty", asset[3] != null ? asset[3].toString() : "");
+			getAssetDetails.add(part);
+		}
+		return getAssetDetails;
 	}
 
 }

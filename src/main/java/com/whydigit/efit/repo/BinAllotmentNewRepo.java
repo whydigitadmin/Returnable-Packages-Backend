@@ -3,6 +3,7 @@ package com.whydigit.efit.repo;
 import java.util.List;
 import java.util.Set;
 
+import org.aspectj.weaver.tools.Trace;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -42,5 +43,8 @@ public interface BinAllotmentNewRepo extends JpaRepository<BinAllotmentNewVO, Lo
 
 	@Query(nativeQuery = true, value = "select b.asset,b.assetcode,b.rfid,b.tagcode,b.skuqty from binallotment a , binallotment1 b where a.binallotmentid=b.binallotmentid and a.docid=?2 and a.orgid=?1")
 	Set<Object[]> getAllotmentAssetDetailsByAllotmentNoAndOrgId(Long orgId, String docid);
+
+	@Query(nativeQuery =true,value = "select * from binallotment where docid=?1")
+	List<BinAllotmentNewVO> getAllAssetByOrgId(String docId);
 
 }
