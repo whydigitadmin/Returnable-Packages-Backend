@@ -819,8 +819,8 @@ public class EmitterServiceImpl implements EmitterService {
 	private BinOutwardVO createBinOutwardVOByBinOutwardDTO(BinOutwardDTO binOutwardDTO) {
 		List<BinOutwardDetailsVO> binOutwardDetailsVOList = new ArrayList<>();
 		BinOutwardVO binOutwardVO = BinOutwardVO.builder().docDate(binOutwardDTO.getDocDate())
-				.flow(binOutwardDTO.getFlow()).orgId(binOutwardDTO.getOrgId()).createdBy(binOutwardDTO.getCreatedBy())
-				.modifiedBy(binOutwardDTO.getCreatedBy()).kit(binOutwardDTO.getKit())
+				.flow(binOutwardDTO.getFlow()).orgId(binOutwardDTO.getOrgId()).createdby(binOutwardDTO.getCreatedBy())
+				.modifiedby(binOutwardDTO.getCreatedBy()).kit(binOutwardDTO.getKit())
 				.outwardKitQty(binOutwardDTO.getOutwardKitQty()).binOutwardDetails(binOutwardDetailsVOList).build();
 
 		binOutwardDetailsVOList = binOutwardDTO.getBinOutwardDetails().stream()

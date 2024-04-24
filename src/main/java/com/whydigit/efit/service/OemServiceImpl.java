@@ -86,8 +86,8 @@ public class OemServiceImpl implements OemService {
 	private OemBinInwardVO createOemBinInwardVOByOemBinInwardDTO(OemBinInwardDTO oemBinInwardDTO) {
 		List<OemBinInwardDetailsVO> binInwardDetailsVOList = new ArrayList<>();
 		OemBinInwardVO binInwardVO = OemBinInwardVO.builder().docDate(oemBinInwardDTO.getDocDate())
-				.recievedKitQty(oemBinInwardDTO.getRecievedKitQty()).createdBy(oemBinInwardDTO.getCreatedBy())
-				.orgId(oemBinInwardDTO.getOrgId()).modifiedBy(oemBinInwardDTO.getCreatedBy())
+				.recievedKitQty(oemBinInwardDTO.getRecievedKitQty()).createdby(oemBinInwardDTO.getCreatedBy())
+				.orgId(oemBinInwardDTO.getOrgId()).modifiedby(oemBinInwardDTO.getCreatedBy())
 				.oemBinInwardDetails(binInwardDetailsVOList).build();
 
 		binInwardDetailsVOList = oemBinInwardDTO.getOemBinInwardDetails().stream()
@@ -158,8 +158,8 @@ public class OemServiceImpl implements OemService {
 		String binoutward = finyr + "OBO" + oemBinOutwardRepo.finddocid();
 		oemBinOutwardVO.setDocId(binoutward);
 		oemBinOutwardRepo.nextSeq();
-		oemBinOutwardVO.setCreatedBy(oemBinOutwardDTO.getCreatedBy());
-		oemBinOutwardVO.setModifiedBy(oemBinOutwardDTO.getCreatedBy());
+		oemBinOutwardVO.setCreatedby(oemBinOutwardDTO.getCreatedBy());
+		oemBinOutwardVO.setModifiedby(oemBinOutwardDTO.getCreatedBy());
 		oemBinOutwardVO.setOrgId(oemBinOutwardDTO.getOrgId());
 		oemBinOutwardVO.setDocDate(oemBinOutwardDTO.getDocDate());
 		oemBinOutwardVO.setKit(oemBinOutwardDTO.getKit());
