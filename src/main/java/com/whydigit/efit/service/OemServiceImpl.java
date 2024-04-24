@@ -10,21 +10,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.whydigit.efit.dto.BinInwardDTO;
-import com.whydigit.efit.dto.BinInwardDetailsDTO;
 import com.whydigit.efit.dto.OemBinInwardDTO;
 import com.whydigit.efit.dto.OemBinOutwardDTO;
 import com.whydigit.efit.dto.OemBinOutwardDetailsDTO;
-import com.whydigit.efit.dto.Po1DTO;
 import com.whydigit.efit.entity.AssetStockDetailsVO;
-import com.whydigit.efit.entity.BinInwardDetailsVO;
-import com.whydigit.efit.entity.BinInwardVO;
 import com.whydigit.efit.entity.OemBinInwardDetailsVO;
 import com.whydigit.efit.entity.OemBinInwardVO;
 import com.whydigit.efit.entity.OemBinOutwardDetailsVO;
 import com.whydigit.efit.entity.OemBinOutwardVO;
-import com.whydigit.efit.entity.PoVO;
-import com.whydigit.efit.entity.PoVO1;
 import com.whydigit.efit.exception.ApplicationException;
 import com.whydigit.efit.repo.AssetStockDetailsRepo;
 import com.whydigit.efit.repo.OemBinInwardDetailsRepo;
@@ -111,12 +104,12 @@ public class OemServiceImpl implements OemService {
 		List<OemBinOutwardDetailsVO> oemBinOutwardDetailsVO = new ArrayList<>();
 		if (oemBinOutwardDTO.getOemBinOutwardDetails() != null) {
 			for (OemBinOutwardDetailsDTO oemBinOutwardDetailsDTO : oemBinOutwardDTO.getOemBinOutwardDetails()) {
-				OemBinOutwardDetailsVO oemBinOutwardDetails = new OemBinOutwardDetailsVO();
-				oemBinOutwardDetails.setAsset(oemBinOutwardDetailsDTO.getAsset());
-				oemBinOutwardDetails.setAssetCode(oemBinOutwardDetailsDTO.getAssetCode());
-				oemBinOutwardDetails.setQty(oemBinOutwardDetails.getQty());
-
-				oemBinOutwardDetailsVO.add(oemBinOutwardDetails);
+				OemBinOutwardDetailsVO oemBinOutwardDetailsVO1 = new OemBinOutwardDetailsVO();
+				oemBinOutwardDetailsVO1.setAsset(oemBinOutwardDetailsDTO.getAsset());
+				oemBinOutwardDetailsVO1.setAssetCode(oemBinOutwardDetailsDTO.getAssetCode());
+				oemBinOutwardDetailsVO1.setQty(oemBinOutwardDetailsVO1.getQty());
+				oemBinOutwardDetailsVO1.setOemBinOutwardVO(oemBinOutwardVO);
+				oemBinOutwardDetailsVO.add(oemBinOutwardDetailsVO1);
 			}
 		}
 		oemBinOutwardVO.setOemBinOutwardDetails(oemBinOutwardDetailsVO);
@@ -144,7 +137,9 @@ public class OemServiceImpl implements OemService {
 				stockDetailsVO.setSCode(savedOemBinOutwardVO.getScode());
 				stockDetailsVO.setScreen(savedOemBinOutwardVO.getScreen());
 				stockDetailsVO.setPm(savedOemBinOutwardVO.getPm());
+				
 				assetStockDetailsRepo.save(stockDetailsVO);
+				
 			}
 		}
 		
@@ -153,7 +148,6 @@ public class OemServiceImpl implements OemService {
 	}
 
 	private void getOemBinOutwardVOFromOemBinOutwardDTO(OemBinOutwardDTO oemBinOutwardDTO, OemBinOutwardVO oemBinOutwardVO) {
-		
 		int finyr = oemBinOutwardRepo.findFinyr();
 		String binoutward = finyr + "OBO" + oemBinOutwardRepo.finddocid();
 		oemBinOutwardVO.setDocId(binoutward);

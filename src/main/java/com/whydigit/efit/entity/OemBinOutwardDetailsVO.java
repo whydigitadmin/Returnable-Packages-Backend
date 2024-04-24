@@ -38,5 +38,5 @@ public class OemBinOutwardDetailsVO {
 	@ManyToOne
 	@JoinColumn(name = "oembinoutwardid")
 	@JsonBackReference
-	private BinOutwardVO oemBinOutwardVO;
+	private OemBinOutwardVO oemBinOutwardVO;
 }
