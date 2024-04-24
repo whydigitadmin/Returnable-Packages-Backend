@@ -1786,7 +1786,9 @@ public class MasterServiceImpl implements MasterService {
 		String binInward = finyr + "BI" + binInwardRepo.finddocid();
 		binInwardVO.setDocid(binInward);
 		binInwardRepo.nextDocseq();
+		binInwardVO.setDocDate(binInwardDTO.getDocDate());
 		binInwardVO.setAllotDate(binInwardDTO.getAllotDate());
+		binInwardVO.setEmitterId(binInwardDTO.getEmitterId());
 		binInwardVO.setBinReqDate(binInwardDTO.getBinReqDate());
 		binInwardVO.setOrgId(binInwardDTO.getOrgId());
 		binInwardVO.setAllotmentNo(binInwardDTO.getAllotmentNo());
@@ -1806,7 +1808,7 @@ public class MasterServiceImpl implements MasterService {
 	@Override
 	public List<BinInwardVO> getAlllBinInwardByEmitterAndOrgId(Long emitterid, Long orgId) {
 		
-		return binAllotmentNewRepo.findAllByEmitterIdAndOrgId(emitterid,orgId);
+		return binInwardRepo.findAllByEmitterIdAndOrgId(emitterid,orgId);
 	}
 
 	@Override
