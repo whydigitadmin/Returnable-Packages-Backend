@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import com.whydigit.efit.entity.BinAllotmentNewVO;
+import com.whydigit.efit.entity.BinInwardVO;
 
 public interface BinAllotmentNewRepo extends JpaRepository<BinAllotmentNewVO, Long> {
 

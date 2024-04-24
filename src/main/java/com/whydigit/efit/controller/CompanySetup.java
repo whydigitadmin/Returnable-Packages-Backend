@@ -26,7 +26,6 @@ import com.whydigit.efit.common.CommonConstant;
 import com.whydigit.efit.common.UserConstants;
 import com.whydigit.efit.dto.BranchDTO;
 import com.whydigit.efit.dto.ResponseDTO;
-import com.whydigit.efit.entity.AssetVO;
 import com.whydigit.efit.entity.BranchVO;
 import com.whydigit.efit.entity.CompanySetVO;
 import com.whydigit.efit.entity.CompanySetupVO;
