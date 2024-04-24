@@ -45,7 +45,7 @@ public class AssetStockDetailsVO {
 	private String stockLocation;
 	@Column(name="stockvalue",precision = 2,scale =4)
 	private Float stockValue;
-	@Column(name="stockref",length=10)
+	@Column(name="stockref",length=30)
 	private String stockRef;
 	@Column(name="stockdate")
 	private LocalDate stockDate;

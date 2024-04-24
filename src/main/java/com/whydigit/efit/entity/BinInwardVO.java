@@ -79,7 +79,8 @@ public class BinInwardVO {
 	
 	@Column(name = "allotdate")
 	private LocalDate allotDate;
-	
+	@Column(name="emitterid")
+	private String emitterId;
 	@Column(name = "binreqdate")
 	private LocalDate binReqDate;
 	

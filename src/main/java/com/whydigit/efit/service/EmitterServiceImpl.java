@@ -790,7 +790,7 @@ public class EmitterServiceImpl implements EmitterService {
 		BinOutwardVO binOutwardVO = createBinOutwardVOByBinOutwardDTO(binOutwardDTO);
 		int finyr = binOutwardRepo.findfinyr();
 		String binoutward = finyr + "BO" + binOutwardRepo.finddocid();
-		binOutwardVO.setDocid(binoutward);
+		binOutwardVO.setDocId(binoutward);
 		binOutwardRepo.nextseq();
 		binOutwardRepo.save(binOutwardVO);
 		BinOutwardVO savedBinOutwardVO = binOutwardRepo.save(binOutwardVO);
@@ -800,17 +800,16 @@ public class EmitterServiceImpl implements EmitterService {
 			for (BinOutwardDetailsVO binOutwardDetailsVO : binOutwardDetailsVOLists) {
 
 				AssetStockDetailsVO stockDetailsVO = new AssetStockDetailsVO();
-				stockDetailsVO.setStockRef(savedBinOutwardVO.getDocid());
-				stockDetailsVO.setStockDate(savedBinOutwardVO.getDocdate());
+				stockDetailsVO.setStockRef(savedBinOutwardVO.getDocId());
+				stockDetailsVO.setStockDate(savedBinOutwardVO.getDocDate());
 				stockDetailsVO.setSku(binOutwardDetailsVO.getAsset());
-				stockDetailsVO.setSkuCode(binOutwardDetailsVO.getAssetcode());
+				stockDetailsVO.setSkuCode(binOutwardDetailsVO.getAssetCode());
 				stockDetailsVO.setSkuQty(-binOutwardDetailsVO.getQty());
 				stockDetailsVO.setSCode(savedBinOutwardVO.getScode());
 				stockDetailsVO.setPm(savedBinOutwardVO.getPm());
 				stockDetailsVO.setScreen(savedBinOutwardVO.getScreen());
 				stockDetailsVO.setSourceId(binOutwardDetailsVO.getId());
 				stockDetailsVO.setFinyr(savedBinOutwardVO.getFinyr());
-				;
 				assetStockDetailsRepo.save(stockDetailsVO);
 			}
 		return binOutwardVO;
@@ -818,16 +817,18 @@ public class EmitterServiceImpl implements EmitterService {
 
 	private BinOutwardVO createBinOutwardVOByBinOutwardDTO(BinOutwardDTO binOutwardDTO) {
 		List<BinOutwardDetailsVO> binOutwardDetailsVOList = new ArrayList<>();
-		BinOutwardVO binOutwardVO = BinOutwardVO.builder().docdate(binOutwardDTO.getDocdate())
-				.flow(binOutwardDTO.getFlow()).kit(binOutwardDTO.getKit())
-				.outwardkitqty(binOutwardDTO.getOutwardkitqty()).binOutwardDetails(binOutwardDetailsVOList).build();
+		BinOutwardVO binOutwardVO = BinOutwardVO.builder().docDate(binOutwardDTO.getDocDate())
+				.flow(binOutwardDTO.getFlow()).orgId(binOutwardDTO.getOrgId()).createdBy(binOutwardDTO.getCreatedBy())
+				.modifiedBy(binOutwardDTO.getCreatedBy()).kit(binOutwardDTO.getKit())
+				.outwardKitQty(binOutwardDTO.getOutwardKitQty()).binOutwardDetails(binOutwardDetailsVOList).build();
 
 		binOutwardDetailsVOList = binOutwardDTO.getBinOutwardDetails().stream()
 				.map(binoutward -> BinOutwardDetailsVO.builder().asset(binoutward.getAsset())
-						.assetcode(binoutward.getAssetcode()).qty(binoutward.getQty()).binoutwardVO(binOutwardVO)
+						.assetCode(binoutward.getAssetCode()).qty(binoutward.getQty()).binOutwardVO(binOutwardVO)
 						.build())
 				.collect(Collectors.toList());
 		binOutwardVO.setBinOutwardDetails(binOutwardDetailsVOList);
 		return binOutwardVO;
 	}
+
 }
