@@ -72,15 +72,10 @@ public class BinInwardVO {
 	private String kitCode;
 	@Column(name = "allotedqty", length = 25)
 	private int allotedQty;
-	
 	@Column(name = "emitterid", length = 25)
 	private Long emitterId;
-	
-	
 	@Column(name = "allotdate")
 	private LocalDate allotDate;
-	@Column(name="emitterid")
-	private String emitterId;
 	@Column(name = "binreqdate")
 	private LocalDate binReqDate;
 	
