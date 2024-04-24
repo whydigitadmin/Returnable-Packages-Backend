@@ -41,6 +41,7 @@ import com.whydigit.efit.dto.OutwardKitDetailsDTO;
 import com.whydigit.efit.dto.Role;
 import com.whydigit.efit.entity.AssetStockDetailsVO;
 import com.whydigit.efit.entity.AssetTaggingDetailsVO;
+import com.whydigit.efit.entity.AssetVO;
 import com.whydigit.efit.entity.BinAllotmentDetailsVO;
 import com.whydigit.efit.entity.BinAllotmentNewVO;
 import com.whydigit.efit.entity.BinOutwardDetailsVO;
@@ -54,6 +55,7 @@ import com.whydigit.efit.entity.InwardVO;
 import com.whydigit.efit.entity.IssueItemVO;
 import com.whydigit.efit.entity.IssueRequestApprovedVO;
 import com.whydigit.efit.entity.IssueRequestVO;
+import com.whydigit.efit.entity.KitAssetVO;
 import com.whydigit.efit.entity.KitVO;
 import com.whydigit.efit.entity.MaxPartQtyPerKitVO;
 import com.whydigit.efit.entity.OutwardKitDetailsVO;
@@ -76,6 +78,7 @@ import com.whydigit.efit.repo.FlowRepo;
 import com.whydigit.efit.repo.InwardRepo;
 import com.whydigit.efit.repo.IssueItemRepo;
 import com.whydigit.efit.repo.IssueRequestRepo;
+import com.whydigit.efit.repo.KitAssetRepo;
 import com.whydigit.efit.repo.KitRepo;
 import com.whydigit.efit.repo.MaxPartQtyPerKitRepo;
 import com.whydigit.efit.repo.OutwardKitDetailsRepo;
@@ -127,6 +130,9 @@ public class EmitterServiceImpl implements EmitterService {
 
 	@Autowired
 	KitRepo kitRepo;
+	
+	@Autowired
+	KitAssetRepo kitAssetRepo;
 
 	@Autowired
 	BinAllotmentRepo binAllotmentRepo;
@@ -829,6 +835,25 @@ public class EmitterServiceImpl implements EmitterService {
 				.collect(Collectors.toList());
 		binOutwardVO.setBinOutwardDetails(binOutwardDetailsVOList);
 		return binOutwardVO;
+	}
+
+
+	@Override
+	public List<BinAllotmentNewVO> getAllAllotmentById(String docId) {
+		List<BinAllotmentNewVO> binAllotmentNewVO = new ArrayList<>();
+		if (ObjectUtils.isNotEmpty(docId)) {
+			LOGGER.info("Successfully Received  Bin ALlotment BY docId : {}", docId);
+			binAllotmentNewVO = binAllotmentNewRepo.getAllAssetByOrgId(docId);
+		} else {
+			LOGGER.info("Successfully Received  Bin ALlotment For All docId.");
+			binAllotmentNewVO = binAllotmentNewRepo.findAll();
+		}
+		return binAllotmentNewVO;
+	}
+
+	@Override
+	public Set<Object[]> getkitAssetDetailsByKitId(String kitCode, int quantity) {
+		return kitAssetRepo.getAssetDetails(kitCode,quantity);
 	}
 
 }
