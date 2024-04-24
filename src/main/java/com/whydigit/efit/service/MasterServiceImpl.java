@@ -1802,6 +1802,22 @@ public class MasterServiceImpl implements MasterService {
 	
 		return binAllotmentNewRepo.getAllotmentAssetDetailsByAllotmentNoAndOrgId(orgId,docid);
 	}
+
+	@Override
+	public List<BinInwardVO> getAlllBinInwardByEmitterAndOrgId(Long emitterid, Long orgId) {
+		
+		return binAllotmentNewRepo.findAllByEmitterIdAndOrgId(emitterid,orgId);
+	}
+
+	@Override
+	public Optional<BinInwardVO> getBinInwardById(Long id) {
+		 if (binInwardRepo.existsById(id)) {
+		        return binInwardRepo.findById(id);
+		    } else {
+		        throw new NoSuchElementException("Bin Inward with ID " + id + " does not exist");
+		    }
+		
+	}
 	
 }
 

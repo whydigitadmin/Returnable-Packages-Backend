@@ -104,7 +104,7 @@ public class EmitterServiceImpl implements EmitterService {
 
 	@Autowired
 	InwardRepo inwardRepo;
-	
+
 	@Autowired
 	AssetTaggingDetailsRepo taggingDetailsRepo;
 
@@ -683,7 +683,7 @@ public class EmitterServiceImpl implements EmitterService {
 		binAllotmentNewVO.setModifiedBy(binAllotmentDTO.getCreatedby());
 		binAllotmentNewVO.setOrgId(binAllotmentDTO.getOrgId());
 		binAllotmentNewVO.setEmitterId(binAllotmentDTO.getEmitterId());
-		CustomersVO customer=customersRepo.findById(binAllotmentDTO.getEmitterId()).get();
+		CustomersVO customer = customersRepo.findById(binAllotmentDTO.getEmitterId()).get();
 		binAllotmentNewVO.setEmitter(customer.getDisplayName());
 		binAllotmentNewVO.setPartName(binAllotmentDTO.getPartName());
 		binAllotmentNewVO.setPartCode(binAllotmentDTO.getPartCode());
@@ -729,7 +729,7 @@ public class EmitterServiceImpl implements EmitterService {
 				assetStockDetailsVO.setStockBranch(allotmentNewVO.getStockBranch());
 				assetStockDetailsRepo.save(assetStockDetailsVO);
 			}
-			for(BinAllotmentDetailsVO allotmentDetailsVO2:allotmentDetailsVO) {
+			for (BinAllotmentDetailsVO allotmentDetailsVO2 : allotmentDetailsVO) {
 				AssetStockDetailsVO assetStockDetailsVO = new AssetStockDetailsVO();
 				assetStockDetailsVO.setStockRef(allotmentNewVO.getDocId());
 				assetStockDetailsVO.setStockDate(allotmentNewVO.getDocDate());
@@ -740,12 +740,12 @@ public class EmitterServiceImpl implements EmitterService {
 				assetStockDetailsVO.setTagCode(allotmentDetailsVO2.getTagCode());
 				assetStockDetailsVO.setStockSource("");
 				assetStockDetailsVO.setSCode(allotmentNewVO.getScode()); // Assuming getScode() returns the correct
-				assetStockDetailsVO.setSourceId(allotmentDetailsVO2.getId());															// value
+				assetStockDetailsVO.setSourceId(allotmentDetailsVO2.getId()); // value
 				assetStockDetailsVO.setScreen("BIN ALLOTMENT");
 				assetStockDetailsVO.setPm("P");
 				assetStockDetailsVO.setStatus("M");
 				assetStockDetailsVO.setFinyr(allotmentNewVO.getFinyr());
-				assetStockDetailsVO.setStockBranch(allotmentNewVO.getEmitter()+"-"+allotmentNewVO.getStockBranch());
+				assetStockDetailsVO.setStockBranch(allotmentNewVO.getEmitter() + "-" + allotmentNewVO.getStockBranch());
 				assetStockDetailsRepo.save(assetStockDetailsVO);
 			}
 		}
@@ -772,25 +772,21 @@ public class EmitterServiceImpl implements EmitterService {
 
 	@Override
 	public Optional<AssetTaggingDetailsVO> getTaggingDetailsByRfId(String rfId) {
-		
+
 		return taggingDetailsRepo.findByRfId(rfId);
 	}
 
 	@Override
 	public Optional<AssetTaggingDetailsVO> getTaggingDetailsByTagCode(String tagCode) {
-		
+
 		return taggingDetailsRepo.findByTagCode(tagCode);
 	}
-
-	
-
 
 	// Bin Outward
 
 	@Override
 	public BinOutwardVO createBinOutward(BinOutwardDTO binOutwardDTO) {
-		
-		
+
 		BinOutwardVO binOutwardVO = createBinOutwardVOByBinOutwardDTO(binOutwardDTO);
 		int finyr = binOutwardRepo.findfinyr();
 		String binoutward = finyr + "BO" + binOutwardRepo.finddocid();
@@ -813,7 +809,8 @@ public class EmitterServiceImpl implements EmitterService {
 				stockDetailsVO.setPm(savedBinOutwardVO.getPm());
 				stockDetailsVO.setScreen(savedBinOutwardVO.getScreen());
 				stockDetailsVO.setSourceId(binOutwardDetailsVO.getId());
-				stockDetailsVO.setFinyr(savedBinOutwardVO.getFinyr());;
+				stockDetailsVO.setFinyr(savedBinOutwardVO.getFinyr());
+				;
 				assetStockDetailsRepo.save(stockDetailsVO);
 			}
 		return binOutwardVO;
