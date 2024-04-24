@@ -1786,7 +1786,9 @@ public class MasterServiceImpl implements MasterService {
 		String binInward = finyr + "BI" + binInwardRepo.finddocid();
 		binInwardVO.setDocid(binInward);
 		binInwardRepo.nextDocseq();
+		binInwardVO.setDocDate(binInwardDTO.getDocDate());
 		binInwardVO.setAllotDate(binInwardDTO.getAllotDate());
+		binInwardVO.setEmitterId(binInwardDTO.getEmitterId());
 		binInwardVO.setBinReqDate(binInwardDTO.getBinReqDate());
 		binInwardVO.setOrgId(binInwardDTO.getOrgId());
 		binInwardVO.setAllotmentNo(binInwardDTO.getAllotmentNo());
@@ -1801,6 +1803,22 @@ public class MasterServiceImpl implements MasterService {
 	public Set<Object[]> getAllotmentAssetDetailsByAllotmentNoAndOrgId(Long orgId, String docid) {
 	
 		return binAllotmentNewRepo.getAllotmentAssetDetailsByAllotmentNoAndOrgId(orgId,docid);
+	}
+
+	@Override
+	public List<BinInwardVO> getAlllBinInwardByEmitterAndOrgId(Long emitterid, Long orgId) {
+		
+		return binInwardRepo.findAllByEmitterIdAndOrgId(emitterid,orgId);
+	}
+
+	@Override
+	public Optional<BinInwardVO> getBinInwardById(Long id) {
+		 if (binInwardRepo.existsById(id)) {
+		        return binInwardRepo.findById(id);
+		    } else {
+		        throw new NoSuchElementException("Bin Inward with ID " + id + " does not exist");
+		    }
+		
 	}
 	
 }

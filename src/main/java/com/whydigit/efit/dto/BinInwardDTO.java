@@ -32,5 +32,11 @@ public class BinInwardDTO {
 	
 	private int allotedQty; 
 	
+	private LocalDate docDate;
+	
+	private Long emitterId;
+	
 	private List<BinInwardDetailsDTO> binInwardDetailsDTO;
+
+	
 }

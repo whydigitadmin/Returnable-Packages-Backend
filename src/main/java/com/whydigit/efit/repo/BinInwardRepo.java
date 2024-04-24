@@ -1,5 +1,7 @@
 package com.whydigit.efit.repo;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -18,5 +20,7 @@ public interface BinInwardRepo extends JpaRepository<BinInwardVO, Long>{
 
 	@Query(nativeQuery = true, value = "CALL next_inwardid()")
 	void nextDocseq();
+
+	List<BinInwardVO> findAllByEmitterIdAndOrgId(Long emitterid, Long orgId);
 
 }

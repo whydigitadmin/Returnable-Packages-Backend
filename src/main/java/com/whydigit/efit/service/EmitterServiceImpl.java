@@ -122,7 +122,6 @@ public class EmitterServiceImpl implements EmitterService {
 
 	@Autowired
 	MaxPartQtyPerKitRepo maxPartQtyPerKitRepo;
-
 	@Autowired
 	CustomersRepo customersRepo;
 
@@ -803,14 +802,14 @@ public class EmitterServiceImpl implements EmitterService {
 				AssetStockDetailsVO stockDetailsVO = new AssetStockDetailsVO();
 				stockDetailsVO.setStockRef(savedBinOutwardVO.getDocId());
 				stockDetailsVO.setStockDate(savedBinOutwardVO.getDocDate());
-				stockDetailsVO.setSCode(savedBinOutwardVO.getScode());
-				stockDetailsVO.setPm(savedBinOutwardVO.getPm());
-				stockDetailsVO.setScreen(savedBinOutwardVO.getScreen());
-				stockDetailsVO.setFinyr(savedBinOutwardVO.getFinYr());
 				stockDetailsVO.setSku(binOutwardDetailsVO.getAsset());
 				stockDetailsVO.setSkuCode(binOutwardDetailsVO.getAssetCode());
 				stockDetailsVO.setSkuQty(-binOutwardDetailsVO.getQty());
+				stockDetailsVO.setSCode(savedBinOutwardVO.getScode());
+				stockDetailsVO.setPm(savedBinOutwardVO.getPm());
+				stockDetailsVO.setScreen(savedBinOutwardVO.getScreen());
 				stockDetailsVO.setSourceId(binOutwardDetailsVO.getId());
+				stockDetailsVO.setFinyr(savedBinOutwardVO.getFinyr());
 				assetStockDetailsRepo.save(stockDetailsVO);
 			}
 		return binOutwardVO;
@@ -819,8 +818,8 @@ public class EmitterServiceImpl implements EmitterService {
 	private BinOutwardVO createBinOutwardVOByBinOutwardDTO(BinOutwardDTO binOutwardDTO) {
 		List<BinOutwardDetailsVO> binOutwardDetailsVOList = new ArrayList<>();
 		BinOutwardVO binOutwardVO = BinOutwardVO.builder().docDate(binOutwardDTO.getDocDate())
-				.flow(binOutwardDTO.getFlow()).orgId(binOutwardDTO.getOrgId()).createdby(binOutwardDTO.getCreatedBy())
-				.modifiedby(binOutwardDTO.getCreatedBy()).kit(binOutwardDTO.getKit())
+				.flow(binOutwardDTO.getFlow()).orgId(binOutwardDTO.getOrgId()).createdBy(binOutwardDTO.getCreatedBy())
+				.modifiedBy(binOutwardDTO.getCreatedBy()).kit(binOutwardDTO.getKit())
 				.outwardKitQty(binOutwardDTO.getOutwardKitQty()).binOutwardDetails(binOutwardDetailsVOList).build();
 
 		binOutwardDetailsVOList = binOutwardDTO.getBinOutwardDetails().stream()
