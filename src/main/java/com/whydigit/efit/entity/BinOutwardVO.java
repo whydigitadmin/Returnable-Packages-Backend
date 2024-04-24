@@ -44,9 +44,9 @@ public class BinOutwardVO {
 	@Column(name = "outwardkitqty")
 	private int outwardKitQty;
 	@Column(name = "createdby")
-	private String createdBy;
+	private String createdby;
 	@Column(name = "modifiedby")
-	private String modifiedBy;
+	private String modifiedby;
 	@Column(name = "cancelremarks")
 	private String cancelRemark;
 	@Column(name = "active")
