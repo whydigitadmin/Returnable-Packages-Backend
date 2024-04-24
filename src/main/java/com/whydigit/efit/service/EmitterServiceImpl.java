@@ -122,6 +122,7 @@ public class EmitterServiceImpl implements EmitterService {
 
 	@Autowired
 	MaxPartQtyPerKitRepo maxPartQtyPerKitRepo;
+
 	@Autowired
 	CustomersRepo customersRepo;
 
@@ -802,15 +803,14 @@ public class EmitterServiceImpl implements EmitterService {
 				AssetStockDetailsVO stockDetailsVO = new AssetStockDetailsVO();
 				stockDetailsVO.setStockRef(savedBinOutwardVO.getDocId());
 				stockDetailsVO.setStockDate(savedBinOutwardVO.getDocDate());
-				stockDetailsVO.setSku(binOutwardDetailsVO.getAsset());
-				stockDetailsVO.setSkuCode(binOutwardDetailsVO.getAssetCode());
-				stockDetailsVO.setSkuQty(-binOutwardDetailsVO.getQty());
 				stockDetailsVO.setSCode(savedBinOutwardVO.getScode());
 				stockDetailsVO.setPm(savedBinOutwardVO.getPm());
 				stockDetailsVO.setScreen(savedBinOutwardVO.getScreen());
-				stockDetailsVO.setSourceId(binOutwardDetailsVO.getId());
 				stockDetailsVO.setFinyr(savedBinOutwardVO.getFinYr());
-				;
+				stockDetailsVO.setSku(binOutwardDetailsVO.getAsset());
+				stockDetailsVO.setSkuCode(binOutwardDetailsVO.getAssetCode());
+				stockDetailsVO.setSkuQty(-binOutwardDetailsVO.getQty());
+				stockDetailsVO.setSourceId(binOutwardDetailsVO.getId());
 				assetStockDetailsRepo.save(stockDetailsVO);
 			}
 		return binOutwardVO;
