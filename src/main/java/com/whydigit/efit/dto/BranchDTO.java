@@ -1,9 +1,5 @@
 package com.whydigit.efit.dto;
 
-import javax.persistence.Column;
-
-import com.whydigit.efit.entity.BranchVO;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

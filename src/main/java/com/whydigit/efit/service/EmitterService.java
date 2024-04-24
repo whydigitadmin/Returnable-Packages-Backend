@@ -23,7 +23,6 @@ import com.whydigit.efit.entity.EmitterInwardVO;
 import com.whydigit.efit.entity.EmitterOutwardVO;
 import com.whydigit.efit.entity.InwardVO;
 import com.whydigit.efit.entity.IssueRequestVO;
-import com.whydigit.efit.entity.LocalCurrencyVO;
 import com.whydigit.efit.entity.OutwardKitDetailsVO;
 import com.whydigit.efit.entity.OutwardView;
 import com.whydigit.efit.entity.VwEmitterInwardVO;
@@ -59,7 +58,8 @@ public interface EmitterService {
 
 	void deleteEmitterOutward(long id);
 
-	IssueRequestVO issueRequestQtyApprovel(IssueRequestQtyApprovelDTO issueRequestQtyApprovelDTO) throws ApplicationException;
+	IssueRequestVO issueRequestQtyApprovel(IssueRequestQtyApprovelDTO issueRequestQtyApprovelDTO)
+			throws ApplicationException;
 
 	void cancelIssueRequest(Long issueRequestId, Long issueRequestItemId) throws ApplicationException;
 
@@ -71,10 +71,9 @@ public interface EmitterService {
 
 	List<VwEmitterInwardVO> getVwEmtInwardByOrgIdAndWarehouse(Long orgId, Long warehouseid);
 
-	Map<String, Object> getAllViewEmitterInward(Long orgId,Long emitterId, Long flowId,
-			Long warehouseLocationId);
-	
-	Set<Object[]>getEmitterByWarehouseId(Long orgId,Long warehouseId);
+	Map<String, Object> getAllViewEmitterInward(Long orgId, Long emitterId, Long flowId, Long warehouseLocationId);
+
+	Set<Object[]> getEmitterByWarehouseId(Long orgId, Long warehouseId);
 
 	Map<String, Object> getAllMaxPartQtyPerKit(Long orgId, Long emitterId, Long flowId, String partNumber);
 
@@ -85,29 +84,23 @@ public interface EmitterService {
 
 	OutwardKitDetailsVO updateOutwardKitQty(OutwardKitDetailsDTO outwardKitDetailsDTO) throws ApplicationException;
 
-	
-	//get Issue request
-	
+	// get Issue request
+
 //	List<BinAllotmentVO> getBinRequest(Long emitterId, String warehouseLocation, Long orgId, LocalDate startDate,
 //			LocalDate endDate, Long warehouseLoacationId);
 
-	
-	
 	// Bin Allotment
 	BinAllotmentNewVO createBinAllotment(BinAllotmentDTO allotmentDTO);
-	
+
 	Set<Object[]> getReqDetailsByOrgId(Long orgId);
 	
 	Optional<AssetTaggingDetailsVO> getTaggingDetailsByRfId(String rfId);
-	
+
 	Optional<AssetTaggingDetailsVO> getTaggingDetailsByTagCode(String tagCode);
-	
+
 	List<BinAllotmentNewVO> getAllBinAllotment(Long orgId);
-	
-	
 
-	//Bin Outward
+	// Bin Outward
 	BinOutwardVO createBinOutward(BinOutwardDTO binOutwardDTO);
-
 
 }

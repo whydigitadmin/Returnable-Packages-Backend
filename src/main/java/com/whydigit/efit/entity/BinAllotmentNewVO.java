@@ -93,6 +93,7 @@ public class BinAllotmentNewVO {
 	@Column(name = "stockbranch", length = 50)
 	private String stockBranch;
 
+	
 	@OneToMany(mappedBy = "binAllotmentNewVO", cascade = CascadeType.ALL)
 	@JsonManagedReference
 	List<BinAllotmentDetailsVO> binAllotmentDetailsVO;
