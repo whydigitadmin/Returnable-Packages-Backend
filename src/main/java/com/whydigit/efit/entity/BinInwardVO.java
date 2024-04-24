@@ -73,6 +73,14 @@ public class BinInwardVO {
 	@Column(name = "allotedqty", length = 25)
 	private int allotedQty;
 	
+	@Column(name = "allotdate")
+	private LocalDate allotDate;
+	
+	@Column(name = "binreqdate")
+	private LocalDate binReqDate;
+	
+	
+	
 	@OneToMany(mappedBy ="binInwardVO",cascade = CascadeType.ALL )
 	@JsonManagedReference
 	private List<BinInwardDetailsVO> binInwardDetailsVO;

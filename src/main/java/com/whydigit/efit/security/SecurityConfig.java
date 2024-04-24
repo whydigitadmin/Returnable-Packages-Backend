@@ -62,9 +62,12 @@ public class SecurityConfig {
 						"/api/master/updateStockBranch", "/api/basicMaster/country", "/api/basicMaster/country/{id}",
 						"/api/basicMaster/city", "/api/basicMaster/city/{id}", "/api/basicMaster/state",
 						"/api/basicMaster/state/{id}", "/api/master/Services", "/api/basicMaster/state/Country",
-						"/api/basicMaster/city/getByStateAndCountry", "/api/emitter/proofOfDelivery","/api/emitter/getAllProofOfDelivery",
-						"/api/emitter/binAllotment","/api/company/branch","/api/company/getBranchById","/api/emitter/getTaggingDetailsByRfId",
-						"/api/emitter/getTaggingDetailsByTagCode","/api/master/getAvalkitqtyByBranch","/api/master/updateCreateBinInward")
+						"/api/basicMaster/city/getByStateAndCountry", "/api/emitter/proofOfDelivery",
+						"/api/emitter/getAllProofOfDelivery", "/api/emitter/binAllotment", "/api/company/branch",
+						"/api/company/getBranchById", "/api/emitter/getTaggingDetailsByRfId",
+						"/api/emitter/getTaggingDetailsByTagCode", "/api/master/getAvalkitqtyByBranch",
+						"/api/master/updateCreateBinInward", "/api/master/getAllotmentDetailsByOrgIdAndDocid",
+						"/api/master/getAllotmentNo","/api/master/getAllotmentAssetDetailsByOrgIdAndDocid")
 				.permitAll().antMatchers("/api/**").hasAnyRole("USER", "GUEST_USER").anyRequest().authenticated();
 
 		http.addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);

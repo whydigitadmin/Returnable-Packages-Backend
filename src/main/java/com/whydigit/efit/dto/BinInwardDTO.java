@@ -1,5 +1,6 @@
 package com.whydigit.efit.dto;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -16,8 +17,12 @@ public class BinInwardDTO {
 	private Long binInwardId;
 	
     private String allotmentNo;
+    
+    private LocalDate allotDate;
 	
 	private String reqNo;
+	
+	private LocalDate binReqDate;
 	
 	private String flow;
 	

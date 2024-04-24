@@ -30,4 +30,17 @@ public interface BinAllotmentNewRepo extends JpaRepository<BinAllotmentNewVO, Lo
 	@Query(nativeQuery = true, value = "select * from binallotment where orgid=?1")
 	List<BinAllotmentNewVO> getAllBinAllotment(Long orgId);
 
+	@Query(nativeQuery = true, value = "SELECT docid\r\n"
+			+ "FROM binallotment\r\n"
+			+ "WHERE emitterid = ?2 \r\n"
+			+ "    AND orgid = ?1 \r\n"
+			+ "    AND docid NOT IN (SELECT allotmentno FROM bininward)")
+	Set<Object[]> getAllotmentNoByEmitterIdAndOrgId(Long orgId, Long emitterId);
+
+	@Query(nativeQuery = true, value = "select a.docdate binallotdate,a.binreqno,a.binreqdate,b.flow,a.kitcode,a.allotkitqty from binallotment a, issuerequest b where a.binreqno=b.docid and a.orgid=?1 and a.docid=?2")
+	Set<Object[]> getAllotmentDetailsByAllotmentNoAndOrgId(Long orgId, String docid);
+
+	@Query(nativeQuery = true, value = "select b.asset,b.assetcode,b.rfid,b.tagcode,b.skuqty from binallotment a , binallotment1 b where a.binallotmentid=b.binallotmentid and a.docid=?2 and a.orgid=?1")
+	Set<Object[]> getAllotmentAssetDetailsByAllotmentNoAndOrgId(Long orgId, String docid);
+
 }
