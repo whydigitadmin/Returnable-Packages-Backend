@@ -947,5 +947,4 @@ public class EmitterController extends BaseController {
 		}
 		return getAssetDetails;
 	}
-
 }

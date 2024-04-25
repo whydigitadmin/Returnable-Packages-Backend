@@ -16,7 +16,7 @@ public interface BinOutwardRepo extends JpaRepository<BinOutwardVO, Long> {
 			+ ") AS finyr")
 	int findfinyr();
 
-	@Query(nativeQuery = true,value="CALL next_binoutward_sequence_value()")
+	@Query(nativeQuery = true, value = "CALL next_binoutward_sequence_value()")
 	void nextseq();
 
 }

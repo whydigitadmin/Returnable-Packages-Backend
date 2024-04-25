@@ -12,6 +12,6 @@ import lombok.NoArgsConstructor;
 public class BinOutwardDetailsDTO {
 	
 	private String asset;
-	private String assetcode;
+	private String assetCode;
 	private int qty;
 }

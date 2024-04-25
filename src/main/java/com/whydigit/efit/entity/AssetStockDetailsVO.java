@@ -39,13 +39,13 @@ public class AssetStockDetailsVO {
 	private String modifiedBy;
 	@Column(name="scode",length=5)
 	private String sCode="";
-	@Column(name="stockbranch",length=10)
+	@Column(name="stockbranch",length=100)
 	private String stockBranch;
 	@Column(name="stocklocation",length=40)
 	private String stockLocation;
 	@Column(name="stockvalue",precision = 2,scale =4)
 	private Float stockValue;
-	@Column(name="stockref",length=10)
+	@Column(name="stockref",length=30)
 	private String stockRef;
 	@Column(name="stockdate")
 	private LocalDate stockDate;
@@ -77,15 +77,7 @@ public class AssetStockDetailsVO {
 	@Column(name="status")
 	private String status;
 	
-	
-	
-	
-	
-	      
-	
-	
-	
-	
+
 	@Embedded
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
 

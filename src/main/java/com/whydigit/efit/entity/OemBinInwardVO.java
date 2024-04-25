@@ -23,26 +23,24 @@ import lombok.NoArgsConstructor;
 
 @Builder
 @Entity
-@Table(name = "binoutward")
+@Table(name = "oembininward")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class BinOutwardVO {
+public class OemBinInwardVO {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "binoutwardid")
+	@Column(name = "oembininwardid")
 	private Long id;
 	@Column(name = "docid")
 	private String docId;
 	@Column(name = "docdate")
 	private LocalDate docDate;
-	@Column(name = "flow")
-	private String flow;
-	@Column(name = "kit")
-	private String kit;
-	@Column(name = "outwardkitqty")
-	private int outwardKitQty;
+	@Column(name = "kitno")
+	private String kitNo;
+	@Column(name = "recievedkitqty")
+	private int recievedKitQty;
 	@Column(name = "createdby")
 	private String createdBy;
 	@Column(name = "modifiedby")
@@ -56,26 +54,24 @@ public class BinOutwardVO {
 	@Column(name = "orgid")
 	private Long orgId;
 	@Column(name = "finyr")
-	private String finYr;
+	private String finyr;
 	@Builder.Default
-	private String scode = "BNOUT";
+	private String scode = "OMEBI";
 	@Builder.Default
-	private String pm = "M";
+	private String pm = "P";
 	@Builder.Default
-	private String screen = "BIN OUTWARD";
+	private String screen = "BIN INWARD";
 	private String sourceId;
-	@Column(name="emitterid")
-	private String emitterId;
 
-	@OneToMany(mappedBy = "binOutwardVO", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "oemBinInwardVO", cascade = CascadeType.ALL)
 	@JsonManagedReference
-	private List<BinOutwardDetailsVO> binOutwardDetails;
+	private List<OemBinInwardDetailsVO> oemBinInwardDetails;
 
 	@PrePersist
 	private void setDefaultFinyr() {
 		// Execute the logic to set the default value for finyr
 		String fyFull = calculateFinyr();
-		this.finYr = fyFull;
+		this.finyr = fyFull;
 	}
 
 	private String calculateFinyr() {

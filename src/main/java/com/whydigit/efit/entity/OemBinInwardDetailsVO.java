@@ -18,25 +18,25 @@ import lombok.NoArgsConstructor;
 
 @Builder
 @Entity
-@Table(name = "binoutwarddetails")
+@Table(name = "oembinwarddetails")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class BinOutwardDetailsVO {
+public class OemBinInwardDetailsVO {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "binoutwarddetailsid")
+	@Column(name = "oembinoutwarddetailsid")
 	private Long id;
 	@Column(name = "asset")
 	private String asset;
 	@Column(name = "assetcode")
 	private String assetCode;
-	@Column(name = "qty")
-	private int qty;
+	@Column(name = "recievedqty")
+	private int recievedQty;
 
 	@ManyToOne
-	@JoinColumn(name = "binoutwardid")
+	@JoinColumn(name = "oembininwardid")
 	@JsonBackReference
-	private BinOutwardVO binOutwardVO;
+	private OemBinInwardVO oemBinInwardVO;
 }
