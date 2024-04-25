@@ -17,7 +17,7 @@ public interface AssetTaggingDetailsRepo extends JpaRepository<AssetTaggingDetai
 
 	Optional<AssetTaggingDetailsVO> findByTagCode(String tagCode);
 
-	@Query(value = "select rfid from taggingdetails", nativeQuery = true)
+	@Query(value = "select rfid from taggingdetails where tagcode=?1", nativeQuery = true)
 	String findRfIdByTagCode(String tagCode);
 
 }

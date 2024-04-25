@@ -56,6 +56,8 @@ public class AssetInwardVO {
 	@Column(name="finyr",length = 15)
 	private String finYr;
 	
+	private String finyr;
+	
 	
 	
 	@OneToMany(mappedBy ="assetInwardVO",cascade =CascadeType.ALL)

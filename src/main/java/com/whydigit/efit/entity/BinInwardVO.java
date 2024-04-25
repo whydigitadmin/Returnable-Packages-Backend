@@ -72,42 +72,33 @@ public class BinInwardVO {
 	private String kitCode;
 	@Column(name = "allotedqty", length = 25)
 	private int allotedQty;
-	
 	@Column(name = "emitterid", length = 25)
 	private Long emitterId;
-	
-	
 	@Column(name = "allotdate")
 	private LocalDate allotDate;
-	@Column(name="emitterid")
-	private String emitterId;
 	@Column(name = "binreqdate")
 	private LocalDate binReqDate;
-	
-	
-	
-	@OneToMany(mappedBy ="binInwardVO",cascade = CascadeType.ALL )
+
+	@OneToMany(mappedBy = "binInwardVO", cascade = CascadeType.ALL)
 	@JsonManagedReference
 	private List<BinInwardDetailsVO> binInwardDetailsVO;
-	
-	
 
 	@Embedded
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
-	
-	@PrePersist
-    private void setDefaultFinyr() {
-        // Execute the logic to set the default value for finyr
-        String fyFull = calculateFinyr();
-        this.finYr = fyFull;
-    }
 
-    private String calculateFinyr() {
-        // Logic to calculate finyr based on the provided SQL query
-        String currentMonthDay = LocalDate.now().format(DateTimeFormatter.ofPattern("MMdd"));
-        String fyFull = (currentMonthDay.compareTo("0331") > 0) ?
-                            LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy")) :
-                            LocalDate.now().minusYears(1).format(DateTimeFormatter.ofPattern("yyyy"));
-        return fyFull;
-    }
+	@PrePersist
+	private void setDefaultFinyr() {
+		// Execute the logic to set the default value for finyr
+		String fyFull = calculateFinyr();
+		this.finYr = fyFull;
+	}
+
+	private String calculateFinyr() {
+		// Logic to calculate finyr based on the provided SQL query
+		String currentMonthDay = LocalDate.now().format(DateTimeFormatter.ofPattern("MMdd"));
+		String fyFull = (currentMonthDay.compareTo("0331") > 0)
+				? LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy"))
+				: LocalDate.now().minusYears(1).format(DateTimeFormatter.ofPattern("yyyy"));
+		return fyFull;
+	}
 }
