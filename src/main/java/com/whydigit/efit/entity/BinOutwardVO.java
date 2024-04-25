@@ -44,9 +44,9 @@ public class BinOutwardVO {
 	@Column(name = "outwardkitqty")
 	private int outwardKitQty;
 	@Column(name = "createdby")
-	private String createdBy;
+	private String createdby;
 	@Column(name = "modifiedby")
-	private String modifiedBy;
+	private String modifiedby;
 	@Column(name = "cancelremarks")
 	private String cancelRemark;
 	@Column(name = "active")
@@ -56,7 +56,7 @@ public class BinOutwardVO {
 	@Column(name = "orgid")
 	private Long orgId;
 	@Column(name = "finyr")
-	private String finYr;
+	private String finyr;
 	@Builder.Default
 	private String scode = "BNOUT";
 	@Builder.Default
@@ -75,7 +75,7 @@ public class BinOutwardVO {
 	private void setDefaultFinyr() {
 		// Execute the logic to set the default value for finyr
 		String fyFull = calculateFinyr();
-		this.finYr = fyFull;
+		this.finyr = fyFull;
 	}
 
 	private String calculateFinyr() {

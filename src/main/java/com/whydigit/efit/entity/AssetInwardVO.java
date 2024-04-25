@@ -52,6 +52,8 @@ public class AssetInwardVO {
 	@Column(name="orgid")
 	private Long orgId;
 	
+	private String finyr;
+	
 	
 	
 	@OneToMany(mappedBy ="assetInwardVO",cascade =CascadeType.ALL)
