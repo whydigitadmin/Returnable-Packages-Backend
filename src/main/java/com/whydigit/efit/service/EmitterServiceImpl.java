@@ -815,7 +815,7 @@ public class EmitterServiceImpl implements EmitterService {
 				stockDetailsVO.setPm(savedBinOutwardVO.getPm());
 				stockDetailsVO.setScreen(savedBinOutwardVO.getScreen());
 				stockDetailsVO.setSourceId(binOutwardDetailsVO.getId());
-				stockDetailsVO.setFinyr(savedBinOutwardVO.getFinYr());
+				stockDetailsVO.setFinyr(savedBinOutwardVO.getFinyr());
 				assetStockDetailsRepo.save(stockDetailsVO);
 			}
 		return binOutwardVO;
