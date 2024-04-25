@@ -23,6 +23,8 @@ import com.whydigit.efit.entity.EmitterInwardVO;
 import com.whydigit.efit.entity.EmitterOutwardVO;
 import com.whydigit.efit.entity.InwardVO;
 import com.whydigit.efit.entity.IssueRequestVO;
+import com.whydigit.efit.entity.KitAssetVO;
+import com.whydigit.efit.entity.LocalCurrencyVO;
 import com.whydigit.efit.entity.OutwardKitDetailsVO;
 import com.whydigit.efit.entity.OutwardView;
 import com.whydigit.efit.entity.VwEmitterInwardVO;
@@ -102,5 +104,10 @@ public interface EmitterService {
 
 	// Bin Outward
 	BinOutwardVO createBinOutward(BinOutwardDTO binOutwardDTO);
+
+
+	List<BinAllotmentNewVO> getAllAllotmentById(String docId);
+
+	Set<Object[]> getkitAssetDetailsByKitId(String kitCode, int quantity);
 
 }
