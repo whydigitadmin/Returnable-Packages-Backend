@@ -266,4 +266,6 @@ public interface MasterService {
 	
 	Set<Object[]> getAllotmentAssetDetailsByAllotmentNoAndOrgId(Long orgId, String docid);
 
+	Set<Object[]> getFlowDetailsByFlowId(Long flowId);
+
 }
