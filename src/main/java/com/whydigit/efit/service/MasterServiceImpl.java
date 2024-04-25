@@ -1222,6 +1222,8 @@ public class MasterServiceImpl implements MasterService {
 				assetInwardDetail.setStockLocation(AssetInward.getStockLocation());
 				assetInwardDetail.setStockValue(AssetInward.getStockValue());
 				assetInwardDetail.setAssetInwardVO(assetInwardVO);
+				assetInwardDetail.setTagCode(AssetInward.getTagCode());
+				assetInwardDetail.setRfId(AssetInward.getRfId());
 				assetInwardDetailVO.add(assetInwardDetail);
 			}
 		}
@@ -1235,6 +1237,29 @@ public class MasterServiceImpl implements MasterService {
 				AssetStockDetailsVO assetStockDetailsVO = new AssetStockDetailsVO();
 				assetStockDetailsVO.setStockRef(assetInwardVO1.getDocId());
 				assetStockDetailsVO.setStockDate(assetInwardVO1.getDocDate());
+				assetStockDetailsVO.setStockBranch(assetInwardVO1.getSourceFrom());
+				assetStockDetailsVO.setSku(assetdetails.getSkuDetail());
+				assetStockDetailsVO.setSkuCode(assetdetails.getSkucode());
+				assetStockDetailsVO.setSkuQty(assetdetails.getSkuQty()*-1);
+				assetStockDetailsVO.setStockValue(assetdetails.getStockValue());
+				assetStockDetailsVO.setStockLocation(assetdetails.getStockLocation());
+				assetStockDetailsVO.setBinLocation(assetdetails.getBinLocation());
+				assetStockDetailsVO.setSCode(assetInwardVO1.getSCode());
+				assetStockDetailsVO.setScreen("Asset Inward");
+				assetStockDetailsVO.setPm("M");
+				assetStockDetailsVO.setSourceId(assetdetails.getAssetInwardDetailId());
+				assetStockDetailsVO.setFinyr(assetInwardVO1.getFinYr());
+				assetStockDetailsVO.setTagCode(assetdetails.getTagCode());
+				assetStockDetailsVO.setRfId(assetdetails.getRfId());
+				
+				assetStockDetailsRepo.save(assetStockDetailsVO);
+
+			}
+			for (AssetInwardDetailVO assetdetails : assetInwardDetailVOs) {
+
+				AssetStockDetailsVO assetStockDetailsVO = new AssetStockDetailsVO();
+				assetStockDetailsVO.setStockRef(assetInwardVO1.getDocId());
+				assetStockDetailsVO.setStockDate(assetInwardVO1.getDocDate());
 				assetStockDetailsVO.setStockBranch(assetInwardVO1.getStockBranch());
 				assetStockDetailsVO.setSku(assetdetails.getSkuDetail());
 				assetStockDetailsVO.setSkuCode(assetdetails.getSkucode());
@@ -1242,8 +1267,15 @@ public class MasterServiceImpl implements MasterService {
 				assetStockDetailsVO.setStockValue(assetdetails.getStockValue());
 				assetStockDetailsVO.setStockLocation(assetdetails.getStockLocation());
 				assetStockDetailsVO.setBinLocation(assetdetails.getBinLocation());
-				assetStockDetailsVO.setScreen(assetInwardVO1.getSCode());
+				assetStockDetailsVO.setSCode(assetInwardVO1.getSCode());
+				assetStockDetailsVO.setScreen("Asset Inward");
 				assetStockDetailsVO.setPm("P");
+				assetStockDetailsVO.setSourceId(assetdetails.getAssetInwardDetailId());
+				assetStockDetailsVO.setFinyr(assetInwardVO1.getFinYr());
+				assetStockDetailsVO.setTagCode(assetdetails.getTagCode());
+				assetStockDetailsVO.setRfId(assetdetails.getRfId());
+				
+				
 				assetStockDetailsRepo.save(assetStockDetailsVO);
 
 			}

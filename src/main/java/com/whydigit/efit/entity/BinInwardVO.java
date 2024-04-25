@@ -1,4 +1,4 @@
-package com.whydigit.efit.entity;
+  package com.whydigit.efit.entity;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
