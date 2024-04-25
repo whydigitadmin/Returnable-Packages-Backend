@@ -26,7 +26,6 @@ public class BinInwardDTO {
 	
 	private String flow;
 	
-	private String finYr;
 	
 	private String kitCode;
 	
