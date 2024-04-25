@@ -130,7 +130,7 @@ public class EmitterServiceImpl implements EmitterService {
 
 	@Autowired
 	KitRepo kitRepo;
-	
+
 	@Autowired
 	KitAssetRepo kitAssetRepo;
 
@@ -815,7 +815,7 @@ public class EmitterServiceImpl implements EmitterService {
 				stockDetailsVO.setPm(savedBinOutwardVO.getPm());
 				stockDetailsVO.setScreen(savedBinOutwardVO.getScreen());
 				stockDetailsVO.setSourceId(binOutwardDetailsVO.getId());
-				stockDetailsVO.setFinyr(savedBinOutwardVO.getFinYr());
+				stockDetailsVO.setFinyr(savedBinOutwardVO.getFinyr());
 				assetStockDetailsRepo.save(stockDetailsVO);
 			}
 		return binOutwardVO;
@@ -837,7 +837,6 @@ public class EmitterServiceImpl implements EmitterService {
 		return binOutwardVO;
 	}
 
-
 	@Override
 	public List<BinAllotmentNewVO> getAllAllotmentById(String docId) {
 		List<BinAllotmentNewVO> binAllotmentNewVO = new ArrayList<>();
@@ -853,7 +852,7 @@ public class EmitterServiceImpl implements EmitterService {
 
 	@Override
 	public Set<Object[]> getkitAssetDetailsByKitId(String kitCode, int quantity) {
-		return kitAssetRepo.getAssetDetails(kitCode,quantity);
+		return kitAssetRepo.getAssetDetails(kitCode, quantity);
 	}
 
 }
