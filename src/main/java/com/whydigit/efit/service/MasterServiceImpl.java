@@ -1817,7 +1817,7 @@ public class MasterServiceImpl implements MasterService {
 				assetStockDetailsRepo.save(assetStockDetailsVO);
 			}
 			
-for (BinInwardDetailsVO binInwardDetails : savedBinInwardDetailsVO) {
+			for (BinInwardDetailsVO binInwardDetails : savedBinInwardDetailsVO) {
 				
 				String flow=issueRequestRepo.getFlowIdByrequestId(binInwardDTO.getReqNo());
 				String emitter=flowRepo.findEmiterbyFlowId(flow);
@@ -1890,6 +1890,7 @@ for (BinInwardDetailsVO binInwardDetails : savedBinInwardDetailsVO) {
 		}
 
 	}
+	
 
 	@Override
 	public Set<Object[]> getWaitingInwardDetailsByEmitterIdandOrgId(Long orgId, Long emitterid) {
