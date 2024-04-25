@@ -682,6 +682,7 @@ public class EmitterServiceImpl implements EmitterService {
 		binAllotmentNewVO.setDocId(binallotment);
 		binAllotmentNewRepo.nextDocseq();
 
+		
 		binAllotmentNewVO.setDocDate(binAllotmentDTO.getDocDate());
 		binAllotmentNewVO.setBinReqNo(binAllotmentDTO.getBinReqNo());
 		binAllotmentNewVO.setBinReqDate(binAllotmentDTO.getBinReqDate());
@@ -717,6 +718,8 @@ public class EmitterServiceImpl implements EmitterService {
 		List<BinAllotmentDetailsVO> allotmentDetailsVO = allotmentNewVO.getBinAllotmentDetailsVO();
 		if (allotmentDetailsVO != null && !allotmentDetailsVO.isEmpty()) {
 			for (BinAllotmentDetailsVO allotmentDetailsVO2 : allotmentDetailsVO) {
+				
+
 				AssetStockDetailsVO assetStockDetailsVO = new AssetStockDetailsVO();
 				assetStockDetailsVO.setStockRef(allotmentNewVO.getDocId());
 				assetStockDetailsVO.setStockDate(allotmentNewVO.getDocDate());
@@ -728,7 +731,7 @@ public class EmitterServiceImpl implements EmitterService {
 				assetStockDetailsVO.setStockSource("");
 				assetStockDetailsVO.setSCode(allotmentNewVO.getScode()); // Assuming getScode() returns the correct
 				assetStockDetailsVO.setSourceId(allotmentDetailsVO2.getId()); // value
-				assetStockDetailsVO.setScreen("BIN ALLOTMENT");
+				assetStockDetailsVO.setScreen("Bin Allotment");
 				assetStockDetailsVO.setPm("M");
 				assetStockDetailsVO.setStatus("S");
 				assetStockDetailsVO.setFinyr(allotmentNewVO.getFinyr());
@@ -736,6 +739,11 @@ public class EmitterServiceImpl implements EmitterService {
 				assetStockDetailsRepo.save(assetStockDetailsVO);
 			}
 			for (BinAllotmentDetailsVO allotmentDetailsVO2 : allotmentDetailsVO) {
+				
+				String flow=issueRequestRepo.getFlowIdByrequestId(binAllotmentDTO.getBinReqNo());
+				String emitter=flowRepo.findEmiterbyFlowId(flow);
+				String orgin=flowRepo.findOrigionbyFlowId(flow);
+				
 				AssetStockDetailsVO assetStockDetailsVO = new AssetStockDetailsVO();
 				assetStockDetailsVO.setStockRef(allotmentNewVO.getDocId());
 				assetStockDetailsVO.setStockDate(allotmentNewVO.getDocDate());
@@ -745,13 +753,16 @@ public class EmitterServiceImpl implements EmitterService {
 				assetStockDetailsVO.setRfId(allotmentDetailsVO2.getRfId());
 				assetStockDetailsVO.setTagCode(allotmentDetailsVO2.getTagCode());
 				assetStockDetailsVO.setStockSource("");
+				assetStockDetailsVO.setBinLocation("");
+				assetStockDetailsVO.setCancelRemarks("");
+				assetStockDetailsVO.setStockLocation("");
 				assetStockDetailsVO.setSCode(allotmentNewVO.getScode()); // Assuming getScode() returns the correct
 				assetStockDetailsVO.setSourceId(allotmentDetailsVO2.getId()); // value
-				assetStockDetailsVO.setScreen("BIN ALLOTMENT");
+				assetStockDetailsVO.setScreen("Bin Allotment");
 				assetStockDetailsVO.setPm("P");
 				assetStockDetailsVO.setStatus("M");
 				assetStockDetailsVO.setFinyr(allotmentNewVO.getFinyr());
-				assetStockDetailsVO.setStockBranch(allotmentNewVO.getEmitter() + "-" + allotmentNewVO.getStockBranch());
+				assetStockDetailsVO.setStockBranch(emitter+"-"+orgin);
 				assetStockDetailsRepo.save(assetStockDetailsVO);
 			}
 		}

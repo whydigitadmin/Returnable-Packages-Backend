@@ -132,6 +132,7 @@ import com.whydigit.efit.repo.DmapDetailsRepo;
 import com.whydigit.efit.repo.DmapRepo;
 import com.whydigit.efit.repo.FlowRepo;
 import com.whydigit.efit.repo.IssueItemRepo;
+import com.whydigit.efit.repo.IssueRequestRepo;
 import com.whydigit.efit.repo.KitRepo;
 import com.whydigit.efit.repo.ManufacturerProductRepo;
 import com.whydigit.efit.repo.ManufacturerRepo;
@@ -180,6 +181,8 @@ public class MasterServiceImpl implements MasterService {
 	VendorAddressRepo vendorAddressRepo;
 	@Autowired
 	VendorRepo VendorRepo;
+	@Autowired
+	IssueRequestRepo issueRequestRepo;
 	@Autowired
 	VendorBankDetailsRepo vendorBankDetailsRepo;
 	@Autowired
@@ -1234,18 +1237,23 @@ public class MasterServiceImpl implements MasterService {
 				assetStockDetailsVO.setStockBranch(assetInwardVO1.getSourceFrom());
 				assetStockDetailsVO.setSku(assetdetails.getSkuDetail());
 				assetStockDetailsVO.setSkuCode(assetdetails.getSkucode());
-				assetStockDetailsVO.setSkuQty(assetdetails.getSkuQty()*-1);
+				assetStockDetailsVO.setSkuQty(assetdetails.getSkuQty() * -1);
 				assetStockDetailsVO.setStockValue(assetdetails.getStockValue());
 				assetStockDetailsVO.setStockLocation(assetdetails.getStockLocation());
 				assetStockDetailsVO.setBinLocation(assetdetails.getBinLocation());
 				assetStockDetailsVO.setSCode(assetInwardVO1.getSCode());
 				assetStockDetailsVO.setScreen("Asset Inward");
 				assetStockDetailsVO.setPm("M");
+				assetStockDetailsVO.setStatus("S");
+				assetStockDetailsVO.setBinLocation("");
+				assetStockDetailsVO.setCancelRemarks("");
+				assetStockDetailsVO.setStockLocation("");
+				assetStockDetailsVO.setStockSource("");
 				assetStockDetailsVO.setSourceId(assetdetails.getAssetInwardDetailId());
-				assetStockDetailsVO.setFinyr(assetInwardVO1.getFinYr());
+				assetStockDetailsVO.setFinyr(assetInwardVO1.getFinyr());
 				assetStockDetailsVO.setTagCode(assetdetails.getTagCode());
 				assetStockDetailsVO.setRfId(assetdetails.getRfId());
-				
+
 				assetStockDetailsRepo.save(assetStockDetailsVO);
 
 			}
@@ -1264,12 +1272,12 @@ public class MasterServiceImpl implements MasterService {
 				assetStockDetailsVO.setSCode(assetInwardVO1.getSCode());
 				assetStockDetailsVO.setScreen("Asset Inward");
 				assetStockDetailsVO.setPm("P");
+				assetStockDetailsVO.setStatus("S");
 				assetStockDetailsVO.setSourceId(assetdetails.getAssetInwardDetailId());
-				assetStockDetailsVO.setFinyr(assetInwardVO1.getFinYr());
+				assetStockDetailsVO.setFinyr(assetInwardVO1.getFinyr());
 				assetStockDetailsVO.setTagCode(assetdetails.getTagCode());
 				assetStockDetailsVO.setRfId(assetdetails.getRfId());
-				
-				
+
 				assetStockDetailsRepo.save(assetStockDetailsVO);
 
 			}
@@ -1374,11 +1382,13 @@ public class MasterServiceImpl implements MasterService {
 				assetStockDetailsVO.setSkuQty(1);
 				assetStockDetailsVO.setRfId(assetTaggingDetails.getRfId());
 				assetStockDetailsVO.setTagCode(assetTaggingDetails.getTagCode());
-				assetStockDetailsVO.setStockSource("");
 				assetStockDetailsVO.setSCode(savedAssetTaggingVO.getScode()); // Assuming getScode() returns the correct
 				assetStockDetailsVO.setSourceId(assetTaggingDetails.getId()); // value
 				assetStockDetailsVO.setScreen("Asset Tagging");
 				assetStockDetailsVO.setPm("P");
+				assetStockDetailsVO.setBinLocation("");
+				assetStockDetailsVO.setCancelRemarks("");
+				assetStockDetailsVO.setStockLocation("");
 				assetStockDetailsVO.setStatus("S");
 				assetStockDetailsVO.setFinyr(savedAssetTaggingVO.getFinyr());
 				assetStockDetailsVO.setStockBranch("AI POOL");
@@ -1779,6 +1789,11 @@ public class MasterServiceImpl implements MasterService {
 		if (savedBinInwardDetailsVO != null && !savedBinInwardDetailsVO.isEmpty()) {
 
 			for (BinInwardDetailsVO binInwardDetails : savedBinInwardDetailsVO) {
+				
+				String flow= issueRequestRepo.getFlowIdByrequestId(savedBinInwardVO.getReqNo());
+				String emitter=flowRepo.findEmiterbyFlowId(flow);
+				String orgin=flowRepo.findOrigionbyFlowId(flow);
+						
 				AssetStockDetailsVO assetStockDetailsVO = new AssetStockDetailsVO();
 				assetStockDetailsVO.setStockRef(savedBinInwardVO.getDocid());
 				assetStockDetailsVO.setStockDate(savedBinInwardVO.getDocDate());
@@ -1793,8 +1808,40 @@ public class MasterServiceImpl implements MasterService {
 				assetStockDetailsVO.setScreen("Bin Inward");
 				assetStockDetailsVO.setPm("P");
 				assetStockDetailsVO.setStatus("S");
+				assetStockDetailsVO.setBinLocation("");
+				assetStockDetailsVO.setCancelRemarks("");
+				assetStockDetailsVO.setStockLocation("");
+				assetStockDetailsVO.setStockSource("");
 				assetStockDetailsVO.setFinyr(savedBinInwardVO.getFinYr());
-				assetStockDetailsVO.setStockBranch("");
+				assetStockDetailsVO.setStockBranch(emitter+"-"+orgin);
+				assetStockDetailsRepo.save(assetStockDetailsVO);
+			}
+			
+for (BinInwardDetailsVO binInwardDetails : savedBinInwardDetailsVO) {
+				
+				String flow=issueRequestRepo.getFlowIdByrequestId(binInwardDTO.getReqNo());
+				String emitter=flowRepo.findEmiterbyFlowId(flow);
+				String orgin=flowRepo.findOrigionbyFlowId(flow);
+				
+				AssetStockDetailsVO assetStockDetailsVO = new AssetStockDetailsVO();
+				assetStockDetailsVO.setStockRef(savedBinInwardVO.getAllotmentNo());
+				assetStockDetailsVO.setStockDate(savedBinInwardVO.getAllotDate());
+				assetStockDetailsVO.setSkuCode(binInwardDetails.getAssetCode());
+				assetStockDetailsVO.setSku(binInwardDetails.getAsset());
+				assetStockDetailsVO.setSkuQty(binInwardDetails.getRecQty()*-1);
+				assetStockDetailsVO.setRfId(binInwardDetails.getRfId());
+				assetStockDetailsVO.setTagCode(binInwardDetails.getTagCode());
+				assetStockDetailsVO.setSCode(savedBinInwardVO.getScode()); // Assuming getScode() returns the correct
+				assetStockDetailsVO.setSourceId(binInwardDetails.getBinInwardDetailsId()); // value
+				assetStockDetailsVO.setScreen("Bin Inward");
+				assetStockDetailsVO.setPm("M");
+				assetStockDetailsVO.setStatus("M");
+				assetStockDetailsVO.setBinLocation("");
+				assetStockDetailsVO.setCancelRemarks("");
+				assetStockDetailsVO.setStockLocation("");
+				assetStockDetailsVO.setStockSource("");
+				assetStockDetailsVO.setFinyr(savedBinInwardVO.getFinYr());
+				assetStockDetailsVO.setStockBranch(emitter+"-"+orgin);
 				assetStockDetailsRepo.save(assetStockDetailsVO);
 			}
 		}
