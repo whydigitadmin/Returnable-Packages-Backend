@@ -864,4 +864,10 @@ public class EmitterServiceImpl implements EmitterService {
 		return kitAssetRepo.getAssetDetails(kitCode, quantity);
 	}
 
+	@Override
+	public Set<Object[]> getIssueRequestreportByOrgId(Long orgId) {
+		// TODO Auto-generated method stub
+		return issueRequestRepo.getIssueRequestByOrgId(orgId);
+	}
+
 }

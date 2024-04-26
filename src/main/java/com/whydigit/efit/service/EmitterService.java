@@ -110,6 +110,8 @@ public interface EmitterService {
 
 	Set<Object[]> getkitAssetDetailsByKitId(String kitCode, int quantity);
 
+	Set<Object[]> getIssueRequestreportByOrgId(Long orgId);
+
 	
 
 }
