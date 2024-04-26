@@ -41,7 +41,6 @@ import com.whydigit.efit.dto.OutwardKitDetailsDTO;
 import com.whydigit.efit.dto.Role;
 import com.whydigit.efit.entity.AssetStockDetailsVO;
 import com.whydigit.efit.entity.AssetTaggingDetailsVO;
-import com.whydigit.efit.entity.AssetVO;
 import com.whydigit.efit.entity.BinAllotmentDetailsVO;
 import com.whydigit.efit.entity.BinAllotmentNewVO;
 import com.whydigit.efit.entity.BinOutwardDetailsVO;
@@ -55,7 +54,6 @@ import com.whydigit.efit.entity.InwardVO;
 import com.whydigit.efit.entity.IssueItemVO;
 import com.whydigit.efit.entity.IssueRequestApprovedVO;
 import com.whydigit.efit.entity.IssueRequestVO;
-import com.whydigit.efit.entity.KitAssetVO;
 import com.whydigit.efit.entity.KitVO;
 import com.whydigit.efit.entity.MaxPartQtyPerKitVO;
 import com.whydigit.efit.entity.OutwardKitDetailsVO;
@@ -130,7 +128,7 @@ public class EmitterServiceImpl implements EmitterService {
 
 	@Autowired
 	KitRepo kitRepo;
-	
+
 	@Autowired
 	KitAssetRepo kitAssetRepo;
 
@@ -848,7 +846,6 @@ public class EmitterServiceImpl implements EmitterService {
 		return binOutwardVO;
 	}
 
-
 	@Override
 	public List<BinAllotmentNewVO> getAllAllotmentById(String docId) {
 		List<BinAllotmentNewVO> binAllotmentNewVO = new ArrayList<>();
@@ -864,7 +861,7 @@ public class EmitterServiceImpl implements EmitterService {
 
 	@Override
 	public Set<Object[]> getkitAssetDetailsByKitId(String kitCode, int quantity) {
-		return kitAssetRepo.getAssetDetails(kitCode,quantity);
+		return kitAssetRepo.getAssetDetails(kitCode, quantity);
 	}
 
 }
