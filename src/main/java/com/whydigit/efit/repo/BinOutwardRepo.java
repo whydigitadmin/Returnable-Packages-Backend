@@ -7,7 +7,7 @@ import com.whydigit.efit.entity.BinOutwardVO;
 
 public interface BinOutwardRepo extends JpaRepository<BinOutwardVO, Long> {
 
-	@Query(nativeQuery = true, value = "select sequence_value from binoutwardseq")
+	@Query(nativeQuery = true, value = "select sequence_value from binoutwarddocidseq")
 	String finddocid();
 
 	@Query(nativeQuery = true, value = "SELECT RIGHT(\r\n" + "    IF(\r\n"
