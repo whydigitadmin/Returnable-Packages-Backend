@@ -1890,6 +1890,12 @@ public class MasterServiceImpl implements MasterService {
 		}
 
 	}
+
+	@Override
+	public Set<Object[]> getFlowDetailsByFlowId(Long flowId) {
+		    
+		return flowRepo.getFlowDetails(flowId);
+	}
 	
 
 	@Override
