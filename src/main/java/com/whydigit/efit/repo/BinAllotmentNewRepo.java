@@ -26,8 +26,8 @@ public interface BinAllotmentNewRepo extends JpaRepository<BinAllotmentNewVO, Lo
 	@Query(nativeQuery = true, value = "CALL next_allotcode()")
 	void nextDocseq();
 
-	@Query(nativeQuery = true, value = "select a.docid reqNo,a.docdate reqDate,a.emitter,a.emitterid,b.kitcode,b.kitqty reqKitQty,b.partno,b.partname,a.flow,a.flowid from issuerequest a, issuerequest2 b where a.issuerequestid=b.issuerequestid and a.orgid=?1")
-	Set<Object[]> findReqDetailsByOrgId(Long orgId);
+	@Query(nativeQuery = true, value = "select a.docdate reqDate,a.emitter,a.emitterid,b.kitcode,b.kitqty reqKitQty,b.partno,b.partname,a.flow,a.flowid from issuerequest a, issuerequest2 b where a.issuerequestid=b.issuerequestid and a.orgid=?1 and a.docid=?2")
+	Set<Object[]> findReqDetailsByOrgId(Long orgId,String reqno);
 
 	@Query(nativeQuery = true, value = "select * from binallotment where orgid=?1")
 	List<BinAllotmentNewVO> getAllBinAllotment(Long orgId);
@@ -39,7 +39,7 @@ public interface BinAllotmentNewRepo extends JpaRepository<BinAllotmentNewVO, Lo
 			+ "    AND docid NOT IN (SELECT allotmentno FROM bininward)")
 	Set<Object[]> getAllotmentNoByEmitterIdAndOrgId(Long orgId, Long emitterId);
 
-	@Query(nativeQuery = true, value = "select a.docdate binallotdate,a.binreqno,a.binreqdate,b.flow,a.kitcode,a.allotkitqty from binallotment a, issuerequest b where a.binreqno=b.docid and a.orgid=?1 and a.docid=?2")
+	@Query(nativeQuery = true, value = "select a.docdate binallotdate,a.binreqno,a.binreqdate,b.flow,a.kitcode,a.allotkitqty,a.reqkitqty from binallotment a, issuerequest b where a.binreqno=b.docid and a.orgid=?1  and a.docid=?2")
 	Set<Object[]> getAllotmentDetailsByAllotmentNoAndOrgId(Long orgId, String docid);
 
 	@Query(nativeQuery = true, value = "select b.asset,b.assetcode,b.rfid,b.tagcode,b.skuqty from binallotment a , binallotment1 b where a.binallotmentid=b.binallotmentid and a.docid=?2 and a.orgid=?1")
