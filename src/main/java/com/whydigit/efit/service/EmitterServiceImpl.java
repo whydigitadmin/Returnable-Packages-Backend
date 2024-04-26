@@ -805,7 +805,6 @@ public class EmitterServiceImpl implements EmitterService {
 		String binoutward = finyr + "BO" + binOutwardRepo.finddocid();
 		binOutwardVO.setDocId(binoutward);
 		binOutwardRepo.nextseq();
-		binOutwardRepo.save(binOutwardVO);
 		BinOutwardVO savedBinOutwardVO = binOutwardRepo.save(binOutwardVO);
 
 		List<BinOutwardDetailsVO> binOutwardDetailsVOLists = savedBinOutwardVO.getBinOutwardDetails();

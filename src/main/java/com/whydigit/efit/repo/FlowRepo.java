@@ -40,10 +40,10 @@ public interface FlowRepo extends JpaRepository<FlowVO, Long> {
 	String getReceiverByReceiverId(Long receiverId);
 
 
-	@Query(nativeQuery = true,value = "select a.emitter from FlowVO a where a.id=?1 ")
+	@Query(value = "select a.emitter from FlowVO a where a.id=?1 ")
 	String findEmiterbyFlowId(String flow);
 
-	@Query(nativeQuery = true,value = "select a.orgin from FlowVO a where a.id=?1 ")
+	@Query(value = "select a.orgin from FlowVO a where a.id=?1 ")
 	String findOrigionbyFlowId(String flow);
 
 	@Query(nativeQuery = true,value = "select receiver,destination,orgin  from flow where flowid=?1")
