@@ -768,8 +768,8 @@ public class EmitterServiceImpl implements EmitterService {
 	}
 
 	@Override
-	public Set<Object[]> getReqDetailsByOrgId(Long orgId) {
-		return binAllotmentNewRepo.findReqDetailsByOrgId(orgId);
+	public Set<Object[]> getReqDetailsByOrgId(Long orgId,String reqNo) {
+		return binAllotmentNewRepo.findReqDetailsByOrgId(orgId,reqNo);
 	}
 
 	@Override
