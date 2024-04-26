@@ -2562,8 +2562,8 @@ public class MasterController extends BaseController {
 			part.put("flow", ps[2] != null ? ps[2].toString() : "");
 			part.put("kitCode", ps[3] != null ? ps[3].toString() : "");
 			part.put("allotKitQty", ps[4] != null ? ps[4].toString() : "");
-			part.put("reqKitQty", ps[5] != null ? ps[4].toString() : "");
-			part.put("emitterId", ps[6] != null ? ps[4].toString() : "");
+			part.put("reqKitQty", ps[5] != null ? ps[5].toString() : "");
+			part.put("emitterId", ps[6] != null ? ps[6].toString() : "");
 			allotDetails.add(part);
 		}
 		return allotDetails;
