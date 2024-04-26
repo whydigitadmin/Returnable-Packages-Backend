@@ -941,7 +941,7 @@ public class EmitterController extends BaseController {
 			part.put("assetCategory", asset[0] != null ? asset[0].toString() : "");
 			part.put("asset", asset[1] != null ? asset[1].toString() : "");
 			part.put("assetCode", asset[2] != null ? asset[2].toString() : "");
-			part.put("asset Qty", asset[3] != null ? asset[3].toString() : "");
+			part.put("qty", asset[3] != null ? asset[3].toString() : "");
 			getAssetDetails.add(part);
 		}
 		return getAssetDetails;
