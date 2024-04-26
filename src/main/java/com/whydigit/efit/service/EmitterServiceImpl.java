@@ -766,8 +766,8 @@ public class EmitterServiceImpl implements EmitterService {
 	}
 
 	@Override
-	public Set<Object[]> getReqDetailsByOrgId(Long orgId) {
-		return binAllotmentNewRepo.findReqDetailsByOrgId(orgId);
+	public Set<Object[]> getReqDetailsByOrgId(Long orgId,String reqNo) {
+		return binAllotmentNewRepo.findReqDetailsByOrgId(orgId,reqNo);
 	}
 
 	@Override
@@ -805,7 +805,6 @@ public class EmitterServiceImpl implements EmitterService {
 		String binoutward = finyr + "BO" + binOutwardRepo.finddocid();
 		binOutwardVO.setDocId(binoutward);
 		binOutwardRepo.nextseq();
-		binOutwardRepo.save(binOutwardVO);
 		BinOutwardVO savedBinOutwardVO = binOutwardRepo.save(binOutwardVO);
 
 		List<BinOutwardDetailsVO> binOutwardDetailsVOLists = savedBinOutwardVO.getBinOutwardDetails();
@@ -890,6 +889,12 @@ public class EmitterServiceImpl implements EmitterService {
 	@Override
 	public Set<Object[]> getkitAssetDetailsByKitId(String kitCode, int quantity) {
 		return kitAssetRepo.getAssetDetails(kitCode, quantity);
+	}
+
+	@Override
+	public Set<Object[]> getIssueRequestreportByOrgId(Long orgId) {
+		// TODO Auto-generated method stub
+		return issueRequestRepo.getIssueRequestByOrgId(orgId);
 	}
 
 }

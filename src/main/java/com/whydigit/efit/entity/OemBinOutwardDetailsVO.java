@@ -7,6 +7,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -25,7 +26,8 @@ import lombok.NoArgsConstructor;
 public class OemBinOutwardDetailsVO {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "oembinoutwarddetailsgen")
+	@SequenceGenerator(name = "oembinoutwarddetailsgen", sequenceName = "oembinoutwarddetailsseq", initialValue = 1000000001, allocationSize = 1)
 	@Column(name = "oembinoutwarddetailsid")
 	private Long id;
 	@Column(name = "asset")

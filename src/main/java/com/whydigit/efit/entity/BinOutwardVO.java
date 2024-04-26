@@ -12,6 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -30,7 +31,8 @@ import lombok.NoArgsConstructor;
 public class BinOutwardVO {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "binoutwardgen")
+	@SequenceGenerator(name = "binoutwardgen", sequenceName = "binoutwardseq", initialValue = 1000000001, allocationSize = 1)
 	@Column(name = "binoutwardid")
 	private Long id;
 	@Column(name = "docid")

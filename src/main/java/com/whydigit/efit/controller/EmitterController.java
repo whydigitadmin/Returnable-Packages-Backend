@@ -730,7 +730,7 @@ public class EmitterController extends BaseController {
 	}
 
 	@GetMapping("/getReqDetailsByOrgId")
-	public ResponseEntity<ResponseDTO> getReqDetailsByOrgId(@RequestParam Long orgid) {
+	public ResponseEntity<ResponseDTO> getReqDetailsByOrgId(@RequestParam Long orgid,@RequestParam String reqNo) {
 		String methodName = "getReqDetailsByOrgId()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -738,7 +738,7 @@ public class EmitterController extends BaseController {
 		ResponseDTO responseDTO = null;
 		Set<Object[]> partstudy = new HashSet<>();
 		try {
-			partstudy = emitterService.getReqDetailsByOrgId(orgid);
+			partstudy = emitterService.getReqDetailsByOrgId(orgid,reqNo);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
@@ -947,4 +947,52 @@ public class EmitterController extends BaseController {
 		}
 		return getAssetDetails;
 	}
+	
+	@GetMapping("/getIssueRequestreportByOrgId")
+	public ResponseEntity<ResponseDTO> getIssueRequestreportByOrgId(@RequestParam(required = false) Long OrgId) {
+		String methodName = "getIssueRequestreportByOrgId()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		Set<Object[]> issueRequestVO = new HashSet<>();
+		try {
+			issueRequestVO = emitterService.getIssueRequestreportByOrgId(OrgId);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			List<Map<String, String>>getIssueReport=findIssueRequest(issueRequestVO);
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "IssueRequest  information get successfully");
+			responseObjectsMap.put("issueRequestVO", getIssueReport);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "IssueRequest  information receive failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+
+	}
+
+	private List<Map<String, String>> findIssueRequest(Set<Object[]> issueRequestVO) {
+		List<Map<String, String>>getIssueReport=new ArrayList<>();
+		for(Object[] issueReport:issueRequestVO)
+		{
+			Map<String, String> issue = new HashMap<>();
+			issue.put("reqNo", issueReport[0] != null ? issueReport[0].toString() : "");
+			issue.put("reqDate", issueReport[1] != null ? issueReport[1].toString() : "");
+			issue.put("emitter", issueReport[2] != null ? issueReport[2].toString() : "");
+			issue.put("emitterId", issueReport[3] != null ? issueReport[3].toString() : "");
+			issue.put("kitCode", issueReport[4] != null ? issueReport[4].toString() : "");
+			issue.put("reqKitQty", issueReport[5] != null ? issueReport[5].toString() : "");
+			issue.put("partNo", issueReport[6] != null ? issueReport[6].toString() : "");
+			issue.put("partName", issueReport[7] != null ? issueReport[7].toString() : "");
+			issue.put("flow", issueReport[8] != null ? issueReport[8].toString() : "");
+			issue.put("flowId", issueReport[9] != null ? issueReport[9].toString() : "");
+			getIssueReport.add(issue);
+		}
+		return getIssueReport;
+	}
+	
 }

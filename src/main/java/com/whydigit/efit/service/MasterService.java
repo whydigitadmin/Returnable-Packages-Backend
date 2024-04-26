@@ -268,4 +268,6 @@ public interface MasterService {
 	
 	Set<Object[]>getWaitingInwardDetailsByEmitterIdandOrgId(Long orgId,Long emitterid);
 
+	Set<Object[]> getFlowDetailsByFlowId(Long flowId);
+
 }

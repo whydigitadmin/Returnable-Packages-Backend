@@ -617,6 +617,48 @@ public class MasterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
+	
+	@GetMapping("/getFlowDetailsByFlowId")
+	public ResponseEntity<ResponseDTO> getFlowDetailsByFlowId(@RequestParam Long flowId) {
+		String methodName = "getFlowDetailsByFlowId()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		Set<Object[]> flowVO = new HashSet<>();
+		try {
+			flowVO = masterService.getFlowDetailsByFlowId(flowId);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			List<Map<String, String>> flow = findflowdetails(flowVO);
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Flow Details found by FlowId");
+			responseObjectsMap.put("flow", flow);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			errorMsg = " not found for ID: ";
+			responseDTO = createServiceResponseError(responseObjectsMap, "Flow Details not found",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
+	private List<Map<String, String>> findflowdetails(Set<Object[]> flowVO) {
+		List<Map<String, String>> flowDetails = new ArrayList<>();
+		for (Object[] f : flowVO) {
+			Map<String, String> f1 = new HashMap<>();
+			f1.put("receiver", f[0] != null ? f[0].toString() : "");
+			f1.put("destination", f[1] != null ? f[1].toString() : "");
+			f1.put("orgin", f[2] != null ? f[2].toString() : "");
+			
+			flowDetails.add(f1);
+		}
+		return flowDetails;
+	}
+
 
 	@GetMapping("/getAllFlowName")
 	public ResponseEntity<ResponseDTO> getFlowNameByOrgID(@RequestParam(required = true) Long orgId,
@@ -1957,7 +1999,7 @@ public class MasterController extends BaseController {
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
-	}
+	} 
 
 	@GetMapping("/terms")
 	public ResponseEntity<ResponseDTO> getAllTermsByOrgId(@RequestParam(required = false) Long orgId) {
@@ -2356,6 +2398,7 @@ public class MasterController extends BaseController {
 			part.put("flow", ps[3] != null ? ps[3].toString() : "");
 			part.put("kitCode", ps[4] != null ? ps[4].toString() : "");
 			part.put("allotKitQty", ps[5] != null ? ps[5].toString() : "");
+			part.put("reqKitQty", ps[6] != null ? ps[6].toString() : "");
 			allotDetails.add(part);
 		}
 		return allotDetails;
@@ -2519,8 +2562,8 @@ public class MasterController extends BaseController {
 			part.put("flow", ps[2] != null ? ps[2].toString() : "");
 			part.put("kitCode", ps[3] != null ? ps[3].toString() : "");
 			part.put("allotKitQty", ps[4] != null ? ps[4].toString() : "");
-			part.put("reqKitQty", ps[5] != null ? ps[4].toString() : "");
-			part.put("emitterId", ps[6] != null ? ps[4].toString() : "");
+			part.put("reqKitQty", ps[5] != null ? ps[5].toString() : "");
+			part.put("emitterId", ps[6] != null ? ps[6].toString() : "");
 			allotDetails.add(part);
 		}
 		return allotDetails;

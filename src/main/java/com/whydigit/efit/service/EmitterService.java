@@ -94,7 +94,7 @@ public interface EmitterService {
 	// Bin Allotment
 	BinAllotmentNewVO createBinAllotment(BinAllotmentDTO allotmentDTO);
 
-	Set<Object[]> getReqDetailsByOrgId(Long orgId);
+	Set<Object[]> getReqDetailsByOrgId(Long orgId, String reqNo);
 	
 	Optional<AssetTaggingDetailsVO> getTaggingDetailsByRfId(String rfId);
 
@@ -109,5 +109,9 @@ public interface EmitterService {
 	List<BinAllotmentNewVO> getAllAllotmentById(String docId);
 
 	Set<Object[]> getkitAssetDetailsByKitId(String kitCode, int quantity);
+
+	Set<Object[]> getIssueRequestreportByOrgId(Long orgId);
+
+	
 
 }
