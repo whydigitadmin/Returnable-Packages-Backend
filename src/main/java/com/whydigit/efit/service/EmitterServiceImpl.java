@@ -852,7 +852,6 @@ public class EmitterServiceImpl implements EmitterService {
 				stockDetailsVO.setBinLocation("");
 				stockDetailsVO.setCancelRemarks("");
 				stockDetailsVO.setStockLocation("");
-				stockDetailsVO.setScreen(savedBinOutwardVO.getScreen());
 				stockDetailsVO.setSourceId(binOutwardDetailsVO.getId());
 				stockDetailsVO.setFinyr(savedBinOutwardVO.getFinyr());
 				assetStockDetailsRepo.save(stockDetailsVO);
@@ -874,7 +873,6 @@ public class EmitterServiceImpl implements EmitterService {
 			stockDetailsVO.setBinLocation("");
 			stockDetailsVO.setCancelRemarks("");
 			stockDetailsVO.setStockLocation("");
-			stockDetailsVO.setScreen(savedBinOutwardVO.getScreen());
 			stockDetailsVO.setSourceId(binOutwardDetailsVO.getId());
 			stockDetailsVO.setFinyr(savedBinOutwardVO.getFinyr());
 			assetStockDetailsRepo.save(stockDetailsVO);
