@@ -60,12 +60,15 @@ public class BinOutwardVO {
 	@Builder.Default
 	private String scode = "BNOUT";
 	@Builder.Default
-	private String pm = "M";
-	@Builder.Default
 	private String screen = "BIN OUTWARD";
 	private String sourceId;
 	@Column(name="emitterid")
-	private String emitterId;
+	private Long emitterId;
+	private String destination;
+	private String reciever;
+	private String orgin;
+	private String emitter;
+	
 
 	@OneToMany(mappedBy = "binOutwardVO", cascade = CascadeType.ALL)
 	@JsonManagedReference
