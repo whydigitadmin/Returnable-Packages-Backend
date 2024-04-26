@@ -35,6 +35,8 @@ public class BinInwardDTO {
 	
 	private Long emitterId;
 	
+	private int reqKitQty;
+	
 	private List<BinInwardDetailsDTO> binInwardDetailsDTO;
 
 	

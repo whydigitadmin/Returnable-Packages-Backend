@@ -43,6 +43,10 @@ public class AssetInwardDetailVO {
 	private String binLocation;
 	@Column(name="stocklocation",length=40)
 	private String stockLocation;
+	@Column(name="tagcode",length=40)
+	private String tagCode;
+	@Column(name="rfid",length=100)
+	private String rfId;
 	
 	@ManyToOne
     @JoinColumn(name ="assetinwardid")

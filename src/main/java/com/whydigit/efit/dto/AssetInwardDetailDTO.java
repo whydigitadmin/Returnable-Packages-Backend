@@ -15,4 +15,6 @@ private int skuQty;
 private Float stockValue;
 private String stockLocation;
 private String binLocation;
+private String tagCode;
+private String rfId;
 }

@@ -1,4 +1,4 @@
-package com.whydigit.efit.entity;
+  package com.whydigit.efit.entity;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -78,6 +78,9 @@ public class BinInwardVO {
 	private LocalDate allotDate;
 	@Column(name = "binreqdate")
 	private LocalDate binReqDate;
+	
+	@Column(name = "reqkitqty")
+	private int reqKitQty;
 
 	@OneToMany(mappedBy = "binInwardVO", cascade = CascadeType.ALL)
 	@JsonManagedReference

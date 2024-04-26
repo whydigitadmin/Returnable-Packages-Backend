@@ -52,4 +52,7 @@ public interface IssueRequestRepo
 			+ ") AS finyr")
 	int getFinyr();
 	
+	@Query(nativeQuery = true,value="select a.flowTo IssueRequestVO a where a.docId=?1")
+	String getFlowIdByrequestId(String binReqNo);
+	
 }
