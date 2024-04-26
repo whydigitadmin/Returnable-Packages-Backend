@@ -61,6 +61,7 @@ public class OemBinInwardVO {
 	private String pm = "P";
 	@Builder.Default
 	private String screen = "BIN INWARD";
+	@Column(name = "sourceid")
 	private String sourceId;
 
 	@OneToMany(mappedBy = "oemBinInwardVO", cascade = CascadeType.ALL)

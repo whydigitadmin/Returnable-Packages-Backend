@@ -54,8 +54,7 @@ public class AssetInwardVO {
 	@Column(name="orgid")
 	private Long orgId;
 	@Column(name="finyr",length = 15)
-	private String finYr;
-	
+	private String finyr;
 	
 	
 	
@@ -73,7 +72,7 @@ public class AssetInwardVO {
     private void setDefaultFinyr() {
         // Execute the logic to set the default value for finyr
         String fyFull = calculateFinyr();
-        this.finYr = fyFull;
+        this.finyr = fyFull;
     }
 
     private String calculateFinyr() {

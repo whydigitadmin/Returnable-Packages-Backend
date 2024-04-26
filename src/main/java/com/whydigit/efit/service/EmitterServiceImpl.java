@@ -41,7 +41,6 @@ import com.whydigit.efit.dto.OutwardKitDetailsDTO;
 import com.whydigit.efit.dto.Role;
 import com.whydigit.efit.entity.AssetStockDetailsVO;
 import com.whydigit.efit.entity.AssetTaggingDetailsVO;
-import com.whydigit.efit.entity.AssetVO;
 import com.whydigit.efit.entity.BinAllotmentDetailsVO;
 import com.whydigit.efit.entity.BinAllotmentNewVO;
 import com.whydigit.efit.entity.BinOutwardDetailsVO;
@@ -55,7 +54,6 @@ import com.whydigit.efit.entity.InwardVO;
 import com.whydigit.efit.entity.IssueItemVO;
 import com.whydigit.efit.entity.IssueRequestApprovedVO;
 import com.whydigit.efit.entity.IssueRequestVO;
-import com.whydigit.efit.entity.KitAssetVO;
 import com.whydigit.efit.entity.KitVO;
 import com.whydigit.efit.entity.MaxPartQtyPerKitVO;
 import com.whydigit.efit.entity.OutwardKitDetailsVO;
@@ -130,7 +128,7 @@ public class EmitterServiceImpl implements EmitterService {
 
 	@Autowired
 	KitRepo kitRepo;
-	
+
 	@Autowired
 	KitAssetRepo kitAssetRepo;
 
@@ -682,6 +680,7 @@ public class EmitterServiceImpl implements EmitterService {
 		binAllotmentNewVO.setDocId(binallotment);
 		binAllotmentNewRepo.nextDocseq();
 
+		
 		binAllotmentNewVO.setDocDate(binAllotmentDTO.getDocDate());
 		binAllotmentNewVO.setBinReqNo(binAllotmentDTO.getBinReqNo());
 		binAllotmentNewVO.setBinReqDate(binAllotmentDTO.getBinReqDate());
@@ -717,6 +716,8 @@ public class EmitterServiceImpl implements EmitterService {
 		List<BinAllotmentDetailsVO> allotmentDetailsVO = allotmentNewVO.getBinAllotmentDetailsVO();
 		if (allotmentDetailsVO != null && !allotmentDetailsVO.isEmpty()) {
 			for (BinAllotmentDetailsVO allotmentDetailsVO2 : allotmentDetailsVO) {
+				
+
 				AssetStockDetailsVO assetStockDetailsVO = new AssetStockDetailsVO();
 				assetStockDetailsVO.setStockRef(allotmentNewVO.getDocId());
 				assetStockDetailsVO.setStockDate(allotmentNewVO.getDocDate());
@@ -728,7 +729,7 @@ public class EmitterServiceImpl implements EmitterService {
 				assetStockDetailsVO.setStockSource("");
 				assetStockDetailsVO.setSCode(allotmentNewVO.getScode()); // Assuming getScode() returns the correct
 				assetStockDetailsVO.setSourceId(allotmentDetailsVO2.getId()); // value
-				assetStockDetailsVO.setScreen("BIN ALLOTMENT");
+				assetStockDetailsVO.setScreen("Bin Allotment");
 				assetStockDetailsVO.setPm("M");
 				assetStockDetailsVO.setStatus("S");
 				assetStockDetailsVO.setFinyr(allotmentNewVO.getFinyr());
@@ -736,6 +737,11 @@ public class EmitterServiceImpl implements EmitterService {
 				assetStockDetailsRepo.save(assetStockDetailsVO);
 			}
 			for (BinAllotmentDetailsVO allotmentDetailsVO2 : allotmentDetailsVO) {
+				
+				String flow=issueRequestRepo.getFlowIdByrequestId(binAllotmentDTO.getBinReqNo());
+				String emitter=flowRepo.findEmiterbyFlowId(flow);
+				String orgin=flowRepo.findOrigionbyFlowId(flow);
+				
 				AssetStockDetailsVO assetStockDetailsVO = new AssetStockDetailsVO();
 				assetStockDetailsVO.setStockRef(allotmentNewVO.getDocId());
 				assetStockDetailsVO.setStockDate(allotmentNewVO.getDocDate());
@@ -745,13 +751,16 @@ public class EmitterServiceImpl implements EmitterService {
 				assetStockDetailsVO.setRfId(allotmentDetailsVO2.getRfId());
 				assetStockDetailsVO.setTagCode(allotmentDetailsVO2.getTagCode());
 				assetStockDetailsVO.setStockSource("");
+				assetStockDetailsVO.setBinLocation("");
+				assetStockDetailsVO.setCancelRemarks("");
+				assetStockDetailsVO.setStockLocation("");
 				assetStockDetailsVO.setSCode(allotmentNewVO.getScode()); // Assuming getScode() returns the correct
 				assetStockDetailsVO.setSourceId(allotmentDetailsVO2.getId()); // value
-				assetStockDetailsVO.setScreen("BIN ALLOTMENT");
+				assetStockDetailsVO.setScreen("Bin Allotment");
 				assetStockDetailsVO.setPm("P");
 				assetStockDetailsVO.setStatus("M");
 				assetStockDetailsVO.setFinyr(allotmentNewVO.getFinyr());
-				assetStockDetailsVO.setStockBranch(allotmentNewVO.getEmitter() + "-" + allotmentNewVO.getStockBranch());
+				assetStockDetailsVO.setStockBranch(emitter+"-"+orgin);
 				assetStockDetailsRepo.save(assetStockDetailsVO);
 			}
 		}
@@ -837,7 +846,6 @@ public class EmitterServiceImpl implements EmitterService {
 		return binOutwardVO;
 	}
 
-
 	@Override
 	public List<BinAllotmentNewVO> getAllAllotmentById(String docId) {
 		List<BinAllotmentNewVO> binAllotmentNewVO = new ArrayList<>();
@@ -853,7 +861,7 @@ public class EmitterServiceImpl implements EmitterService {
 
 	@Override
 	public Set<Object[]> getkitAssetDetailsByKitId(String kitCode, int quantity) {
-		return kitAssetRepo.getAssetDetails(kitCode,quantity);
+		return kitAssetRepo.getAssetDetails(kitCode, quantity);
 	}
 
 }

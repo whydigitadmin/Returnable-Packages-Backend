@@ -14,11 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.whydigit.efit.common.CommonConstant;
 import com.whydigit.efit.common.UserConstants;
-import com.whydigit.efit.dto.BinInwardDTO;
 import com.whydigit.efit.dto.OemBinInwardDTO;
 import com.whydigit.efit.dto.OemBinOutwardDTO;
 import com.whydigit.efit.dto.ResponseDTO;
-import com.whydigit.efit.entity.BinInwardVO;
 import com.whydigit.efit.entity.OemBinInwardVO;
 import com.whydigit.efit.entity.OemBinOutwardVO;
 import com.whydigit.efit.service.OemService;

@@ -2522,4 +2522,49 @@ public class MasterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
+	
+	@GetMapping("/getWaitingBinInwardDetailsByEmitterAndOrgId")
+	public ResponseEntity<ResponseDTO> getWaitingBinInwardDetailsByEmitterAndOrgId(@RequestParam Long orgId,
+			@RequestParam Long emitterid) {
+		String methodName = "getWaitingBinInwardDetailsByEmitterAndOrgId()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		Set<Object[]> allot = new HashSet<>();
+		try {
+			allot = masterService.getWaitingInwardDetailsByEmitterIdandOrgId(orgId, emitterid);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			List<Map<String, String>> allotDetails = findwaitingAllodetails(allot);
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Bin Allotment Details found by ID");
+			responseObjectsMap.put("allotDetails", allotDetails);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			errorMsg = " not found for ID: ";
+			responseDTO = createServiceResponseError(responseObjectsMap, "Bin Allotment Details not found",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
+	private List<Map<String, String>> findwaitingAllodetails(Set<Object[]> allot) {
+		List<Map<String, String>> allotDetails = new ArrayList<>();
+		for (Object[] ps : allot) {
+			Map<String, String> part = new HashMap<>();
+			part.put("allotNo", ps[0] != null ? ps[0].toString() : "");
+			part.put("allotDate", ps[1] != null ? ps[1].toString() : "");
+			part.put("flow", ps[2] != null ? ps[2].toString() : "");
+			part.put("kitCode", ps[3] != null ? ps[3].toString() : "");
+			part.put("allotKitQty", ps[4] != null ? ps[4].toString() : "");
+			part.put("reqKitQty", ps[5] != null ? ps[4].toString() : "");
+			part.put("emitterId", ps[6] != null ? ps[4].toString() : "");
+			allotDetails.add(part);
+		}
+		return allotDetails;
+	}
 }
