@@ -30,6 +30,7 @@ import com.whydigit.efit.common.EmitterConstant;
 import com.whydigit.efit.dto.BinAllotmentDTO;
 import com.whydigit.efit.dto.BinAllotmentDetailsDTO;
 import com.whydigit.efit.dto.BinOutwardDTO;
+import com.whydigit.efit.dto.BinOutwardDetailsDTO;
 import com.whydigit.efit.dto.EmitterAddressDTO;
 import com.whydigit.efit.dto.InwardDTO;
 import com.whydigit.efit.dto.IssueItemDTO;
@@ -800,13 +801,38 @@ public class EmitterServiceImpl implements EmitterService {
 	@Override
 	public BinOutwardVO createBinOutward(BinOutwardDTO binOutwardDTO) {
 
-		BinOutwardVO binOutwardVO = createBinOutwardVOByBinOutwardDTO(binOutwardDTO);
+		BinOutwardVO binOutwardVO = new BinOutwardVO();
 		int finyr = binOutwardRepo.findfinyr();
 		String binoutward = finyr + "BO" + binOutwardRepo.finddocid();
 		binOutwardVO.setDocId(binoutward);
 		binOutwardRepo.nextseq();
+		
+		binOutwardVO.setDocDate(binOutwardDTO.getDocDate());
+		binOutwardVO.setEmitter(binOutwardDTO.getEmitter());
+		binOutwardVO.setEmitterId(binOutwardDTO.getEmitterId());
+		binOutwardVO.setFlow(binOutwardDTO.getFlow());
+		binOutwardVO.setOrgId(binOutwardDTO.getOrgId());
+		binOutwardVO.setCreatedby(binOutwardDTO.getCreatedBy());
+		binOutwardVO.setModifiedby(binOutwardDTO.getCreatedBy());
+		binOutwardVO.setDestination(binOutwardDTO.getDestination());
+		binOutwardVO.setOrgin(binOutwardDTO.getOrgin());
+		binOutwardVO.setReciever(binOutwardDTO.getReciever());
+		binOutwardVO.setKit(binOutwardDTO.getKit());
+		binOutwardVO.setOutwardKitQty(binOutwardDTO.getOutwardKitQty());
+		
+		List<BinOutwardDetailsVO> binOutwardDetailsVO1 = new ArrayList<>();
+		if (binOutwardDTO.getBinOutwardDetailsDTO() != null) {
+			for (BinOutwardDetailsDTO binOutwardDetailsDTO : binOutwardDTO.getBinOutwardDetailsDTO()) {
+				BinOutwardDetailsVO binOutwardDetails = new BinOutwardDetailsVO();
+				binOutwardDetails.setAsset(binOutwardDetailsDTO.getAsset());
+				binOutwardDetails.setAssetCode(binOutwardDetailsDTO.getAssetCode());
+				binOutwardDetails.setQty(binOutwardDetailsDTO.getQty());
+				binOutwardDetailsVO1.add(binOutwardDetails);
+			}
+		}
+		binOutwardVO.setBinOutwardDetails(binOutwardDetailsVO1);
+		
 		BinOutwardVO savedBinOutwardVO = binOutwardRepo.save(binOutwardVO);
-
 		List<BinOutwardDetailsVO> binOutwardDetailsVOLists = savedBinOutwardVO.getBinOutwardDetails();
 		if (binOutwardDetailsVOLists != null && !binOutwardDetailsVOLists.isEmpty())
 			for (BinOutwardDetailsVO binOutwardDetailsVO : binOutwardDetailsVOLists) {
@@ -856,22 +882,22 @@ public class EmitterServiceImpl implements EmitterService {
 		return binOutwardVO;
 	}
 
-	private BinOutwardVO createBinOutwardVOByBinOutwardDTO(BinOutwardDTO binOutwardDTO) {
-		List<BinOutwardDetailsVO> binOutwardDetailsVOList = new ArrayList<>();
-		BinOutwardVO binOutwardVO = BinOutwardVO.builder().docDate(binOutwardDTO.getDocDate()).emitter(binOutwardDTO.getEmitter()).emitterId(binOutwardDTO.getEmitterid())
-				.flow(binOutwardDTO.getFlow()).orgId(binOutwardDTO.getOrgId()).createdby(binOutwardDTO.getCreatedBy())
-				.modifiedby(binOutwardDTO.getCreatedBy()).destination(binOutwardDTO.getDestination())
-				.orgin(binOutwardDTO.getOrgin()).reciever(binOutwardDTO.getReciever()).kit(binOutwardDTO.getKit())
-				.outwardKitQty(binOutwardDTO.getOutwardKitQty()).binOutwardDetails(binOutwardDetailsVOList).build();
-
-		binOutwardDetailsVOList = binOutwardDTO.getBinOutwardDetails().stream()
-				.map(binoutward -> BinOutwardDetailsVO.builder().asset(binoutward.getAsset())
-						.assetCode(binoutward.getAssetCode()).qty(binoutward.getQty()).binOutwardVO(binOutwardVO)
-						.build())
-				.collect(Collectors.toList());
-		binOutwardVO.setBinOutwardDetails(binOutwardDetailsVOList);
-		return binOutwardVO;
-	}
+//	private BinOutwardVO createBinOutwardVOByBinOutwardDTO(BinOutwardDTO binOutwardDTO) {
+//		List<BinOutwardDetailsVO> binOutwardDetailsVOList = new ArrayList<>();
+//		BinOutwardVO binOutwardVO = BinOutwardVO.builder().docDate(binOutwardDTO.getDocDate()).emitter(binOutwardDTO.getEmitter()).emitterId(binOutwardDTO.getEmitterid())
+//				.flow(binOutwardDTO.getFlow()).orgId(binOutwardDTO.getOrgId()).createdby(binOutwardDTO.getCreatedBy())
+//				.modifiedby(binOutwardDTO.getCreatedBy()).destination(binOutwardDTO.getDestination())
+//				.orgin(binOutwardDTO.getOrgin()).reciever(binOutwardDTO.getReciever()).kit(binOutwardDTO.getKit())
+//				.outwardKitQty(binOutwardDTO.getOutwardKitQty()).binOutwardDetails(binOutwardDetailsVOList).build();
+//
+//		binOutwardDetailsVOList = binOutwardDTO.getBinOutwardDetails().stream()
+//				.map(binoutward -> BinOutwardDetailsVO.builder().asset(binoutward.getAsset())
+//						.assetCode(binoutward.getAssetCode()).qty(binoutward.getQty()).binOutwardVO(binOutwardVO)
+//						.build())
+//				.collect(Collectors.toList());
+//		binOutwardVO.setBinOutwardDetails(binOutwardDetailsVOList);
+//		return binOutwardVO;
+//	}
 
 	@Override
 	public List<BinAllotmentNewVO> getAllAllotmentById(String docId) {
