@@ -26,7 +26,7 @@ public interface BinAllotmentNewRepo extends JpaRepository<BinAllotmentNewVO, Lo
 	@Query(nativeQuery = true, value = "CALL next_allotcode()")
 	void nextDocseq();
 
-	@Query(nativeQuery = true, value = "select a.docdate reqDate,a.emitter,a.emitterid,b.kitcode,b.kitqty reqKitQty,b.partno,b.partname,a.flow,a.flowid from issuerequest a, issuerequest2 b where a.issuerequestid=b.issuerequestid and a.orgid=?1 and a.docid=?2")
+	@Query(nativeQuery = true, value = "select a.docid,a.docdate reqDate,a.emitter,a.emitterid,b.kitcode,b.kitqty reqKitQty,b.partno,b.partname,a.flow,a.flowid from issuerequest a, issuerequest2 b where a.issuerequestid=b.issuerequestid and a.orgid=?1 and a.docid=?2")
 	Set<Object[]> findReqDetailsByOrgId(Long orgId,String reqno);
 
 	@Query(nativeQuery = true, value = "select * from binallotment where orgid=?1")

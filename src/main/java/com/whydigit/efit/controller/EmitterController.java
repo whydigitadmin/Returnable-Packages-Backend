@@ -760,15 +760,16 @@ public class EmitterController extends BaseController {
 		List<Map<String, String>> binReqDetails = new ArrayList<>();
 		for (Object[] ps : partstudy) {
 			Map<String, String> part = new HashMap<>();
-			part.put("reqDate", ps[0] != null ? ps[0].toString() : "");
-			part.put("emitter", ps[1] != null ? ps[1].toString() : "");
-			part.put("emitterid", ps[2] != null ? ps[2].toString() : "");
-			part.put("kitcode", ps[3] != null ? ps[3].toString() : "");
-			part.put("reqKitQty", ps[4] != null ? ps[4].toString() : "");
-			part.put("partno", ps[5] != null ? ps[5].toString() : "");
-			part.put("partname", ps[6] != null ? ps[6].toString() : "");
-			part.put("flow", ps[7] != null ? ps[7].toString() : "");
-			part.put("flowid", ps[8] != null ? ps[8].toString() : "");
+			part.put("reqNo", ps[0] != null ? ps[0].toString() : "");
+			part.put("reqDate", ps[1] != null ? ps[1].toString() : "");
+			part.put("emitter", ps[2] != null ? ps[2].toString() : "");
+			part.put("emitterid", ps[3] != null ? ps[3].toString() : "");
+			part.put("kitcode", ps[4] != null ? ps[4].toString() : "");
+			part.put("reqKitQty", ps[5] != null ? ps[5].toString() : "");
+			part.put("partno", ps[6] != null ? ps[6].toString() : "");
+			part.put("partname", ps[7] != null ? ps[7].toString() : "");
+			part.put("flow", ps[8] != null ? ps[8].toString() : "");
+			part.put("flowid", ps[9] != null ? ps[9].toString() : "");
 			binReqDetails.add(part);
 		}
 		return binReqDetails;
