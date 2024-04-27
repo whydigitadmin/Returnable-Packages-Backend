@@ -22,8 +22,10 @@ public class BinOutwardDTO {
 	private String destination;
 	private String reciever;
 	private String orgin;
-	private Long emitterid;
+	private Long emitterId;
 	private String emitter;
 
-	private List<BinOutwardDetailsDTO> binOutwardDetails;
+	private List<BinOutwardDetailsDTO> binOutwardDetailsDTO;
+
+	
 }
