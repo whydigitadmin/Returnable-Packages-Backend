@@ -66,7 +66,6 @@ import com.whydigit.efit.entity.KitVO;
 import com.whydigit.efit.entity.MaxPartQtyPerKitVO;
 import com.whydigit.efit.entity.OutwardKitDetailsVO;
 import com.whydigit.efit.entity.OutwardView;
-import com.whydigit.efit.entity.ProofOfDeliveryVO;
 import com.whydigit.efit.entity.ReturnStockVO;
 import com.whydigit.efit.entity.VwEmitterInwardVO;
 import com.whydigit.efit.exception.ApplicationException;
@@ -162,10 +161,9 @@ public class EmitterServiceImpl implements EmitterService {
 
 	@Autowired
 	BinOutwardRepo binOutwardRepo;
-	
+
 	@Autowired
 	BinInwardRepo binInwardRepo;
-	
 
 	@Autowired
 	BinOutwardDetailsRepo binOutwardDetailsRepo;
@@ -780,8 +778,8 @@ public class EmitterServiceImpl implements EmitterService {
 	}
 
 	@Override
-	public Set<Object[]> getReqDetailsByOrgId(Long orgId,String reqNo) {
-		return binAllotmentNewRepo.findReqDetailsByOrgId(orgId,reqNo);
+	public Set<Object[]> getReqDetailsByOrgId(Long orgId, String reqNo) {
+		return binAllotmentNewRepo.findReqDetailsByOrgId(orgId, reqNo);
 	}
 
 	@Override
@@ -819,7 +817,7 @@ public class EmitterServiceImpl implements EmitterService {
 		String binoutward = finyr + "BO" + binOutwardRepo.finddocid();
 		binOutwardVO.setDocId(binoutward);
 		binOutwardRepo.nextseq();
-		
+
 		binOutwardVO.setDocDate(binOutwardDTO.getDocDate());
 		binOutwardVO.setEmitter(binOutwardDTO.getEmitter());
 		binOutwardVO.setEmitterId(binOutwardDTO.getEmitterId());
@@ -832,7 +830,7 @@ public class EmitterServiceImpl implements EmitterService {
 		binOutwardVO.setReciever(binOutwardDTO.getReciever());
 		binOutwardVO.setKit(binOutwardDTO.getKit());
 		binOutwardVO.setOutwardKitQty(binOutwardDTO.getOutwardKitQty());
-		
+
 		List<BinOutwardDetailsVO> binOutwardDetailsVO1 = new ArrayList<>();
 		if (binOutwardDTO.getBinOutwardDetailsDTO() != null) {
 			for (BinOutwardDetailsDTO binOutwardDetailsDTO : binOutwardDTO.getBinOutwardDetailsDTO()) {
@@ -844,7 +842,7 @@ public class EmitterServiceImpl implements EmitterService {
 			}
 		}
 		binOutwardVO.setBinOutwardDetails(binOutwardDetailsVO1);
-		
+
 		BinOutwardVO savedBinOutwardVO = binOutwardRepo.save(binOutwardVO);
 		List<BinOutwardDetailsVO> binOutwardDetailsVOLists = savedBinOutwardVO.getBinOutwardDetails();
 		if (binOutwardDetailsVOLists != null && !binOutwardDetailsVOLists.isEmpty())
@@ -852,19 +850,20 @@ public class EmitterServiceImpl implements EmitterService {
 
 				AssetStockDetailsVO stockDetailsVO = new AssetStockDetailsVO();
 				stockDetailsVO.setStockRef(savedBinOutwardVO.getDocId());
-				stockDetailsVO.setStockBranch(savedBinOutwardVO.getEmitter()+"-"+savedBinOutwardVO.getOrgin());
+				stockDetailsVO.setStockBranch(savedBinOutwardVO.getEmitter() + "-" + savedBinOutwardVO.getOrgin());
 				stockDetailsVO.setStockDate(savedBinOutwardVO.getDocDate());
 				stockDetailsVO.setSku(binOutwardDetailsVO.getAsset());
 				stockDetailsVO.setSkuCode(binOutwardDetailsVO.getAssetCode());
-				stockDetailsVO.setSkuQty(binOutwardDetailsVO.getQty()*-1);
+				stockDetailsVO.setSkuQty(binOutwardDetailsVO.getQty() * -1);
 				stockDetailsVO.setStatus("S");
-				stockDetailsVO.setScreen("Bin Outward");;
+				stockDetailsVO.setScreen("Bin Outward");
+				;
 				stockDetailsVO.setSCode(savedBinOutwardVO.getScode());
 				stockDetailsVO.setPm("M");
 				stockDetailsVO.setStockSource("");
 				stockDetailsVO.setBinLocation("");
 				stockDetailsVO.setCancelRemarks("");
-				stockDetailsVO.setStockLocation("");
+				stockDetailsVO.setStockLocation(""); 
 				stockDetailsVO.setSourceId(binOutwardDetailsVO.getId());
 				stockDetailsVO.setFinyr(savedBinOutwardVO.getFinyr());
 				assetStockDetailsRepo.save(stockDetailsVO);
@@ -873,7 +872,7 @@ public class EmitterServiceImpl implements EmitterService {
 
 			AssetStockDetailsVO stockDetailsVO = new AssetStockDetailsVO();
 			stockDetailsVO.setStockRef(savedBinOutwardVO.getDocId());
-			stockDetailsVO.setStockBranch(savedBinOutwardVO.getReciever()+"-"+savedBinOutwardVO.getDestination());
+			stockDetailsVO.setStockBranch(savedBinOutwardVO.getReciever() + "-" + savedBinOutwardVO.getDestination());
 			stockDetailsVO.setStockDate(savedBinOutwardVO.getDocDate());
 			stockDetailsVO.setSku(binOutwardDetailsVO.getAsset());
 			stockDetailsVO.setSkuCode(binOutwardDetailsVO.getAssetCode());
@@ -902,7 +901,7 @@ public class EmitterServiceImpl implements EmitterService {
 //				.outwardKitQty(binOutwardDTO.getOutwardKitQty()).binOutwardDetails(binOutwardDetailsVOList).build();
 //
 //		binOutwardDetailsVOList = binOutwardDTO.getBinOutwardDetails().stream()
-//				.map(binoutward -> BinOutwardDetailsVO.builder().asset(binoutward.getAsset())
+//			.map(binoutward -> BinOutwardDetailsVO.builder().asset(binoutward.getAsset())
 //						.assetCode(binoutward.getAssetCode()).qty(binoutward.getQty()).binOutwardVO(binOutwardVO)
 //						.build())
 //				.collect(Collectors.toList());
@@ -933,12 +932,6 @@ public class EmitterServiceImpl implements EmitterService {
 		// TODO Auto-generated method stub
 		return issueRequestRepo.getIssueRequestByOrgId(orgId);
 	}
-
-//	@Override
-//	public String uploadPodFilePath(MultipartFile file, String allotNo) {
-//		// TODO Auto-generated method stub
-//		return null;
-	//}
 
 	@Value("${proofOfDelivery.upload.dir}")
 	private String UPLOAD_DIR;
@@ -998,5 +991,19 @@ public class EmitterServiceImpl implements EmitterService {
 		vo.setPodFileUploadPath(filePath.toString());
 		return vo;
 	}
-	
+
+	@Override
+	public String getDocIdByBinallotment() {
+		int finyr = binAllotmentNewRepo.getFinyr();
+		String binallotment = finyr + "BA" + binAllotmentNewRepo.finddocid();
+		return binallotment;
+	}
+
+//	@Override
+//	public String getDocIdByBinOutward() {
+//		int finyr = binOutwardRepo.getFinr();
+//		String binOutward = finyr + "BO" + binOutwardRepo.finddocid();
+//		return binOutward;
+//	}
+
 }

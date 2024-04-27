@@ -671,6 +671,33 @@ public class EmitterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
+	
+//	@GetMapping("/getDocIdByBinOutward")
+//	public ResponseEntity<ResponseDTO> getDocIdByBinOutward() {
+//		String methodName = "getDocIdByBinOutward()";
+//		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+//		String errorMsg = null;
+//		Map<String, Object> responseObjectsMap = new HashMap<>();
+//		ResponseDTO responseDTO = null;
+//		String binOutwardDocId = null;
+//		try {
+//			binOutwardDocId = emitterService.getDocIdByBinOutward();
+//		} catch (Exception e) {
+//			errorMsg = e.getMessage();
+//			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+//		}
+//		if (StringUtils.isEmpty(errorMsg)) {
+//			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Bin Inward DocId found success");
+//			responseObjectsMap.put("binOutwardDocId", binOutwardDocId);
+//			responseDTO = createServiceResponse(responseObjectsMap);
+//		} else {
+//			errorMsg = " not found for ID: ";
+//			responseDTO = createServiceResponseError(responseObjectsMap, "Bin Inward DocId not found",
+//					errorMsg);
+//		}
+//		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+//		return ResponseEntity.ok().body(responseDTO);
+//	}
 
 	// Bin Allotment
 
@@ -694,6 +721,33 @@ public class EmitterController extends BaseController {
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} else {
 			responseDTO = createServiceResponseError(responseObjectsMap, "Bin Allotment Failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+	
+	@GetMapping("/getDocIdByBinallotment")
+	public ResponseEntity<ResponseDTO> getDocIdByBinallotment() {
+		String methodName = "getDocIdByBinallotment()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		String allotDocId = null;
+		try {
+			allotDocId = emitterService.getDocIdByBinallotment();
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Bin Allotment DocId found success");
+			responseObjectsMap.put("allotDocId", allotDocId);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			errorMsg = " not found for ID: ";
+			responseDTO = createServiceResponseError(responseObjectsMap, "Bin Allotment DocId not found",
+					errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
@@ -988,5 +1042,6 @@ public class EmitterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 
 	}
+	
 	
 }
