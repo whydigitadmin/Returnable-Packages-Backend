@@ -1,5 +1,6 @@
 package com.whydigit.efit.entity;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.persistence.Entity;
@@ -25,12 +26,13 @@ public class UserActionVO {
 	private String userName;
 	private long userId;
 	private String actionType;
-	private Date actionDate;
+	private String actionDate;
 
 	@PrePersist
 	public void onSave() {
 		Date currentDate = new Date();
-		this.actionDate = currentDate;
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss a");
+		this.actionDate = dateFormat.format(currentDate);
 	}
 
 }

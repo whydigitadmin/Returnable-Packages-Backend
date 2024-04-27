@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -18,10 +19,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.whydigit.efit.common.CommonConstant;
 import com.whydigit.efit.common.UserConstants;
+import com.whydigit.efit.dto.BranchDTO;
 import com.whydigit.efit.dto.ResponseDTO;
 import com.whydigit.efit.entity.BranchVO;
 import com.whydigit.efit.entity.CompanySetVO;
@@ -133,17 +136,44 @@ public class CompanySetup  extends BaseController{
 		return ResponseEntity.ok().body(responseDTO);
 	}
 	
+	
+	// Get BranchbyId
+	@GetMapping("/getBranchById")
+	public ResponseEntity<ResponseDTO> getBranchById(@RequestParam(required = false) Long id) {
+		String methodName = "getBranchById()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		Optional<BranchVO> branchVO = null;
+		try {
+			branchVO = companySetupService.getBranchById(id);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Branch information get successfully");
+			responseObjectsMap.put("branchVO", branchVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "Branch information receive failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+	
 //	Branch
 	
-	@PostMapping("/branch")
-	public ResponseEntity<ResponseDTO> createBranch(@RequestBody BranchVO branchVO) {
+	@PutMapping("/branch")
+	public ResponseEntity<ResponseDTO> createBranch(@RequestBody BranchDTO branchDTO) {
 		String methodName = "createBranch()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
 		try {
-			BranchVO createdBranchVO = companySetupService.createBranch(branchVO);
+			BranchVO createdBranchVO = companySetupService.createBranch(branchDTO);
 			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Branch created successfully");
 			responseObjectsMap.put("branchVO", createdBranchVO);
 			responseDTO = createServiceResponse(responseObjectsMap);
@@ -184,34 +214,10 @@ public class CompanySetup  extends BaseController{
 	}
 
 	
-	@PutMapping("/branch")
-	public ResponseEntity<ResponseDTO> updateBranch(@RequestBody BranchVO branchVO) {
-		String methodName = "updateBranch()";
-		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
-		String errorMsg = null;
-		Map<String, Object> responseObjectsMap = new HashMap<>();
-		ResponseDTO responseDTO = null;
-		try {
-			BranchVO updatedBranchVO = companySetupService.updateBranch(branchVO).orElse(null);
-			if (updatedBranchVO != null) {
-				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "branch updated successfully");
-				responseObjectsMap.put("branchVO", updatedBranchVO);
-				responseDTO = createServiceResponse(responseObjectsMap);
-			} else {
-				errorMsg = "Branch not found for ID: " + branchVO.getId();
-				responseDTO = createServiceResponseError(responseObjectsMap, "Branch update failed", errorMsg);
-			}
-		} catch (Exception e) {
-			errorMsg = e.getMessage();
-			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-			responseDTO = createServiceResponseError(responseObjectsMap, "branch update failed", errorMsg);
-		}
-		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
-		return ResponseEntity.ok().body(responseDTO);
-	}
+	
 
 	@DeleteMapping("/branch/{id}")
-	public ResponseEntity<ResponseDTO> deleteBranch(@PathVariable int id) {
+	public ResponseEntity<ResponseDTO> deleteBranch(@PathVariable Long id) {
 		String methodName = "deleteBranch()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;

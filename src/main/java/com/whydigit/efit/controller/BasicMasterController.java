@@ -17,13 +17,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.whydigit.efit.common.CommonConstant;
 import com.whydigit.efit.common.UserConstants;
 import com.whydigit.efit.dto.ResponseDTO;
 import com.whydigit.efit.entity.CityVO;
-import com.whydigit.efit.entity.CountryListVO;
 import com.whydigit.efit.entity.CountryVO;
 import com.whydigit.efit.entity.CurrencyMasterVO;
 import com.whydigit.efit.entity.EmployeeVO;
@@ -31,7 +31,6 @@ import com.whydigit.efit.entity.FinancialYearVO;
 import com.whydigit.efit.entity.LocalCurrencyVO;
 import com.whydigit.efit.entity.StateVO;
 import com.whydigit.efit.service.BasicMasterService;
-
 
 @RestController
 @CrossOrigin
@@ -189,7 +188,7 @@ public class BasicMasterController extends BaseController {
 	}
 
 	@GetMapping("/country/{id}")
-	public ResponseEntity<ResponseDTO> getCountryById(@PathVariable int id) {
+	public ResponseEntity<ResponseDTO> getCountryById(@PathVariable Long id) {
 		String methodName = "getCountryById()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -209,6 +208,31 @@ public class BasicMasterController extends BaseController {
 		} else {
 			errorMsg = "Countries not found for ID: " + id;
 			responseDTO = createServiceResponseError(responseObjectsMap, "Countries not found", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+	
+	@GetMapping("/country/orgId")
+	public ResponseEntity<ResponseDTO> getAllCountryByOrgId(@RequestParam Long orgId) {
+		String methodName = "getAllCountryByOrgId()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<CountryVO> countryVO = new ArrayList<>();
+		try {
+			countryVO = basicMasterService.getAllCountryByOrgId(orgId);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "countries information get successfully");
+			responseObjectsMap.put("countryVO", countryVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "countries information receive failed", errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
@@ -262,7 +286,7 @@ public class BasicMasterController extends BaseController {
 	}
 
 	@DeleteMapping("/country/{id}")
-	public ResponseEntity<ResponseDTO> deleteCountry(@PathVariable int id) {
+	public ResponseEntity<ResponseDTO> deleteCountry(@PathVariable Long id) {
 		String methodName = "deleteCountry()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -283,8 +307,6 @@ public class BasicMasterController extends BaseController {
 
 //	state
 
-
-
 	@GetMapping("/state")
 	public ResponseEntity<ResponseDTO> getAllStates() {
 		String methodName = "getAllStates()";
@@ -304,38 +326,36 @@ public class BasicMasterController extends BaseController {
 			responseObjectsMap.put("stateVO", stateVO);
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} else {
-			responseDTO = createServiceResponseError(responseObjectsMap, "states information receive failed",
-					errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "states information receive failed", errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-//
-//	@GetMapping("/state/{id}")
-//	public ResponseEntity<ResponseDTO> getStateById(@PathVariable int id) {
-//		String methodName = "getStateById()";
-//		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
-//		String errorMsg = null;
-//		Map<String, Object> responseObjectsMap = new HashMap<>();
-//		ResponseDTO responseDTO = null;
-//		StateVO stateVO = null;
-//		try {
-//			stateVO = basicMasterService.getStateById(id).orElse(null);
-//		} catch (Exception e) {
-//			errorMsg = e.getMessage();
-//			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-//		}
-//		if (StringUtils.isEmpty(errorMsg)) {
-//			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "states found by ID");
-//			responseObjectsMap.put("stateVO", stateVO);
-//			responseDTO = createServiceResponse(responseObjectsMap);
-//		} else {
-//			errorMsg = "Countries not found for ID: " + id;
-//			responseDTO = createServiceResponseError(responseObjectsMap, "states not found", errorMsg);
-//		}
-//		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
-//		return ResponseEntity.ok().body(responseDTO);
-//	}
+	
+	@GetMapping("/state/Country")
+	public ResponseEntity<ResponseDTO> getAllStatesByCountry(@RequestParam String country,@RequestParam Long orgId) {
+		String methodName = "getAllStatesByCountry()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<StateVO> stateVO = new ArrayList<>();
+		try {
+			stateVO = basicMasterService.getAllStatesByCountry(country,orgId);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "state information get successfully");
+			responseObjectsMap.put("stateVO", stateVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "states information receive failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
 
 	@PostMapping("/state")
 	public ResponseEntity<ResponseDTO> createState(@RequestBody StateVO stateVO) {
@@ -385,7 +405,7 @@ public class BasicMasterController extends BaseController {
 	}
 
 	@DeleteMapping("/state/{id}")
-	public ResponseEntity<ResponseDTO> deleteState(@PathVariable int id) {
+	public ResponseEntity<ResponseDTO> deleteState(@PathVariable Long id) {
 		String methodName = "deleteState()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -403,8 +423,6 @@ public class BasicMasterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-
-
 
 //	employee
 
@@ -454,8 +472,7 @@ public class BasicMasterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-	
-	
+
 	@PutMapping("/employee")
 	public ResponseEntity<ResponseDTO> updateEmployee(@RequestBody EmployeeVO employeeVO) {
 		String methodName = "updateEmployee()";
@@ -482,7 +499,6 @@ public class BasicMasterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
-
 	@DeleteMapping("/employee/{id}")
 	public ResponseEntity<ResponseDTO> deleteEmployee(@PathVariable int id) {
 		String methodName = "deleteEmployee()";
@@ -502,8 +518,6 @@ public class BasicMasterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-
-
 
 //	city
 
@@ -526,8 +540,32 @@ public class BasicMasterController extends BaseController {
 			responseObjectsMap.put("cityVO", cityVO);
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} else {
-			responseDTO = createServiceResponseError(responseObjectsMap, "city information receive failed",
-					errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "city information receive failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+	
+	@GetMapping("/city/getByStateAndCountry")
+	public ResponseEntity<ResponseDTO> getAllCitiesbyStateAndCountry(@RequestParam String state,@RequestParam String country,@RequestParam Long orgId) {
+		String methodName = "getAllCitiesbyStateAndCountry()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<CityVO> cityVO = new ArrayList<>();
+		try {
+			cityVO = basicMasterService.getAllCitiesByStateAndCountry(state,country,orgId);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "city information get successfully");
+			responseObjectsMap.put("cityVO", cityVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "city information receive failed", errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
@@ -553,8 +591,6 @@ public class BasicMasterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-	
-	
 
 	@PutMapping("/city")
 	public ResponseEntity<ResponseDTO> updateCity(@RequestBody CityVO cityVO) {
@@ -570,7 +606,7 @@ public class BasicMasterController extends BaseController {
 				responseObjectsMap.put("cityVO", updatedCityVO);
 				responseDTO = createServiceResponse(responseObjectsMap);
 			} else {
-				errorMsg = "City not found for ID: " + cityVO.getId();
+				errorMsg = "City not found for ID: " + cityVO.getCityid();
 				responseDTO = createServiceResponseError(responseObjectsMap, "City update failed", errorMsg);
 			}
 		} catch (Exception e) {
@@ -583,7 +619,7 @@ public class BasicMasterController extends BaseController {
 	}
 
 	@DeleteMapping("/city/{id}")
-	public ResponseEntity<ResponseDTO> deleteCity(@PathVariable int id) {
+	public ResponseEntity<ResponseDTO> deleteCity(@PathVariable Long id) {
 		String methodName = "deleteCity()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -651,7 +687,6 @@ public class BasicMasterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
-
 	@PutMapping("/financial")
 	public ResponseEntity<ResponseDTO> updateFinancialYearVO(@RequestBody FinancialYearVO financialYearVO) {
 		String methodName = "updateFinancialYear()";
@@ -660,7 +695,8 @@ public class BasicMasterController extends BaseController {
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
 		try {
-			FinancialYearVO updatedFinancialYearVO = basicMasterService.updateFinancialYear(financialYearVO).orElse(null);
+			FinancialYearVO updatedFinancialYearVO = basicMasterService.updateFinancialYear(financialYearVO)
+					.orElse(null);
 			if (updatedFinancialYearVO != null) {
 				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "FinancialYear updated successfully");
 				responseObjectsMap.put("financialYearVO", updatedFinancialYearVO);
@@ -697,128 +733,8 @@ public class BasicMasterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-	
-//	countryList
-	
-	@GetMapping("/countryList")
-	public ResponseEntity<ResponseDTO> getAllCountryList() {
-		String methodName = "getAllCountryList()";
-		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
-		String errorMsg = null;
-		Map<String, Object> responseObjectsMap = new HashMap<>();
-		ResponseDTO responseDTO = null;
-		List<CountryListVO> countryListVO = new ArrayList<>();
-		try {
-			countryListVO = basicMasterService.getAllCountryList();
-		} catch (Exception e) {
-			errorMsg = e.getMessage();
-			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-		}
-		if (StringUtils.isBlank(errorMsg)) {
-			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "CountryList information get successfully");
-			responseObjectsMap.put("CountryList", countryListVO);
-			responseDTO = createServiceResponse(responseObjectsMap);
-		} else {
-			responseDTO = createServiceResponseError(responseObjectsMap, "CountryList information receive failed",
-					errorMsg);
-		}
-		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
-		return ResponseEntity.ok().body(responseDTO);
-	}
 
-	@GetMapping("/countryList/{id}")
-	public ResponseEntity<ResponseDTO> getCountryListById(@PathVariable int id) {
-		String methodName = "getCountryListById()";
-		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
-		String errorMsg = null;
-		Map<String, Object> responseObjectsMap = new HashMap<>();
-		ResponseDTO responseDTO = null;
-		CountryListVO countryListVO = null;
-		try {
-			countryListVO = basicMasterService.getCountryListById(id).orElse(null);
-		} catch (Exception e) {
-			errorMsg = e.getMessage();
-			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-		}
-		if (StringUtils.isEmpty(errorMsg)) {
-			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "localCurrency found by ID");
-			responseObjectsMap.put("countryList", countryListVO);
-			responseDTO = createServiceResponse(responseObjectsMap);
-		} else {
-			errorMsg = "CountrytList not found for ID: " + id;
-			responseDTO = createServiceResponseError(responseObjectsMap, "countrylist not found", errorMsg);
-		}
-		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
-		return ResponseEntity.ok().body(responseDTO);
-	}
 
-	@PostMapping("/CountryList")
-	public ResponseEntity<ResponseDTO> createCountryList(@RequestBody CountryListVO countryListVO) {
-		String methodName = "createCountryList()";
-		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
-		String errorMsg = null;
-		Map<String, Object> responseObjectsMap = new HashMap<>();
-		ResponseDTO responseDTO = null;
-		try {
-			CountryListVO createdCountryList = basicMasterService.createCountryList(countryListVO);
-			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "countryList created successfully");
-			responseObjectsMap.put("countryList", createdCountryList);
-			responseDTO = createServiceResponse(responseObjectsMap);
-		} catch (Exception e) {
-			errorMsg = e.getMessage();
-			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-			responseDTO = createServiceResponseError(responseObjectsMap, "CountryList creation failed", errorMsg);
-		}
-		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
-		return ResponseEntity.ok().body(responseDTO);
-	}
-
-	@PutMapping("/countryList")
-	public ResponseEntity<ResponseDTO> updateCountryList(@RequestBody CountryListVO countryListVO) {
-		String methodName = "updateCountryList()";
-		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
-		String errorMsg = null;
-		Map<String, Object> responseObjectsMap = new HashMap<>();
-		ResponseDTO responseDTO = null;
-		try {
-			CountryListVO updatedCountryList = basicMasterService.updateCountryList(countryListVO).orElse(null);
-			if (updatedCountryList != null) {
-				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "CountryList updated successfully");
-				responseObjectsMap.put("countryList", updatedCountryList);
-				responseDTO = createServiceResponse(responseObjectsMap);
-			} else {
-				errorMsg = "CountryList not found for ID: " + countryListVO.getId();
-				responseDTO = createServiceResponseError(responseObjectsMap, "CountryList update failed", errorMsg);
-			}
-		} catch (Exception e) {
-			errorMsg = e.getMessage();
-			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-			responseDTO = createServiceResponseError(responseObjectsMap, "CountryList update failed", errorMsg);
-		}
-		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
-		return ResponseEntity.ok().body(responseDTO);
-	}
-
-	@DeleteMapping("/countryList/{id}")
-	public ResponseEntity<ResponseDTO> deleteCountryList(@PathVariable int id) {
-		String methodName = "deleteCountryList()";
-		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
-		String errorMsg = null;
-		Map<String, Object> responseObjectsMap = new HashMap<>();
-		ResponseDTO responseDTO = null;
-		try {
-			basicMasterService.deleteCountryList(id);
-			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "CountryList deleted successfully");
-			responseDTO = createServiceResponse(responseObjectsMap);
-		} catch (Exception e) {
-			errorMsg = e.getMessage();
-			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-			responseDTO = createServiceResponseError(responseObjectsMap, "CountryList deletion failed", errorMsg);
-		}
-		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
-		return ResponseEntity.ok().body(responseDTO);
-	}
-	
 //	Financial
 
 	@GetMapping("/currencyMaster")
@@ -862,12 +778,12 @@ public class BasicMasterController extends BaseController {
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-			responseDTO = createServiceResponseError(responseObjectsMap, "CurrencyMaster Year creation failed", errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "CurrencyMaster Year creation failed",
+					errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-
 
 	@PutMapping("/currencyMaster")
 	public ResponseEntity<ResponseDTO> updateCurrencyMasterVO(@RequestBody CurrencyMasterVO currencyMasterVO) {
@@ -877,7 +793,8 @@ public class BasicMasterController extends BaseController {
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
 		try {
-			CurrencyMasterVO updatedCurrencyMasterVO = basicMasterService.updateCurrencyMaster(currencyMasterVO).orElse(null);
+			CurrencyMasterVO updatedCurrencyMasterVO = basicMasterService.updateCurrencyMaster(currencyMasterVO)
+					.orElse(null);
 			if (updatedCurrencyMasterVO != null) {
 				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "CurrencyMasterVO updated successfully");
 				responseObjectsMap.put("currencyMasterVO", updatedCurrencyMasterVO);

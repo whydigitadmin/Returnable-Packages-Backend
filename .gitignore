@@ -1,0 +1,32 @@
+# Compiled class files
+/target/
+
+# Package files
+*.jar
+*.war
+*.ear
+
+# IDE files
+.idea/
+*.iml
+
+# Gradle files
+.gradle/
+build/
+
+# Logs
+logs/
+*.log
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Spring Boot-specific
+/application.properties
+/application.yml
+
+# Classpath files
+.classpath
+.settings/
+
