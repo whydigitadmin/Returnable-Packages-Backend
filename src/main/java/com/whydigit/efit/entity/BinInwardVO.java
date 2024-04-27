@@ -78,6 +78,13 @@ public class BinInwardVO {
 	private LocalDate allotDate;
 	@Column(name = "binreqdate")
 	private LocalDate binReqDate;
+	@Column(name = "returnqty", length = 15)
+	private int returnQty;
+	@Column(name = "returnremarks", length = 150)
+	private String returnRemarks;
+	@Column(name = "podfileuploadpath", length = 250)
+	private String podFileUploadPath;
+	
 	
 	@Column(name = "reqkitqty")
 	private int reqKitQty;
