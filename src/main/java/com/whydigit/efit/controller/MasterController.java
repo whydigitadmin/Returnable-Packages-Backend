@@ -2587,4 +2587,31 @@ public class MasterController extends BaseController {
 		}
 		return allotDetails;
 	}
+	
+
+	@GetMapping("/getAllBinInwardByDocid")
+	public ResponseEntity<ResponseDTO> getAllBinInwardByDocid(@RequestParam String docid) {
+		String methodName = "getAllBinInwardByDocid()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		BinInwardVO binInwardVO=null;
+		try {
+			binInwardVO = masterService.getBinInwardByDocid(docid).orElse(null);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "BinInward found by DocId");
+			responseObjectsMap.put("binInwardVO", binInwardVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			errorMsg = "BinInward not found for DocId: " + docid;
+			responseDTO = createServiceResponseError(responseObjectsMap, "BinInward not found", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
 }
