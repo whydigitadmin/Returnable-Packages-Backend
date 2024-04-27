@@ -1695,6 +1695,9 @@ public class MasterServiceImpl implements MasterService {
 		}
 	}
 
+	
+	
+	
 	private String getFileExtension(String fileName) {
 		if (fileName != null && fileName.contains(".")) {
 			return fileName.substring(fileName.lastIndexOf("."));
@@ -1877,7 +1880,7 @@ public class MasterServiceImpl implements MasterService {
 	}
 
 	@Override
-	public List<BinInwardVO> getAlllBinInwardByEmitterAndOrgId(Long emitterid, Long orgId) {
+	public Set<Object[]> getAlllBinInwardByEmitterAndOrgId(Long emitterid, Long orgId) {
 
 		return binInwardRepo.findAllByEmitterIdAndOrgId(emitterid, orgId);
 	}
