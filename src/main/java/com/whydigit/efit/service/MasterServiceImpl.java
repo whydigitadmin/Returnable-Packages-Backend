@@ -1912,6 +1912,20 @@ public class MasterServiceImpl implements MasterService {
 		return binAllotmentNewRepo.getWaitingforBinInwardDetailsByEmitterAndOrgId(orgId, emitterid);
 	}
 
+
+//	@Override
+//	public String getDocIdByAssetTagging() {
+//		int finyr = assetTaggingRepo.getFinyr();
+//		String assetTagging = finyr + "AT" + assetTaggingRepo.finddocid();
+//		return assetTagging;
+//	}
+
+	@Override
+	public String getDocIdByBinInward() {
+		int finyr = binInwardRepo.getFinyr();
+		String binInward = finyr + "BI" + binInwardRepo.finddocid();
+		return binInward;
+  }
 	@Override
 	public Optional<BinInwardVO> getBinInwardByDocid(String docid) {
 		if (binInwardRepo.existsByDocid(docid)) {

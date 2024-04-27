@@ -114,4 +114,9 @@ public interface EmitterService {
 	String uploadPodFilePath(MultipartFile file, String allotNo);
 
 
+	String getDocIdByBinallotment();
+
+//	String getDocIdByBinOutward();
+
+
 }
