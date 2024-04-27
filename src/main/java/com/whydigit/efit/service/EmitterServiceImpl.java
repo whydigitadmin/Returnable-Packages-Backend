@@ -811,31 +811,7 @@ public class EmitterServiceImpl implements EmitterService {
 
 	// Bin Outward
 
-	@Override
-	public List<BinAllotmentNewVO> getAllAllotmentById(String docId) {
-		List<BinAllotmentNewVO> binAllotmentNewVO = new ArrayList<>();
-		if (ObjectUtils.isNotEmpty(docId)) {
-			LOGGER.info("Successfully Received  Bin ALlotment BY docId : {}", docId);
-			binAllotmentNewVO = binAllotmentNewRepo.getAllAssetByOrgId(docId);
-		} else {
-			LOGGER.info("Successfully Received  Bin ALlotment For All docId.");
-			binAllotmentNewVO = binAllotmentNewRepo.findAll();
-		}
-		return binAllotmentNewVO;
-	}
-
-	@Override
-	public Set<Object[]> getkitAssetDetailsByKitId(String kitCode, int quantity) {
-		return kitAssetRepo.getAssetDetails(kitCode, quantity);
-	}
-
-	@Override
-	public Set<Object[]> getIssueRequestreportByOrgId(Long orgId) {
-		// TODO Auto-generated method stub
-		return issueRequestRepo.getIssueRequestByOrgId(orgId);
-	}
-
-	@Override
+		@Override
 	public BinOutwardVO createBinOutward(BinOutwardDTO binOutwardDTO) {
 		BinOutwardVO binOutwardVO = new BinOutwardVO();
 		String finyr = binOutwardRepo.findFinyr();
@@ -919,22 +895,6 @@ public class EmitterServiceImpl implements EmitterService {
 	}
 
 
-//	private BinOutwardVO createBinOutwardVOByBinOutwardDTO(BinOutwardDTO binOutwardDTO) {
-//		List<BinOutwardDetailsVO> binOutwardDetailsVOList = new ArrayList<>();
-//		BinOutwardVO binOutwardVO = BinOutwardVO.builder().docDate(binOutwardDTO.getDocDate()).emitter(binOutwardDTO.getEmitter()).emitterId(binOutwardDTO.getEmitterid())
-//				.flow(binOutwardDTO.getFlow()).orgId(binOutwardDTO.getOrgId()).createdby(binOutwardDTO.getCreatedBy())
-//				.modifiedby(binOutwardDTO.getCreatedBy()).destination(binOutwardDTO.getDestination())
-//				.orgin(binOutwardDTO.getOrgin()).reciever(binOutwardDTO.getReciever()).kit(binOutwardDTO.getKit())
-//				.outwardKitQty(binOutwardDTO.getOutwardKitQty()).binOutwardDetails(binOutwardDetailsVOList).build();
-//
-//		binOutwardDetailsVOList = binOutwardDTO.getBinOutwardDetails().stream()
-//				.map(binoutward -> BinOutwardDetailsVO.builder().asset(binoutward.getAsset())
-//						.assetCode(binoutward.getAssetCode()).qty(binoutward.getQty()).binOutwardVO(binOutwardVO)
-//						.build())
-//				.collect(Collectors.toList());
-//		binOutwardVO.setBinOutwardDetails(binOutwardDetailsVOList);
-//		return binOutwardVO;
-//	}
 
 	@Override
 	public List<BinAllotmentNewVO> getAllAllotmentById(String docId) {
@@ -960,11 +920,6 @@ public class EmitterServiceImpl implements EmitterService {
 		return issueRequestRepo.getIssueRequestByOrgId(orgId);
 	}
 
-//	@Override
-//	public String uploadPodFilePath(MultipartFile file, String allotNo) {
-//		// TODO Auto-generated method stub
-//		return null;
-	//}
 
 	@Value("${proofOfDelivery.upload.dir}")
 	private String UPLOAD_DIR;
