@@ -9,8 +9,7 @@ public interface BinOutwardRepo extends JpaRepository<BinOutwardVO, Long> {
 
 	
 
-	@Query(nativeQuery = true, value = "select sequence_value from binoutwarddocidseq")
-	String finddocid();
+	
 	
 	@Query(nativeQuery = true,value="SELECT RIGHT(\r\n"
 			+ "    IF(\r\n"
@@ -21,6 +20,9 @@ public interface BinOutwardRepo extends JpaRepository<BinOutwardVO, Long> {
 			+ "    2\r\n"
 			+ ") AS finyr")
 	String findFinyr();
+	
+	@Query(nativeQuery = true, value = "select sequence_value from binoutwarddocidseq")
+	String finddocid();
 
 	@Query(nativeQuery = true, value = "CALL next_binoutward_sequence_value()")
 	void nextseq();

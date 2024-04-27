@@ -102,7 +102,7 @@ public interface EmitterService {
 	List<BinAllotmentNewVO> getAllBinAllotment(Long orgId);
 
 	// Bin Outward
-	BinOutwardVO createBinOutward(BinOutwardDTO binOutwardDTO);
+	
 
 	List<BinAllotmentNewVO> getAllAllotmentById(String docId);
 

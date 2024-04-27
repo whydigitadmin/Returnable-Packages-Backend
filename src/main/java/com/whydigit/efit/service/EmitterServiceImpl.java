@@ -159,8 +159,7 @@ public class EmitterServiceImpl implements EmitterService {
 	@Autowired
 	AssetStockDetailsRepo assetStockDetailsRepo;
 
-	@Autowired
-	BinOutwardRepo binOutwardRepo;
+	
 	
 	@Autowired
 	BinInwardRepo binInwardRepo;
@@ -808,90 +807,7 @@ public class EmitterServiceImpl implements EmitterService {
 		return taggingDetailsRepo.findByTagCode(tagCode);
 	}
 
-	// Bin Outward
-
-		@Override
-	public BinOutwardVO createBinOutward(BinOutwardDTO binOutwardDTO) {
-		BinOutwardVO binOutwardVO = new BinOutwardVO();
-		String finyr = binOutwardRepo.findFinyr();
-		String binoutward = finyr + "BO" + binOutwardRepo.finddocid();
-		binOutwardVO.setDocId(binoutward);
-		binOutwardRepo.nextseq();
-
-		binOutwardVO.setDocDate(binOutwardDTO.getDocDate());
-		binOutwardVO.setEmitter(binOutwardDTO.getEmitter());
-		binOutwardVO.setEmitterId(binOutwardDTO.getEmitterId());
-		binOutwardVO.setFlow(binOutwardDTO.getFlow());
-		binOutwardVO.setOrgId(binOutwardDTO.getOrgId());
-		binOutwardVO.setCreatedby(binOutwardDTO.getCreatedBy());
-		binOutwardVO.setModifiedby(binOutwardDTO.getCreatedBy());
-		binOutwardVO.setDestination(binOutwardDTO.getDestination());
-		binOutwardVO.setOrgin(binOutwardDTO.getOrgin());
-		binOutwardVO.setReciever(binOutwardDTO.getReciever());
-		binOutwardVO.setKit(binOutwardDTO.getKit());
-		binOutwardVO.setOutwardKitQty(binOutwardDTO.getOutwardKitQty());
-
-		List<BinOutwardDetailsVO> binOutwardDetailsVO1 = new ArrayList<>();
-		if (binOutwardDTO.getBinOutwardDetailsDTO() != null) {
-			for (BinOutwardDetailsDTO binOutwardDetailsDTO : binOutwardDTO.getBinOutwardDetailsDTO()) {
-				BinOutwardDetailsVO binOutwardDetails = new BinOutwardDetailsVO();
-				binOutwardDetails.setAsset(binOutwardDetailsDTO.getAsset());
-				binOutwardDetails.setAssetCode(binOutwardDetailsDTO.getAssetCode());
-				binOutwardDetails.setQty(binOutwardDetailsDTO.getQty());
-				binOutwardDetailsVO1.add(binOutwardDetails);
-			}
-		}
-		binOutwardVO.setBinOutwardDetails(binOutwardDetailsVO1);
-
-		BinOutwardVO savedBinOutwardVO = binOutwardRepo.save(binOutwardVO);
-//		List<BinOutwardDetailsVO> binOutwardDetailsVOLists = savedBinOutwardVO.getBinOutwardDetails();
-//		if (binOutwardDetailsVOLists != null && !binOutwardDetailsVOLists.isEmpty())
-//			for (BinOutwardDetailsVO binOutwardDetailsVO : binOutwardDetailsVOLists) {
-//
-//				AssetStockDetailsVO stockDetailsVO = new AssetStockDetailsVO();
-//				stockDetailsVO.setStockRef(savedBinOutwardVO.getDocId());
-//				stockDetailsVO.setStockBranch(savedBinOutwardVO.getEmitter() + "-" + savedBinOutwardVO.getOrgin());
-//				stockDetailsVO.setStockDate(savedBinOutwardVO.getDocDate());
-//				stockDetailsVO.setSku(binOutwardDetailsVO.getAsset());
-//				stockDetailsVO.setSkuCode(binOutwardDetailsVO.getAssetCode());
-//				stockDetailsVO.setSkuQty(binOutwardDetailsVO.getQty() * -1);
-//				stockDetailsVO.setStatus("S");
-//				stockDetailsVO.setScreen("Bin Outward");
-//				stockDetailsVO.setSCode(savedBinOutwardVO.getScode());
-//				stockDetailsVO.setPm("M");
-//				stockDetailsVO.setStockSource("");
-//				stockDetailsVO.setBinLocation("");
-//				stockDetailsVO.setCancelRemarks("");
-//				stockDetailsVO.setStockLocation("");
-//				stockDetailsVO.setSourceId(binOutwardDetailsVO.getId());
-//				stockDetailsVO.setFinyr(savedBinOutwardVO.getFinyr());
-//				assetStockDetailsRepo.save(stockDetailsVO);
-//			}
-//
-//		for (BinOutwardDetailsVO binOutwardDetailsVO : binOutwardDetailsVOLists) {
-//
-//			AssetStockDetailsVO stockDetailsVO = new AssetStockDetailsVO();
-//			stockDetailsVO.setStockRef(savedBinOutwardVO.getDocId());
-//			stockDetailsVO.setStockBranch(savedBinOutwardVO.getReciever() + "-" + savedBinOutwardVO.getDestination());
-//			stockDetailsVO.setStockDate(savedBinOutwardVO.getDocDate());
-//			stockDetailsVO.setSku(binOutwardDetailsVO.getAsset());
-//			stockDetailsVO.setSkuCode(binOutwardDetailsVO.getAssetCode());
-//			stockDetailsVO.setSkuQty(binOutwardDetailsVO.getQty());
-//			stockDetailsVO.setStatus("M");
-//			stockDetailsVO.setScreen("Bin Outward");
-//			stockDetailsVO.setSCode(savedBinOutwardVO.getScode());
-//			stockDetailsVO.setPm("P");
-//			stockDetailsVO.setStockSource("");
-//			stockDetailsVO.setBinLocation("");
-//			stockDetailsVO.setCancelRemarks("");
-//			stockDetailsVO.setStockLocation("");
-//			stockDetailsVO.setSourceId(binOutwardDetailsVO.getId());
-//			stockDetailsVO.setFinyr(savedBinOutwardVO.getFinyr());
-//			assetStockDetailsRepo.save(stockDetailsVO);
-//		}
-		return binOutwardVO;
-	}
-
+	
 
 
 	@Override

@@ -31,6 +31,7 @@ import com.whydigit.efit.common.UserConstants;
 import com.whydigit.efit.dto.AssetInwardDTO;
 import com.whydigit.efit.dto.AssetTaggingDTO;
 import com.whydigit.efit.dto.BinInwardDTO;
+import com.whydigit.efit.dto.BinOutwardDTO;
 import com.whydigit.efit.dto.CnoteDTO;
 import com.whydigit.efit.dto.CustomerAttachmentType;
 import com.whydigit.efit.dto.CustomersDTO;
@@ -52,6 +53,7 @@ import com.whydigit.efit.entity.AssetInwardVO;
 import com.whydigit.efit.entity.AssetTaggingVO;
 import com.whydigit.efit.entity.AssetVO;
 import com.whydigit.efit.entity.BinInwardVO;
+import com.whydigit.efit.entity.BinOutwardVO;
 import com.whydigit.efit.entity.CnoteVO;
 import com.whydigit.efit.entity.CustomersAddressVO;
 import com.whydigit.efit.entity.CustomersVO;
@@ -2610,6 +2612,31 @@ public class MasterController extends BaseController {
 		} else {
 			errorMsg = "BinInward not found for DocId: " + docid;
 			responseDTO = createServiceResponseError(responseObjectsMap, "BinInward not found", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+	
+	@PostMapping("/binOutward")
+	public ResponseEntity<ResponseDTO> createBinOutward(@RequestBody BinOutwardDTO binOutwardDTO) {
+		String methodName = "createBinOutward()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		BinOutwardVO binOutwardVO = new BinOutwardVO();
+		try {
+			binOutwardVO = masterService.createBinOutward(binOutwardDTO);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(CommonConstant.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Bin Outward Created Successfully");
+			responseObjectsMap.put("binOutwardVO", binOutwardVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "Bin Outward Failed", errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
