@@ -63,7 +63,6 @@ public class BinOutwardVO {
 	private String scode = "BNOUT";
 	@Builder.Default
 	private String screen = "BIN OUTWARD";
-	private String sourceId;
 	@Column(name="emitterid")
 	private Long emitterId;
 	private String destination;
