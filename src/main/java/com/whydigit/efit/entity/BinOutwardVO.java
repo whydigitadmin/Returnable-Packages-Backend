@@ -22,7 +22,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Builder
 @Entity
 @Table(name = "binoutward")
 @Data
@@ -59,10 +58,7 @@ public class BinOutwardVO {
 	private Long orgId;
 	@Column(name = "finyr")
 	private String finyr;
-	@Builder.Default
 	private String scode = "BNOUT";
-	@Builder.Default
-	private String screen = "BIN OUTWARD";
 	@Column(name="emitterid")
 	private Long emitterId;
 	private String destination;

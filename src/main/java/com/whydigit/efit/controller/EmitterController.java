@@ -854,30 +854,7 @@ public class EmitterController extends BaseController {
 
 	// Bin Outward
 
-	@PostMapping("/binOutward")
-	public ResponseEntity<ResponseDTO> createBinOutward(@RequestBody BinOutwardDTO binOutwardDTO) {
-		String methodName = "createBinOutward()";
-		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
-		String errorMsg = null;
-		Map<String, Object> responseObjectsMap = new HashMap<>();
-		ResponseDTO responseDTO = null;
-		BinOutwardVO binOutwardVO = new BinOutwardVO();
-		try {
-			binOutwardVO = emitterService.createBinOutward(binOutwardDTO);
-		} catch (Exception e) {
-			errorMsg = e.getMessage();
-			LOGGER.error(CommonConstant.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-		}
-		if (StringUtils.isBlank(errorMsg)) {
-			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Bin Outward Created Successfully");
-			responseObjectsMap.put("binOutwardVO", binOutwardVO);
-			responseDTO = createServiceResponse(responseObjectsMap);
-		} else {
-			responseDTO = createServiceResponseError(responseObjectsMap, "Bin Outward Failed", errorMsg);
-		}
-		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
-		return ResponseEntity.ok().body(responseDTO);
-	}
+	
 
 	@GetMapping("/getTaggingDetailsByTagCode")
 	public ResponseEntity<ResponseDTO> getTaggingDetailsByTagCode(@RequestParam String tagCode) {

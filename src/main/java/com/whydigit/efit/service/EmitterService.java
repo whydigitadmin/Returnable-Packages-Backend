@@ -94,7 +94,7 @@ public interface EmitterService {
 	BinAllotmentNewVO createBinAllotment(BinAllotmentDTO allotmentDTO);
 
 	Set<Object[]> getReqDetailsByOrgId(Long orgId, String reqNo);
-	
+
 	Optional<AssetTaggingDetailsVO> getTaggingDetailsByRfId(String rfId);
 
 	Optional<AssetTaggingDetailsVO> getTaggingDetailsByTagCode(String tagCode);
@@ -102,8 +102,7 @@ public interface EmitterService {
 	List<BinAllotmentNewVO> getAllBinAllotment(Long orgId);
 
 	// Bin Outward
-	BinOutwardVO createBinOutward(BinOutwardDTO binOutwardDTO);
-
+	
 
 	List<BinAllotmentNewVO> getAllAllotmentById(String docId);
 
@@ -111,12 +110,13 @@ public interface EmitterService {
 
 	Set<Object[]> getIssueRequestreportByOrgId(Long orgId);
 
+
 	String uploadPodFilePath(MultipartFile file, String allotNo);
+
 
 	String getDocIdByBinallotment();
 
 //	String getDocIdByBinOutward();
 
-	
 
 }

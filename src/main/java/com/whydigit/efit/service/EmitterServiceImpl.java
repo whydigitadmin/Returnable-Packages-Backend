@@ -159,8 +159,10 @@ public class EmitterServiceImpl implements EmitterService {
 	@Autowired
 	AssetStockDetailsRepo assetStockDetailsRepo;
 
+
 	@Autowired
 	BinOutwardRepo binOutwardRepo;
+
 
 	@Autowired
 	BinInwardRepo binInwardRepo;
@@ -807,7 +809,8 @@ public class EmitterServiceImpl implements EmitterService {
 		return taggingDetailsRepo.findByTagCode(tagCode);
 	}
 
-	// Bin Outward
+	
+
 
 	@Override
 	public BinOutwardVO createBinOutward(BinOutwardDTO binOutwardDTO) {
@@ -909,6 +912,7 @@ public class EmitterServiceImpl implements EmitterService {
 //		return binOutwardVO;
 //	}
 
+
 	@Override
 	public List<BinAllotmentNewVO> getAllAllotmentById(String docId) {
 		List<BinAllotmentNewVO> binAllotmentNewVO = new ArrayList<>();
@@ -932,6 +936,7 @@ public class EmitterServiceImpl implements EmitterService {
 		// TODO Auto-generated method stub
 		return issueRequestRepo.getIssueRequestByOrgId(orgId);
 	}
+
 
 	@Value("${proofOfDelivery.upload.dir}")
 	private String UPLOAD_DIR;
@@ -992,6 +997,7 @@ public class EmitterServiceImpl implements EmitterService {
 		return vo;
 	}
 
+
 	@Override
 	public String getDocIdByBinallotment() {
 		int finyr = binAllotmentNewRepo.getFinyr();
@@ -1007,3 +1013,4 @@ public class EmitterServiceImpl implements EmitterService {
 //	}
 
 }
+

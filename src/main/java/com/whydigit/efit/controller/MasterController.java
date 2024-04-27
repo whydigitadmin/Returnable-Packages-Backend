@@ -31,6 +31,7 @@ import com.whydigit.efit.common.UserConstants;
 import com.whydigit.efit.dto.AssetInwardDTO;
 import com.whydigit.efit.dto.AssetTaggingDTO;
 import com.whydigit.efit.dto.BinInwardDTO;
+import com.whydigit.efit.dto.BinOutwardDTO;
 import com.whydigit.efit.dto.CnoteDTO;
 import com.whydigit.efit.dto.CustomerAttachmentType;
 import com.whydigit.efit.dto.CustomersDTO;
@@ -52,6 +53,7 @@ import com.whydigit.efit.entity.AssetInwardVO;
 import com.whydigit.efit.entity.AssetTaggingVO;
 import com.whydigit.efit.entity.AssetVO;
 import com.whydigit.efit.entity.BinInwardVO;
+import com.whydigit.efit.entity.BinOutwardVO;
 import com.whydigit.efit.entity.CnoteVO;
 import com.whydigit.efit.entity.CustomersAddressVO;
 import com.whydigit.efit.entity.CustomersVO;
@@ -2507,7 +2509,7 @@ public class MasterController extends BaseController {
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
-		List<BinInwardVO> binInwardVO= new ArrayList<>();
+		Set<Object[]> binInwardVO= new HashSet<>();
 		try {
 			binInwardVO = masterService.getAlllBinInwardByEmitterAndOrgId(emitterid,orgId);
 		} catch (Exception e) {
@@ -2515,8 +2517,9 @@ public class MasterController extends BaseController {
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
 		}
 		if (StringUtils.isEmpty(errorMsg)) {
+			List<Map<String, String>>binInwardVos=getAllBinInward(binInwardVO);
 			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "BinInward founded");
-			responseObjectsMap.put("binInwardVO", binInwardVO);
+			responseObjectsMap.put("binInwardVO", binInwardVos);
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} else {
 			errorMsg = "BinInward not found";
@@ -2526,6 +2529,24 @@ public class MasterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 	
+	private List<Map<String, String>> getAllBinInward(Set<Object[]> binInwardVO) {
+		List<Map<String, String>>binInwardVos =new ArrayList<>();
+		for(Object[] bininward:binInwardVO)
+		{
+			Map<String, String>bininwards= new HashMap<>();
+			bininwards.put("docid", bininward[0] != null ? bininward[0].toString() : "");
+			bininwards.put("docDate", bininward[1] != null ? bininward[1].toString() : "");
+			bininwards.put("allotmentNo", bininward[2] != null ? bininward[2].toString() : "");
+			bininwards.put("allotDate", bininward[3] != null ? bininward[3].toString() : "");
+			bininwards.put("flow", bininward[4] != null ? bininward[4].toString() : "");
+			bininwards.put("kitCode", bininward[5] != null ? bininward[5].toString() : "");
+			bininwards.put("reqKitQty", bininward[6] != null ? bininward[6].toString() : "");
+			bininwards.put("allotedQty", bininward[6] != null ? bininward[6].toString() : "");
+			binInwardVos.add(bininwards);	
+		}
+		return binInwardVos;
+	}
+
 	@GetMapping("/getBinInwardById")
 	public ResponseEntity<ResponseDTO> getBinInwardById(@RequestParam Long id) {
 		String methodName = "getBinInwardById()";
@@ -2622,5 +2643,57 @@ public class MasterController extends BaseController {
 			allotDetails.add(part);
 		}
 		return allotDetails;
+	}
+	
+
+	@GetMapping("/getAllBinInwardByDocid")
+	public ResponseEntity<ResponseDTO> getAllBinInwardByDocid(@RequestParam String docid) {
+		String methodName = "getAllBinInwardByDocid()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		BinInwardVO binInwardVO=null;
+		try {
+			binInwardVO = masterService.getBinInwardByDocid(docid).orElse(null);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "BinInward found by DocId");
+			responseObjectsMap.put("binInwardVO", binInwardVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			errorMsg = "BinInward not found for DocId: " + docid;
+			responseDTO = createServiceResponseError(responseObjectsMap, "BinInward not found", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+	
+	@PostMapping("/binOutward")
+	public ResponseEntity<ResponseDTO> createBinOutward(@RequestBody BinOutwardDTO binOutwardDTO) {
+		String methodName = "createBinOutward()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		BinOutwardVO binOutwardVO = new BinOutwardVO();
+		try {
+			binOutwardVO = masterService.createBinOutward(binOutwardDTO);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(CommonConstant.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Bin Outward Created Successfully");
+			responseObjectsMap.put("binOutwardVO", binOutwardVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "Bin Outward Failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
 	}
 }
