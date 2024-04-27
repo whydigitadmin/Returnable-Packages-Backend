@@ -1905,4 +1905,11 @@ public class MasterServiceImpl implements MasterService {
 		return binAllotmentNewRepo.getWaitingforBinInwardDetailsByEmitterAndOrgId(orgId, emitterid);
 	}
 
-}
+	@Override
+	public Optional<BinInwardVO> getBinInwardByDocid(String docid) {
+		if (binInwardRepo.existsByDocid(docid)) {
+			return binInwardRepo.findAllByDocid(docid);
+		} else {
+			throw new NoSuchElementException("Bin Inward with DocId " + docid + " does not exist");
+		}
+	}}

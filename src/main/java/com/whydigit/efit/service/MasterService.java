@@ -264,6 +264,8 @@ public interface MasterService {
 	
 	Optional<BinInwardVO> getBinInwardById(Long id);
 	
+	Optional<BinInwardVO> getBinInwardByDocid(String docid);
+	
 	Set<Object[]> getAllotmentAssetDetailsByAllotmentNoAndOrgId(Long orgId, String docid);
 	
 	Set<Object[]>getWaitingInwardDetailsByEmitterIdandOrgId(Long orgId,Long emitterid);

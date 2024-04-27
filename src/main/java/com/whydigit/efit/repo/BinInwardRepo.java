@@ -1,6 +1,7 @@
 package com.whydigit.efit.repo;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -24,5 +25,10 @@ public interface BinInwardRepo extends JpaRepository<BinInwardVO, Long>{
 
 	@Query(nativeQuery = true, value ="select docid,docdate,allotmentno,allotdate,flow,kitcode,reqkitqty,allotedqty from bininward where orgid=?2 and emitterid=?1")
 	Set<Object[]> findAllByEmitterIdAndOrgId(Long emitterid, Long orgId);
+
+	boolean existsByDocid(String docid);
+
+	
+	Optional<BinInwardVO> findAllByDocid(String docid);
 
 }
