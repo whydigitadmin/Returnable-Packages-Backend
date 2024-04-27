@@ -66,7 +66,6 @@ import com.whydigit.efit.entity.KitVO;
 import com.whydigit.efit.entity.MaxPartQtyPerKitVO;
 import com.whydigit.efit.entity.OutwardKitDetailsVO;
 import com.whydigit.efit.entity.OutwardView;
-import com.whydigit.efit.entity.ProofOfDeliveryVO;
 import com.whydigit.efit.entity.ReturnStockVO;
 import com.whydigit.efit.entity.VwEmitterInwardVO;
 import com.whydigit.efit.exception.ApplicationException;
@@ -845,52 +844,51 @@ public class EmitterServiceImpl implements EmitterService {
 		binOutwardVO.setBinOutwardDetails(binOutwardDetailsVO1);
 
 		BinOutwardVO savedBinOutwardVO = binOutwardRepo.save(binOutwardVO);
-		List<BinOutwardDetailsVO> binOutwardDetailsVOLists = savedBinOutwardVO.getBinOutwardDetails();
-		if (binOutwardDetailsVOLists != null && !binOutwardDetailsVOLists.isEmpty())
-			for (BinOutwardDetailsVO binOutwardDetailsVO : binOutwardDetailsVOLists) {
-
-				AssetStockDetailsVO stockDetailsVO = new AssetStockDetailsVO();
-				stockDetailsVO.setStockRef(savedBinOutwardVO.getDocId());
-				stockDetailsVO.setStockBranch(savedBinOutwardVO.getEmitter() + "-" + savedBinOutwardVO.getOrgin());
-				stockDetailsVO.setStockDate(savedBinOutwardVO.getDocDate());
-				stockDetailsVO.setSku(binOutwardDetailsVO.getAsset());
-				stockDetailsVO.setSkuCode(binOutwardDetailsVO.getAssetCode());
-				stockDetailsVO.setSkuQty(binOutwardDetailsVO.getQty() * -1);
-				stockDetailsVO.setStatus("S");
-				stockDetailsVO.setScreen("Bin Outward");
-				;
-				stockDetailsVO.setSCode(savedBinOutwardVO.getScode());
-				stockDetailsVO.setPm("M");
-				stockDetailsVO.setStockSource("");
-				stockDetailsVO.setBinLocation("");
-				stockDetailsVO.setCancelRemarks("");
-				stockDetailsVO.setStockLocation("");
-				stockDetailsVO.setSourceId(binOutwardDetailsVO.getId());
-				stockDetailsVO.setFinyr(savedBinOutwardVO.getFinyr());
-				assetStockDetailsRepo.save(stockDetailsVO);
-			}
-
-		for (BinOutwardDetailsVO binOutwardDetailsVO : binOutwardDetailsVOLists) {
-
-			AssetStockDetailsVO stockDetailsVO = new AssetStockDetailsVO();
-			stockDetailsVO.setStockRef(savedBinOutwardVO.getDocId());
-			stockDetailsVO.setStockBranch(savedBinOutwardVO.getReciever() + "-" + savedBinOutwardVO.getDestination());
-			stockDetailsVO.setStockDate(savedBinOutwardVO.getDocDate());
-			stockDetailsVO.setSku(binOutwardDetailsVO.getAsset());
-			stockDetailsVO.setSkuCode(binOutwardDetailsVO.getAssetCode());
-			stockDetailsVO.setSkuQty(binOutwardDetailsVO.getQty());
-			stockDetailsVO.setStatus("M");
-			stockDetailsVO.setScreen("Bin Outward");
-			stockDetailsVO.setSCode(savedBinOutwardVO.getScode());
-			stockDetailsVO.setPm("P");
-			stockDetailsVO.setStockSource("");
-			stockDetailsVO.setBinLocation("");
-			stockDetailsVO.setCancelRemarks("");
-			stockDetailsVO.setStockLocation("");
-			stockDetailsVO.setSourceId(binOutwardDetailsVO.getId());
-			stockDetailsVO.setFinyr(savedBinOutwardVO.getFinyr());
-			assetStockDetailsRepo.save(stockDetailsVO);
-		}
+//		List<BinOutwardDetailsVO> binOutwardDetailsVOLists = savedBinOutwardVO.getBinOutwardDetails();
+//		if (binOutwardDetailsVOLists != null && !binOutwardDetailsVOLists.isEmpty())
+//			for (BinOutwardDetailsVO binOutwardDetailsVO : binOutwardDetailsVOLists) {
+//
+//				AssetStockDetailsVO stockDetailsVO = new AssetStockDetailsVO();
+//				stockDetailsVO.setStockRef(savedBinOutwardVO.getDocId());
+//				stockDetailsVO.setStockBranch(savedBinOutwardVO.getEmitter() + "-" + savedBinOutwardVO.getOrgin());
+//				stockDetailsVO.setStockDate(savedBinOutwardVO.getDocDate());
+//				stockDetailsVO.setSku(binOutwardDetailsVO.getAsset());
+//				stockDetailsVO.setSkuCode(binOutwardDetailsVO.getAssetCode());
+//				stockDetailsVO.setSkuQty(binOutwardDetailsVO.getQty() * -1);
+//				stockDetailsVO.setStatus("S");
+//				stockDetailsVO.setScreen("Bin Outward");
+//				stockDetailsVO.setSCode(savedBinOutwardVO.getScode());
+//				stockDetailsVO.setPm("M");
+//				stockDetailsVO.setStockSource("");
+//				stockDetailsVO.setBinLocation("");
+//				stockDetailsVO.setCancelRemarks("");
+//				stockDetailsVO.setStockLocation("");
+//				stockDetailsVO.setSourceId(binOutwardDetailsVO.getId());
+//				stockDetailsVO.setFinyr(savedBinOutwardVO.getFinyr());
+//				assetStockDetailsRepo.save(stockDetailsVO);
+//			}
+//
+//		for (BinOutwardDetailsVO binOutwardDetailsVO : binOutwardDetailsVOLists) {
+//
+//			AssetStockDetailsVO stockDetailsVO = new AssetStockDetailsVO();
+//			stockDetailsVO.setStockRef(savedBinOutwardVO.getDocId());
+//			stockDetailsVO.setStockBranch(savedBinOutwardVO.getReciever() + "-" + savedBinOutwardVO.getDestination());
+//			stockDetailsVO.setStockDate(savedBinOutwardVO.getDocDate());
+//			stockDetailsVO.setSku(binOutwardDetailsVO.getAsset());
+//			stockDetailsVO.setSkuCode(binOutwardDetailsVO.getAssetCode());
+//			stockDetailsVO.setSkuQty(binOutwardDetailsVO.getQty());
+//			stockDetailsVO.setStatus("M");
+//			stockDetailsVO.setScreen("Bin Outward");
+//			stockDetailsVO.setSCode(savedBinOutwardVO.getScode());
+//			stockDetailsVO.setPm("P");
+//			stockDetailsVO.setStockSource("");
+//			stockDetailsVO.setBinLocation("");
+//			stockDetailsVO.setCancelRemarks("");
+//			stockDetailsVO.setStockLocation("");
+//			stockDetailsVO.setSourceId(binOutwardDetailsVO.getId());
+//			stockDetailsVO.setFinyr(savedBinOutwardVO.getFinyr());
+//			assetStockDetailsRepo.save(stockDetailsVO);
+//		}
 		return binOutwardVO;
 	}
 
