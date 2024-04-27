@@ -40,8 +40,6 @@ public class BinInwardDetailsVO {
 	private int allotQty;
 	@Column(name = "recqty", length = 25)
 	private int recQty;
-	@Column(name = "returnqty", length = 25)
-	private int returnQty;
 	@Column(name = "rfid", length = 100)
 	private String rfId;              
 	

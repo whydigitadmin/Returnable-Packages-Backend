@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.whydigit.efit.dto.BinAllotmentDTO;
 import com.whydigit.efit.dto.BinOutwardDTO;
@@ -23,8 +24,6 @@ import com.whydigit.efit.entity.EmitterInwardVO;
 import com.whydigit.efit.entity.EmitterOutwardVO;
 import com.whydigit.efit.entity.InwardVO;
 import com.whydigit.efit.entity.IssueRequestVO;
-import com.whydigit.efit.entity.KitAssetVO;
-import com.whydigit.efit.entity.LocalCurrencyVO;
 import com.whydigit.efit.entity.OutwardKitDetailsVO;
 import com.whydigit.efit.entity.OutwardView;
 import com.whydigit.efit.entity.VwEmitterInwardVO;
@@ -110,5 +109,9 @@ public interface EmitterService {
 	Set<Object[]> getkitAssetDetailsByKitId(String kitCode, int quantity);
 
 	Set<Object[]> getIssueRequestreportByOrgId(Long orgId);
+
+
+	String uploadPodFilePath(MultipartFile file, String allotNo);
+
 
 }

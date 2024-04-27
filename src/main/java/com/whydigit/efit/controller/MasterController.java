@@ -2479,7 +2479,7 @@ public class MasterController extends BaseController {
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
-		List<BinInwardVO> binInwardVO= new ArrayList<>();
+		Set<Object[]> binInwardVO= new HashSet<>();
 		try {
 			binInwardVO = masterService.getAlllBinInwardByEmitterAndOrgId(emitterid,orgId);
 		} catch (Exception e) {
@@ -2487,8 +2487,9 @@ public class MasterController extends BaseController {
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
 		}
 		if (StringUtils.isEmpty(errorMsg)) {
+			List<Map<String, String>>binInwardVos=getAllBinInward(binInwardVO);
 			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "BinInward founded");
-			responseObjectsMap.put("binInwardVO", binInwardVO);
+			responseObjectsMap.put("binInwardVO", binInwardVos);
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} else {
 			errorMsg = "BinInward not found";
@@ -2498,6 +2499,24 @@ public class MasterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 	
+	private List<Map<String, String>> getAllBinInward(Set<Object[]> binInwardVO) {
+		List<Map<String, String>>binInwardVos =new ArrayList<>();
+		for(Object[] bininward:binInwardVO)
+		{
+			Map<String, String>bininwards= new HashMap<>();
+			bininwards.put("docid", bininward[0] != null ? bininward[0].toString() : "");
+			bininwards.put("docDate", bininward[1] != null ? bininward[1].toString() : "");
+			bininwards.put("allotmentNo", bininward[2] != null ? bininward[2].toString() : "");
+			bininwards.put("allotDate", bininward[3] != null ? bininward[3].toString() : "");
+			bininwards.put("flow", bininward[4] != null ? bininward[4].toString() : "");
+			bininwards.put("kitCode", bininward[5] != null ? bininward[5].toString() : "");
+			bininwards.put("reqKitQty", bininward[6] != null ? bininward[6].toString() : "");
+			bininwards.put("allotedQty", bininward[6] != null ? bininward[6].toString() : "");
+			binInwardVos.add(bininwards);	
+		}
+		return binInwardVos;
+	}
+
 	@GetMapping("/getBinInwardById")
 	public ResponseEntity<ResponseDTO> getBinInwardById(@RequestParam Long id) {
 		String methodName = "getBinInwardById()";

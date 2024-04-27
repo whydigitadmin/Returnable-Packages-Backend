@@ -260,7 +260,7 @@ public interface MasterService {
 
 	BinInwardVO updateCreateBinInward(BinInwardDTO binInwardDTO) throws ApplicationException;
 	
-	List<BinInwardVO>getAlllBinInwardByEmitterAndOrgId(Long emitterid,Long orgId);
+	Set<Object[]> getAlllBinInwardByEmitterAndOrgId(Long emitterid,Long orgId);
 	
 	Optional<BinInwardVO> getBinInwardById(Long id);
 	

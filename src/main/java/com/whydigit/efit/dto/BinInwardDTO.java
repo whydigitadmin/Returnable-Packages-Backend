@@ -37,6 +37,10 @@ public class BinInwardDTO {
 	
 	private int reqKitQty;
 	
+	private int returnQty;
+	
+	private String returnRemarks;
+	
 	private List<BinInwardDetailsDTO> binInwardDetailsDTO;
 
 	

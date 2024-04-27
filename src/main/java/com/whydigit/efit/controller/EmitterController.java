@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.whydigit.efit.common.CommonConstant;
 import com.whydigit.efit.common.EmitterConstant;
@@ -43,7 +44,6 @@ import com.whydigit.efit.entity.EmitterInwardVO;
 import com.whydigit.efit.entity.EmitterOutwardVO;
 import com.whydigit.efit.entity.InwardVO;
 import com.whydigit.efit.entity.IssueRequestVO;
-import com.whydigit.efit.entity.KitAssetVO;
 import com.whydigit.efit.entity.OutwardKitDetailsVO;
 import com.whydigit.efit.entity.OutwardView;
 import com.whydigit.efit.entity.VwEmitterInwardVO;
@@ -114,36 +114,6 @@ public class EmitterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
-//	// get Bin Allotment
-//	@GetMapping("/getBinRequest")
-//	public ResponseEntity<ResponseDTO> getBinRequest(@RequestParam(required = false) Long emitterId,
-//			@RequestParam(required = false) Long orgId, @RequestParam(required = false) String warehouseLocation,
-//			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-//			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
-//			@RequestParam(required = false) Long warehouseLoacationId) {
-//		String methodName = "getBinRequest()";
-//		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
-//		String errorMsg = null;
-//		Map<String, Object> responseObjectsMap = new HashMap<>();
-//		ResponseDTO responseDTO = null;
-//		List<BinAllotmentVO> issueRequestVO = new ArrayList<>();
-//		try {
-//			issueRequestVO = emitterService.getBinRequest(emitterId, warehouseLocation,orgId, startDate, endDate,warehouseLoacationId);
-//		} catch (Exception e) {
-//			errorMsg = e.getMessage();
-//			LOGGER.error(CommonConstant.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-//		}
-//		if (StringUtils.isBlank(errorMsg)) {
-//			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, EmitterConstant.ISSUE_REQUEST_SUCCESS_MESSAGE);
-//			responseObjectsMap.put(EmitterConstant.ISSUE_REQUEST_VO, issueRequestVO);
-//			responseDTO = createServiceResponse(responseObjectsMap);
-//		} else {
-//			responseDTO = createServiceResponseError(responseObjectsMap,
-//					EmitterConstant.ISSUE_REQUEST_REGISTERED_FAILED_MESSAGE, errorMsg);
-//		}
-//		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
-//		return ResponseEntity.ok().body(responseDTO);
-//	}
 
 	@GetMapping("/cancelIssueRequest")
 	public ResponseEntity<ResponseDTO> CancelIssueRequest(@RequestParam(required = false) Long issueRequestId,
@@ -993,6 +963,30 @@ public class EmitterController extends BaseController {
 			getIssueReport.add(issue);
 		}
 		return getIssueReport;
+	}
+	
+	@PostMapping("/uploadPodFilePath")
+	public ResponseEntity<ResponseDTO> uploadPodFilePath(@RequestParam("file") MultipartFile file,
+			@RequestParam String allotNo) {
+		String methodName = "uploadPodFilePath()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		try {
+			String result = emitterService.uploadPodFilePath(file, allotNo);
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Pod File upload successfully");
+			responseObjectsMap.put("EmitterInwardVO", result);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} catch (Exception e) {
+
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "Pod File upload failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+
 	}
 	
 }

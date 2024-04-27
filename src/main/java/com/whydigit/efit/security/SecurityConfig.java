@@ -64,7 +64,7 @@ public class SecurityConfig {
 						"/api/basicMaster/state/{id}", "/api/master/Services", "/api/basicMaster/state/Country",
 						"/api/basicMaster/city/getByStateAndCountry", "/api/emitter/proofOfDelivery",
 						"/api/emitter/getAllProofOfDelivery", "/api/emitter/binAllotment", "/api/company/branch",
-						"/api/company/getBranchById", "/api/emitter/getTaggingDetailsByRfId",
+						"/api/company/getBranchById", "/api/emitter/getTaggingDetailsByRfId","api/emitter/uploadPodFilePath",
 						"/api/emitter/getTaggingDetailsByTagCode", "/api/master/getAvalkitqtyByBranch",
 						"/api/master/updateCreateBinInward", "/api/master/getAllotmentDetailsByOrgIdAndDocid",
 						"/api/master/getAllotmentNo","/api/master/getAllotmentAssetDetailsByOrgIdAndDocid","/api/master/getAllBinInwardById","/api/oem/*",

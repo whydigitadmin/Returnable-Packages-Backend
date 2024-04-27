@@ -1695,6 +1695,9 @@ public class MasterServiceImpl implements MasterService {
 		}
 	}
 
+	
+	
+	
 	private String getFileExtension(String fileName) {
 		if (fileName != null && fileName.contains(".")) {
 			return fileName.substring(fileName.lastIndexOf("."));
@@ -1772,7 +1775,6 @@ public class MasterServiceImpl implements MasterService {
 				binInwardDetails.setAsset(binInwardDetailsDTO.getAsset());
 				binInwardDetails.setAssetCode(binInwardDetailsDTO.getAssetCode());
 				binInwardDetails.setRecQty(binInwardDetailsDTO.getRecQty());
-				binInwardDetails.setReturnQty(binInwardDetailsDTO.getReturnQty());
 				binInwardDetails.setTagCode(binInwardDetailsDTO.getTagCode());
 				binInwardDetails.setBinInwardVO(binInwardVO);
 				binInwardDetails.setRfId(assetTaggingDetailsRepo.findRfIdByTagCode(binInwardDetailsDTO.getTagCode()));
@@ -1790,7 +1792,7 @@ public class MasterServiceImpl implements MasterService {
 
 			for (BinInwardDetailsVO binInwardDetails : savedBinInwardDetailsVO) {
 				
-				String flow= issueRequestRepo.getFlowIdByrequestId(savedBinInwardVO.getReqNo());
+				Long flow= issueRequestRepo.getFlowIdByrequestId(savedBinInwardVO.getReqNo());
 				String emitter=flowRepo.findEmiterbyFlowId(flow);
 				String orgin=flowRepo.findOrigionbyFlowId(flow);
 						
@@ -1819,7 +1821,7 @@ public class MasterServiceImpl implements MasterService {
 			
 			for (BinInwardDetailsVO binInwardDetails : savedBinInwardDetailsVO) {
 				
-				String flow=issueRequestRepo.getFlowIdByrequestId(binInwardDTO.getReqNo());
+				Long flow=issueRequestRepo.getFlowIdByrequestId(binInwardDTO.getReqNo());
 				String emitter=flowRepo.findEmiterbyFlowId(flow);
 				String orgin=flowRepo.findOrigionbyFlowId(flow);
 				
@@ -1866,6 +1868,8 @@ public class MasterServiceImpl implements MasterService {
 		binInwardVO.setReqKitQty(binInwardDTO.getReqKitQty());
 		binInwardVO.setKitCode(binInwardDTO.getKitCode());
 		binInwardVO.setAllotedQty(binInwardDTO.getAllotedQty());
+		binInwardVO.setReturnQty(binInwardDTO.getReturnQty());
+		binInwardVO.setReturnRemarks(binInwardDTO.getReturnRemarks());
 
 	}
 
@@ -1876,7 +1880,7 @@ public class MasterServiceImpl implements MasterService {
 	}
 
 	@Override
-	public List<BinInwardVO> getAlllBinInwardByEmitterAndOrgId(Long emitterid, Long orgId) {
+	public Set<Object[]> getAlllBinInwardByEmitterAndOrgId(Long emitterid, Long orgId) {
 
 		return binInwardRepo.findAllByEmitterIdAndOrgId(emitterid, orgId);
 	}
@@ -1895,10 +1899,7 @@ public class MasterServiceImpl implements MasterService {
 	public Set<Object[]> getFlowDetailsByFlowId(Long flowId) {
 		    
 		return flowRepo.getFlowDetails(flowId);
-	}
-	
-
-	@Override
+	}@Override
 	public Set<Object[]> getWaitingInwardDetailsByEmitterIdandOrgId(Long orgId, Long emitterid) {
 
 		return binAllotmentNewRepo.getWaitingforBinInwardDetailsByEmitterAndOrgId(orgId, emitterid);
