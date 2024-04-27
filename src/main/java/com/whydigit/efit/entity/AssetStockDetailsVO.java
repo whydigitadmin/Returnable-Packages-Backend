@@ -39,7 +39,7 @@ public class AssetStockDetailsVO {
 	private String modifiedBy;
 	@Column(name="scode",length=5)
 	private String sCode="";
-	@Column(name="stockbranch",length=100)
+	@Column(name="stockbranch",length=250)
 	private String stockBranch;
 	@Column(name="stocklocation",length=40)
 	private String stockLocation;
