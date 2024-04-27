@@ -1336,7 +1336,11 @@ public class MasterServiceImpl implements MasterService {
 	public AssetTaggingVO createTagging(AssetTaggingDTO assetTaggingDTO) {
 
 		AssetTaggingVO assetTaggingVO = new AssetTaggingVO();
-		assetTaggingVO.setDocid(assetTaggingDTO.getDocId());
+		
+		int finyr = assetTaggingRepo.getFinyr();
+		String assetTagging = finyr + "AT" + assetTaggingRepo.findocid();
+		assetTaggingVO.setDocid(assetTagging);
+		assetTaggingRepo.nextDocid();
 		assetTaggingVO.setDocDate(assetTaggingDTO.getDocDate());
 		assetTaggingVO.setCancel(false);
 		assetTaggingVO.setCreatedBy(assetTaggingDTO.getCreatedBy());
@@ -1913,12 +1917,12 @@ public class MasterServiceImpl implements MasterService {
 	}
 
 
-//	@Override
-//	public String getDocIdByAssetTagging() {
-//		int finyr = assetTaggingRepo.getFinyr();
-//		String assetTagging = finyr + "AT" + assetTaggingRepo.finddocid();
-//		return assetTagging;
-//	}
+	@Override
+	public String getDocIdByAssetTagging() {
+		int finyr = assetTaggingRepo.getFinyr();
+		String assetTagging = finyr + "AT" + assetTaggingRepo.findocid();
+		return assetTagging;
+	}
 
 	@Override
 	public String getDocIdByBinInward() {

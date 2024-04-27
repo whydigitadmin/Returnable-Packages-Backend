@@ -116,7 +116,7 @@ public interface EmitterService {
 
 	String getDocIdByBinallotment();
 
-//	String getDocIdByBinOutward();
+	String getDocIdByBinOutward();
 
 
 }
