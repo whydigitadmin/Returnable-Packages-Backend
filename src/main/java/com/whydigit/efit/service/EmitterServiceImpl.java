@@ -1,5 +1,9 @@
 package com.whydigit.efit.service;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -23,8 +27,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.whydigit.efit.common.EmitterConstant;
 import com.whydigit.efit.dto.BinAllotmentDTO;
@@ -44,6 +50,7 @@ import com.whydigit.efit.entity.AssetStockDetailsVO;
 import com.whydigit.efit.entity.AssetTaggingDetailsVO;
 import com.whydigit.efit.entity.BinAllotmentDetailsVO;
 import com.whydigit.efit.entity.BinAllotmentNewVO;
+import com.whydigit.efit.entity.BinInwardVO;
 import com.whydigit.efit.entity.BinOutwardDetailsVO;
 import com.whydigit.efit.entity.BinOutwardVO;
 import com.whydigit.efit.entity.CustomersVO;
@@ -59,6 +66,7 @@ import com.whydigit.efit.entity.KitVO;
 import com.whydigit.efit.entity.MaxPartQtyPerKitVO;
 import com.whydigit.efit.entity.OutwardKitDetailsVO;
 import com.whydigit.efit.entity.OutwardView;
+import com.whydigit.efit.entity.ProofOfDeliveryVO;
 import com.whydigit.efit.entity.ReturnStockVO;
 import com.whydigit.efit.entity.VwEmitterInwardVO;
 import com.whydigit.efit.exception.ApplicationException;
@@ -67,6 +75,7 @@ import com.whydigit.efit.repo.AssetTaggingDetailsRepo;
 import com.whydigit.efit.repo.BinAllotmentDetailsRepo;
 import com.whydigit.efit.repo.BinAllotmentNewRepo;
 import com.whydigit.efit.repo.BinAllotmentRepo;
+import com.whydigit.efit.repo.BinInwardRepo;
 import com.whydigit.efit.repo.BinOutwardDetailsRepo;
 import com.whydigit.efit.repo.BinOutwardRepo;
 import com.whydigit.efit.repo.CustomersRepo;
@@ -153,6 +162,10 @@ public class EmitterServiceImpl implements EmitterService {
 
 	@Autowired
 	BinOutwardRepo binOutwardRepo;
+	
+	@Autowired
+	BinInwardRepo binInwardRepo;
+	
 
 	@Autowired
 	BinOutwardDetailsRepo binOutwardDetailsRepo;
@@ -737,7 +750,7 @@ public class EmitterServiceImpl implements EmitterService {
 			}
 			for (BinAllotmentDetailsVO allotmentDetailsVO2 : allotmentDetailsVO) {
 
-				String flow = issueRequestRepo.getFlowIdByrequestId(binAllotmentDTO.getBinReqNo());
+				Long flow = issueRequestRepo.getFlowIdByrequestId(binAllotmentDTO.getBinReqNo());
 				String emitter = flowRepo.findEmiterbyFlowId(flow);
 				String orgin = flowRepo.findOrigionbyFlowId(flow);
 
@@ -921,4 +934,69 @@ public class EmitterServiceImpl implements EmitterService {
 		return issueRequestRepo.getIssueRequestByOrgId(orgId);
 	}
 
+//	@Override
+//	public String uploadPodFilePath(MultipartFile file, String allotNo) {
+//		// TODO Auto-generated method stub
+//		return null;
+	//}
+
+	@Value("${proofOfDelivery.upload.dir}")
+	private String UPLOAD_DIR;
+
+	public String uploadPodFilePath(MultipartFile file, String allotNo) {
+		String uploadResult = uploadFile(file, allotNo); // Call uploadFile method with docId and refNo
+		// Create ProofOfDeliveryVO
+		BinInwardVO vo = createBinInwardUpload(allotNo, Paths.get(UPLOAD_DIR));
+		// Here you can do further processing or return both results combined
+		return uploadResult + "\n" + vo.toString(); // Example: Combining both results into a single string
+	}
+
+	public String uploadFile(MultipartFile file, String allotNo) {
+		try {
+
+			// Get the original file name
+			String originalFileName = file.getOriginalFilename();
+			// Extract the original file extension
+			String fileExtension = getFileExtension(originalFileName);
+			// Customize the filename
+			String customizedFileName = getCustomizedFileName(allotNo) + fileExtension;
+			// Create the directory if it doesn't exist
+			File directory = new File(UPLOAD_DIR);
+			if (!directory.exists()) {
+				directory.mkdirs();
+			}
+			// Save the file to the upload directory with the customized filename
+			Path filePath = Paths.get(UPLOAD_DIR, customizedFileName);
+			file.transferTo(filePath);
+			System.out.println(filePath);
+			// Create ProofOfDeliveryVO and set uploadReceipt
+			BinInwardVO vo = createBinInwardUpload(allotNo, Paths.get(UPLOAD_DIR));
+			vo.setPodFileUploadPath(filePath.toString());
+			binInwardRepo.save(vo);
+			return filePath.toString();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return "Failed to upload file: " + e.getMessage();
+		}
+	}
+
+	private String getFileExtension(String fileName) {
+		if (fileName != null && fileName.contains(".")) {
+			return fileName.substring(fileName.lastIndexOf("."));
+		}
+		return "";
+	}
+
+	private String getCustomizedFileName(String allotNo) {
+		return allotNo;
+	}
+
+	private BinInwardVO createBinInwardUpload(String allotNo, Path filePath) {
+		BinInwardVO vo = new BinInwardVO();
+		// Set other attributes as needed
+		vo.setAllotmentNo(allotNo);
+		vo.setPodFileUploadPath(filePath.toString());
+		return vo;
+	}
+	
 }

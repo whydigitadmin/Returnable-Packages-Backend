@@ -19,6 +19,5 @@ public class BinInwardDetailsDTO {
 
 	private int recQty;
 
-	private int returnQty;
 }
 
