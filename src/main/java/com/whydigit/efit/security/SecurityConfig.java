@@ -46,7 +46,7 @@ public class SecurityConfig {
 						"/api/partStudy/packageDetail", "api/master/dmap", "/api/partStudy/packageDetail/{id}",
 						"/api/partStudy/logistics", "/api/company/setup", "api/emitter/updateOutwardKitQty",
 						"/api/partStudy/logistics/{id}", "/api/partStudy/**", "/api/inwardSku/**","/api/master/getDocIdByAssetTagging",
-						"/api/master/updateCreateCnote", "/api/partStudy/stockDetail/{id}","/getDocIdByBinallotment/emitter/",
+						"/api/master/updateCreateCnote", "/api/partStudy/stockDetail/{id}","api/emitter/getDocIdByBinallotment",
 						"/api/emitter/createIssueRequest", "/api/emitter/*", "/api/auth/createUser",
 						"/api/master/flow/getFlowByIds", "/api/master/getAllFlowName", "/api/master/updateCreateTerms",
 						"/api/master/getAllTerms", "/api/master/getAllTermsById", "/api/master/updateCreatePod",
@@ -68,7 +68,7 @@ public class SecurityConfig {
 						"/api/emitter/getTaggingDetailsByTagCode", "/api/master/getAvalkitqtyByBranch",
 						"/api/master/updateCreateBinInward", "/api/master/getAllotmentDetailsByOrgIdAndDocid",
 						"/api/master/getAllotmentNo","/api/master/getAllotmentAssetDetailsByOrgIdAndDocid","/api/master/getAllBinInwardById","/api/oem/*",
-						"/api/master/getWaitingBinInwardDetailsByEmitterAndOrgId","/api/master/binOutward")
+						"/api/master/getWaitingBinInwardDetailsByEmitterAndOrgId","/api/master/binOutward","/api/master/getDocIdByBinOutward")
 				.permitAll().antMatchers("/api/**").hasAnyRole("USER", "GUEST_USER").anyRequest().authenticated();
 
 		http.addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);

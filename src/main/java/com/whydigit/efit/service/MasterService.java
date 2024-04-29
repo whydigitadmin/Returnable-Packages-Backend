@@ -275,11 +275,11 @@ public interface MasterService {
 	Set<Object[]> getFlowDetailsByFlowId(Long flowId);
 
 
-//	String getDocIdByAssetTagging();
+	String getDocIdByAssetTagging();
 
 	String getDocIdByBinInward();
 
-	BinOutwardVO createBinOutward(BinOutwardDTO binOutwardDTO);
+	
 
 
 }

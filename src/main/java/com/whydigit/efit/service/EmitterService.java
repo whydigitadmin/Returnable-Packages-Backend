@@ -103,7 +103,8 @@ public interface EmitterService {
 
 	// Bin Outward
 	
-
+	BinOutwardVO createBinOutward(BinOutwardDTO binOutwardDTO);
+	
 	List<BinAllotmentNewVO> getAllAllotmentById(String docId);
 
 	Set<Object[]> getkitAssetDetailsByKitId(String kitCode, int quantity);
@@ -116,7 +117,7 @@ public interface EmitterService {
 
 	String getDocIdByBinallotment();
 
-//	String getDocIdByBinOutward();
+	String getDocIdByBinOutward();
 
 
 }

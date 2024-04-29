@@ -1894,33 +1894,33 @@ public class MasterController extends BaseController {
 		}
 		return assetTagCode;
 	}
-//	
-//	@GetMapping("/getDocIdByAssetTagging")
-//	public ResponseEntity<ResponseDTO> getDocIdByAssetTagging() {
-//		String methodName = "getDocIdByAssetTagging()";
-//		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
-//		String errorMsg = null;
-//		Map<String, Object> responseObjectsMap = new HashMap<>();
-//		ResponseDTO responseDTO = null;
-//		String assetTagDocId = null;
-//		try {
-//			assetTagDocId = masterService.getDocIdByAssetTagging();
-//		} catch (Exception e) {
-//			errorMsg = e.getMessage();
-//			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-//		}
-//		if (StringUtils.isEmpty(errorMsg)) {
-//			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Asset Tagging DocId found success");
-//			responseObjectsMap.put("assetTagDocId", assetTagDocId);
-//			responseDTO = createServiceResponse(responseObjectsMap);
-//		} else {
-//			errorMsg = " not found for ID: ";
-//			responseDTO = createServiceResponseError(responseObjectsMap, "Asset Tagging DocId not found",
-//					errorMsg);
-//		}
-//		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
-//		return ResponseEntity.ok().body(responseDTO);
-//	}
+	
+	@GetMapping("/getDocIdByAssetTagging")
+	public ResponseEntity<ResponseDTO> getDocIdByAssetTagging() {
+		String methodName = "getDocIdByAssetTagging()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		String assetTagDocId = null;
+		try {
+			assetTagDocId = masterService.getDocIdByAssetTagging();
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Asset Tagging DocId found success");
+			responseObjectsMap.put("assetTagDocId", assetTagDocId);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			errorMsg = " not found for ID: ";
+			responseDTO = createServiceResponseError(responseObjectsMap, "Asset Tagging DocId not found",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
 
 
 	@GetMapping("/getAvalkitqty")
@@ -2672,28 +2672,5 @@ public class MasterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 	
-	@PostMapping("/binOutward")
-	public ResponseEntity<ResponseDTO> createBinOutward(@RequestBody BinOutwardDTO binOutwardDTO) {
-		String methodName = "createBinOutward()";
-		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
-		String errorMsg = null;
-		Map<String, Object> responseObjectsMap = new HashMap<>();
-		ResponseDTO responseDTO = null;
-		BinOutwardVO binOutwardVO = new BinOutwardVO();
-		try {
-			binOutwardVO = masterService.createBinOutward(binOutwardDTO);
-		} catch (Exception e) {
-			errorMsg = e.getMessage();
-			LOGGER.error(CommonConstant.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-		}
-		if (StringUtils.isBlank(errorMsg)) {
-			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Bin Outward Created Successfully");
-			responseObjectsMap.put("binOutwardVO", binOutwardVO);
-			responseDTO = createServiceResponse(responseObjectsMap);
-		} else {
-			responseDTO = createServiceResponseError(responseObjectsMap, "Bin Outward Failed", errorMsg);
-		}
-		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
-		return ResponseEntity.ok().body(responseDTO);
-	}
+	
 }

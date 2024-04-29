@@ -35,4 +35,10 @@ public interface AssetTaggingRepo extends JpaRepository<AssetTaggingVO, Long> {
 			+ " WHERE level BETWEEN ?3 AND ?4")
 	Set<Object[]> getTagCodeByAsset(String assetcode, String asset, int startno, int endno, int finyr);
 
+	@Query(nativeQuery = true, value = "select sequence_value from assettaggingdocidseq")
+	int findocid();
+
+	@Query(nativeQuery = true, value = "CALL next_assettaggingdocid_value()")
+	void nextDocid();
+
 }
