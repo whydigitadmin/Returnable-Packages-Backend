@@ -35,6 +35,8 @@ public class StateVO {
     private String country;
 	@Column(name="active",length = 30)
     private boolean active;
+	@Column(name="stateno",length = 30)
+	private String stateNo;
 	
 	@Column(name="orgid")
 	private Long orgId;
