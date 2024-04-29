@@ -279,7 +279,7 @@ public interface MasterService {
 
 	String getDocIdByBinInward();
 
-	BinOutwardVO createBinOutward(BinOutwardDTO binOutwardDTO);
+	
 
 
 }
