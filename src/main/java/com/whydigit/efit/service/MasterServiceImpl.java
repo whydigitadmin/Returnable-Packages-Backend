@@ -1209,7 +1209,7 @@ public class MasterServiceImpl implements MasterService {
 		int finyr = assetInwardRepo.findfinyr();
 		String assetinward = finyr + "AI" + assetInwardRepo.finddocid();
 		assetInwardVO.setDocId(assetinward);
-		assetInwardRepo.nextseq();;
+		assetInwardRepo.nextseq();
 		assetInwardVO.setDocId(assetInwardDTO.getDocId());
 		assetInwardVO.setDocDate(assetInwardDTO.getDocDate());
 		assetInwardVO.setStockBranch(assetInwardDTO.getStockBranch());
@@ -1281,6 +1281,10 @@ public class MasterServiceImpl implements MasterService {
 				assetStockDetailsVO.setScreen("Asset Inward");
 				assetStockDetailsVO.setPm("P");
 				assetStockDetailsVO.setStatus("S");
+				assetStockDetailsVO.setBinLocation("");
+				assetStockDetailsVO.setCancelRemarks("");
+				assetStockDetailsVO.setStockLocation("");
+				assetStockDetailsVO.setStockSource("");
 				assetStockDetailsVO.setSourceId(assetdetails.getAssetInwardDetailId());
 				assetStockDetailsVO.setFinyr(assetInwardVO1.getFinyr());
 				assetStockDetailsVO.setTagCode(assetdetails.getTagCode());
@@ -1336,7 +1340,7 @@ public class MasterServiceImpl implements MasterService {
 	public AssetTaggingVO createTagging(AssetTaggingDTO assetTaggingDTO) {
 
 		AssetTaggingVO assetTaggingVO = new AssetTaggingVO();
-		
+
 		int finyr = assetTaggingRepo.getFinyr();
 		String assetTagging = finyr + "AT" + assetTaggingRepo.findocid();
 		assetTaggingVO.setDocid(assetTagging);
@@ -1916,7 +1920,6 @@ public class MasterServiceImpl implements MasterService {
 		return binAllotmentNewRepo.getWaitingforBinInwardDetailsByEmitterAndOrgId(orgId, emitterid);
 	}
 
-
 	@Override
 	public String getDocIdByAssetTagging() {
 		int finyr = assetTaggingRepo.getFinyr();
@@ -1929,7 +1932,8 @@ public class MasterServiceImpl implements MasterService {
 		int finyr = binInwardRepo.getFinyr();
 		String binInward = finyr + "BI" + binInwardRepo.finddocid();
 		return binInward;
-  }
+	}
+
 	@Override
 	public Optional<BinInwardVO> getBinInwardByDocid(String docid) {
 		if (binInwardRepo.existsByDocid(docid)) {
@@ -1940,7 +1944,7 @@ public class MasterServiceImpl implements MasterService {
 	}
 
 	// Bin allotment Issue manifest pdf
-	
+
 	@Override
 	public List<Object[]> getBinAllotmentPdfHeaderDetails(String docid) {
 		return binAllotmentRepo.getBinAllotmentHeader(docid);
@@ -1956,8 +1960,6 @@ public class MasterServiceImpl implements MasterService {
 		int finyr = assetInwardRepo.findfinyr();
 		String assetInward = finyr + "AI" + assetInwardRepo.finddocid();
 		return assetInward;
-  }
-
-	
+	}
 
 }
