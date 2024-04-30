@@ -1749,6 +1749,33 @@ public class MasterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 
 	}
+	
+	@GetMapping("/getAssetInwardDocId")
+	public ResponseEntity<ResponseDTO> getAssetInwardDocId(@RequestParam(required = false) String docId) {
+		String methodName = "getAssetInwardDocId()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		AssetInwardVO assetInwardVO = null;
+		try {
+			assetInwardVO = masterService.getAssetInwardByDocId(docId);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "AssetInward information get successfully");
+			responseObjectsMap.put("assetInwardVO", assetInwardVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "AssetInward information receive failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+
+	}
 
 	// Stock branch
 	@PostMapping("/stockbranch")
@@ -2591,31 +2618,6 @@ public class MasterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-	@GetMapping("/getDocIdByAssetInward")
-	public ResponseEntity<ResponseDTO> getDocIdByAssetInward() {
-		String methodName = "getDocIdByAssetInward()";
-		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
-		String errorMsg = null;
-		Map<String, Object> responseObjectsMap = new HashMap<>();
-		ResponseDTO responseDTO = null;
-		String assetDocId = null;
-		try {
-			assetDocId = masterService.getDocIdByAssetInward();
-		} catch (Exception e) {
-			errorMsg = e.getMessage();
-			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-		}
-		if (StringUtils.isEmpty(errorMsg)) {
-			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Asset Inward DocId found success");
-			responseObjectsMap.put("assetDocId", assetDocId);
-			responseDTO = createServiceResponse(responseObjectsMap);
-		} else {
-			errorMsg = " not found for ID: ";
-			responseDTO = createServiceResponseError(responseObjectsMap, "Asset Inward DocId not found", errorMsg);
-		}
-		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
-		return ResponseEntity.ok().body(responseDTO);
-	}
 
 	@GetMapping("/getWaitingBinInwardDetailsByEmitterAndOrgId")
 	public ResponseEntity<ResponseDTO> getWaitingBinInwardDetailsByEmitterAndOrgId(@RequestParam Long orgId,
@@ -2695,6 +2697,7 @@ public class MasterController extends BaseController {
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
 		List<Object[]> header = new ArrayList<>();
+	
 		try {
 			header = masterService.getBinAllotmentPdfHeaderDetails(docid);
 		} catch (Exception e) {
@@ -2728,6 +2731,7 @@ public class MasterController extends BaseController {
 			part.put("senderGst", ps[7] != null ? ps[7].toString() : "");
 			part.put("senderName", ps[8] != null ? ps[8].toString() : "");
 			part.put("receiverName", ps[9] != null ? ps[9].toString() : "");
+			part.put("senderPinCode", ps[10] != null ? ps[10].toString() : "");
 			allotDetails.add(part);
 		}
 		return allotDetails;
