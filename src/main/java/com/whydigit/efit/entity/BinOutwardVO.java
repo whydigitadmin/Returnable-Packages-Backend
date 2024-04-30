@@ -59,7 +59,6 @@ public class BinOutwardVO {
 	@Column(name = "finyr")
 	private String finyr;
 	private String scode = "BNOUT";
-	private String screen = "BIN OUTWARD";
 	@Column(name="emitterid")
 	private Long emitterId;
 	private String destination;

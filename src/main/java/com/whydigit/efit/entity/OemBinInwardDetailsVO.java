@@ -28,7 +28,7 @@ public class OemBinInwardDetailsVO {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "oembinwarddetailsgen")
 	@SequenceGenerator(name = "oembinwarddetailsgen", sequenceName = "oembinwarddetailsseq", initialValue = 1000000001, allocationSize = 1)
-	@Column(name = "oembinoutwarddetailsid")
+	@Column(name = "oembinwarddetailsid")
 	private Long id;
 	@Column(name = "asset")
 	private String asset;

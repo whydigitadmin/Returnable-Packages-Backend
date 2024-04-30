@@ -102,8 +102,9 @@ public interface EmitterService {
 	List<BinAllotmentNewVO> getAllBinAllotment(Long orgId);
 
 	// Bin Outward
+	
 	BinOutwardVO createBinOutward(BinOutwardDTO binOutwardDTO);
-
+	
 	List<BinAllotmentNewVO> getAllAllotmentById(String docId);
 
 	Set<Object[]> getkitAssetDetailsByKitId(String kitCode, int quantity);
@@ -112,6 +113,11 @@ public interface EmitterService {
 
 
 	String uploadPodFilePath(MultipartFile file, String allotNo);
+
+
+	String getDocIdByBinallotment();
+
+	String getDocIdByBinOutward();
 
 
 }
