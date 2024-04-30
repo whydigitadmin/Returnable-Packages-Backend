@@ -1662,6 +1662,12 @@ public class MasterServiceImpl implements MasterService {
 
 		return assetInwardRepo.findAssetInwardByOrgId(orgId);
 	}
+	
+	@Override
+	public AssetInwardVO getAssetInwardByDocId(String docId) {
+
+		return assetInwardRepo.findAssetInwardByDocId(docId);
+	}
 
 	@Override
 	public Set<Object[]> getPoNoByCreateAsset(Long orgId) {

@@ -24,4 +24,6 @@ public interface AssetInwardRepo extends JpaRepository<AssetInwardVO, Long>{
 	@Query(nativeQuery = true,value ="CALL next_assetinward_sequence_value()" )
 	void nextseq();
 
+	AssetInwardVO findAssetInwardByDocId(String docId);
+
 }

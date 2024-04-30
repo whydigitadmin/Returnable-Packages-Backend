@@ -284,4 +284,6 @@ public interface MasterService {
 
 	List<Object[]> getBinAllotmentPdfGridDetails(String docid);
 
+	AssetInwardVO getAssetInwardByDocId(String docId);
+
 }
