@@ -31,7 +31,6 @@ import com.whydigit.efit.common.UserConstants;
 import com.whydigit.efit.dto.AssetInwardDTO;
 import com.whydigit.efit.dto.AssetTaggingDTO;
 import com.whydigit.efit.dto.BinInwardDTO;
-import com.whydigit.efit.dto.BinOutwardDTO;
 import com.whydigit.efit.dto.CnoteDTO;
 import com.whydigit.efit.dto.CustomerAttachmentType;
 import com.whydigit.efit.dto.CustomersDTO;
@@ -53,7 +52,6 @@ import com.whydigit.efit.entity.AssetInwardVO;
 import com.whydigit.efit.entity.AssetTaggingVO;
 import com.whydigit.efit.entity.AssetVO;
 import com.whydigit.efit.entity.BinInwardVO;
-import com.whydigit.efit.entity.BinOutwardVO;
 import com.whydigit.efit.entity.CnoteVO;
 import com.whydigit.efit.entity.CustomersAddressVO;
 import com.whydigit.efit.entity.CustomersVO;
@@ -2589,6 +2587,31 @@ public class MasterController extends BaseController {
 		} else {
 			errorMsg = " not found for ID: ";
 			responseDTO = createServiceResponseError(responseObjectsMap, "Bin Inward DocId not found", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+	@GetMapping("/getDocIdByAssetInward")
+	public ResponseEntity<ResponseDTO> getDocIdByAssetInward() {
+		String methodName = "getDocIdByAssetInward()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		String assetDocId = null;
+		try {
+			assetDocId = masterService.getDocIdByAssetInward();
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Asset Inward DocId found success");
+			responseObjectsMap.put("assetDocId", assetDocId);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			errorMsg = " not found for ID: ";
+			responseDTO = createServiceResponseError(responseObjectsMap, "Asset Inward DocId not found", errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
