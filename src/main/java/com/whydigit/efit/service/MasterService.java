@@ -253,7 +253,7 @@ public interface MasterService {
 	String uploadFileProofOfDelivery(MultipartFile file, String docId, String refNo);
 
 	List<ProofOfDeliveryVO> getAllProofOfDelivery(Long orgId);
-	
+
 	// Bin Allotmentdetails
 
 	Set<Object[]> getAllotmentNoByEmitterIdAndOrgId(Long orgId, Long emitterId);
@@ -261,25 +261,27 @@ public interface MasterService {
 	Set<Object[]> getAllotmentDetailsByAllotmentNoAndOrgId(Long orgId, String docid);
 
 	BinInwardVO updateCreateBinInward(BinInwardDTO binInwardDTO) throws ApplicationException;
-	
-	Set<Object[]> getAlllBinInwardByEmitterAndOrgId(Long emitterid,Long orgId);
-	
+
+	Set<Object[]> getAlllBinInwardByEmitterAndOrgId(Long emitterid, Long orgId);
+
 	Optional<BinInwardVO> getBinInwardById(Long id);
-	
+
 	Optional<BinInwardVO> getBinInwardByDocid(String docid);
-	
+
 	Set<Object[]> getAllotmentAssetDetailsByAllotmentNoAndOrgId(Long orgId, String docid);
-	
-	Set<Object[]>getWaitingInwardDetailsByEmitterIdandOrgId(Long orgId,Long emitterid);
+
+	Set<Object[]> getWaitingInwardDetailsByEmitterIdandOrgId(Long orgId, Long emitterid);
 
 	Set<Object[]> getFlowDetailsByFlowId(Long flowId);
-
 
 	String getDocIdByAssetTagging();
 
 	String getDocIdByBinInward();
 
-	
+	// Bin allotment Issue manifest pdf
 
+	List<Object[]> getBinAllotmentPdfHeaderDetails(String docid);
+
+	List<Object[]> getBinAllotmentPdfGridDetails(String docid);
 
 }
