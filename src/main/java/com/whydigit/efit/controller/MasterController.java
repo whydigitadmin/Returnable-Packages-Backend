@@ -619,7 +619,7 @@ public class MasterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-	
+
 	@GetMapping("/getFlowDetailsByFlowId")
 	public ResponseEntity<ResponseDTO> getFlowDetailsByFlowId(@RequestParam Long flowId) {
 		String methodName = "getFlowDetailsByFlowId()";
@@ -641,8 +641,7 @@ public class MasterController extends BaseController {
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} else {
 			errorMsg = " not found for ID: ";
-			responseDTO = createServiceResponseError(responseObjectsMap, "Flow Details not found",
-					errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "Flow Details not found", errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
@@ -655,12 +654,11 @@ public class MasterController extends BaseController {
 			f1.put("receiver", f[0] != null ? f[0].toString() : "");
 			f1.put("destination", f[1] != null ? f[1].toString() : "");
 			f1.put("orgin", f[2] != null ? f[2].toString() : "");
-			
+
 			flowDetails.add(f1);
 		}
 		return flowDetails;
 	}
-
 
 	@GetMapping("/getAllFlowName")
 	public ResponseEntity<ResponseDTO> getFlowNameByOrgID(@RequestParam(required = true) Long orgId,
@@ -1894,7 +1892,7 @@ public class MasterController extends BaseController {
 		}
 		return assetTagCode;
 	}
-	
+
 	@GetMapping("/getDocIdByAssetTagging")
 	public ResponseEntity<ResponseDTO> getDocIdByAssetTagging() {
 		String methodName = "getDocIdByAssetTagging()";
@@ -1915,13 +1913,11 @@ public class MasterController extends BaseController {
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} else {
 			errorMsg = " not found for ID: ";
-			responseDTO = createServiceResponseError(responseObjectsMap, "Asset Tagging DocId not found",
-					errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "Asset Tagging DocId not found", errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-
 
 	@GetMapping("/getAvalkitqty")
 	public ResponseEntity<ResponseDTO> getAvalkitqty(@RequestParam Long warehouseId, @RequestParam String Kitname) {
@@ -2029,7 +2025,7 @@ public class MasterController extends BaseController {
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
-	} 
+	}
 
 	@GetMapping("/terms")
 	public ResponseEntity<ResponseDTO> getAllTermsByOrgId(@RequestParam(required = false) Long orgId) {
@@ -2503,21 +2499,21 @@ public class MasterController extends BaseController {
 	}
 
 	@GetMapping("/getAllBinInwardById")
-	public ResponseEntity<ResponseDTO> getAllBinInwardById(@RequestParam Long emitterid,@RequestParam Long orgId) {
+	public ResponseEntity<ResponseDTO> getAllBinInwardById(@RequestParam Long emitterid, @RequestParam Long orgId) {
 		String methodName = "getAllBinInwardById()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
-		Set<Object[]> binInwardVO= new HashSet<>();
+		Set<Object[]> binInwardVO = new HashSet<>();
 		try {
-			binInwardVO = masterService.getAlllBinInwardByEmitterAndOrgId(emitterid,orgId);
+			binInwardVO = masterService.getAlllBinInwardByEmitterAndOrgId(emitterid, orgId);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
 		}
 		if (StringUtils.isEmpty(errorMsg)) {
-			List<Map<String, String>>binInwardVos=getAllBinInward(binInwardVO);
+			List<Map<String, String>> binInwardVos = getAllBinInward(binInwardVO);
 			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "BinInward founded");
 			responseObjectsMap.put("binInwardVO", binInwardVos);
 			responseDTO = createServiceResponse(responseObjectsMap);
@@ -2528,12 +2524,11 @@ public class MasterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-	
+
 	private List<Map<String, String>> getAllBinInward(Set<Object[]> binInwardVO) {
-		List<Map<String, String>>binInwardVos =new ArrayList<>();
-		for(Object[] bininward:binInwardVO)
-		{
-			Map<String, String>bininwards= new HashMap<>();
+		List<Map<String, String>> binInwardVos = new ArrayList<>();
+		for (Object[] bininward : binInwardVO) {
+			Map<String, String> bininwards = new HashMap<>();
 			bininwards.put("docid", bininward[0] != null ? bininward[0].toString() : "");
 			bininwards.put("docDate", bininward[1] != null ? bininward[1].toString() : "");
 			bininwards.put("allotmentNo", bininward[2] != null ? bininward[2].toString() : "");
@@ -2542,7 +2537,7 @@ public class MasterController extends BaseController {
 			bininwards.put("kitCode", bininward[5] != null ? bininward[5].toString() : "");
 			bininwards.put("reqKitQty", bininward[6] != null ? bininward[6].toString() : "");
 			bininwards.put("allotedQty", bininward[6] != null ? bininward[6].toString() : "");
-			binInwardVos.add(bininwards);	
+			binInwardVos.add(bininwards);
 		}
 		return binInwardVos;
 	}
@@ -2554,7 +2549,7 @@ public class MasterController extends BaseController {
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
-		BinInwardVO binInwardVO=null;
+		BinInwardVO binInwardVO = null;
 		try {
 			binInwardVO = masterService.getBinInwardById(id).orElse(null);
 		} catch (Exception e) {
@@ -2572,7 +2567,7 @@ public class MasterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-	
+
 	@GetMapping("/getDocIdByBinInward")
 	public ResponseEntity<ResponseDTO> getDocIdByBinInward() {
 		String methodName = "getDocIdByBinInward()";
@@ -2593,13 +2588,12 @@ public class MasterController extends BaseController {
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} else {
 			errorMsg = " not found for ID: ";
-			responseDTO = createServiceResponseError(responseObjectsMap, "Bin Inward DocId not found",
-					errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "Bin Inward DocId not found", errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-	
+
 	@GetMapping("/getWaitingBinInwardDetailsByEmitterAndOrgId")
 	public ResponseEntity<ResponseDTO> getWaitingBinInwardDetailsByEmitterAndOrgId(@RequestParam Long orgId,
 			@RequestParam Long emitterid) {
@@ -2622,8 +2616,7 @@ public class MasterController extends BaseController {
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} else {
 			errorMsg = " not found for ID: ";
-			responseDTO = createServiceResponseError(responseObjectsMap, "Bin Allotment Details not found",
-					errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "Bin Allotment Details not found", errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
@@ -2644,7 +2637,6 @@ public class MasterController extends BaseController {
 		}
 		return allotDetails;
 	}
-	
 
 	@GetMapping("/getAllBinInwardByDocid")
 	public ResponseEntity<ResponseDTO> getAllBinInwardByDocid(@RequestParam String docid) {
@@ -2653,7 +2645,7 @@ public class MasterController extends BaseController {
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
-		BinInwardVO binInwardVO=null;
+		BinInwardVO binInwardVO = null;
 		try {
 			binInwardVO = masterService.getBinInwardByDocid(docid).orElse(null);
 		} catch (Exception e) {
@@ -2671,6 +2663,92 @@ public class MasterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-	
-	
+
+	@GetMapping("/getBinAllotmentPdfHeaderDetails")
+	public ResponseEntity<ResponseDTO> getBinAllotmentPdfHeaderDetails(@RequestParam String docid) {
+		String methodName = "getBinAllotmentPdfHeaderDetails()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<Object[]> header = new ArrayList<>();
+		try {
+			header = masterService.getBinAllotmentPdfHeaderDetails(docid);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			List<Map<String, String>> allotDetails = findwaitingHeader(header);
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "PDf Header Details found by ID");
+			responseObjectsMap.put("HeaderDetails", allotDetails);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			errorMsg = " not found for ID: ";
+			responseDTO = createServiceResponseError(responseObjectsMap, "PDF Header Details not found", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
+	private List<Map<String, String>> findwaitingHeader(List<Object[]> header) {
+		List<Map<String, String>> allotDetails = new ArrayList<>();
+		for (Object[] ps : header) {
+			Map<String, String> part = new HashMap<>();
+			part.put("allotno", ps[0] != null ? ps[0].toString() : "");
+			part.put("allotDate", ps[1] != null ? ps[1].toString() : "");
+			part.put("binreqno", ps[2] != null ? ps[2].toString() : "");
+			part.put("binreqdate", ps[3] != null ? ps[3].toString() : "");
+			part.put("senderAddress", ps[4] != null ? ps[4].toString() : "");
+			part.put("senderCity", ps[5] != null ? ps[5].toString() : "");
+			part.put("senderState", ps[6] != null ? ps[6].toString() : "");
+			part.put("senderGst", ps[7] != null ? ps[7].toString() : "");
+			part.put("senderName", ps[8] != null ? ps[8].toString() : "");
+			part.put("receiverName", ps[9] != null ? ps[9].toString() : "");
+			allotDetails.add(part);
+		}
+		return allotDetails;
+	}
+
+	@GetMapping("/getBinAllotmentPdfGridDetails")
+	public ResponseEntity<ResponseDTO> getBinAllotmentPdfGridDetails(@RequestParam String docid) {
+		String methodName = "getBinAllotmentPdfGridDetails()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<Object[]> grid = new ArrayList<>();
+		try {
+			grid = masterService.getBinAllotmentPdfGridDetails(docid);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			List<Map<String, String>> allotDetails = getBinAllotmentPdfGridDetails(grid);
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "PDF Grid Details found by ID");
+			responseObjectsMap.put("allotDetails", allotDetails);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			errorMsg = " not found for ID: ";
+			responseDTO = createServiceResponseError(responseObjectsMap, "PDF Grid Details not found", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
+	private List<Map<String, String>> getBinAllotmentPdfGridDetails(List<Object[]> allot) {
+		List<Map<String, String>> allotDetails = new ArrayList<>();
+		for (Object[] ps : allot) {
+			Map<String, String> part = new HashMap<>();
+			part.put("kitcode", ps[0] != null ? ps[0].toString() : "");
+			part.put("allotkitqty", ps[1] != null ? ps[1].toString() : "");
+			part.put("productName", ps[2] != null ? ps[2].toString() : "");
+			part.put("productCode", ps[3] != null ? ps[3].toString() : "");
+			part.put("productQty", ps[4] != null ? ps[4].toString() : "");
+			allotDetails.add(part);
+		}
+		return allotDetails;
+	}
+
 }
