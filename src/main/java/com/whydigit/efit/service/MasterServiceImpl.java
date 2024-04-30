@@ -51,8 +51,6 @@ import com.whydigit.efit.dto.AssetTaggingDTO;
 import com.whydigit.efit.dto.AssetTaggingDetailsDTO;
 import com.whydigit.efit.dto.BinInwardDTO;
 import com.whydigit.efit.dto.BinInwardDetailsDTO;
-import com.whydigit.efit.dto.BinOutwardDTO;
-import com.whydigit.efit.dto.BinOutwardDetailsDTO;
 import com.whydigit.efit.dto.CnoteDTO;
 import com.whydigit.efit.dto.CustomerAttachmentType;
 import com.whydigit.efit.dto.CustomersAddressDTO;
@@ -87,8 +85,6 @@ import com.whydigit.efit.entity.AssetTaggingVO;
 import com.whydigit.efit.entity.AssetVO;
 import com.whydigit.efit.entity.BinInwardDetailsVO;
 import com.whydigit.efit.entity.BinInwardVO;
-import com.whydigit.efit.entity.BinOutwardDetailsVO;
-import com.whydigit.efit.entity.BinOutwardVO;
 import com.whydigit.efit.entity.CnoteVO;
 import com.whydigit.efit.entity.CustomerAttachmentVO;
 import com.whydigit.efit.entity.CustomersAddressVO;
@@ -1210,6 +1206,10 @@ public class MasterServiceImpl implements MasterService {
 	public AssetInwardVO createAssetInward(AssetInwardDTO assetInwardDTO) {
 
 		AssetInwardVO assetInwardVO = new AssetInwardVO();
+		int finyr = assetInwardRepo.findfinyr();
+		String assetinward = finyr + "AI" + assetInwardRepo.finddocid();
+		assetInwardVO.setDocId(assetinward);
+		assetInwardRepo.nextseq();;
 		assetInwardVO.setDocId(assetInwardDTO.getDocId());
 		assetInwardVO.setDocDate(assetInwardDTO.getDocDate());
 		assetInwardVO.setStockBranch(assetInwardDTO.getStockBranch());
@@ -1950,6 +1950,13 @@ public class MasterServiceImpl implements MasterService {
 	public List<Object[]> getBinAllotmentPdfGridDetails(String docid) {
 		return binAllotmentRepo.getBinAllotmentGrid(docid);
 	}
+
+	@Override
+	public String getDocIdByAssetInward() {
+		int finyr = assetInwardRepo.findfinyr();
+		String assetInward = finyr + "AI" + assetInwardRepo.finddocid();
+		return assetInward;
+  }
 
 	
 

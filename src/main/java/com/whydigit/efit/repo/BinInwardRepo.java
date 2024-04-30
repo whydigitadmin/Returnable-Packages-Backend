@@ -1,6 +1,5 @@
 package com.whydigit.efit.repo;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
