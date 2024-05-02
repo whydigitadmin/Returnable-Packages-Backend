@@ -51,8 +51,6 @@ import com.whydigit.efit.dto.AssetTaggingDTO;
 import com.whydigit.efit.dto.AssetTaggingDetailsDTO;
 import com.whydigit.efit.dto.BinInwardDTO;
 import com.whydigit.efit.dto.BinInwardDetailsDTO;
-import com.whydigit.efit.dto.BinOutwardDTO;
-import com.whydigit.efit.dto.BinOutwardDetailsDTO;
 import com.whydigit.efit.dto.CnoteDTO;
 import com.whydigit.efit.dto.CustomerAttachmentType;
 import com.whydigit.efit.dto.CustomersAddressDTO;
@@ -87,8 +85,6 @@ import com.whydigit.efit.entity.AssetTaggingVO;
 import com.whydigit.efit.entity.AssetVO;
 import com.whydigit.efit.entity.BinInwardDetailsVO;
 import com.whydigit.efit.entity.BinInwardVO;
-import com.whydigit.efit.entity.BinOutwardDetailsVO;
-import com.whydigit.efit.entity.BinOutwardVO;
 import com.whydigit.efit.entity.CnoteVO;
 import com.whydigit.efit.entity.CustomerAttachmentVO;
 import com.whydigit.efit.entity.CustomersAddressVO;
@@ -432,13 +428,6 @@ public class MasterServiceImpl implements MasterService {
 	public CustomersVO getCustomersById(Long id) throws ApplicationException {
 		CustomersVO customersVO = customersRepo.findById(id)
 				.orElseThrow(() -> new ApplicationException("Customer not found."));
-		List<CustomerAttachmentVO> customerAttachmentVO = customerAttachmentRepo.findByCustomerId(id);
-		customersVO.setSop(customerAttachmentVO.stream()
-				.filter(ca -> ca.getType().equalsIgnoreCase(CustomerAttachmentType.SOP.name()))
-				.collect(Collectors.toList()));
-		customersVO.setDocument(customerAttachmentVO.stream()
-				.filter(ca -> ca.getType().equalsIgnoreCase(CustomerAttachmentType.DOC.name()))
-				.collect(Collectors.toList()));
 		return customersVO;
 	}
 
@@ -1210,6 +1199,10 @@ public class MasterServiceImpl implements MasterService {
 	public AssetInwardVO createAssetInward(AssetInwardDTO assetInwardDTO) {
 
 		AssetInwardVO assetInwardVO = new AssetInwardVO();
+		int finyr = assetInwardRepo.findfinyr();
+		String assetinward = finyr + "AI" + assetInwardRepo.finddocid();
+		assetInwardVO.setDocId(assetinward);
+		assetInwardRepo.nextseq();
 		assetInwardVO.setDocId(assetInwardDTO.getDocId());
 		assetInwardVO.setDocDate(assetInwardDTO.getDocDate());
 		assetInwardVO.setStockBranch(assetInwardDTO.getStockBranch());
@@ -1281,6 +1274,10 @@ public class MasterServiceImpl implements MasterService {
 				assetStockDetailsVO.setScreen("Asset Inward");
 				assetStockDetailsVO.setPm("P");
 				assetStockDetailsVO.setStatus("S");
+				assetStockDetailsVO.setBinLocation("");
+				assetStockDetailsVO.setCancelRemarks("");
+				assetStockDetailsVO.setStockLocation("");
+				assetStockDetailsVO.setStockSource("");
 				assetStockDetailsVO.setSourceId(assetdetails.getAssetInwardDetailId());
 				assetStockDetailsVO.setFinyr(assetInwardVO1.getFinyr());
 				assetStockDetailsVO.setTagCode(assetdetails.getTagCode());
@@ -1336,7 +1333,7 @@ public class MasterServiceImpl implements MasterService {
 	public AssetTaggingVO createTagging(AssetTaggingDTO assetTaggingDTO) {
 
 		AssetTaggingVO assetTaggingVO = new AssetTaggingVO();
-		
+
 		int finyr = assetTaggingRepo.getFinyr();
 		String assetTagging = finyr + "AT" + assetTaggingRepo.findocid();
 		assetTaggingVO.setDocid(assetTagging);
@@ -1658,6 +1655,12 @@ public class MasterServiceImpl implements MasterService {
 
 		return assetInwardRepo.findAssetInwardByOrgId(orgId);
 	}
+	
+	@Override
+	public AssetInwardVO getAssetInwardByDocId(String docId) {
+
+		return assetInwardRepo.findAssetInwardByDocId(docId);
+	}
 
 	@Override
 	public Set<Object[]> getPoNoByCreateAsset(Long orgId) {
@@ -1801,6 +1804,34 @@ public class MasterServiceImpl implements MasterService {
 
 			for (BinInwardDetailsVO binInwardDetails : savedBinInwardDetailsVO) {
 
+				Long flow = issueRequestRepo.getFlowIdByrequestId(binInwardDTO.getReqNo());
+				String emitter = flowRepo.findEmiterbyFlowId(flow);
+				String orgin = flowRepo.findOrigionbyFlowId(flow);
+
+				AssetStockDetailsVO assetStockDetailsVO = new AssetStockDetailsVO();
+				assetStockDetailsVO.setStockRef(savedBinInwardVO.getAllotmentNo());
+				assetStockDetailsVO.setStockDate(savedBinInwardVO.getAllotDate());
+				assetStockDetailsVO.setSkuCode(binInwardDetails.getAssetCode());
+				assetStockDetailsVO.setSku(binInwardDetails.getAsset());
+				assetStockDetailsVO.setSkuQty(binInwardDetails.getRecQty() * -1);
+				assetStockDetailsVO.setRfId(binInwardDetails.getRfId());
+				assetStockDetailsVO.setTagCode(binInwardDetails.getTagCode());
+				assetStockDetailsVO.setSCode(savedBinInwardVO.getScode()); // Assuming getScode() returns the correct
+				assetStockDetailsVO.setSourceId(binInwardDetails.getBinInwardDetailsId()); // value
+				assetStockDetailsVO.setScreen("Bin Inward");
+				assetStockDetailsVO.setPm("M");
+				assetStockDetailsVO.setStatus("M");
+				assetStockDetailsVO.setBinLocation("");
+				assetStockDetailsVO.setCancelRemarks("");
+				assetStockDetailsVO.setStockLocation("");
+				assetStockDetailsVO.setStockSource("");
+				assetStockDetailsVO.setFinyr(savedBinInwardVO.getFinYr());
+				assetStockDetailsVO.setStockBranch(emitter + "-" + orgin);
+				assetStockDetailsRepo.save(assetStockDetailsVO);
+			}
+
+			for (BinInwardDetailsVO binInwardDetails : savedBinInwardDetailsVO) {
+
 				Long flow = issueRequestRepo.getFlowIdByrequestId(savedBinInwardVO.getReqNo());
 				String emitter = flowRepo.findEmiterbyFlowId(flow);
 				String orgin = flowRepo.findOrigionbyFlowId(flow);
@@ -1819,34 +1850,6 @@ public class MasterServiceImpl implements MasterService {
 				assetStockDetailsVO.setScreen("Bin Inward");
 				assetStockDetailsVO.setPm("P");
 				assetStockDetailsVO.setStatus("S");
-				assetStockDetailsVO.setBinLocation("");
-				assetStockDetailsVO.setCancelRemarks("");
-				assetStockDetailsVO.setStockLocation("");
-				assetStockDetailsVO.setStockSource("");
-				assetStockDetailsVO.setFinyr(savedBinInwardVO.getFinYr());
-				assetStockDetailsVO.setStockBranch(emitter + "-" + orgin);
-				assetStockDetailsRepo.save(assetStockDetailsVO);
-			}
-
-			for (BinInwardDetailsVO binInwardDetails : savedBinInwardDetailsVO) {
-
-				Long flow = issueRequestRepo.getFlowIdByrequestId(binInwardDTO.getReqNo());
-				String emitter = flowRepo.findEmiterbyFlowId(flow);
-				String orgin = flowRepo.findOrigionbyFlowId(flow);
-
-				AssetStockDetailsVO assetStockDetailsVO = new AssetStockDetailsVO();
-				assetStockDetailsVO.setStockRef(savedBinInwardVO.getAllotmentNo());
-				assetStockDetailsVO.setStockDate(savedBinInwardVO.getAllotDate());
-				assetStockDetailsVO.setSkuCode(binInwardDetails.getAssetCode());
-				assetStockDetailsVO.setSku(binInwardDetails.getAsset());
-				assetStockDetailsVO.setSkuQty(binInwardDetails.getRecQty() * -1);
-				assetStockDetailsVO.setRfId(binInwardDetails.getRfId());
-				assetStockDetailsVO.setTagCode(binInwardDetails.getTagCode());
-				assetStockDetailsVO.setSCode(savedBinInwardVO.getScode()); // Assuming getScode() returns the correct
-				assetStockDetailsVO.setSourceId(binInwardDetails.getBinInwardDetailsId()); // value
-				assetStockDetailsVO.setScreen("Bin Inward");
-				assetStockDetailsVO.setPm("M");
-				assetStockDetailsVO.setStatus("M");
 				assetStockDetailsVO.setBinLocation("");
 				assetStockDetailsVO.setCancelRemarks("");
 				assetStockDetailsVO.setStockLocation("");
@@ -1916,7 +1919,6 @@ public class MasterServiceImpl implements MasterService {
 		return binAllotmentNewRepo.getWaitingforBinInwardDetailsByEmitterAndOrgId(orgId, emitterid);
 	}
 
-
 	@Override
 	public String getDocIdByAssetTagging() {
 		int finyr = assetTaggingRepo.getFinyr();
@@ -1929,7 +1931,8 @@ public class MasterServiceImpl implements MasterService {
 		int finyr = binInwardRepo.getFinyr();
 		String binInward = finyr + "BI" + binInwardRepo.finddocid();
 		return binInward;
-  }
+	}
+
 	@Override
 	public Optional<BinInwardVO> getBinInwardByDocid(String docid) {
 		if (binInwardRepo.existsByDocid(docid)) {
@@ -1939,6 +1942,134 @@ public class MasterServiceImpl implements MasterService {
 		}
 	}
 
+	// Bin allotment Issue manifest pdf
+
+	@Override
+	public List<Object[]> getBinAllotmentPdfHeaderDetails(String docid) {
+		return binAllotmentRepo.getBinAllotmentHeader(docid);
+	}
+
+	@Override
+	public List<Object[]> getBinAllotmentPdfGridDetails(String docid) {
+		return binAllotmentRepo.getBinAllotmentGrid(docid);
+	}
+
+	@Override
+	public String getDocIdByAssetInward() {
+		int finyr = assetInwardRepo.findfinyr();
+		String assetInward = finyr + "AI" + assetInwardRepo.finddocid();
+		return assetInward;
+	}
+
+	@Value("${customer.sop.upload.dir}")
+	private String UPLOAD_DR;
+
+	public String uploadCustomerSop(Long id, String legalname, MultipartFile file) {
+		String uploadResult = uploadCustomerFileSOP(id, legalname, file); // Call uploadFile method with docId and refNo
+		// Here you can do further processing or return both results combined
+		return uploadResult ; // Example: Combining both results into a single string
+	}
+
+	public String uploadCustomerFileSOP(Long id, String legalname, MultipartFile file) {
+		try {
+
+			// Get the original file name
+			String originalFileName = file.getOriginalFilename();
+			// Extract the original file extension
+			String fileExtension = getFileExtensionSop(originalFileName);
+			// Customize the filename
+			String customizedFileName = getCustomizedSopFileName(legalname) + fileExtension;
+			// Create the directory if it doesn't exist
+			File directory = new File(UPLOAD_DR);
+			if (!directory.exists()) {
+				directory.mkdirs();
+			}
+			// Save the file to the upload directory with the customized filename
+			Path filePath = Paths.get(UPLOAD_DR, customizedFileName);
+			file.transferTo(filePath);
+			System.out.println(filePath);
+			// Create CustomerVO and set uploadReceipt
+			CustomersVO vo = customersRepo.findById(id).orElse(null);
+			vo.setSop(filePath.toString());
+			customersRepo.save(vo);
+			return filePath.toString();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return "Failed to upload file: " + e.getMessage();
+		}
+	}
+
+
+	private String getFileExtensionSop(String fileName) {
+		if (fileName != null && fileName.contains(".")) {
+			return fileName.substring(fileName.lastIndexOf("."));
+		}
+		return "";
+	}
+
+	private String getCustomizedSopFileName(String legalname) {
+		return legalname;
+	}
+
+//document
 	
+	@Value("${customer.document.upload.dir}")
+	private String UPLOAD;
+
+	public String uploadCustomerDocument(Long id, String legalname, MultipartFile file) {
+		String uploadResult = uploadFileCustomerDocument(id, legalname, file); // Call uploadFile method with docId and refNo
+		// Create ProofOfDeliveryVO
+		// Here you can do further processing or return both results combined
+		return uploadResult ; // Example: Combining both results into a single string
+	}
+
+	public String uploadFileCustomerDocument(Long id, String legalname, MultipartFile file) {
+		try {
+
+			// Get the original file name
+			String originalFileName = file.getOriginalFilename();
+			// Extract the original file extension
+			String fileExtension = getFileExtensionDocument(originalFileName);
+			// Customize the filename
+			String customizedFileName = getCustomizedDocumentFileName(legalname) + fileExtension;
+			// Create the directory if it doesn't exist
+			File directory = new File(UPLOAD);
+			if (!directory.exists()) {
+				directory.mkdirs();
+			}
+			// Save the file to the upload directory with the customized filename
+			Path filePath = Paths.get(UPLOAD, customizedFileName);
+			file.transferTo(filePath);
+			System.out.println(filePath);
+			// Create CustomerVO and set uploadReceipt
+			CustomersVO vo = customersRepo.findById(id).orElse(null);
+			vo.setDocument(filePath.toString());
+			customersRepo.save(vo);
+			return filePath.toString();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return "Failed to upload file: " + e.getMessage();
+		}
+	}
+
+
+	private String getFileExtensionDocument(String fileName) {
+		if (fileName != null && fileName.contains(".")) {
+			return fileName.substring(fileName.lastIndexOf("."));
+		}
+		return "";
+	}
+
+	private String getCustomizedDocumentFileName(String legalname) {
+		return legalname;
+	}
+
+	@Override
+	public List<Object[]> getRandomAssetDetailsByKitCodeAndAllotQty(String kitCode, int qty,String stockbranch) {
+		
+		return binAllotmentNewRepo.RandomAssetDetailsByKitCodeAndAllotQty(kitCode,qty,stockbranch);
+	}
+
+
 
 }

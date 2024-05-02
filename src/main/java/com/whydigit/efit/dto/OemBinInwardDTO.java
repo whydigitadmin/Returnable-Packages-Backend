@@ -18,6 +18,8 @@ public class OemBinInwardDTO {
 	private int recievedKitQty;
 	private String createdBy;
 	private Long orgId;
+	private String grnNo;
+	private LocalDate grnDate;
 
 	private List<OemBinInwardDetailsDTO> oemBinInwardDetails;
 }

@@ -10,7 +10,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.whydigit.efit.dto.AssetInwardDTO;
 import com.whydigit.efit.dto.AssetTaggingDTO;
 import com.whydigit.efit.dto.BinInwardDTO;
-import com.whydigit.efit.dto.BinOutwardDTO;
 import com.whydigit.efit.dto.CnoteDTO;
 import com.whydigit.efit.dto.CustomerAttachmentType;
 import com.whydigit.efit.dto.CustomersDTO;
@@ -31,7 +30,6 @@ import com.whydigit.efit.entity.AssetInwardVO;
 import com.whydigit.efit.entity.AssetTaggingVO;
 import com.whydigit.efit.entity.AssetVO;
 import com.whydigit.efit.entity.BinInwardVO;
-import com.whydigit.efit.entity.BinOutwardVO;
 import com.whydigit.efit.entity.CnoteVO;
 import com.whydigit.efit.entity.CustomersAddressVO;
 import com.whydigit.efit.entity.CustomersVO;
@@ -253,7 +251,7 @@ public interface MasterService {
 	String uploadFileProofOfDelivery(MultipartFile file, String docId, String refNo);
 
 	List<ProofOfDeliveryVO> getAllProofOfDelivery(Long orgId);
-	
+
 	// Bin Allotmentdetails
 
 	Set<Object[]> getAllotmentNoByEmitterIdAndOrgId(Long orgId, Long emitterId);
@@ -261,25 +259,37 @@ public interface MasterService {
 	Set<Object[]> getAllotmentDetailsByAllotmentNoAndOrgId(Long orgId, String docid);
 
 	BinInwardVO updateCreateBinInward(BinInwardDTO binInwardDTO) throws ApplicationException;
-	
-	Set<Object[]> getAlllBinInwardByEmitterAndOrgId(Long emitterid,Long orgId);
-	
+
+	Set<Object[]> getAlllBinInwardByEmitterAndOrgId(Long emitterid, Long orgId);
+
 	Optional<BinInwardVO> getBinInwardById(Long id);
-	
+
 	Optional<BinInwardVO> getBinInwardByDocid(String docid);
-	
+
 	Set<Object[]> getAllotmentAssetDetailsByAllotmentNoAndOrgId(Long orgId, String docid);
-	
-	Set<Object[]>getWaitingInwardDetailsByEmitterIdandOrgId(Long orgId,Long emitterid);
+
+	Set<Object[]> getWaitingInwardDetailsByEmitterIdandOrgId(Long orgId, Long emitterid);
 
 	Set<Object[]> getFlowDetailsByFlowId(Long flowId);
-
 
 	String getDocIdByAssetTagging();
 
 	String getDocIdByBinInward();
-
 	
+	String getDocIdByAssetInward();//
 
+	// Bin allotment Issue manifest pdf
 
+	List<Object[]> getBinAllotmentPdfHeaderDetails(String docid);
+
+	List<Object[]> getBinAllotmentPdfGridDetails(String docid);
+
+	AssetInwardVO getAssetInwardByDocId(String docId);
+
+	String uploadCustomerSop(Long id, String legalname, MultipartFile file);
+	
+	String uploadCustomerDocument(Long id, String legalname ,MultipartFile file);
+	
+	List<Object[]> getRandomAssetDetailsByKitCodeAndAllotQty(String kitCode, int qty, String stockbranch);
+	
 }

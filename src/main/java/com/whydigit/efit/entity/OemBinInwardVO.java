@@ -47,6 +47,10 @@ public class OemBinInwardVO {
 	private String createdby;
 	@Column(name = "modifiedby")
 	private String modifiedby;
+	@Column(name = "grnno")
+	private String grnNo;
+	@Column(name = "grndate")
+	private LocalDate grnDate;
 	@Column(name = "cancelremarks")
 	private String cancelRemark;
 	@Column(name = "active")
@@ -58,13 +62,10 @@ public class OemBinInwardVO {
 	@Column(name = "finyr")
 	private String finyr;
 	@Builder.Default
-	private String scode = "OMEBI";
+	private String scode = "OEMBI";
 	@Builder.Default
-	private String pm = "P";
-	@Builder.Default
-	private String screen = "BIN INWARD";
-	@Column(name = "sourceid")
-	private String sourceId;
+	private String screen = "Bin Inward";
+	
 
 	@OneToMany(mappedBy = "oemBinInwardVO", cascade = CascadeType.ALL)
 	@JsonManagedReference

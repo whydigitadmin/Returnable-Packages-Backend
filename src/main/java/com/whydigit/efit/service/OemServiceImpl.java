@@ -66,11 +66,15 @@ public class OemServiceImpl implements OemService {
 				stockDetailsVO.setSkuCode(binInwardDetailsVO.getAssetCode());
 				stockDetailsVO.setSkuQty(binInwardDetailsVO.getRecievedQty());
 				stockDetailsVO.setSCode(savedBinInwardVO.getScode());
-				stockDetailsVO.setPm(savedBinInwardVO.getPm());
 				stockDetailsVO.setScreen(savedBinInwardVO.getScreen());
 				stockDetailsVO.setSourceId(binInwardDetailsVO.getId());
 				stockDetailsVO.setFinyr(savedBinInwardVO.getFinyr());
-				;
+				stockDetailsVO.setPm("P");
+				stockDetailsVO.setStatus("S");
+				stockDetailsVO.setBinLocation("");
+				stockDetailsVO.setCancelRemarks("");
+				stockDetailsVO.setStockLocation("");
+				stockDetailsVO.setStockSource("");
 				assetStockDetailsRepo.save(stockDetailsVO);
 			}
 		return oemBinInwardVO;
@@ -78,8 +82,8 @@ public class OemServiceImpl implements OemService {
 
 	private OemBinInwardVO createOemBinInwardVOByOemBinInwardDTO(OemBinInwardDTO oemBinInwardDTO) {
 		List<OemBinInwardDetailsVO> binInwardDetailsVOList = new ArrayList<>();
-		OemBinInwardVO binInwardVO = OemBinInwardVO.builder().docDate(oemBinInwardDTO.getDocDate())
-				.recievedKitQty(oemBinInwardDTO.getRecievedKitQty()).createdby(oemBinInwardDTO.getCreatedBy())
+		OemBinInwardVO binInwardVO = OemBinInwardVO.builder().docDate(oemBinInwardDTO.getDocDate()).grnNo(oemBinInwardDTO.getGrnNo())
+				.grnDate(oemBinInwardDTO.getGrnDate()).recievedKitQty(oemBinInwardDTO.getRecievedKitQty()).createdby(oemBinInwardDTO.getCreatedBy())
 				.orgId(oemBinInwardDTO.getOrgId()).modifiedby(oemBinInwardDTO.getCreatedBy())
 				.oemBinInwardDetails(binInwardDetailsVOList).build();
 

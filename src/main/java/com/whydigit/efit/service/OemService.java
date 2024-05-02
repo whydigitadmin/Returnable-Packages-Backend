@@ -13,7 +13,9 @@ public interface OemService {
 
 //	OEM Bin Inward
 	OemBinInwardVO createOemBinInward(OemBinInwardDTO oemBinInwardDTO);
+	
 
 //	OEM Bin Outward
 	OemBinOutwardVO updateCreateOemBinOutward(OemBinOutwardDTO oemBinOutWardDTO) throws ApplicationException;
+	
 }
