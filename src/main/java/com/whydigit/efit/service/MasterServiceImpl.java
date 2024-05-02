@@ -1804,6 +1804,34 @@ public class MasterServiceImpl implements MasterService {
 
 			for (BinInwardDetailsVO binInwardDetails : savedBinInwardDetailsVO) {
 
+				Long flow = issueRequestRepo.getFlowIdByrequestId(binInwardDTO.getReqNo());
+				String emitter = flowRepo.findEmiterbyFlowId(flow);
+				String orgin = flowRepo.findOrigionbyFlowId(flow);
+
+				AssetStockDetailsVO assetStockDetailsVO = new AssetStockDetailsVO();
+				assetStockDetailsVO.setStockRef(savedBinInwardVO.getAllotmentNo());
+				assetStockDetailsVO.setStockDate(savedBinInwardVO.getAllotDate());
+				assetStockDetailsVO.setSkuCode(binInwardDetails.getAssetCode());
+				assetStockDetailsVO.setSku(binInwardDetails.getAsset());
+				assetStockDetailsVO.setSkuQty(binInwardDetails.getRecQty() * -1);
+				assetStockDetailsVO.setRfId(binInwardDetails.getRfId());
+				assetStockDetailsVO.setTagCode(binInwardDetails.getTagCode());
+				assetStockDetailsVO.setSCode(savedBinInwardVO.getScode()); // Assuming getScode() returns the correct
+				assetStockDetailsVO.setSourceId(binInwardDetails.getBinInwardDetailsId()); // value
+				assetStockDetailsVO.setScreen("Bin Inward");
+				assetStockDetailsVO.setPm("M");
+				assetStockDetailsVO.setStatus("M");
+				assetStockDetailsVO.setBinLocation("");
+				assetStockDetailsVO.setCancelRemarks("");
+				assetStockDetailsVO.setStockLocation("");
+				assetStockDetailsVO.setStockSource("");
+				assetStockDetailsVO.setFinyr(savedBinInwardVO.getFinYr());
+				assetStockDetailsVO.setStockBranch(emitter + "-" + orgin);
+				assetStockDetailsRepo.save(assetStockDetailsVO);
+			}
+
+			for (BinInwardDetailsVO binInwardDetails : savedBinInwardDetailsVO) {
+
 				Long flow = issueRequestRepo.getFlowIdByrequestId(savedBinInwardVO.getReqNo());
 				String emitter = flowRepo.findEmiterbyFlowId(flow);
 				String orgin = flowRepo.findOrigionbyFlowId(flow);
@@ -1822,34 +1850,6 @@ public class MasterServiceImpl implements MasterService {
 				assetStockDetailsVO.setScreen("Bin Inward");
 				assetStockDetailsVO.setPm("P");
 				assetStockDetailsVO.setStatus("S");
-				assetStockDetailsVO.setBinLocation("");
-				assetStockDetailsVO.setCancelRemarks("");
-				assetStockDetailsVO.setStockLocation("");
-				assetStockDetailsVO.setStockSource("");
-				assetStockDetailsVO.setFinyr(savedBinInwardVO.getFinYr());
-				assetStockDetailsVO.setStockBranch(emitter + "-" + orgin);
-				assetStockDetailsRepo.save(assetStockDetailsVO);
-			}
-
-			for (BinInwardDetailsVO binInwardDetails : savedBinInwardDetailsVO) {
-
-				Long flow = issueRequestRepo.getFlowIdByrequestId(binInwardDTO.getReqNo());
-				String emitter = flowRepo.findEmiterbyFlowId(flow);
-				String orgin = flowRepo.findOrigionbyFlowId(flow);
-
-				AssetStockDetailsVO assetStockDetailsVO = new AssetStockDetailsVO();
-				assetStockDetailsVO.setStockRef(savedBinInwardVO.getAllotmentNo());
-				assetStockDetailsVO.setStockDate(savedBinInwardVO.getAllotDate());
-				assetStockDetailsVO.setSkuCode(binInwardDetails.getAssetCode());
-				assetStockDetailsVO.setSku(binInwardDetails.getAsset());
-				assetStockDetailsVO.setSkuQty(binInwardDetails.getRecQty() * -1);
-				assetStockDetailsVO.setRfId(binInwardDetails.getRfId());
-				assetStockDetailsVO.setTagCode(binInwardDetails.getTagCode());
-				assetStockDetailsVO.setSCode(savedBinInwardVO.getScode()); // Assuming getScode() returns the correct
-				assetStockDetailsVO.setSourceId(binInwardDetails.getBinInwardDetailsId()); // value
-				assetStockDetailsVO.setScreen("Bin Inward");
-				assetStockDetailsVO.setPm("M");
-				assetStockDetailsVO.setStatus("M");
 				assetStockDetailsVO.setBinLocation("");
 				assetStockDetailsVO.setCancelRemarks("");
 				assetStockDetailsVO.setStockLocation("");
@@ -1965,17 +1965,14 @@ public class MasterServiceImpl implements MasterService {
 	private String UPLOAD_DR;
 
 	public String uploadCustomerSop(Long id, String legalname, MultipartFile file) {
-		String uploadResult = uploadFile(id, legalname, file); // Call uploadFile method with docId and refNo
-		// Create ProofOfDeliveryVO
-		CustomersVO vo = createCustomerSop(id, legalname,file, Paths.get(UPLOAD_DR));
+		String uploadResult = uploadCustomerFileSOP(id, legalname, file); // Call uploadFile method with docId and refNo
 		// Here you can do further processing or return both results combined
-		return uploadResult + "\n" + vo.toString(); // Example: Combining both results into a single string
+		return uploadResult ; // Example: Combining both results into a single string
 	}
 
-	public String uploadFile(Long id, String legalname, MultipartFile file) {
+	public String uploadCustomerFileSOP(Long id, String legalname, MultipartFile file) {
 		try {
 
-			CustomersVO customerVO= customersRepo.findById(id).orElse(null);
 			// Get the original file name
 			String originalFileName = file.getOriginalFilename();
 			// Extract the original file extension
@@ -1992,7 +1989,7 @@ public class MasterServiceImpl implements MasterService {
 			file.transferTo(filePath);
 			System.out.println(filePath);
 			// Create CustomerVO and set uploadReceipt
-			CustomersVO vo = createCustomerSop(id, legalname,file, Paths.get(UPLOAD_DR));
+			CustomersVO vo = customersRepo.findById(id).orElse(null);
 			vo.setSop(filePath.toString());
 			customersRepo.save(vo);
 			return filePath.toString();
@@ -2014,30 +2011,21 @@ public class MasterServiceImpl implements MasterService {
 		return legalname;
 	}
 
-	private CustomersVO createCustomerSop(Long id, String legalname, MultipartFile file, Path path) {
-		CustomersVO vo = new CustomersVO();
-		// Set other attributes as needed
-		vo.setSop(path.toString());
-		return vo;
-	}
-
 //document
 	
 	@Value("${customer.document.upload.dir}")
 	private String UPLOAD;
 
 	public String uploadCustomerDocument(Long id, String legalname, MultipartFile file) {
-		String uploadResult = uploadFileDocument(id, legalname, file); // Call uploadFile method with docId and refNo
+		String uploadResult = uploadFileCustomerDocument(id, legalname, file); // Call uploadFile method with docId and refNo
 		// Create ProofOfDeliveryVO
-		CustomersVO vo = createCustomerDocument(id, legalname,file, Paths.get(UPLOAD));
 		// Here you can do further processing or return both results combined
-		return uploadResult + "\n" + vo.toString(); // Example: Combining both results into a single string
+		return uploadResult ; // Example: Combining both results into a single string
 	}
 
-	public String uploadFileDocument(Long id, String legalname, MultipartFile file) {
+	public String uploadFileCustomerDocument(Long id, String legalname, MultipartFile file) {
 		try {
 
-			CustomersVO customerVO= customersRepo.findById(id).orElse(null);
 			// Get the original file name
 			String originalFileName = file.getOriginalFilename();
 			// Extract the original file extension
@@ -2054,8 +2042,8 @@ public class MasterServiceImpl implements MasterService {
 			file.transferTo(filePath);
 			System.out.println(filePath);
 			// Create CustomerVO and set uploadReceipt
-			CustomersVO vo = createCustomerDocument(id, legalname,file, Paths.get(UPLOAD));
-			vo.setSop(filePath.toString());
+			CustomersVO vo = customersRepo.findById(id).orElse(null);
+			vo.setDocument(filePath.toString());
 			customersRepo.save(vo);
 			return filePath.toString();
 		} catch (IOException e) {
@@ -2076,11 +2064,10 @@ public class MasterServiceImpl implements MasterService {
 		return legalname;
 	}
 
-	private CustomersVO createCustomerDocument(Long id, String legalname, MultipartFile file, Path path) {
-		CustomersVO vo = new CustomersVO();
-		// Set other attributes as needed
-		vo.setSop(path.toString());
-		return vo;
+	@Override
+	public List<Object[]> getRandomAssetDetailsByKitCodeAndAllotQty(String kitCode, int qty,String stockbranch) {
+		
+		return binAllotmentNewRepo.RandomAssetDetailsByKitCodeAndAllotQty(kitCode,qty,stockbranch);
 	}
 
 
