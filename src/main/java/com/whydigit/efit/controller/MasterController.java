@@ -1749,7 +1749,7 @@ public class MasterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 
 	}
-	
+
 	@GetMapping("/getAssetInwardDocId")
 	public ResponseEntity<ResponseDTO> getAssetInwardDocId(@RequestParam(required = false) String docId) {
 		String methodName = "getAssetInwardDocId()";
@@ -2697,7 +2697,7 @@ public class MasterController extends BaseController {
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
 		List<Object[]> header = new ArrayList<>();
-	
+
 		try {
 			header = masterService.getBinAllotmentPdfHeaderDetails(docid);
 		} catch (Exception e) {
@@ -2776,6 +2776,53 @@ public class MasterController extends BaseController {
 			allotDetails.add(part);
 		}
 		return allotDetails;
+	}
+
+	@PostMapping("/uploadFileCustomerSop")
+	public ResponseEntity<ResponseDTO> uploadFileCustomerSop(@RequestParam Long id, @RequestParam String legalname,
+			@RequestParam("file") MultipartFile file) {
+		String methodName = "uploadFileCustomerSop()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		try {
+			String result = masterService.uploadCustomerSop(id, legalname, file);
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Customer SOP created successfully");
+			responseObjectsMap.put("CustomerVO", result);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} catch (Exception e) {
+
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "Customer SOP creation failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+
+	}
+	@PostMapping("/uploadFileCustomerDocument")
+	public ResponseEntity<ResponseDTO> uploadFileCustomerDocument(@RequestParam Long id, @RequestParam String legalname,
+			@RequestParam("file") MultipartFile file) {
+		String methodName = "uploadFileCustomerDocument()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		try {
+			String result = masterService.uploadCustomerDocument(id, legalname, file);
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Customer Document created successfully");
+			responseObjectsMap.put("CustomerVO", result);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} catch (Exception e) {
+
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "Customer Document creation failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+
 	}
 
 }
