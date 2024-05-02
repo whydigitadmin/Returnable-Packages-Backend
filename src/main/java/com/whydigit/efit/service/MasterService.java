@@ -286,4 +286,8 @@ public interface MasterService {
 
 	AssetInwardVO getAssetInwardByDocId(String docId);
 
+	String uploadCustomerSop(Long id, String legalname, MultipartFile file);
+	
+	String uploadCustomerDocument(Long id, String legalname ,MultipartFile file);
+	
 }
