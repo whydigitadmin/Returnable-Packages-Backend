@@ -871,7 +871,7 @@ public class MasterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
-	@PostMapping("/Vendor")
+	@PutMapping("/Vendor")
 	public ResponseEntity<ResponseDTO> updateCreateVendor(@Valid @RequestBody VendorDTO vendorDTO) {
 		String methodName = "updateCreateVendor()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
@@ -2801,6 +2801,7 @@ public class MasterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 
 	}
+
 	@PostMapping("/uploadFileCustomerDocument")
 	public ResponseEntity<ResponseDTO> uploadFileCustomerDocument(@RequestParam Long id, @RequestParam String legalname,
 			@RequestParam("file") MultipartFile file) {
@@ -2823,6 +2824,47 @@ public class MasterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 
+	}
+
+	@GetMapping("/getRandomStockAssetDetails")
+	public ResponseEntity<ResponseDTO> getRandomStockAssetDetails(@RequestParam String kitCode, @RequestParam int qty,
+			@RequestParam String branchCode) {
+		String methodName = "getRandomStockAssetDetails()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<Object[]> stock = new ArrayList<>();
+		try {
+			stock = masterService.getRandomAssetDetailsByKitCodeAndAllotQty(kitCode, qty, branchCode);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			List<Map<String, String>> stockdetails = getStockDetails(stock);
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Stock Details found by ID");
+			responseObjectsMap.put("StockDetails", stockdetails);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			errorMsg = " not found for ID: ";
+			responseDTO = createServiceResponseError(responseObjectsMap, "Stock Details not found", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
+	private List<Map<String, String>> getStockDetails(List<Object[]> stock) {
+		List<Map<String, String>> stockdetails = new ArrayList<>();
+		for (Object[] ps : stock) {
+			Map<String, String> part = new HashMap<>();
+			part.put("tagCode", ps[1] != null ? ps[1].toString() : "");
+			part.put("asset", ps[2] != null ? ps[2].toString() : "");
+			part.put("rfId", ps[3] != null ? ps[3].toString() : "");
+			part.put("qty", ps[4] != null ? ps[4].toString() : "");
+			stockdetails.add(part);
+		}
+		return stockdetails;
 	}
 
 }

@@ -290,4 +290,6 @@ public interface MasterService {
 	
 	String uploadCustomerDocument(Long id, String legalname ,MultipartFile file);
 	
+	List<Object[]> getRandomAssetDetailsByKitCodeAndAllotQty(String kitCode, int qty, String stockbranch);
+	
 }
