@@ -21,7 +21,6 @@ public class CustomersDTO {
 	private boolean customerActivatePortal;
 	private boolean active;
 	
-	
 	private List<CustomersAddressDTO>customerAddressDTO;
 	
 	private List<CustomersBankDetailsDTO>customerBankDetailsDTO;

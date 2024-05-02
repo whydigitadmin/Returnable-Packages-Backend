@@ -428,13 +428,6 @@ public class MasterServiceImpl implements MasterService {
 	public CustomersVO getCustomersById(Long id) throws ApplicationException {
 		CustomersVO customersVO = customersRepo.findById(id)
 				.orElseThrow(() -> new ApplicationException("Customer not found."));
-		List<CustomerAttachmentVO> customerAttachmentVO = customerAttachmentRepo.findByCustomerId(id);
-		customersVO.setSop(customerAttachmentVO.stream()
-				.filter(ca -> ca.getType().equalsIgnoreCase(CustomerAttachmentType.SOP.name()))
-				.collect(Collectors.toList()));
-		customersVO.setDocument(customerAttachmentVO.stream()
-				.filter(ca -> ca.getType().equalsIgnoreCase(CustomerAttachmentType.DOC.name()))
-				.collect(Collectors.toList()));
 		return customersVO;
 	}
 
@@ -1967,5 +1960,129 @@ public class MasterServiceImpl implements MasterService {
 		String assetInward = finyr + "AI" + assetInwardRepo.finddocid();
 		return assetInward;
 	}
+
+	@Value("${customer.sop.upload.dir}")
+	private String UPLOAD_DR;
+
+	public String uploadCustomerSop(Long id, String legalname, MultipartFile file) {
+		String uploadResult = uploadFile(id, legalname, file); // Call uploadFile method with docId and refNo
+		// Create ProofOfDeliveryVO
+		CustomersVO vo = createCustomerSop(id, legalname,file, Paths.get(UPLOAD_DR));
+		// Here you can do further processing or return both results combined
+		return uploadResult + "\n" + vo.toString(); // Example: Combining both results into a single string
+	}
+
+	public String uploadFile(Long id, String legalname, MultipartFile file) {
+		try {
+
+			CustomersVO customerVO= customersRepo.findById(id).orElse(null);
+			// Get the original file name
+			String originalFileName = file.getOriginalFilename();
+			// Extract the original file extension
+			String fileExtension = getFileExtensionSop(originalFileName);
+			// Customize the filename
+			String customizedFileName = getCustomizedSopFileName(legalname) + fileExtension;
+			// Create the directory if it doesn't exist
+			File directory = new File(UPLOAD_DR);
+			if (!directory.exists()) {
+				directory.mkdirs();
+			}
+			// Save the file to the upload directory with the customized filename
+			Path filePath = Paths.get(UPLOAD_DR, customizedFileName);
+			file.transferTo(filePath);
+			System.out.println(filePath);
+			// Create CustomerVO and set uploadReceipt
+			CustomersVO vo = createCustomerSop(id, legalname,file, Paths.get(UPLOAD_DR));
+			vo.setSop(filePath.toString());
+			customersRepo.save(vo);
+			return filePath.toString();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return "Failed to upload file: " + e.getMessage();
+		}
+	}
+
+
+	private String getFileExtensionSop(String fileName) {
+		if (fileName != null && fileName.contains(".")) {
+			return fileName.substring(fileName.lastIndexOf("."));
+		}
+		return "";
+	}
+
+	private String getCustomizedSopFileName(String legalname) {
+		return legalname;
+	}
+
+	private CustomersVO createCustomerSop(Long id, String legalname, MultipartFile file, Path path) {
+		CustomersVO vo = new CustomersVO();
+		// Set other attributes as needed
+		vo.setSop(path.toString());
+		return vo;
+	}
+
+//document
+	
+	@Value("${customer.document.upload.dir}")
+	private String UPLOAD;
+
+	public String uploadCustomerDocument(Long id, String legalname, MultipartFile file) {
+		String uploadResult = uploadFileDocument(id, legalname, file); // Call uploadFile method with docId and refNo
+		// Create ProofOfDeliveryVO
+		CustomersVO vo = createCustomerDocument(id, legalname,file, Paths.get(UPLOAD));
+		// Here you can do further processing or return both results combined
+		return uploadResult + "\n" + vo.toString(); // Example: Combining both results into a single string
+	}
+
+	public String uploadFileDocument(Long id, String legalname, MultipartFile file) {
+		try {
+
+			CustomersVO customerVO= customersRepo.findById(id).orElse(null);
+			// Get the original file name
+			String originalFileName = file.getOriginalFilename();
+			// Extract the original file extension
+			String fileExtension = getFileExtensionDocument(originalFileName);
+			// Customize the filename
+			String customizedFileName = getCustomizedDocumentFileName(legalname) + fileExtension;
+			// Create the directory if it doesn't exist
+			File directory = new File(UPLOAD);
+			if (!directory.exists()) {
+				directory.mkdirs();
+			}
+			// Save the file to the upload directory with the customized filename
+			Path filePath = Paths.get(UPLOAD, customizedFileName);
+			file.transferTo(filePath);
+			System.out.println(filePath);
+			// Create CustomerVO and set uploadReceipt
+			CustomersVO vo = createCustomerDocument(id, legalname,file, Paths.get(UPLOAD));
+			vo.setSop(filePath.toString());
+			customersRepo.save(vo);
+			return filePath.toString();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return "Failed to upload file: " + e.getMessage();
+		}
+	}
+
+
+	private String getFileExtensionDocument(String fileName) {
+		if (fileName != null && fileName.contains(".")) {
+			return fileName.substring(fileName.lastIndexOf("."));
+		}
+		return "";
+	}
+
+	private String getCustomizedDocumentFileName(String legalname) {
+		return legalname;
+	}
+
+	private CustomersVO createCustomerDocument(Long id, String legalname, MultipartFile file, Path path) {
+		CustomersVO vo = new CustomersVO();
+		// Set other attributes as needed
+		vo.setSop(path.toString());
+		return vo;
+	}
+
+
 
 }
