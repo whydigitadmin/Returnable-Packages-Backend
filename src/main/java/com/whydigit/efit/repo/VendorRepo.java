@@ -14,6 +14,8 @@ public interface VendorRepo extends JpaRepository<VendorVO, Long> {
 	@Query(value = "select a from VendorVO a Where a.orgId=?1")
 	List<VendorVO> getAllVenderByOrgId(Long orgId);
 
+	boolean existsByEntityLegalNameAndDisplyNameAndOrgId(String entityLegalName, String displyName, long orgId);
+
 	
 
 }

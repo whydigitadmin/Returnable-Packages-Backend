@@ -516,24 +516,18 @@ public class MasterServiceImpl implements MasterService {
 
 	@Override
 	public CustomersVO updateCustomers(CustomersDTO customersDTO) throws ApplicationException {
-		if (customersRepo.existsById(customersDTO.getId())) {
-			CustomersVO customersVO = customersRepo.findById(customersDTO.getId())
-					.orElseThrow(() -> new ApplicationException("Customer information not found."));
-
+		CustomersVO customersVO = new CustomersVO();
+		if (ObjectUtils.isNotEmpty(customersDTO.getId())) {
+			customersVO = customersRepo.findById(customersDTO.getId())
+					.orElseThrow(() -> new ApplicationException("Invalid Customer details"));
+		}
+		getCustomerVOFromCustomerDTO(customersDTO, customersVO);
 			// Update customer details excluding customer type and customer code
-			customersVO.setOrgId(customersDTO.getOrgId());
-			customersVO.setEntityLegalName(customersDTO.getEntityLegalName());
-			customersVO.setEmail(customersDTO.getEmail());
-			customersVO.setDisplayName(customersDTO.getDisplayName());
-			customersVO.setPhoneNumber(customersDTO.getPhoneNumber());
-			customersVO.setCustomerActivatePortal(customersDTO.isCustomerActivatePortal());
-			customersVO.setActive(customersDTO.isActive());
-
 			// Update or add new address details
-			List<CustomersAddressVO> customersAddressVO = customersVO.getCustomersAddressVO();
+			List<CustomersAddressVO> customersAddressVO = new ArrayList<>();
 			if (customersDTO.getCustomerAddressDTO() != null) {
 				for (CustomersAddressDTO addressDTO : customersDTO.getCustomerAddressDTO()) {
-					if (ObjectUtils.isNotEmpty(addressDTO.getId())) {
+					if (addressDTO.getId() != null & ObjectUtils.isNotEmpty(addressDTO.getId())) {
 						CustomersAddressVO custAddress = customersAddressRepo.findById(addressDTO.getId()).get();
 						custAddress.setGstRegistrationStatus(addressDTO.getGstRegistrationStatus());
 						custAddress.setStreet1(addressDTO.getStreet1());
@@ -547,6 +541,8 @@ public class MasterServiceImpl implements MasterService {
 						custAddress.setEmail(addressDTO.getEmail());
 						custAddress.setDesignation(addressDTO.getDesignation());
 						custAddress.setCountry(addressDTO.getCountry());
+						custAddress.setCustomersVO(customersVO);
+						customersAddressVO.add(custAddress);
 					} else {
 						CustomersAddressVO custAddress = new CustomersAddressVO();
 						custAddress.setGstRegistrationStatus(addressDTO.getGstRegistrationStatus());
@@ -561,15 +557,17 @@ public class MasterServiceImpl implements MasterService {
 						custAddress.setEmail(addressDTO.getEmail());
 						custAddress.setDesignation(addressDTO.getDesignation());
 						custAddress.setCountry(addressDTO.getCountry());
+						custAddress.setCustomersVO(customersVO);
+						customersAddressVO.add(custAddress);
 					}
 				}
 			}
-
+			customersVO.setCustomersAddressVO(customersAddressVO);;
 			// Update or add new bank details
-			List<CustomersBankDetailsVO> customersBankDetailsVO = customersVO.getCustomersBankDetailsVO();
+			List<CustomersBankDetailsVO> customersBankDetailsVO = new ArrayList<>();
 			if (customersDTO.getCustomerBankDetailsDTO() != null) {
 				for (CustomersBankDetailsDTO bankDetailsDTO : customersDTO.getCustomerBankDetailsDTO()) {
-					if (ObjectUtils.isNotEmpty(bankDetailsDTO.getId())) {
+					if (bankDetailsDTO.getId() != null & ObjectUtils.isNotEmpty(bankDetailsDTO.getId())) {
 						CustomersBankDetailsVO bankdetails = customersBankDetailsRepo.findById(bankDetailsDTO.getId())
 								.get();
 						bankdetails.setBank(bankDetailsDTO.getBank());
@@ -577,6 +575,8 @@ public class MasterServiceImpl implements MasterService {
 						bankdetails.setIfscCode(bankDetailsDTO.getIfscCode());
 						bankdetails.setBranch(bankDetailsDTO.getBranch());
 						bankdetails.setAccountNo(bankDetailsDTO.getAccountNo());
+						bankdetails.setCustomersVO(customersVO);
+						customersBankDetailsVO.add(bankdetails);
 					} else {
 						CustomersBankDetailsVO bankdetails = new CustomersBankDetailsVO();
 						bankdetails.setBank(bankDetailsDTO.getBank());
@@ -584,15 +584,28 @@ public class MasterServiceImpl implements MasterService {
 						bankdetails.setIfscCode(bankDetailsDTO.getIfscCode());
 						bankdetails.setBranch(bankDetailsDTO.getBranch());
 						bankdetails.setAccountNo(bankDetailsDTO.getAccountNo());
-					}
+						bankdetails.setCustomersVO(customersVO);
+						customersBankDetailsVO.add(bankdetails);	
+						}
 				}
 			}
-
-			customersRepo.save(customersVO);
-			return customersVO;
-		} else {
-			throw new ApplicationException("Customer information Not Found");
+			customersVO.setCustomersBankDetailsVO(customersBankDetailsVO);
+			return customersRepo.save(customersVO);			
+} 
+	private void getCustomerVOFromCustomerDTO(CustomersDTO customersDTO, CustomersVO customersVO) {
+		
+		if (customersRepo.existsByEntityLegalNameAndDisplayNameAndOrgId(customersDTO.getEntityLegalName(),
+				customersDTO.getDisplayName(), customersDTO.getOrgId())) {
+			throw new RuntimeException("The Customer LegalName or DisplayName already exists");
 		}
+		customersVO.setOrgId(customersDTO.getOrgId());
+		customersVO.setEntityLegalName(customersDTO.getEntityLegalName());
+		customersVO.setEmail(customersDTO.getEmail());
+		customersVO.setDisplayName(customersDTO.getDisplayName());
+		customersVO.setPhoneNumber(customersDTO.getPhoneNumber());
+		customersVO.setCustomerActivatePortal(customersDTO.isCustomerActivatePortal());
+		customersVO.setActive(customersDTO.isActive());
+		
 	}
 
 	@Override
@@ -997,7 +1010,8 @@ public class MasterServiceImpl implements MasterService {
 
 	@Override
 	public VendorVO updateCreateVendor(VendorDTO vendorDTO) throws ApplicationException {
-	    VendorVO vendorVO = new VendorVO();
+		
+		 VendorVO vendorVO = new VendorVO();
 	    if (ObjectUtils.isNotEmpty(vendorDTO.getId())) {
 	        vendorVO = vendorRepo.findById(vendorDTO.getId())
 	                            .orElseThrow(() -> new ApplicationException("Invalid Vendor details"));
@@ -1081,6 +1095,11 @@ public class MasterServiceImpl implements MasterService {
 	}
 
 	private void getVendorVOFromVendorDTO(VendorDTO vendorDTO, VendorVO vendorVO) {
+		
+		if (vendorRepo.existsByEntityLegalNameAndDisplyNameAndOrgId(vendorDTO.getEntityLegalName(),
+				vendorDTO.getDisplyName(), vendorDTO.getOrgId())) {
+			throw new RuntimeException("The Vendor LegalName or DisplayName already exists");
+		}
 	    vendorVO.setOrgId(vendorDTO.getOrgId());
 	    vendorVO.setVenderType(vendorDTO.getVenderType());
 	    vendorVO.setDisplyName(vendorDTO.getDisplyName());
@@ -2031,7 +2050,7 @@ public class MasterServiceImpl implements MasterService {
 			System.out.println(filePath);
 			// Create CustomerVO and set uploadReceipt
 			CustomersVO vo = customersRepo.findById(id).orElse(null);
-			vo.setSop(filePath.toString());
+			vo.setSop(filePath.toString().replace("\\", "/"));
 			customersRepo.save(vo);
 			return filePath.toString();
 		} catch (IOException e) {
