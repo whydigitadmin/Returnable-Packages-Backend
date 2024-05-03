@@ -544,4 +544,124 @@ public class PartStudyController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 	
+	@PostMapping("/uploadPartImage")
+	public ResponseEntity<ResponseDTO> uploadPartImage(@RequestParam Long id,
+			@RequestParam("file") MultipartFile file) {
+		String methodName = "uploadPartImage()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		try {
+			String result = partStudyService.uploadPartImage(id, file);
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Part Image Uploaded Sucessfully");
+			responseObjectsMap.put("partImageUpload", result);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} catch (Exception e) {
+
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "Part Image Uploaded Failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+
+	}
+	
+	@PostMapping("/uploadPartDrawing")
+	public ResponseEntity<ResponseDTO> uploadPartDrawing(@RequestParam Long id,
+			@RequestParam("file") MultipartFile file) {
+		String methodName = "uploadPartDrawing()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		try {
+			String result = partStudyService.uploadPartDrawing(id, file);
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Part Drawing Uploaded Sucessfully");
+			responseObjectsMap.put("partImageUpload", result);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} catch (Exception e) {
+
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "Part Drawing Uploaded Failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+
+	}
+	
+	@PostMapping("/uploadExPackageImage")
+	public ResponseEntity<ResponseDTO> uploadExPackageImage(@RequestParam Long id,
+			@RequestParam("file") MultipartFile file) {
+		String methodName = "uploadExPackageImage()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		try {
+			String result = partStudyService.uploadExPackageImage(id, file);
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Existing Package Image Uploaded Sucessfully");
+			responseObjectsMap.put("partImageUpload", result);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} catch (Exception e) {
+
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "Existing Package Uploaded Failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+
+	}
+	
+	@PostMapping("/uploadApprovedCommercialImage")
+	public ResponseEntity<ResponseDTO> uploadApprovedCommercialImage(@RequestParam Long id,
+			@RequestParam("file") MultipartFile file) {
+		String methodName = "uploadApprovedCommercialImage()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		try {
+			String result = partStudyService.uploadApprovedCommercial(id, file);
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Approved Commercial Image Uploaded Sucessfully");
+			responseObjectsMap.put("partImageUpload", result);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} catch (Exception e) {
+
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "Approved Commercial Uploaded Failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+
+	}
+	
+	@PostMapping("/uploadApprovedTechnicalDrawing")
+	public ResponseEntity<ResponseDTO> uploadApprovedTechnicalDrawing(@RequestParam Long id,
+			@RequestParam("file") MultipartFile file) {
+		String methodName = "uploadApprovedTechnicalDrawing()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		try {
+			String result = partStudyService.uploadApprovedTechnicalDrawing(id, file);
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Approved Technical Drawing Uploaded Sucessfully");
+			responseObjectsMap.put("partImageUpload", result);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} catch (Exception e) {
+
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "Approved Technical Drawing Uploaded Failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+
+	}
+	
 }
