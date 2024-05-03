@@ -997,67 +997,98 @@ public class MasterServiceImpl implements MasterService {
 
 	@Override
 	public VendorVO updateCreateVendor(VendorDTO vendorDTO) throws ApplicationException {
-		VendorVO vendorVO = new VendorVO();
-		if (ObjectUtils.isNotEmpty(vendorDTO.getId())) {
-			vendorVO = vendorRepo.findById(vendorDTO.getId())
-					.orElseThrow(() -> new ApplicationException("Invalid Vendor details"));
-		}
+	    VendorVO vendorVO = new VendorVO();
+	    if (ObjectUtils.isNotEmpty(vendorDTO.getId())) {
+	        vendorVO = vendorRepo.findById(vendorDTO.getId())
+	                            .orElseThrow(() -> new ApplicationException("Invalid Vendor details"));
+	    }
 
-		List<VendorBankDetailsVO> vendorBankDetailsVO = new ArrayList<>();
-		if (vendorDTO.getVendorBankDetailsDTO() != null) {
-			for (VendorBankDetailsDTO vendorbankDetailsDTO : vendorDTO.getVendorBankDetailsDTO()) {
-				VendorBankDetailsVO bankDetailsVO = new VendorBankDetailsVO();
-				bankDetailsVO.setAccountNo(vendorbankDetailsDTO.getAccountNo());
-				bankDetailsVO.setBank(vendorbankDetailsDTO.getBank());
-				bankDetailsVO.setBranch(vendorbankDetailsDTO.getBranch());
-				bankDetailsVO.setAccountname(vendorbankDetailsDTO.getAccountName());
-				bankDetailsVO.setIfscCode(vendorbankDetailsDTO.getIfscCode());
-				bankDetailsVO.setVendorVO(vendorVO);
-				vendorBankDetailsVO.add(bankDetailsVO);
-				;
-			}
-		}
+	    // Update vendor details
+	    getVendorVOFromVendorDTO(vendorDTO, vendorVO);
 
-		List<VendorAddressVO> vendorAddressVO = new ArrayList<>();
-		if (vendorDTO.getVendorAddressDTO() != null) {
-			for (VendorAddressDTO vendorAddressDTO : vendorDTO.getVendorAddressDTO()) {
-				VendorAddressVO vendorAddress = new VendorAddressVO();
+	    // Update or create bank details
+	    List<VendorBankDetailsVO> vendorBankDetailsVO = new ArrayList<>();
+	    if (vendorDTO.getVendorBankDetailsDTO() != null) {
+	        for (VendorBankDetailsDTO vendorbankDetailsDTO : vendorDTO.getVendorBankDetailsDTO()) {
+				if (vendorbankDetailsDTO.getId() != null & ObjectUtils.isNotEmpty(vendorbankDetailsDTO.getId())) {
+					VendorBankDetailsVO bankDetailsVO = vendorBankDetailsRepo.findById(vendorbankDetailsDTO.getId()).get();
+					bankDetailsVO.setAccountNo(vendorbankDetailsDTO.getAccountNo());
+					bankDetailsVO.setBank(vendorbankDetailsDTO.getBank());
+					bankDetailsVO.setBranch(vendorbankDetailsDTO.getBranch());
+					bankDetailsVO.setAccountname(vendorbankDetailsDTO.getAccountName());
+					bankDetailsVO.setIfscCode(vendorbankDetailsDTO.getIfscCode());
+					bankDetailsVO.setVendorVO(vendorVO);
+					vendorBankDetailsVO.add(bankDetailsVO);
+				} else {
+					VendorBankDetailsVO bankDetailsVO = new VendorBankDetailsVO();
+					bankDetailsVO.setAccountNo(vendorbankDetailsDTO.getAccountNo());
+					bankDetailsVO.setBank(vendorbankDetailsDTO.getBank());
+					bankDetailsVO.setBranch(vendorbankDetailsDTO.getBranch());
+					bankDetailsVO.setAccountname(vendorbankDetailsDTO.getAccountName());
+					bankDetailsVO.setIfscCode(vendorbankDetailsDTO.getIfscCode());
+					bankDetailsVO.setVendorVO(vendorVO);
+					vendorBankDetailsVO.add(bankDetailsVO);
+				}
+	        }
+	    }
+	    vendorVO.setVendorBankDetailsVO(vendorBankDetailsVO);
 
-				vendorAddress.setGstNumber(vendorAddressDTO.getGstNumber());
-				vendorAddress.setStreet1(vendorAddressDTO.getStreet1());
-				vendorAddress.setStreet2(vendorAddressDTO.getStreet2());
-				vendorAddress.setCity(vendorAddressDTO.getCity());
-				vendorAddress.setPinCode(vendorAddressDTO.getPinCode());
-				vendorAddress.setContactName(vendorAddressDTO.getContactName());
-				vendorAddress.setPhoneNumber(vendorAddressDTO.getPhoneNumber());
-				vendorAddress.setDesignation(vendorAddressDTO.getDesignation());
-				vendorAddress.setEmail(vendorAddressDTO.getEmail());
-				vendorAddress.setGstRegistrationStatus(vendorAddressDTO.getGstRegistrationStatus());
-				vendorAddress.setState(vendorAddressDTO.getState());
-				vendorAddress.setVendorVO(vendorVO);
-				vendorAddress.setCountry(vendorAddressDTO.getCountry());
+	    // Update or create address details
+	    List<VendorAddressVO> vendorAddressVO = new ArrayList<>();
+	    if (vendorDTO.getVendorAddressDTO() != null) {
+	        for (VendorAddressDTO vendorAddressDTO : vendorDTO.getVendorAddressDTO()) {
+				if (vendorAddressDTO.getId() != null & ObjectUtils.isNotEmpty(vendorAddressDTO.getId())) {
+					VendorAddressVO vendorAddress = vendorAddressRepo.findById(vendorAddressDTO.getId()).get();
+					vendorAddress.setGstNumber(vendorAddressDTO.getGstNumber());
+					vendorAddress.setStreet1(vendorAddressDTO.getStreet1());
+					vendorAddress.setStreet2(vendorAddressDTO.getStreet2());
+					vendorAddress.setCity(vendorAddressDTO.getCity());
+					vendorAddress.setPinCode(vendorAddressDTO.getPinCode());
+					vendorAddress.setContactName(vendorAddressDTO.getContactName());
+					vendorAddress.setPhoneNumber(vendorAddressDTO.getPhoneNumber());
+					vendorAddress.setDesignation(vendorAddressDTO.getDesignation());
+					vendorAddress.setEmail(vendorAddressDTO.getEmail());
+					vendorAddress.setGstRegistrationStatus(vendorAddressDTO.getGstRegistrationStatus());
+					vendorAddress.setState(vendorAddressDTO.getState());
+					vendorAddress.setVendorVO(vendorVO);
+					vendorAddress.setCountry(vendorAddressDTO.getCountry());
+					vendorAddressVO.add(vendorAddress);
+				}
+				else
+				{
+					VendorAddressVO vendorAddress=new VendorAddressVO();
+					vendorAddress.setGstNumber(vendorAddressDTO.getGstNumber());
+					vendorAddress.setStreet1(vendorAddressDTO.getStreet1());
+					vendorAddress.setStreet2(vendorAddressDTO.getStreet2());
+					vendorAddress.setCity(vendorAddressDTO.getCity());
+					vendorAddress.setPinCode(vendorAddressDTO.getPinCode());
+					vendorAddress.setContactName(vendorAddressDTO.getContactName());
+					vendorAddress.setPhoneNumber(vendorAddressDTO.getPhoneNumber());
+					vendorAddress.setDesignation(vendorAddressDTO.getDesignation());
+					vendorAddress.setEmail(vendorAddressDTO.getEmail());
+					vendorAddress.setGstRegistrationStatus(vendorAddressDTO.getGstRegistrationStatus());
+					vendorAddress.setState(vendorAddressDTO.getState());
+					vendorAddress.setVendorVO(vendorVO);
+					vendorAddress.setCountry(vendorAddressDTO.getCountry());
+					vendorAddressVO.add(vendorAddress);
+				}
+	        	
+	        }
+	    }
+	    vendorVO.setVendorAddressVO(vendorAddressVO);
 
-				vendorAddressVO.add(vendorAddress);
-			}
-		}
-		vendorVO.setVendorAddressVO(vendorAddressVO);
-vendorVO.setVendorBankDetailsVO(vendorBankDetailsVO);
-getVendorVOFromVendorDTO(vendorDTO, vendorVO);
-		return VendorRepo.save(vendorVO);
+	    return vendorRepo.save(vendorVO);
 	}
-	
+
 	private void getVendorVOFromVendorDTO(VendorDTO vendorDTO, VendorVO vendorVO) {
-	
-	
-	vendorVO.setOrgId(vendorDTO.getOrgId());
-		vendorVO.setVenderType(vendorDTO.getVenderType());
-		vendorVO.setDisplyName(vendorDTO.getDisplyName());
-		vendorVO.setPhoneNumber(vendorDTO.getPhoneNumber());
-		vendorVO.setEntityLegalName(vendorDTO.getEntityLegalName());
-		vendorVO.setEmail(vendorDTO.getEmail());
-		vendorVO.setVenderActivePortal(vendorDTO.isActive());
-		vendorVO.setActive(vendorDTO.isActive());
-	
+	    vendorVO.setOrgId(vendorDTO.getOrgId());
+	    vendorVO.setVenderType(vendorDTO.getVenderType());
+	    vendorVO.setDisplyName(vendorDTO.getDisplyName());
+	    vendorVO.setPhoneNumber(vendorDTO.getPhoneNumber());
+	    vendorVO.setEntityLegalName(vendorDTO.getEntityLegalName());
+	    vendorVO.setEmail(vendorDTO.getEmail());
+	    vendorVO.setVenderActivePortal(vendorDTO.isActive());
+	    vendorVO.setActive(vendorDTO.isActive());
 	}
 
 	@Override
@@ -2041,7 +2072,7 @@ getVendorVOFromVendorDTO(vendorDTO, vendorVO);
 			// Extract the original file extension
 			String fileExtension = getFileExtensionDocument(originalFileName);
 			// Customize the filename
-			String customizedFileName = getCustomizedDocumentFileName(legalname) + fileExtension;
+			String customizedFileName = getCustomizedDocumentFileName(id,legalname) + fileExtension;
 			// Create the directory if it doesn't exist
 			File directory = new File(UPLOAD);
 			if (!directory.exists()) {
@@ -2053,7 +2084,7 @@ getVendorVOFromVendorDTO(vendorDTO, vendorVO);
 			System.out.println(filePath);
 			// Create CustomerVO and set uploadReceipt
 			CustomersVO vo = customersRepo.findById(id).orElse(null);
-			vo.setDocument(filePath.toString());
+			vo.setDocument(filePath.toString().replace("\\", "/"));
 			customersRepo.save(vo);
 			return filePath.toString();
 		} catch (IOException e) {
@@ -2070,8 +2101,8 @@ getVendorVOFromVendorDTO(vendorDTO, vendorVO);
 		return "";
 	}
 
-	private String getCustomizedDocumentFileName(String legalname) {
-		return legalname;
+	private String getCustomizedDocumentFileName(Long id,String legalname) {
+		return id+"-"+legalname;
 	}
 
 	@Override

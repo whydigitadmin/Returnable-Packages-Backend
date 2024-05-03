@@ -2,6 +2,7 @@
 package com.whydigit.efit.service;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
@@ -24,6 +25,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -435,5 +437,198 @@ public class PartStudyServiceImpl implements PartStudyService {
 
 	private List<PDAttachmentVO> getPDAttachment(long refPsId) {
 		return pdAttachmentRepo.findByRefPsId(refPsId);
+	}
+	
+	
+// Part Image
+	@Value("${part.study.attachment.dir}")
+	private String partimage;
+	
+	@Override
+	public String uploadPartImage(Long id, MultipartFile file) {
+		String uploadResult = uploadPartImageFile(id,file); // Call uploadFile method with docId and refNo
+		// Here you can do further processing or return both results combined
+		return uploadResult ; 
+	}
+
+	private String uploadPartImageFile(Long id, MultipartFile file) {
+		try {
+
+			// Get the original file name
+			String originalFileName = file.getOriginalFilename();
+			// Extract the original file extension
+			String fileExtension = getFileExtensionDocument(originalFileName);
+			// Customize the filename
+			String customizedFileName = id+"-PartImage" + fileExtension;
+			String uploadDirPath = new StringBuilder(partimage).append("/").append(id).toString();
+			// Create the directory if it doesn't exist
+			File directory = new File(uploadDirPath);
+			if (!directory.exists()) {
+				directory.mkdirs();
+			}
+			// Save the file to the upload directory with the customized filename
+			Path filePath = Paths.get(uploadDirPath, customizedFileName);
+			file.transferTo(filePath);
+			System.out.println(filePath);
+			// Create CustomerVO and set uploadReceipt
+			PackingDetailVO vo = packingDetailRepo.findById(id).orElse(null);
+			vo.setPartImg(filePath.toString().replace("\\", "/"));
+			packingDetailRepo.save(vo);
+			return filePath.toString();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return "Failed to upload file: " + e.getMessage();
+		}
+	}
+
+	private String getFileExtensionDocument(String fileName) {
+		if (fileName != null && fileName.contains(".")) {
+			return fileName.substring(fileName.lastIndexOf("."));
+		}
+		return "";
+	}
+	
+	@Override
+	public String uploadPartDrawing(Long id, MultipartFile file) {
+		String uploadResult = uploadPartDrawingImageFile(id,file); // Call uploadFile method with docId and refNo
+		return uploadResult ; 
+	}
+
+	private String uploadPartDrawingImageFile(Long id, MultipartFile file) {
+		try {
+
+			// Get the original file name
+			String originalFileName = file.getOriginalFilename();
+			// Extract the original file extension
+			String fileExtension = getFileExtensionDocument(originalFileName);
+			// Customize the filename
+			String customizedFileName = id+"-PartDrawing" + fileExtension;
+			// Create the directory if it doesn't exist
+			String uploadDirPath = new StringBuilder(partimage).append("/").append(id).toString();
+			File directory = new File(uploadDirPath);
+			if (!directory.exists()) {
+				directory.mkdirs();
+			}
+			// Save the file to the upload directory with the customized filename
+			Path filePath = Paths.get(uploadDirPath, customizedFileName);
+			file.transferTo(filePath);
+			System.out.println(filePath);
+			// Create CustomerVO and set uploadReceipt
+			PackingDetailVO vo = packingDetailRepo.findById(id).orElse(null);
+			vo.setPDrawing(filePath.toString().replace("\\", "/"));
+			packingDetailRepo.save(vo);
+			return filePath.toString();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return "Failed to upload file: " + e.getMessage();
+		}
+	}	
+
+	@Override
+	public String uploadExPackageImage(Long id, MultipartFile file) {
+		String uploadResult = uploadExPackageImageFile(id,file); // Call uploadFile method with docId and refNo
+		return uploadResult ; 
+	}
+
+	private String uploadExPackageImageFile(Long id, MultipartFile file) {
+		try {
+
+			// Get the original file name
+			String originalFileName = file.getOriginalFilename();
+			// Extract the original file extension
+			String fileExtension = getFileExtensionDocument(originalFileName);
+			// Customize the filename
+			String customizedFileName = id+"-ExistingPackagingImage"+fileExtension;
+			// Create the directory if it doesn't exist
+			String uploadDirPath = new StringBuilder(partimage).append("/").append(id).toString();
+			File directory = new File(uploadDirPath);
+			if (!directory.exists()) {
+				directory.mkdirs();
+			}
+			// Save the file to the upload directory with the customized filename
+			Path filePath = Paths.get(uploadDirPath, customizedFileName);
+			file.transferTo(filePath);
+			System.out.println(filePath);
+			// Create CustomerVO and set uploadReceipt
+			PackingDetailVO vo = packingDetailRepo.findById(id).orElse(null);
+			vo.setExistingImage(filePath.toString().replace("\\", "/"));
+			packingDetailRepo.save(vo);
+			return filePath.toString();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return "Failed to upload file: " + e.getMessage();
+		}
+	}
+
+	@Override
+	public String uploadApprovedCommercial(Long id, MultipartFile file) {
+		String uploadResult = uploadApprovedCommercialImageFile(id,file); // Call uploadFile method with docId and refNo
+		return uploadResult ;
+	}
+
+	private String uploadApprovedCommercialImageFile(Long id, MultipartFile file) {
+		try {
+
+			// Get the original file name
+			String originalFileName = file.getOriginalFilename();
+			// Extract the original file extension
+			String fileExtension = getFileExtensionDocument(originalFileName);
+			// Customize the filename
+			String customizedFileName = id+"-ApprovedCommercialImage" + fileExtension;
+			// Create the directory if it doesn't exist
+			String uploadDirPath = new StringBuilder(partimage).append("/").append(id).toString();
+			File directory = new File(uploadDirPath);
+			if (!directory.exists()) {
+				directory.mkdirs();
+			}
+			// Save the file to the upload directory with the customized filename
+			Path filePath = Paths.get(uploadDirPath, customizedFileName);
+			file.transferTo(filePath);
+			System.out.println(filePath);
+			// Create CustomerVO and set uploadReceipt
+			PackingDetailVO vo = packingDetailRepo.findById(id).orElse(null);
+			vo.setComercial(filePath.toString().replace("\\", "/"));
+			packingDetailRepo.save(vo);
+			return filePath.toString();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return "Failed to upload file: " + e.getMessage();
+		}
+	}
+	
+	@Override
+	public String uploadApprovedTechnicalDrawing(Long id, MultipartFile file) {
+		String uploadResult = uploadApprovedTechnicalDrawingImageFile(id,file); // Call uploadFile method with docId and refNo
+		return uploadResult ;
+	}
+
+	private String uploadApprovedTechnicalDrawingImageFile(Long id, MultipartFile file) {
+		try {
+
+			// Get the original file name
+			String originalFileName = file.getOriginalFilename();
+			// Extract the original file extension
+			String fileExtension = getFileExtensionDocument(originalFileName);
+			// Customize the filename
+			String customizedFileName = id+"-ApprovedTechnicalDrawing" + fileExtension;
+			// Create the directory if it doesn't exist
+			String uploadDirPath = new StringBuilder(partimage).append("/").append(id).toString();
+			File directory = new File(uploadDirPath);
+			if (!directory.exists()) {
+				directory.mkdirs();
+			}
+			// Save the file to the upload directory with the customized filename
+			Path filePath = Paths.get(uploadDirPath, customizedFileName);
+			file.transferTo(filePath);
+			System.out.println(filePath);
+			// Create CustomerVO and set uploadReceipt
+			PackingDetailVO vo = packingDetailRepo.findById(id).orElse(null);
+			vo.setApprovedDrawing(filePath.toString().replace("\\", "/"));
+			packingDetailRepo.save(vo);
+			return filePath.toString();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return "Failed to upload file: " + e.getMessage();
+		}
 	}
 }
