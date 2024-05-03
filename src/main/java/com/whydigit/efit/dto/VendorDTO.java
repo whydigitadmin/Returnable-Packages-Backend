@@ -21,7 +21,6 @@ public class VendorDTO {
 	private String email;
 	private boolean venderActivePortal;
 	private boolean active;
-	private String country;
 	
 	private List<VendorAddressDTO>vendorAddressDTO;
 	
