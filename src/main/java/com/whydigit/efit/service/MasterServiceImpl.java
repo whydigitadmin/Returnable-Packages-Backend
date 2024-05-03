@@ -998,14 +998,10 @@ public class MasterServiceImpl implements MasterService {
 	@Override
 	public VendorVO updateCreateVendor(VendorDTO vendorDTO) throws ApplicationException {
 		VendorVO vendorVO = new VendorVO();
-		vendorVO.setOrgId(vendorDTO.getOrgId());
-		vendorVO.setVenderType(vendorDTO.getVenderType());
-		vendorVO.setDisplyName(vendorDTO.getDisplyName());
-		vendorVO.setPhoneNumber(vendorDTO.getPhoneNumber());
-		vendorVO.setEntityLegalName(vendorDTO.getEntityLegalName());
-		vendorVO.setEmail(vendorDTO.getEmail());
-		vendorVO.setVenderActivePortal(vendorDTO.isActive());
-		vendorVO.setActive(vendorDTO.isActive());
+		if (ObjectUtils.isNotEmpty(vendorDTO.getId())) {
+			vendorVO = vendorRepo.findById(vendorDTO.getId())
+					.orElseThrow(() -> new ApplicationException("Invalid Vendor details"));
+		}
 
 		List<VendorBankDetailsVO> vendorBankDetailsVO = new ArrayList<>();
 		if (vendorDTO.getVendorBankDetailsDTO() != null) {
@@ -1021,7 +1017,6 @@ public class MasterServiceImpl implements MasterService {
 				;
 			}
 		}
-		vendorVO.setVendorBankDetailsVO(vendorBankDetailsVO);
 
 		List<VendorAddressVO> vendorAddressVO = new ArrayList<>();
 		if (vendorDTO.getVendorAddressDTO() != null) {
@@ -1046,8 +1041,23 @@ public class MasterServiceImpl implements MasterService {
 			}
 		}
 		vendorVO.setVendorAddressVO(vendorAddressVO);
-
+vendorVO.setVendorBankDetailsVO(vendorBankDetailsVO);
+getVendorVOFromVendorDTO(vendorDTO, vendorVO);
 		return VendorRepo.save(vendorVO);
+	}
+	
+	private void getVendorVOFromVendorDTO(VendorDTO vendorDTO, VendorVO vendorVO) {
+	
+	
+	vendorVO.setOrgId(vendorDTO.getOrgId());
+		vendorVO.setVenderType(vendorDTO.getVenderType());
+		vendorVO.setDisplyName(vendorDTO.getDisplyName());
+		vendorVO.setPhoneNumber(vendorDTO.getPhoneNumber());
+		vendorVO.setEntityLegalName(vendorDTO.getEntityLegalName());
+		vendorVO.setEmail(vendorDTO.getEmail());
+		vendorVO.setVenderActivePortal(vendorDTO.isActive());
+		vendorVO.setActive(vendorDTO.isActive());
+	
 	}
 
 	@Override
