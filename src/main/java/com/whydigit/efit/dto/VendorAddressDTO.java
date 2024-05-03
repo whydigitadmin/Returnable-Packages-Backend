@@ -20,6 +20,6 @@ public class VendorAddressDTO {
 	private String state;
 	private String email;
 	private String designation;
-	private String vendorid;
+	private Long vendorId;
 	private String country;
 }
