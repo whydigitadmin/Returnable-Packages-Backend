@@ -64,5 +64,8 @@ public interface PartStudyService {
 	 Map<String, Object> searchPartStudy(Long emitterId, Long refPsId, Long orgId, String partName,String partNumber);
 
 	void saveAttachments(MultipartFile[] files, PDAttachmentType type, Long refPsId) throws ApplicationException;
+	
+	String uploadPartImage(Long id, MultipartFile file);
+	
 
 }

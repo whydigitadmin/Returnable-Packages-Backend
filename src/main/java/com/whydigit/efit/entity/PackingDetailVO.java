@@ -85,7 +85,22 @@ public class PackingDetailVO {
 	@Column(name="nesting",length =25 )
 	private String nesting;
 	
-	@Column(name="remarks",length =25)
+	@Column(name="partimage")
+	private String partImg;
+	
+	@Column(name="existingimage")
+	private String existingImage;
+	
+	@Column(name="partdrwaing" )
+	private String pDrawing;
+	
+	@Column(name="approvedcomercial" )
+	private String comercial;
+	
+	@Column(name="approvedpackagedrawing" )
+	private String approvedDrawing;
+
+	@Column(name="remarks")
 	private String remarks;
 	
 

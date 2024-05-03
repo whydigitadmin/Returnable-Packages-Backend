@@ -544,4 +544,28 @@ public class PartStudyController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 	
+	@PostMapping("/uploadPartImage")
+	public ResponseEntity<ResponseDTO> uploadPartImage(@RequestParam Long id,
+			@RequestParam("file") MultipartFile file) {
+		String methodName = "uploadPartImage()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		try {
+			String result = partStudyService.uploadPartImage(id, file);
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Part Image Uploaded Sucessfully");
+			responseObjectsMap.put("partImageUpload", result);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} catch (Exception e) {
+
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "Part Image Uploaded Failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+
+	}
+	
 }
