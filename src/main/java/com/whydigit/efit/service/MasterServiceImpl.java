@@ -2031,7 +2031,7 @@ public class MasterServiceImpl implements MasterService {
 			System.out.println(filePath);
 			// Create CustomerVO and set uploadReceipt
 			CustomersVO vo = customersRepo.findById(id).orElse(null);
-			vo.setSop(filePath.toString());
+			vo.setSop(filePath.toString().replace("\\", "/"));
 			customersRepo.save(vo);
 			return filePath.toString();
 		} catch (IOException e) {

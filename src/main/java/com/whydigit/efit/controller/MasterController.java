@@ -2861,7 +2861,7 @@ public class MasterController extends BaseController {
 			part.put("tagCode", ps[1] != null ? ps[1].toString() : "");
 			part.put("asset", ps[2] != null ? ps[2].toString() : "");
 			part.put("rfId", ps[3] != null ? ps[3].toString() : "");
-			part.put("qty", ps[4] != null ? ps[4].toString() : "");
+			part.put("assetCode", ps[4] != null ? ps[4].toString() : "");
 			stockdetails.add(part);
 		}
 		return stockdetails;
