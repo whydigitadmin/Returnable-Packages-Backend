@@ -1014,7 +1014,6 @@ public class MasterServiceImpl implements MasterService {
 				bankDetailsVO.setIfscCode(vendorbankDetailsDTO.getIfscCode());
 				bankDetailsVO.setVendorVO(vendorVO);
 				vendorBankDetailsVO.add(bankDetailsVO);
-				;
 			}
 		}
 
@@ -2041,7 +2040,7 @@ getVendorVOFromVendorDTO(vendorDTO, vendorVO);
 			// Extract the original file extension
 			String fileExtension = getFileExtensionDocument(originalFileName);
 			// Customize the filename
-			String customizedFileName = getCustomizedDocumentFileName(legalname) + fileExtension;
+			String customizedFileName = getCustomizedDocumentFileName(id,legalname) + fileExtension;
 			// Create the directory if it doesn't exist
 			File directory = new File(UPLOAD);
 			if (!directory.exists()) {
@@ -2070,8 +2069,8 @@ getVendorVOFromVendorDTO(vendorDTO, vendorVO);
 		return "";
 	}
 
-	private String getCustomizedDocumentFileName(String legalname) {
-		return legalname;
+	private String getCustomizedDocumentFileName(Long id,String legalname) {
+		return id+"-"+legalname;
 	}
 
 	@Override

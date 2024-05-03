@@ -67,5 +67,12 @@ public interface PartStudyService {
 	
 	String uploadPartImage(Long id, MultipartFile file);
 	
+	String uploadPartDrawing(Long id, MultipartFile file);
+	
+	String uploadExPackageImage(Long id, MultipartFile file);
+	
+	String uploadApprovedCommercial(Long id, MultipartFile file);
+	
+	String uploadApprovedTechnicalDrawing(Long id, MultipartFile file);
 
 }
