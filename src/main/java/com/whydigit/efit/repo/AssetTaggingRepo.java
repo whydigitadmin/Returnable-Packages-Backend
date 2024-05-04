@@ -1,5 +1,6 @@
 package com.whydigit.efit.repo;
 
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -40,5 +41,7 @@ public interface AssetTaggingRepo extends JpaRepository<AssetTaggingVO, Long> {
 
 	@Query(nativeQuery = true, value = "CALL next_assettaggingdocid_value()")
 	void nextDocid();
+
+	List<AssetTaggingVO> findAllByOrgId(Long orgId);
 
 }

@@ -70,6 +70,9 @@ public class KitVO {
 	@Column(name = "block")
 	private boolean block;
 	
+	@Column(name ="eflag")
+	private boolean eflag;
+	
 	@OneToMany(mappedBy = "kitVO", cascade = CascadeType.ALL)
 	@JsonManagedReference
 	List<KitAssetVO> kitAssetVO;
