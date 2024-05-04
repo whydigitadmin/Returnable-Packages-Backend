@@ -213,7 +213,7 @@ public interface MasterService {
 	// Create Asset Tagging
 
 	AssetTaggingVO createTagging(AssetTaggingDTO assetTaggingDTO);
-	
+
 	List<AssetTaggingVO> getAllAsetTaggingByOrgId(Long orgId);
 
 	Set<Object[]> getTagCodeByAsset(String assetcode, String asset, int startno, int endno);
@@ -277,7 +277,7 @@ public interface MasterService {
 	String getDocIdByAssetTagging();
 
 	String getDocIdByBinInward();
-	
+
 	String getDocIdByAssetInward();//
 
 	// Bin allotment Issue manifest pdf
@@ -289,9 +289,9 @@ public interface MasterService {
 	AssetInwardVO getAssetInwardByDocId(String docId);
 
 	String uploadCustomerSop(Long id, String legalname, MultipartFile file);
-	
-	String uploadCustomerDocument(Long id, String legalname ,MultipartFile file);
-	
+
+	String uploadCustomerDocument(Long id, String legalname, MultipartFile file);
+
 	List<Object[]> getRandomAssetDetailsByKitCodeAndAllotQty(String kitCode, int qty, String stockbranch);
-	
+
 }

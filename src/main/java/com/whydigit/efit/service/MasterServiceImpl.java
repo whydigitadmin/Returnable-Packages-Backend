@@ -647,6 +647,7 @@ public class MasterServiceImpl implements MasterService {
 //		flowVO.setDublicateFlowName(flowDTO.getOrgId()+flowDTO.getFlowName());
 		flowVO.setWarehouseLocation(flowRepo.getWarehouseLocationByLocationId(flowDTO.getWarehouseId()));
 		flowVO.setReceiver(flowRepo.getReceiverByReceiverId(flowDTO.getReceiverId()));
+
 		return flowRepo.save(flowVO);
 	}
 
@@ -658,12 +659,18 @@ public class MasterServiceImpl implements MasterService {
 				.destination(flowDTO.getDestination()).orgId(flowDTO.getOrgId()).warehouseId(flowDTO.getWarehouseId())
 				.flowDetailVO(flowDetailVOList).build();
 		flowDetailVOList = flowDTO.getFlowDetailDTO().stream()
-				.map(fdDTO -> FlowDetailVO.builder().active(fdDTO.isActive()).cycleTime(fdDTO.getCycleTime())
-						.emitterId(flowDTO.getEmitterId()).orgId(flowDTO.getOrgId()).partName(fdDTO.getPartName())
-						.kitName(fdDTO.getKitName()).partNumber(fdDTO.getPartNumber())
-						.partQty(kitRepo.findPartqty(fdDTO.getKitName()))
-						.emitter(flowRepo.findEmiterbyId(flowVO.getEmitterId())).flowVO(flowVO).build())
-				.collect(Collectors.toList());
+				.map(fdDTO -> {
+	                KitVO kitVO = kitRepo.findAllByKitCode(fdDTO.getKitName());
+	                kitVO.setEflag(true);
+	                kitRepo.save(kitVO);
+	                return FlowDetailVO.builder().active(fdDTO.isActive()).cycleTime(fdDTO.getCycleTime())
+	                        .emitterId(flowDTO.getEmitterId()).orgId(flowDTO.getOrgId()).partName(fdDTO.getPartName())
+	                        .kitName(fdDTO.getKitName()).partNumber(fdDTO.getPartNumber())
+	                        .partQty(kitRepo.findPartqty(fdDTO.getKitName()))
+	                        .emitter(flowRepo.findEmiterbyId(flowVO.getEmitterId())).flowVO(flowVO).build();
+	            })
+	            .collect(Collectors.toList());
+		
 		flowVO.setFlowDetailVO(flowDetailVOList);
 		return flowVO;
 	}
