@@ -3,6 +3,7 @@ package com.whydigit.efit.repo;
 import java.util.List;
 import java.util.Set;
 
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -140,6 +141,8 @@ public interface BinAllotmentNewRepo extends JpaRepository<BinAllotmentNewVO, Lo
 			+ "                        ss.rfid,\r\n"
 			+ "                        bp.quantity  ")
 	List<Object[]> RandomAssetDetailsByKitCodeAndAllotQty(String kitCode, int qty,String stockbranch);
+
+	List<BinAllotmentNewVO> findAll(Specification<BinAllotmentNewVO> specification);
 	
 	
 

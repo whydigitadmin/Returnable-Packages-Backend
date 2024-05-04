@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -83,6 +84,7 @@ import com.whydigit.efit.entity.AssetStockDetailsVO;
 import com.whydigit.efit.entity.AssetTaggingDetailsVO;
 import com.whydigit.efit.entity.AssetTaggingVO;
 import com.whydigit.efit.entity.AssetVO;
+import com.whydigit.efit.entity.BinAllotmentNewVO;
 import com.whydigit.efit.entity.BinInwardDetailsVO;
 import com.whydigit.efit.entity.BinInwardVO;
 import com.whydigit.efit.entity.CnoteVO;
@@ -94,6 +96,7 @@ import com.whydigit.efit.entity.DmapDetailsVO;
 import com.whydigit.efit.entity.DmapVO;
 import com.whydigit.efit.entity.FlowDetailVO;
 import com.whydigit.efit.entity.FlowVO;
+import com.whydigit.efit.entity.IssueRequestVO;
 import com.whydigit.efit.entity.KitAssetVO;
 import com.whydigit.efit.entity.KitVO;
 import com.whydigit.efit.entity.ManufacturerProductVO;
@@ -658,19 +661,17 @@ public class MasterServiceImpl implements MasterService {
 				.receiverId(flowDTO.getReceiverId()).emitterId(flowDTO.getEmitterId()).emitter(flowDTO.getEmitter())
 				.destination(flowDTO.getDestination()).orgId(flowDTO.getOrgId()).warehouseId(flowDTO.getWarehouseId())
 				.flowDetailVO(flowDetailVOList).build();
-		flowDetailVOList = flowDTO.getFlowDetailDTO().stream()
-				.map(fdDTO -> {
-	                KitVO kitVO = kitRepo.findAllByKitCode(fdDTO.getKitName());
-	                kitVO.setEflag(true);
-	                kitRepo.save(kitVO);
-	                return FlowDetailVO.builder().active(fdDTO.isActive()).cycleTime(fdDTO.getCycleTime())
-	                        .emitterId(flowDTO.getEmitterId()).orgId(flowDTO.getOrgId()).partName(fdDTO.getPartName())
-	                        .kitName(fdDTO.getKitName()).partNumber(fdDTO.getPartNumber())
-	                        .partQty(kitRepo.findPartqty(fdDTO.getKitName()))
-	                        .emitter(flowRepo.findEmiterbyId(flowVO.getEmitterId())).flowVO(flowVO).build();
-	            })
-	            .collect(Collectors.toList());
-		
+		flowDetailVOList = flowDTO.getFlowDetailDTO().stream().map(fdDTO -> {
+			KitVO kitVO = kitRepo.findAllByKitCode(fdDTO.getKitName());
+			kitVO.setEflag(true);
+			kitRepo.save(kitVO);
+			return FlowDetailVO.builder().active(fdDTO.isActive()).cycleTime(fdDTO.getCycleTime())
+					.emitterId(flowDTO.getEmitterId()).orgId(flowDTO.getOrgId()).partName(fdDTO.getPartName())
+					.kitName(fdDTO.getKitName()).partNumber(fdDTO.getPartNumber())
+					.partQty(kitRepo.findPartqty(fdDTO.getKitName()))
+					.emitter(flowRepo.findEmiterbyId(flowVO.getEmitterId())).flowVO(flowVO).build();
+		}).collect(Collectors.toList());
+
 		flowVO.setFlowDetailVO(flowDetailVOList);
 		return flowVO;
 	}
@@ -1021,7 +1022,7 @@ public class MasterServiceImpl implements MasterService {
 	public VendorVO updateCreateVendor(VendorDTO vendorDTO) throws ApplicationException {
 
 		VendorVO vendorVO = new VendorVO();
-		if (ObjectUtils.isNotEmpty(vendorDTO.getId())) {
+		if (vendorDTO.getId() != 0) {
 			vendorVO = vendorRepo.findById(vendorDTO.getId())
 					.orElseThrow(() -> new ApplicationException("Invalid Vendor details"));
 		}
@@ -1033,7 +1034,7 @@ public class MasterServiceImpl implements MasterService {
 		List<VendorBankDetailsVO> vendorBankDetailsVO = new ArrayList<>();
 		if (vendorDTO.getVendorBankDetailsDTO() != null) {
 			for (VendorBankDetailsDTO vendorbankDetailsDTO : vendorDTO.getVendorBankDetailsDTO()) {
-				if (vendorbankDetailsDTO.getId() != null & ObjectUtils.isNotEmpty(vendorbankDetailsDTO.getId())) {
+				if (vendorbankDetailsDTO.getId() != 0) {
 					VendorBankDetailsVO bankDetailsVO = vendorBankDetailsRepo.findById(vendorbankDetailsDTO.getId())
 							.get();
 					bankDetailsVO.setAccountNo(vendorbankDetailsDTO.getAccountNo());
@@ -1061,7 +1062,7 @@ public class MasterServiceImpl implements MasterService {
 		List<VendorAddressVO> vendorAddressVO = new ArrayList<>();
 		if (vendorDTO.getVendorAddressDTO() != null) {
 			for (VendorAddressDTO vendorAddressDTO : vendorDTO.getVendorAddressDTO()) {
-				if (vendorAddressDTO.getId() != null & ObjectUtils.isNotEmpty(vendorAddressDTO.getId())) {
+				if (vendorAddressDTO.getId() != 0) {
 					VendorAddressVO vendorAddress = vendorAddressRepo.findById(vendorAddressDTO.getId()).get();
 					vendorAddress.setGstNumber(vendorAddressDTO.getGstNumber());
 					vendorAddress.setStreet1(vendorAddressDTO.getStreet1());
@@ -1104,18 +1105,35 @@ public class MasterServiceImpl implements MasterService {
 
 	private void getVendorVOFromVendorDTO(VendorDTO vendorDTO, VendorVO vendorVO) {
 
-		if (vendorRepo.existsByEntityLegalNameAndDisplyNameAndOrgId(vendorDTO.getEntityLegalName(),
-				vendorDTO.getDisplyName(), vendorDTO.getOrgId())) {
-			throw new RuntimeException("The Vendor LegalName or DisplayName already exists");
+		if (vendorDTO.getId() != 0) {
+			vendorVO = vendorRepo.findById(vendorDTO.getId()).get();
+			if (vendorRepo.existsByEntityLegalNameAndDisplyNameAndOrgId(vendorDTO.getEntityLegalName(),
+					vendorDTO.getDisplyName(), vendorDTO.getOrgId())) {
+				throw new RuntimeException("The Vendor LegalName or DisplayName already exists");
+			}
+			vendorVO.setOrgId(vendorDTO.getOrgId());
+			vendorVO.setVenderType(vendorDTO.getVenderType());
+			vendorVO.setDisplyName(vendorDTO.getDisplyName());
+			vendorVO.setPhoneNumber(vendorDTO.getPhoneNumber());
+			vendorVO.setEntityLegalName(vendorDTO.getEntityLegalName());
+			vendorVO.setEmail(vendorDTO.getEmail());
+			vendorVO.setVenderActivePortal(vendorDTO.isActive());
+			vendorVO.setActive(vendorDTO.isActive());
+
+		} else {
+			if (vendorRepo.existsByEntityLegalNameAndDisplyNameAndOrgId(vendorDTO.getEntityLegalName(),
+					vendorDTO.getDisplyName(), vendorDTO.getOrgId())) {
+				throw new RuntimeException("The Vendor LegalName or DisplayName already exists");
+			}
+			vendorVO.setOrgId(vendorDTO.getOrgId());
+			vendorVO.setVenderType(vendorDTO.getVenderType());
+			vendorVO.setDisplyName(vendorDTO.getDisplyName());
+			vendorVO.setPhoneNumber(vendorDTO.getPhoneNumber());
+			vendorVO.setEntityLegalName(vendorDTO.getEntityLegalName());
+			vendorVO.setEmail(vendorDTO.getEmail());
+			vendorVO.setVenderActivePortal(vendorDTO.isActive());
+			vendorVO.setActive(vendorDTO.isActive());
 		}
-		vendorVO.setOrgId(vendorDTO.getOrgId());
-		vendorVO.setVenderType(vendorDTO.getVenderType());
-		vendorVO.setDisplyName(vendorDTO.getDisplyName());
-		vendorVO.setPhoneNumber(vendorDTO.getPhoneNumber());
-		vendorVO.setEntityLegalName(vendorDTO.getEntityLegalName());
-		vendorVO.setEmail(vendorDTO.getEmail());
-		vendorVO.setVenderActivePortal(vendorDTO.isActive());
-		vendorVO.setActive(vendorDTO.isActive());
 	}
 
 	@Override
@@ -1474,7 +1492,7 @@ public class MasterServiceImpl implements MasterService {
 		}
 		return savedAssetTaggingVO;
 	}
-	
+
 	@Override
 	public List<AssetTaggingVO> getAllAsetTaggingByOrgId(Long orgId) {
 		return assetTaggingRepo.findAllByOrgId(orgId);
@@ -1559,7 +1577,7 @@ public class MasterServiceImpl implements MasterService {
 		//
 
 		getPoVOFromPoDTO(poDTO, poVO);
-		
+
 		List<PoVO1> poVO1 = new ArrayList<>();
 		if (poDTO.getPo1DTO() != null) {
 			for (Po1DTO po1DTO : poDTO.getPo1DTO()) {
@@ -2158,4 +2176,32 @@ public class MasterServiceImpl implements MasterService {
 		return binAllotmentNewRepo.RandomAssetDetailsByKitCodeAndAllotQty(kitCode, qty, stockbranch);
 	}
 
+	@Override
+	public List<BinAllotmentNewVO> getIssueRequest(String kitCode, String flow, String emitter,
+			LocalDate startAllotDate, LocalDate endAllotDate) {
+		return binAllotmentNewRepo.findAll(new Specification<BinAllotmentNewVO>() {
+
+			@Override
+			public Predicate toPredicate(Root<BinAllotmentNewVO> root, CriteriaQuery<?> query,
+					CriteriaBuilder criteriaBuilder) {
+				List<Predicate> predicates = new ArrayList<>();
+				if (ObjectUtils.isNotEmpty(kitCode)) {
+					predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("kitCode"), kitCode)));
+				}
+				if (ObjectUtils.isNotEmpty(flow)) {
+					predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("flow"), flow)));
+				}
+				if (ObjectUtils.isNotEmpty(startAllotDate) && ObjectUtils.isNotEmpty(endAllotDate)) {
+					predicates.add(criteriaBuilder.between(root.get("requestedDate"),
+							LocalDateTime.of(startAllotDate, LocalTime.MIDNIGHT),
+							LocalDateTime.of(endAllotDate, LocalTime.MIDNIGHT)));
+				}
+				if (StringUtils.isNoneBlank(emitter)) {
+					predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("emitter"), emitter)));
+				}
+				return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
+			}
+
+		});
+	}
 }
