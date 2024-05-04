@@ -26,32 +26,31 @@ public class AssetCategoryVO {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "assetcategorygen")
 	@SequenceGenerator(name = "assetcategorygen", sequenceName = "assetcategoryseq", initialValue = 1000000001, allocationSize = 1)
-	@Column(name="assetcategoryid")
+	@Column(name = "assetcategoryid")
 	private Long id;
-	
-	@Column(name="orgid")
+
+	@Column(name = "orgid")
 	private Long orgId;
-	
-	@Column(name="category",length = 25)
+
+	@Column(name = "category", length = 25)
 	private String assetCategory;
-	
-	@Column(name="categorycode",length = 25)	                 
+
+	@Column(name = "categorycode", length = 25)
 	private String assetCategoryId;
-	
+
 	private boolean cancel;
-	
-	@Column(name="createdby",length = 25)
+
+	@Column(name = "createdby", length = 25)
 	private String createdby;
-	
-	@Column(name="modifiedby",length = 25)
+
+	@Column(name = "modifiedby", length = 25)
 	private String modifiedby;
-	
-	@Column(name="cancelremarks",length = 50)
+
+	@Column(name = "cancelremarks", length = 50)
 	private String cancelremarks;
-	
+
 	private boolean active;
-	
-	
+
 	@Embedded
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
 }

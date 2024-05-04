@@ -32,37 +32,37 @@ public class BranchVO {
 	@Column(name = "code")
 	private String branchCode;
 	@Column(name = "address1")
-    private String address1;
+	private String address1;
 	@Column(name = "address2")
 	private String address2;
 	@Column(name = "orgid")
-    private Long orgId;
+	private Long orgId;
 	@Column(name = "city")
-    private String city;
+	private String city;
 	@Column(name = "state")
-    private String state;
+	private String state;
 	@Column(name = "country")
-    private String country;
+	private String country;
 	@Column(name = "pincode")
-    private String pinCode;
+	private String pinCode;
 	@Column(name = "phone")
-    private String phone;
+	private String phone;
 	@Column(name = "gst")
-    private String GST;
+	private String GST;
 	@Column(name = "pan")
 	private String pan;
 	@Column(name = "currency")
 	private String currency;
-    private boolean active;
+	private boolean active;
 	private boolean cancel;
-	@Column(name="cancelremarks",length=25)
+	@Column(name = "cancelremarks", length = 25)
 	private String cancelRemarks;
-	@Column(name="createdby",length=25)
+	@Column(name = "createdby", length = 25)
 	private String createdBy;
-	@Column(name="modifiedby",length=25)
+	@Column(name = "modifiedby", length = 25)
 	private String modifiedBy;
-	@Column(name="scode",length=5)
-	private String sCode="BRANC";
-    @Embedded
+	@Column(name = "scode", length = 5)
+	private String sCode = "BRANC";
+	@Embedded
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
 }

@@ -1878,6 +1878,33 @@ public class MasterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
+	@GetMapping("/getAllAssetTaggingOrgId")
+	public ResponseEntity<ResponseDTO> getAllAssetTaggingOrgId(@RequestParam(required = false) Long orgId) {
+		String methodName = "getAllAssetTaggingOrgId()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<AssetTaggingVO> assetTaggingVO = new ArrayList<>();
+		try {
+			assetTaggingVO = masterService.getAllAsetTaggingByOrgId(orgId);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "AssetTagging information get successfully");
+			responseObjectsMap.put("assetTaggingVO", assetTaggingVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "AssetTagging information receive failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+
+	}
+	
 	@GetMapping("/Tagcode")
 	public ResponseEntity<ResponseDTO> getTagCodeByAsset(@RequestParam String assetcode, @RequestParam String asset,
 			@RequestParam int startno, @RequestParam int endno) {

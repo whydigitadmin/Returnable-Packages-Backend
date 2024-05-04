@@ -213,6 +213,8 @@ public interface MasterService {
 	// Create Asset Tagging
 
 	AssetTaggingVO createTagging(AssetTaggingDTO assetTaggingDTO);
+	
+	List<AssetTaggingVO> getAllAsetTaggingByOrgId(Long orgId);
 
 	Set<Object[]> getTagCodeByAsset(String assetcode, String asset, int startno, int endno);
 
