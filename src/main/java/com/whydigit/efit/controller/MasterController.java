@@ -1,5 +1,6 @@
 package com.whydigit.efit.controller;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -13,6 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -27,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.whydigit.efit.common.CommonConstant;
+import com.whydigit.efit.common.EmitterConstant;
 import com.whydigit.efit.common.UserConstants;
 import com.whydigit.efit.dto.AssetInwardDTO;
 import com.whydigit.efit.dto.AssetTaggingDTO;
@@ -51,12 +54,14 @@ import com.whydigit.efit.entity.AssetGroupVO;
 import com.whydigit.efit.entity.AssetInwardVO;
 import com.whydigit.efit.entity.AssetTaggingVO;
 import com.whydigit.efit.entity.AssetVO;
+import com.whydigit.efit.entity.BinAllotmentNewVO;
 import com.whydigit.efit.entity.BinInwardVO;
 import com.whydigit.efit.entity.CnoteVO;
 import com.whydigit.efit.entity.CustomersAddressVO;
 import com.whydigit.efit.entity.CustomersVO;
 import com.whydigit.efit.entity.DmapVO;
 import com.whydigit.efit.entity.FlowVO;
+import com.whydigit.efit.entity.IssueRequestVO;
 import com.whydigit.efit.entity.KitVO;
 import com.whydigit.efit.entity.ManufacturerProductVO;
 import com.whydigit.efit.entity.ManufacturerVO;
@@ -2937,6 +2942,36 @@ public class MasterController extends BaseController {
 			stockdetails.add(part);
 		}
 		return stockdetails;
+	}
+	
+	
+	@GetMapping("/getCustomizedAllotmentDetails")
+	public ResponseEntity<ResponseDTO> getCustomizedAllotmentDetails(@RequestParam(required = false) String kitCode,
+			@RequestParam(required = false) String flow, @RequestParam(required = false) String emitter,
+			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startAllotDate,
+			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endAllotDate) {
+		String methodName = "getIssuseRequest()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<BinAllotmentNewVO> binAllotmentNewVO = new ArrayList<>();
+		try {
+			binAllotmentNewVO = masterService.getIssueRequest(kitCode, flow, emitter, startAllotDate, endAllotDate);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(CommonConstant.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Bin Allotment Details Get Successfully");
+			responseObjectsMap.put("binAllotmentVO", binAllotmentNewVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap,
+					"Bin Allotment Details Get Successfully", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
 	}
 
 }
