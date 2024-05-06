@@ -622,6 +622,50 @@ public class MasterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
+	
+	@GetMapping("/getKitDetailsByEmitter")
+	public ResponseEntity<ResponseDTO> getKitDetailsByEmitter(@RequestParam String emitter ,@RequestParam Long orgId) {
+		String methodName = "getKitDetailsByEmitter()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		Set<Object[]> flowVO = new HashSet<>();
+		try {
+			flowVO = masterService.getKitDetailsByEmitter(emitter,orgId);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			List<Map<String, String>> flow = findkitdetails(flowVO);
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Kit Details found by emitter");
+			responseObjectsMap.put("flow", flow);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			errorMsg = " not found for ID: ";
+			responseDTO = createServiceResponseError(responseObjectsMap, "Kit Details not found", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
+	private List<Map<String, String>> findkitdetails(Set<Object[]> flowVO) {
+		List<Map<String, String>> flowDetails = new ArrayList<>();
+		for (Object[] f : flowVO) {
+			Map<String, String> f1 = new HashMap<>();
+			f1.put("emitter", f[0] != null ? f[0].toString() : "");
+			f1.put("flow", f[1] != null ? f[1].toString() : "");
+			f1.put("reciever", f[2] != null ? f[2].toString() : "");
+			f1.put("recieverid", f[3] != null ? f[3].toString() : "");
+			f1.put("partname", f[4] != null ? f[4].toString() : "");
+			f1.put("kitcode", f[5] != null ? f[5].toString() : "");
+			f1.put("partno", f[6] != null ? f[6].toString() : "");
+			f1.put("partqty", f[7] != null ? f[7].toString() : "");
+			flowDetails.add(f1);
+		}
+		return flowDetails;
+	}
 
 	@GetMapping("/getFlowDetailsByFlowId")
 	public ResponseEntity<ResponseDTO> getFlowDetailsByFlowId(@RequestParam Long flowId) {
@@ -1482,6 +1526,7 @@ public class MasterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
+	
 	@GetMapping("/kitDetails")
 	public ResponseEntity<ResponseDTO> getKitByKitCode(@RequestParam String kitName) {
 		String methodName = "getKitByKitCode()";
