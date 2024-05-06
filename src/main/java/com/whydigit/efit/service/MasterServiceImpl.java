@@ -1107,10 +1107,6 @@ public class MasterServiceImpl implements MasterService {
 
 		if (vendorDTO.getId() != 0) {
 			vendorVO = vendorRepo.findById(vendorDTO.getId()).get();
-			if (vendorRepo.existsByEntityLegalNameAndDisplyNameAndOrgId(vendorDTO.getEntityLegalName(),
-					vendorDTO.getDisplyName(), vendorDTO.getOrgId())) {
-				throw new RuntimeException("The Vendor LegalName or DisplayName already exists");
-			}
 			vendorVO.setOrgId(vendorDTO.getOrgId());
 			vendorVO.setVenderType(vendorDTO.getVenderType());
 			vendorVO.setDisplyName(vendorDTO.getDisplyName());
@@ -2206,5 +2202,11 @@ public class MasterServiceImpl implements MasterService {
 			}
 
 		});
+	}
+
+	// get Available Asset Details.
+	@Override
+	public List<Object[]> availableAllAssetDetails() {
+		return assetStockDetailsRepo.getAvailableAssetDetails();
 	}
 }

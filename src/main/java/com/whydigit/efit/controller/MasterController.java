@@ -2973,5 +2973,45 @@ public class MasterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
+	
+	@GetMapping("/getAvailableAssetDetails")
+	public ResponseEntity<ResponseDTO> getAvailableAssetDetails() {
+		String methodName = "getAvailableAssetDetails()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<Object[]> stock = new ArrayList<>();
+		try {
+			stock = masterService.availableAllAssetDetails();
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			List<Map<String, String>> assetDetails = getAssetStockDetails(stock);
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Asset Details found by ID");
+			responseObjectsMap.put("assetDetails", assetDetails);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			errorMsg = " not found for ID: ";
+			responseDTO = createServiceResponseError(responseObjectsMap, "Asset Details not found", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
+	private List<Map<String, String>> getAssetStockDetails(List<Object[]> stock) {
+		List<Map<String, String>> assetDetails = new ArrayList<>();
+		for (Object[] ps : stock) {
+			Map<String, String> part = new HashMap<>();
+			part.put("stockBranch", ps[0] != null ? ps[0].toString() : "");
+			part.put("asset", ps[1] != null ? ps[1].toString() : "");
+			part.put("assetCode", ps[2] != null ? ps[2].toString() : "");
+			part.put("qty", ps[3] != null ? ps[3].toString() : "");
+			assetDetails.add(part);
+		}
+		return assetDetails;
+	}
 
 }
