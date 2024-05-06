@@ -2192,10 +2192,8 @@ public class MasterServiceImpl implements MasterService {
 					predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("flow"), flow)));
 				}
 				if (ObjectUtils.isNotEmpty(startAllotDate) && ObjectUtils.isNotEmpty(endAllotDate)) {
-					predicates.add(criteriaBuilder.between(root.get("docDate"),
-							LocalDateTime.of(startAllotDate, LocalTime.MIDNIGHT),
-							LocalDateTime.of(endAllotDate, LocalTime.MIDNIGHT)));
-				}
+	                predicates.add(criteriaBuilder.between(root.get("docDate"),startAllotDate,endAllotDate));
+	            }
 				if (StringUtils.isNoneBlank(emitter)) {
 					predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("emitter"), emitter)));
 				}
