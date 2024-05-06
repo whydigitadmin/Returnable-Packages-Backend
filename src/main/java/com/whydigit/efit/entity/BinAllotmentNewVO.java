@@ -92,7 +92,13 @@ public class BinAllotmentNewVO {
 
 	@Column(name = "stockbranch", length = 50)
 	private String stockBranch;
+	
+	@Column(name = "flow", length =100)
+	private String flow;
 
+	@Column(name = "flowId")
+	private Long flowId;
+	
 	
 	@OneToMany(mappedBy = "binAllotmentNewVO", cascade = CascadeType.ALL)
 	@JsonManagedReference
