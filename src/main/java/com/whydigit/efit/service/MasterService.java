@@ -101,6 +101,8 @@ public interface MasterService {
 
 	List<FlowVO> getAllFlow(Long orgId, Long emitterId);
 
+	Set<Object[]> getKitDetailsByEmitter(String emitter, Long orgId);
+	
 	Optional<FlowVO> getFlowById(long id);
 
 	FlowVO createFlow(FlowDTO flowDTO);
@@ -141,7 +143,7 @@ public interface MasterService {
 
 	// Create Kit
 	List<KitResponseDTO> getAllKit(Long orgId);
-
+	
 	Optional<KitVO> getKitById(Long id);
 
 	Optional<KitVO> getKitByKitCode(String kitName);

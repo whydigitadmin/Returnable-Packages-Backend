@@ -886,7 +886,7 @@ public class MasterServiceImpl implements MasterService {
 		}).collect(Collectors.toList());
 		return kitResponseDTO;
 	}
-
+	
 	@Override
 	public Optional<KitVO> getKitById(Long id) {
 		return kitRepo.findById(id);
@@ -1175,6 +1175,11 @@ public class MasterServiceImpl implements MasterService {
 		return flowVO;
 	}
 
+	@Override
+	public Set<Object[]> getKitDetailsByEmitter(String emitter, Long orgId) {
+		return flowRepo.findKitDetailsByEmitter(emitter,orgId);
+	}
+	
 	@Override
 	public Set<Object[]> getFlowNameByOrgID(Long orgId, Long emitterId) {
 		return flowRepo.getFlowNameByOrgID(orgId, emitterId);
