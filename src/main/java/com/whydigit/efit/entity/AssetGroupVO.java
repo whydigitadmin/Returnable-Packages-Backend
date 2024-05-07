@@ -69,7 +69,11 @@ public class AssetGroupVO {
 	@Column(name="cancelremarks",length = 50)
 	private String cancelremarks;
 	
+	@Column(name="eflag")
+	private boolean eflag;
+	
 	
 	@Embedded
+	@Builder.Default
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
 }

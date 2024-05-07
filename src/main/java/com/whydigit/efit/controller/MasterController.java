@@ -1,5 +1,6 @@
 package com.whydigit.efit.controller;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -13,6 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -27,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.whydigit.efit.common.CommonConstant;
+import com.whydigit.efit.common.EmitterConstant;
 import com.whydigit.efit.common.UserConstants;
 import com.whydigit.efit.dto.AssetInwardDTO;
 import com.whydigit.efit.dto.AssetTaggingDTO;
@@ -51,12 +54,14 @@ import com.whydigit.efit.entity.AssetGroupVO;
 import com.whydigit.efit.entity.AssetInwardVO;
 import com.whydigit.efit.entity.AssetTaggingVO;
 import com.whydigit.efit.entity.AssetVO;
+import com.whydigit.efit.entity.BinAllotmentNewVO;
 import com.whydigit.efit.entity.BinInwardVO;
 import com.whydigit.efit.entity.CnoteVO;
 import com.whydigit.efit.entity.CustomersAddressVO;
 import com.whydigit.efit.entity.CustomersVO;
 import com.whydigit.efit.entity.DmapVO;
 import com.whydigit.efit.entity.FlowVO;
+import com.whydigit.efit.entity.IssueRequestVO;
 import com.whydigit.efit.entity.KitVO;
 import com.whydigit.efit.entity.ManufacturerProductVO;
 import com.whydigit.efit.entity.ManufacturerVO;
@@ -616,6 +621,50 @@ public class MasterController extends BaseController {
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
+	}
+	
+	@GetMapping("/getKitDetailsByEmitter")
+	public ResponseEntity<ResponseDTO> getKitDetailsByEmitter(@RequestParam String emitter ,@RequestParam Long orgId) {
+		String methodName = "getKitDetailsByEmitter()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		Set<Object[]> flowVO = new HashSet<>();
+		try {
+			flowVO = masterService.getKitDetailsByEmitter(emitter,orgId);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			List<Map<String, String>> flow = findkitdetails(flowVO);
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Kit Details found by emitter");
+			responseObjectsMap.put("flow", flow);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			errorMsg = " not found for ID: ";
+			responseDTO = createServiceResponseError(responseObjectsMap, "Kit Details not found", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
+	private List<Map<String, String>> findkitdetails(Set<Object[]> flowVO) {
+		List<Map<String, String>> flowDetails = new ArrayList<>();
+		for (Object[] f : flowVO) {
+			Map<String, String> f1 = new HashMap<>();
+			f1.put("emitter", f[0] != null ? f[0].toString() : "");
+			f1.put("flow", f[1] != null ? f[1].toString() : "");
+			f1.put("reciever", f[2] != null ? f[2].toString() : "");
+			f1.put("recieverid", f[3] != null ? f[3].toString() : "");
+			f1.put("partname", f[4] != null ? f[4].toString() : "");
+			f1.put("kitcode", f[5] != null ? f[5].toString() : "");
+			f1.put("partno", f[6] != null ? f[6].toString() : "");
+			f1.put("partqty", f[7] != null ? f[7].toString() : "");
+			flowDetails.add(f1);
+		}
+		return flowDetails;
 	}
 
 	@GetMapping("/getFlowDetailsByFlowId")
@@ -1477,6 +1526,7 @@ public class MasterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
+	
 	@GetMapping("/kitDetails")
 	public ResponseEntity<ResponseDTO> getKitByKitCode(@RequestParam String kitName) {
 		String methodName = "getKitByKitCode()";
@@ -1876,6 +1926,33 @@ public class MasterController extends BaseController {
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
+	}
+
+	@GetMapping("/getAllAssetTaggingOrgId")
+	public ResponseEntity<ResponseDTO> getAllAssetTaggingOrgId(@RequestParam(required = false) Long orgId) {
+		String methodName = "getAllAssetTaggingOrgId()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<AssetTaggingVO> assetTaggingVO = new ArrayList<>();
+		try {
+			assetTaggingVO = masterService.getAllAsetTaggingByOrgId(orgId);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "AssetTagging information get successfully");
+			responseObjectsMap.put("assetTaggingVO", assetTaggingVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "AssetTagging information receive failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+
 	}
 
 	@GetMapping("/Tagcode")
@@ -2865,6 +2942,103 @@ public class MasterController extends BaseController {
 			stockdetails.add(part);
 		}
 		return stockdetails;
+	}
+	
+	
+	@GetMapping("/getCustomizedAllotmentDetails")
+	public ResponseEntity<ResponseDTO> getCustomizedAllotmentDetails(@RequestParam(required = false) String kitCode,
+			@RequestParam(required = false) String flow, @RequestParam(required = false) String emitter,
+			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startAllotDate,
+			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endAllotDate) {
+		String methodName = "getIssuseRequest()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<BinAllotmentNewVO> binAllotmentNewVO = new ArrayList<>();
+		try {
+			binAllotmentNewVO = masterService.getIssueRequest(kitCode, flow, emitter, startAllotDate, endAllotDate);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(CommonConstant.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Bin Allotment Details Get Successfully");
+			responseObjectsMap.put("binAllotmentVO", binAllotmentNewVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap,
+					"Bin Allotment Details Get Successfully", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+	
+	@GetMapping("/getAvailableAssetDetails")
+	public ResponseEntity<ResponseDTO> getAvailableAssetDetails() {
+		String methodName = "getAvailableAssetDetails()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<Object[]> stock = new ArrayList<>();
+		try {
+			stock = masterService.availableAllAssetDetails();
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			List<Map<String, String>> assetDetails = getAssetStockDetails(stock);
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Asset Details found by ID");
+			responseObjectsMap.put("assetDetails", assetDetails);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			errorMsg = " not found for ID: ";
+			responseDTO = createServiceResponseError(responseObjectsMap, "Asset Details not found", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
+	private List<Map<String, String>> getAssetStockDetails(List<Object[]> stock) {
+		List<Map<String, String>> assetDetails = new ArrayList<>();
+		for (Object[] ps : stock) {
+			Map<String, String> part = new HashMap<>();
+			part.put("stockBranch", ps[0] != null ? ps[0].toString() : "");
+			part.put("asset", ps[1] != null ? ps[1].toString() : "");
+			part.put("assetCode", ps[2] != null ? ps[2].toString() : "");
+			part.put("qty", ps[3] != null ? ps[3].toString() : "");
+			assetDetails.add(part);
+		}
+		return assetDetails;
+	}
+	
+	
+	@GetMapping("/getDocIdByAssetInward")
+	public ResponseEntity<ResponseDTO> getDocIdByAssetInward() {
+		String methodName = "getDocIdByAssetInward()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		String assetInwardDocId = null;
+		try {
+			assetInwardDocId = masterService.getDocIdByAssetInward();
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Asset Inward DocId found success");
+			responseObjectsMap.put("assetInwardDocId", assetInwardDocId);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			errorMsg = " not found for ID: ";
+			responseDTO = createServiceResponseError(responseObjectsMap, "Asset Inward DocId not found", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
 	}
 
 }

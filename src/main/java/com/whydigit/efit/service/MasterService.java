@@ -1,5 +1,6 @@
 package com.whydigit.efit.service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -29,6 +30,7 @@ import com.whydigit.efit.entity.AssetGroupVO;
 import com.whydigit.efit.entity.AssetInwardVO;
 import com.whydigit.efit.entity.AssetTaggingVO;
 import com.whydigit.efit.entity.AssetVO;
+import com.whydigit.efit.entity.BinAllotmentNewVO;
 import com.whydigit.efit.entity.BinInwardVO;
 import com.whydigit.efit.entity.CnoteVO;
 import com.whydigit.efit.entity.CustomersAddressVO;
@@ -101,6 +103,8 @@ public interface MasterService {
 
 	List<FlowVO> getAllFlow(Long orgId, Long emitterId);
 
+	Set<Object[]> getKitDetailsByEmitter(String emitter, Long orgId);
+	
 	Optional<FlowVO> getFlowById(long id);
 
 	FlowVO createFlow(FlowDTO flowDTO);
@@ -141,7 +145,7 @@ public interface MasterService {
 
 	// Create Kit
 	List<KitResponseDTO> getAllKit(Long orgId);
-
+	
 	Optional<KitVO> getKitById(Long id);
 
 	Optional<KitVO> getKitByKitCode(String kitName);
@@ -214,6 +218,8 @@ public interface MasterService {
 
 	AssetTaggingVO createTagging(AssetTaggingDTO assetTaggingDTO);
 
+	List<AssetTaggingVO> getAllAsetTaggingByOrgId(Long orgId);
+
 	Set<Object[]> getTagCodeByAsset(String assetcode, String asset, int startno, int endno);
 
 	Set<Object[]> getAvalKitQty(Long warehouseId, String Kitname);
@@ -275,7 +281,7 @@ public interface MasterService {
 	String getDocIdByAssetTagging();
 
 	String getDocIdByBinInward();
-	
+
 	String getDocIdByAssetInward();//
 
 	// Bin allotment Issue manifest pdf
@@ -287,9 +293,16 @@ public interface MasterService {
 	AssetInwardVO getAssetInwardByDocId(String docId);
 
 	String uploadCustomerSop(Long id, String legalname, MultipartFile file);
-	
-	String uploadCustomerDocument(Long id, String legalname ,MultipartFile file);
-	
+
+	String uploadCustomerDocument(Long id, String legalname, MultipartFile file);
+
 	List<Object[]> getRandomAssetDetailsByKitCodeAndAllotQty(String kitCode, int qty, String stockbranch);
+
+	// Get Bin Allotment details
 	
+	List<BinAllotmentNewVO> getIssueRequest(String kitCode, String flow, String emitter, LocalDate startAllotDate,
+			LocalDate endAllotDate);
+	
+	List<Object[]>availableAllAssetDetails();
+
 }

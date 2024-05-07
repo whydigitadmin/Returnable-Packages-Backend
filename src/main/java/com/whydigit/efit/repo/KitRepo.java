@@ -39,6 +39,9 @@ public interface KitRepo  extends JpaRepository<KitVO, Long>{
 			+ ") AS finyr")
 	int getFinyr();
 
+	KitVO findAllByKitCode(String kitName);
+
+
 	
 	
 

@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 public class AssetInwardDTO {
 
 	private Long orgId;
-	private String docId;
 	private LocalDate docDate;
 	private String sourceFrom; 
 	private String stockBranch;

@@ -20,6 +20,8 @@ public class BinAllotmentDTO {
 	private Long emitterId;
 	private String partName;
 	private Long orgId;
+	private String flow;
+	private Long flowId;
 	private String partCode;
 	private String kitCode;
 	private int reqKitQty;
