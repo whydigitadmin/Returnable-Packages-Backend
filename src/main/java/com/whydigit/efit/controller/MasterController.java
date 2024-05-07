@@ -621,7 +621,7 @@ public class MasterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 	
-	@GetMapping("/getKitDetailsByEmitter")
+	@GetMapping("/getKitDetailsByEmitterId")
 	public ResponseEntity<ResponseDTO> getKitDetailsByEmitter(@RequestParam Long emitterId ,@RequestParam Long orgId) {
 		String methodName = "getKitDetailsByEmitter()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
