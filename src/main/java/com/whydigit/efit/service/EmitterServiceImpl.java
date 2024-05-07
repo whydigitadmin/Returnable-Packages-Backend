@@ -738,6 +738,7 @@ public class EmitterServiceImpl implements EmitterService {
 				assetStockDetailsVO.setSkuCode(allotmentDetailsVO2.getAssetCode());
 				assetStockDetailsVO.setSku(allotmentDetailsVO2.getAsset());
 				assetStockDetailsVO.setSkuQty(-1);
+				assetStockDetailsVO.setOrgId(allotmentNewVO.getOrgId());
 				assetStockDetailsVO.setRfId(allotmentDetailsVO2.getRfId());
 				assetStockDetailsVO.setTagCode(allotmentDetailsVO2.getTagCode());
 				assetStockDetailsVO.setStockSource("");
@@ -762,6 +763,7 @@ public class EmitterServiceImpl implements EmitterService {
 				assetStockDetailsVO.setSkuCode(allotmentDetailsVO2.getAssetCode());
 				assetStockDetailsVO.setSku(allotmentDetailsVO2.getAsset());
 				assetStockDetailsVO.setSkuQty(1);
+				assetStockDetailsVO.setOrgId(allotmentNewVO.getOrgId());
 				assetStockDetailsVO.setRfId(allotmentDetailsVO2.getRfId());
 				assetStockDetailsVO.setTagCode(allotmentDetailsVO2.getTagCode());
 				assetStockDetailsVO.setStockSource("");
@@ -959,6 +961,7 @@ public class EmitterServiceImpl implements EmitterService {
 					stockDetailsVO.setSku(binOutwardDetailsVO.getAsset());
 					stockDetailsVO.setSkuCode(binOutwardDetailsVO.getAssetCode());
 					stockDetailsVO.setSkuQty(binOutwardDetailsVO.getQty() * -1);
+					stockDetailsVO.setOrgId(savedBinOutwardVO.getOrgId());
 					stockDetailsVO.setStatus("S");
 					stockDetailsVO.setScreen("Bin Outward");
 					stockDetailsVO.setSCode(savedBinOutwardVO.getScode());
@@ -981,6 +984,7 @@ public class EmitterServiceImpl implements EmitterService {
 				stockDetailsVO.setSku(binOutwardDetailsVO.getAsset());
 				stockDetailsVO.setSkuCode(binOutwardDetailsVO.getAssetCode());
 				stockDetailsVO.setSkuQty(binOutwardDetailsVO.getQty());
+				stockDetailsVO.setOrgId(savedBinOutwardVO.getOrgId());
 				stockDetailsVO.setStatus("M");
 				stockDetailsVO.setScreen("Bin Outward");
 				stockDetailsVO.setSCode(savedBinOutwardVO.getScode());

@@ -10,7 +10,7 @@ import com.whydigit.efit.entity.AssetStockDetailsVO;
 public interface AssetStockDetailsRepo extends JpaRepository<AssetStockDetailsVO, Long>{
 
 	
-	@Query(nativeQuery = true,value = "select * from availableasset")
-	List<Object[]> getAvailableAssetDetails();
+	@Query(nativeQuery = true,value = "select * from availableasset where orgid=?1")
+	List<Object[]> getAvailableAssetDetails(Long orgId);
 
 }

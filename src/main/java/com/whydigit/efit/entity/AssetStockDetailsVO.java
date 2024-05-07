@@ -73,7 +73,8 @@ public class AssetStockDetailsVO {
 	private Long sourceId;
 	@Column(name="finyr")
 	private String finyr;
-	
+	@Column (name = "orgid")
+	private long orgId;
 	@Column(name="status")
 	private String status;
 	

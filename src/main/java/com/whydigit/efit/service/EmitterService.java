@@ -118,6 +118,8 @@ public interface EmitterService {
 	String getDocIdByBinallotment();
 
 	String getDocIdByBinOutward();
+	
+	
 
 	List<BinAllotmentNewVO> getCustomizedAllotmentDetailsByEmitter(String kitCode, String flow, Long emitterId,
 			LocalDate startAllotDate, LocalDate endAllotDate);
