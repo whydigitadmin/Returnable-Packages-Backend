@@ -987,7 +987,7 @@ public class EmitterController extends BaseController {
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
 		}
 		if (StringUtils.isBlank(errorMsg)) {
-			List<Map<String, String>>getIssueReport=findIssueRequest(issueRequestVO);
+			List<Map<String, Object>>getIssueReport=findIssueRequest(issueRequestVO);
 			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "IssueRequest  information get successfully");
 			responseObjectsMap.put("issueRequestVO", getIssueReport);
 			responseDTO = createServiceResponse(responseObjectsMap);
@@ -999,17 +999,17 @@ public class EmitterController extends BaseController {
 
 	}
 
-	private List<Map<String, String>> findIssueRequest(Set<Object[]> issueRequestVO) {
-		List<Map<String, String>>getIssueReport=new ArrayList<>();
+	private List<Map<String, Object>> findIssueRequest(Set<Object[]> issueRequestVO) {
+		List<Map<String, Object>>getIssueReport=new ArrayList<>();
 		for(Object[] issueReport:issueRequestVO)
 		{
-			Map<String, String> issue = new HashMap<>();
+			Map<String, Object> issue = new HashMap<>();
 			issue.put("reqNo", issueReport[0] != null ? issueReport[0].toString() : "");
 			issue.put("reqDate", issueReport[1] != null ? issueReport[1].toString() : "");
 			issue.put("emitter", issueReport[2] != null ? issueReport[2].toString() : "");
 			issue.put("emitterId", issueReport[3] != null ? issueReport[3].toString() : "");
 			issue.put("kitCode", issueReport[4] != null ? issueReport[4].toString() : "");
-			issue.put("reqKitQty", issueReport[5] != null ? issueReport[5].toString() : "");
+			issue.put("reqKitQty", issueReport[5] != null ? Integer.parseInt(issueReport[5].toString()) : 0);
 			issue.put("partNo", issueReport[6] != null ? issueReport[6].toString() : "");
 			issue.put("partName", issueReport[7] != null ? issueReport[7].toString() : "");
 			issue.put("flow", issueReport[8] != null ? issueReport[8].toString() : "");
