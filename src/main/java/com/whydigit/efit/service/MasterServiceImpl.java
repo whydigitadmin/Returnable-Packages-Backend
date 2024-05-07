@@ -909,6 +909,10 @@ public class MasterServiceImpl implements MasterService {
 		KitVO kitVO = KitVO.builder().kitCode(kit).orgId(kitDTO.getOrgId()).partQty(kitDTO.getPartQuantity())
 				.kitAssetVO(kitAssetVO).build();
 		for (KitAssetDTO kitAsset : kitDTO.getKitAssetDTO()) {
+			AssetGroupVO assetGroupVO = assetGroupRepo.findAllByAssetCode(kitAsset.getAssetCodeId());
+			assetGroupVO.setEflag(true);
+			assetGroupRepo.save(assetGroupVO);
+
 			kitAssetVO.add(KitAssetVO.builder().assetCategory(kitAsset.getAssetCategory())
 					.assetCodeId(kitAsset.getAssetCodeId()).assetName(kitAsset.getAssetName())
 					.quantity(kitAsset.getQuantity()).kitVO(kitVO).build());

@@ -74,5 +74,6 @@ public class AssetGroupVO {
 	
 	
 	@Embedded
+	@Builder.Default
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
 }
