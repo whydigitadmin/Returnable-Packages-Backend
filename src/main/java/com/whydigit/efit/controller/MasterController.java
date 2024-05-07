@@ -2053,9 +2053,9 @@ public class MasterController extends BaseController {
 		List<Map<String, Object>> kit = new ArrayList<>();
 		for (Object[] w : avalKit) {
 			Map<String, Object> kitd = new HashMap<>();
-			kitd.put("stockBranch", w[0]);
-			kitd.put("kitCode", w[1].toString());
-			kitd.put("avlQty", w[2].toString());
+			kitd.put("stockBranch", w[0] != null ? w[0].toString() : "");
+			kitd.put("kitCode", w[1] != null ? w[1].toString() : "");
+			kitd.put("avlQty", w[2] != null ? Integer.parseInt(w[2].toString()) : 0);
 			kit.add(kitd);
 		}
 		return kit;
@@ -2094,9 +2094,9 @@ public class MasterController extends BaseController {
 		List<Map<String, Object>> kit = new ArrayList<>();
 		for (Object[] w : avalKit) {
 			Map<String, Object> kitd = new HashMap<>();
-			kitd.put("stockBranch", w[0]);
-			kitd.put("kitCode", w[1].toString());
-			kitd.put("avlQty", w[2].toString());
+			kitd.put("stockBranch", w[0] != null ? w[0].toString() : "");
+			kitd.put("kitCode", w[1] != null ? w[1].toString() : "");
+			kitd.put("avlQty", w[2] != null ? Integer.parseInt(w[2].toString()) : 0);
 			kit.add(kitd);
 		}
 		return kit;
@@ -2957,7 +2957,7 @@ public class MasterController extends BaseController {
 		ResponseDTO responseDTO = null;
 		List<BinAllotmentNewVO> binAllotmentNewVO = new ArrayList<>();
 		try {
-			binAllotmentNewVO = masterService.getIssueRequest(kitCode, flow, emitter, startAllotDate, endAllotDate);
+			binAllotmentNewVO = masterService.getCustomizedAllotmentDetails(kitCode, flow, emitter, startAllotDate, endAllotDate);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(CommonConstant.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
