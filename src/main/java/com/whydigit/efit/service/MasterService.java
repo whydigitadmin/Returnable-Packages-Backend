@@ -103,7 +103,7 @@ public interface MasterService {
 
 	List<FlowVO> getAllFlow(Long orgId, Long emitterId);
 
-	Set<Object[]> getKitDetailsByEmitter(String emitter, Long orgId);
+	Set<Object[]> getKitDetailsByEmitter(Long emitterId, Long orgId);
 	
 	Optional<FlowVO> getFlowById(long id);
 

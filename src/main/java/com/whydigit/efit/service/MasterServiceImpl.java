@@ -8,7 +8,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -96,7 +95,6 @@ import com.whydigit.efit.entity.DmapDetailsVO;
 import com.whydigit.efit.entity.DmapVO;
 import com.whydigit.efit.entity.FlowDetailVO;
 import com.whydigit.efit.entity.FlowVO;
-import com.whydigit.efit.entity.IssueRequestVO;
 import com.whydigit.efit.entity.KitAssetVO;
 import com.whydigit.efit.entity.KitVO;
 import com.whydigit.efit.entity.ManufacturerProductVO;
@@ -1194,8 +1192,8 @@ public class MasterServiceImpl implements MasterService {
 	}
 
 	@Override
-	public Set<Object[]> getKitDetailsByEmitter(String emitter, Long orgId) {
-		return flowRepo.findKitDetailsByEmitter(emitter,orgId);
+	public Set<Object[]> getKitDetailsByEmitter(Long emitterId, Long orgId) {
+		return flowRepo.findKitDetailsByEmitter(emitterId,orgId);
 	}
 	
 	@Override
