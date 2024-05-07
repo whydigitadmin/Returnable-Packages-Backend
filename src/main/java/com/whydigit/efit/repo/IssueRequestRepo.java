@@ -56,7 +56,7 @@ public interface IssueRequestRepo
 	@Query(nativeQuery = true,value="select a.flowid from issuerequest a where a.docid=?1")
 	Long getFlowIdByrequestId(String binReqNo);
 
-	@Query(nativeQuery =true,value = "SELECT a.docid, a.docdate AS reqDate, a.emitter, a.emitterid, b.kitcode, b.kitqty AS reqKitQty, b.partno, b.partname, a.flow, a.flowid FROM issuerequest a JOIN issuerequest2 b ON a.issuerequestid = b.issuerequestid JOIN users u ON FIND_IN_SET(a.whlocationid, u.access_warehouse) > 0 WHERE a.docid NOT IN (SELECT binreqno FROM binallotment) AND a.orgid = ?1 AND u.user_id = ?2 GROUP BY a.docid, a.docdate, a.emitter, a.emitterid, b.kitcode, b.kitqty, b.partno, b.partname, a.flow, a.flowid;")
-	Set<Object[]> getIssueRequestByOrgId(Long orgId, Long userId);
+	@Query(nativeQuery =true,value = "select a.docid,a.docdate reqDate,a.emitter,a.emitterid,b.kitcode,b.kitqty reqKitQty,b.partno,b.partname,a.flow,a.flowid from issuerequest a, issuerequest2 b where a.issuerequestid=b.issuerequestid and a.docid not in (select binreqno from binallotment) and a.orgid=?1")
+	Set<Object[]> getIssueRequestByOrgId(Long orgId);
 	
 }
