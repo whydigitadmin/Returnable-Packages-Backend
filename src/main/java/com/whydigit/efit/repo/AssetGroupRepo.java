@@ -25,7 +25,7 @@ public interface AssetGroupRepo extends JpaRepository<AssetGroupVO, String> {
 	@Query("select a from AssetGroupVO a where a.orgId=?1 and a.assetCodeId=?2 ")
 	AssetGroupVO findAssetByAssetCodeId(Long orgId, String assetCodeId);
 
-	AssetGroupVO findAllByAssetCodeId(String assetCodeId);
+	AssetGroupVO findAllByAssetCode(String assetCodeId);
 
 	
 	

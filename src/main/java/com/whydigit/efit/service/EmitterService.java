@@ -109,7 +109,7 @@ public interface EmitterService {
 
 	Set<Object[]> getkitAssetDetailsByKitId(String kitCode, int quantity);
 
-	Set<Object[]> getIssueRequestreportByOrgId(Long orgId, Long userId);
+	Set<Object[]> getIssueRequestreportByOrgId(Long orgId);
 
 
 	String uploadPodFilePath(MultipartFile file, String allotNo);
@@ -118,11 +118,6 @@ public interface EmitterService {
 	String getDocIdByBinallotment();
 
 	String getDocIdByBinOutward();
-
-	List<BinAllotmentNewVO> getCustomizedAllotmentDetailsByEmitter(String kitCode, String flow, Long emitterId,
-			LocalDate startAllotDate, LocalDate endAllotDate);
-
-	
 
 
 }

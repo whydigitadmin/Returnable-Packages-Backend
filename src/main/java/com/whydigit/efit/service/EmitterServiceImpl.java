@@ -831,9 +831,9 @@ public class EmitterServiceImpl implements EmitterService {
 	}
 
 	@Override
-	public Set<Object[]> getIssueRequestreportByOrgId(Long orgId,Long userId) {
+	public Set<Object[]> getIssueRequestreportByOrgId(Long orgId) {
 		// TODO Auto-generated method stub
-		return issueRequestRepo.getIssueRequestByOrgId(orgId,userId);
+		return issueRequestRepo.getIssueRequestByOrgId(orgId);
 	}
 
 
@@ -996,32 +996,5 @@ public class EmitterServiceImpl implements EmitterService {
 			return binOutwardVO;
 		}
 
-		
-		@Override
-		public List<BinAllotmentNewVO> getCustomizedAllotmentDetailsByEmitter(String kitCode, String flow, Long emitterId,
-				LocalDate startAllotDate, LocalDate endAllotDate) {
-			return binAllotmentNewRepo.findAll(new Specification<BinAllotmentNewVO>() {
-
-				@Override
-				public Predicate toPredicate(Root<BinAllotmentNewVO> root, CriteriaQuery<?> query,
-						CriteriaBuilder criteriaBuilder) {
-					List<Predicate> predicates = new ArrayList<>();
-					if (ObjectUtils.isNotEmpty(kitCode)) {
-						predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("kitCode"), kitCode)));
-					}
-					if (ObjectUtils.isNotEmpty(flow)) {
-						predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("flow"), flow)));
-					}
-					if (ObjectUtils.isNotEmpty(startAllotDate) && ObjectUtils.isNotEmpty(endAllotDate)) {
-		                predicates.add(criteriaBuilder.between(root.get("docDate"),startAllotDate,endAllotDate));
-		            }
-					if (emitterId != null) {
-						predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("emitterId"), emitterId)));
-					}
-					return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
-				}
-
-			});
-		}
 }
 

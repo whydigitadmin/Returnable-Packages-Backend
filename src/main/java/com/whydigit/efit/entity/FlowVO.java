@@ -39,7 +39,7 @@ public class FlowVO {
 	private Long orgId;
 	@Column(name = "receiverid", length = 25)
 	private Long receiverId;
-	@Column(name = "flow", length = 100)
+	@Column(name = "flow", length = 25)
 	private String flowName;
 	@Column(name = "emitter")
 	private String emitter;
