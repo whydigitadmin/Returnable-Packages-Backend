@@ -103,7 +103,7 @@ public interface MasterService {
 
 	List<FlowVO> getAllFlow(Long orgId, Long emitterId);
 
-	Set<Object[]> getKitDetailsByEmitter(String emitter, Long orgId);
+	Set<Object[]> getKitDetailsByEmitter(Long emitterId, Long orgId);
 	
 	Optional<FlowVO> getFlowById(long id);
 
@@ -300,9 +300,9 @@ public interface MasterService {
 
 	// Get Bin Allotment details
 	
-	List<BinAllotmentNewVO> getIssueRequest(String kitCode, String flow, String emitter, LocalDate startAllotDate,
+	List<BinAllotmentNewVO> getCustomizedAllotmentDetails(String kitCode, String flow, String emitter, LocalDate startAllotDate,
 			LocalDate endAllotDate);
 	
-	List<Object[]>availableAllAssetDetails();
+	List<Object[]>availableAllAssetDetails(Long orgId);
 
 }

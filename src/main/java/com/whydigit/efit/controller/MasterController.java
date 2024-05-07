@@ -29,7 +29,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.whydigit.efit.common.CommonConstant;
-import com.whydigit.efit.common.EmitterConstant;
 import com.whydigit.efit.common.UserConstants;
 import com.whydigit.efit.dto.AssetInwardDTO;
 import com.whydigit.efit.dto.AssetTaggingDTO;
@@ -61,7 +60,6 @@ import com.whydigit.efit.entity.CustomersAddressVO;
 import com.whydigit.efit.entity.CustomersVO;
 import com.whydigit.efit.entity.DmapVO;
 import com.whydigit.efit.entity.FlowVO;
-import com.whydigit.efit.entity.IssueRequestVO;
 import com.whydigit.efit.entity.KitVO;
 import com.whydigit.efit.entity.ManufacturerProductVO;
 import com.whydigit.efit.entity.ManufacturerVO;
@@ -623,8 +621,8 @@ public class MasterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 	
-	@GetMapping("/getKitDetailsByEmitter")
-	public ResponseEntity<ResponseDTO> getKitDetailsByEmitter(@RequestParam String emitter ,@RequestParam Long orgId) {
+	@GetMapping("/getKitDetailsByEmitterId")
+	public ResponseEntity<ResponseDTO> getKitDetailsByEmitter(@RequestParam Long emitterId ,@RequestParam Long orgId) {
 		String methodName = "getKitDetailsByEmitter()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -632,13 +630,13 @@ public class MasterController extends BaseController {
 		ResponseDTO responseDTO = null;
 		Set<Object[]> flowVO = new HashSet<>();
 		try {
-			flowVO = masterService.getKitDetailsByEmitter(emitter,orgId);
+			flowVO = masterService.getKitDetailsByEmitter(emitterId,orgId);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
 		}
 		if (StringUtils.isEmpty(errorMsg)) {
-			List<Map<String, String>> flow = findkitdetails(flowVO);
+			List<Map<String, Object>> flow = findkitdetails(flowVO);
 			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Kit Details found by emitter");
 			responseObjectsMap.put("flow", flow);
 			responseDTO = createServiceResponse(responseObjectsMap);
@@ -650,10 +648,10 @@ public class MasterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
-	private List<Map<String, String>> findkitdetails(Set<Object[]> flowVO) {
-		List<Map<String, String>> flowDetails = new ArrayList<>();
+	private List<Map<String, Object>> findkitdetails(Set<Object[]> flowVO) {
+		List<Map<String, Object>> flowDetails = new ArrayList<>();
 		for (Object[] f : flowVO) {
-			Map<String, String> f1 = new HashMap<>();
+			Map<String, Object> f1 = new HashMap<>();
 			f1.put("emitter", f[0] != null ? f[0].toString() : "");
 			f1.put("flow", f[1] != null ? f[1].toString() : "");
 			f1.put("reciever", f[2] != null ? f[2].toString() : "");
@@ -661,7 +659,7 @@ public class MasterController extends BaseController {
 			f1.put("partname", f[4] != null ? f[4].toString() : "");
 			f1.put("kitcode", f[5] != null ? f[5].toString() : "");
 			f1.put("partno", f[6] != null ? f[6].toString() : "");
-			f1.put("partqty", f[7] != null ? f[7].toString() : "");
+			f1.put("partqty", f[7] != null ? Integer.parseInt(f[7].toString()):0);
 			flowDetails.add(f1);
 		}
 		return flowDetails;
@@ -2053,9 +2051,9 @@ public class MasterController extends BaseController {
 		List<Map<String, Object>> kit = new ArrayList<>();
 		for (Object[] w : avalKit) {
 			Map<String, Object> kitd = new HashMap<>();
-			kitd.put("stockBranch", w[0]);
-			kitd.put("kitCode", w[1].toString());
-			kitd.put("avlQty", w[2].toString());
+			kitd.put("stockBranch", w[0] != null ? w[0].toString() : "");
+			kitd.put("kitCode", w[1] != null ? w[1].toString() : "");
+			kitd.put("avlQty", w[2] != null ? Integer.parseInt(w[2].toString()) : 0);
 			kit.add(kitd);
 		}
 		return kit;
@@ -2094,9 +2092,9 @@ public class MasterController extends BaseController {
 		List<Map<String, Object>> kit = new ArrayList<>();
 		for (Object[] w : avalKit) {
 			Map<String, Object> kitd = new HashMap<>();
-			kitd.put("stockBranch", w[0]);
-			kitd.put("kitCode", w[1].toString());
-			kitd.put("avlQty", w[2].toString());
+			kitd.put("stockBranch", w[0] != null ? w[0].toString() : "");
+			kitd.put("kitCode", w[1] != null ? w[1].toString() : "");
+			kitd.put("avlQty", w[2] != null ? Integer.parseInt(w[2].toString()) : 0);
 			kit.add(kitd);
 		}
 		return kit;
@@ -2957,7 +2955,7 @@ public class MasterController extends BaseController {
 		ResponseDTO responseDTO = null;
 		List<BinAllotmentNewVO> binAllotmentNewVO = new ArrayList<>();
 		try {
-			binAllotmentNewVO = masterService.getIssueRequest(kitCode, flow, emitter, startAllotDate, endAllotDate);
+			binAllotmentNewVO = masterService.getCustomizedAllotmentDetails(kitCode, flow, emitter, startAllotDate, endAllotDate);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(CommonConstant.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
@@ -2975,7 +2973,7 @@ public class MasterController extends BaseController {
 	}
 	
 	@GetMapping("/getAvailableAssetDetails")
-	public ResponseEntity<ResponseDTO> getAvailableAssetDetails() {
+	public ResponseEntity<ResponseDTO> getAvailableAssetDetails(@RequestParam Long orgId) {
 		String methodName = "getAvailableAssetDetails()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -2983,7 +2981,7 @@ public class MasterController extends BaseController {
 		ResponseDTO responseDTO = null;
 		List<Object[]> stock = new ArrayList<>();
 		try {
-			stock = masterService.availableAllAssetDetails();
+			stock = masterService.availableAllAssetDetails(orgId);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);

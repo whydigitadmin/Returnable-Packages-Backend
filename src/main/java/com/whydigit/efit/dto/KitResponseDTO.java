@@ -18,6 +18,7 @@ public class KitResponseDTO {
 	private long orgId;
 	private String partId;
 	private int partQty;	
+	private boolean eflag;
 	private Map<String, List<KitAssetVO>> kitAssetCategory = new HashMap<>();
 
 }

@@ -738,6 +738,7 @@ public class EmitterServiceImpl implements EmitterService {
 				assetStockDetailsVO.setSkuCode(allotmentDetailsVO2.getAssetCode());
 				assetStockDetailsVO.setSku(allotmentDetailsVO2.getAsset());
 				assetStockDetailsVO.setSkuQty(-1);
+				assetStockDetailsVO.setOrgId(allotmentNewVO.getOrgId());
 				assetStockDetailsVO.setRfId(allotmentDetailsVO2.getRfId());
 				assetStockDetailsVO.setTagCode(allotmentDetailsVO2.getTagCode());
 				assetStockDetailsVO.setStockSource("");
@@ -762,6 +763,7 @@ public class EmitterServiceImpl implements EmitterService {
 				assetStockDetailsVO.setSkuCode(allotmentDetailsVO2.getAssetCode());
 				assetStockDetailsVO.setSku(allotmentDetailsVO2.getAsset());
 				assetStockDetailsVO.setSkuQty(1);
+				assetStockDetailsVO.setOrgId(allotmentNewVO.getOrgId());
 				assetStockDetailsVO.setRfId(allotmentDetailsVO2.getRfId());
 				assetStockDetailsVO.setTagCode(allotmentDetailsVO2.getTagCode());
 				assetStockDetailsVO.setStockSource("");
@@ -831,9 +833,9 @@ public class EmitterServiceImpl implements EmitterService {
 	}
 
 	@Override
-	public Set<Object[]> getIssueRequestreportByOrgId(Long orgId) {
+	public Set<Object[]> getIssueRequestreportByOrgId(Long orgId,Long userId) {
 		// TODO Auto-generated method stub
-		return issueRequestRepo.getIssueRequestByOrgId(orgId);
+		return issueRequestRepo.getIssueRequestByOrgId(orgId,userId);
 	}
 
 
@@ -892,7 +894,7 @@ public class EmitterServiceImpl implements EmitterService {
 		BinInwardVO vo = new BinInwardVO();
 		// Set other attributes as needed
 		vo.setAllotmentNo(allotNo);
-		vo.setPodFileUploadPath(filePath.toString());
+		vo.setPodFileUploadPath(filePath.toString().replace("\\", "/"));
 		return vo;
 	}
 
@@ -906,7 +908,7 @@ public class EmitterServiceImpl implements EmitterService {
 
 	@Override
 	public String getDocIdByBinOutward() {
-		String finyr = binOutwardRepo.finddocid();
+		String finyr = binOutwardRepo.findFinyr();
 		String binOutward = finyr + "BO" + binOutwardRepo.finddocid();
 		return binOutward;
 	}
@@ -959,6 +961,7 @@ public class EmitterServiceImpl implements EmitterService {
 					stockDetailsVO.setSku(binOutwardDetailsVO.getAsset());
 					stockDetailsVO.setSkuCode(binOutwardDetailsVO.getAssetCode());
 					stockDetailsVO.setSkuQty(binOutwardDetailsVO.getQty() * -1);
+					stockDetailsVO.setOrgId(savedBinOutwardVO.getOrgId());
 					stockDetailsVO.setStatus("S");
 					stockDetailsVO.setScreen("Bin Outward");
 					stockDetailsVO.setSCode(savedBinOutwardVO.getScode());
@@ -981,6 +984,7 @@ public class EmitterServiceImpl implements EmitterService {
 				stockDetailsVO.setSku(binOutwardDetailsVO.getAsset());
 				stockDetailsVO.setSkuCode(binOutwardDetailsVO.getAssetCode());
 				stockDetailsVO.setSkuQty(binOutwardDetailsVO.getQty());
+				stockDetailsVO.setOrgId(savedBinOutwardVO.getOrgId());
 				stockDetailsVO.setStatus("M");
 				stockDetailsVO.setScreen("Bin Outward");
 				stockDetailsVO.setSCode(savedBinOutwardVO.getScode());
@@ -996,5 +1000,32 @@ public class EmitterServiceImpl implements EmitterService {
 			return binOutwardVO;
 		}
 
+		
+		@Override
+		public List<BinAllotmentNewVO> getCustomizedAllotmentDetailsByEmitter(String kitCode, String flow, Long emitterId,
+				LocalDate startAllotDate, LocalDate endAllotDate) {
+			return binAllotmentNewRepo.findAll(new Specification<BinAllotmentNewVO>() {
+
+				@Override
+				public Predicate toPredicate(Root<BinAllotmentNewVO> root, CriteriaQuery<?> query,
+						CriteriaBuilder criteriaBuilder) {
+					List<Predicate> predicates = new ArrayList<>();
+					if (ObjectUtils.isNotEmpty(kitCode)) {
+						predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("kitCode"), kitCode)));
+					}
+					if (ObjectUtils.isNotEmpty(flow)) {
+						predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("flow"), flow)));
+					}
+					if (ObjectUtils.isNotEmpty(startAllotDate) && ObjectUtils.isNotEmpty(endAllotDate)) {
+		                predicates.add(criteriaBuilder.between(root.get("docDate"),startAllotDate,endAllotDate));
+		            }
+					if (emitterId != null) {
+						predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("emitterId"), emitterId)));
+					}
+					return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
+				}
+
+			});
+		}
 }
 
