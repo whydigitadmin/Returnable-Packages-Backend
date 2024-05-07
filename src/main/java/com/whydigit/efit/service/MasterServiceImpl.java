@@ -909,7 +909,7 @@ public class MasterServiceImpl implements MasterService {
 		KitVO kitVO = KitVO.builder().kitCode(kit).orgId(kitDTO.getOrgId()).partQty(kitDTO.getPartQuantity())
 				.kitAssetVO(kitAssetVO).build();
 		for (KitAssetDTO kitAsset : kitDTO.getKitAssetDTO()) {
-			AssetGroupVO assetGroupVO = assetGroupRepo.findAllByAssetCode(kitAsset.getAssetCodeId());
+			AssetGroupVO assetGroupVO = assetGroupRepo.findAllByAssetCodeId(kitAsset.getAssetCodeId());
 			assetGroupVO.setEflag(true);
 			assetGroupRepo.save(assetGroupVO);
 
@@ -2181,7 +2181,7 @@ public class MasterServiceImpl implements MasterService {
 	}
 
 	@Override
-	public List<BinAllotmentNewVO> getIssueRequest(String kitCode, String flow, String emitter,
+	public List<BinAllotmentNewVO> getCustomizedAllotmentDetails(String kitCode, String flow, String emitter,
 			LocalDate startAllotDate, LocalDate endAllotDate) {
 		return binAllotmentNewRepo.findAll(new Specification<BinAllotmentNewVO>() {
 

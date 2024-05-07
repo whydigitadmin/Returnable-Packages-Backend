@@ -300,7 +300,7 @@ public interface MasterService {
 
 	// Get Bin Allotment details
 	
-	List<BinAllotmentNewVO> getIssueRequest(String kitCode, String flow, String emitter, LocalDate startAllotDate,
+	List<BinAllotmentNewVO> getCustomizedAllotmentDetails(String kitCode, String flow, String emitter, LocalDate startAllotDate,
 			LocalDate endAllotDate);
 	
 	List<Object[]>availableAllAssetDetails();

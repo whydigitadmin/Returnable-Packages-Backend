@@ -143,6 +143,8 @@ public interface BinAllotmentNewRepo extends JpaRepository<BinAllotmentNewVO, Lo
 	List<Object[]> RandomAssetDetailsByKitCodeAndAllotQty(String kitCode, int qty,String stockbranch);
 
 	List<BinAllotmentNewVO> findAll(Specification<BinAllotmentNewVO> specification);
+
+	List<BinAllotmentNewVO> findAllBinAllotmentByEmitterId(Specification<BinAllotmentNewVO> specification);
 	
 	
 
