@@ -3013,5 +3013,32 @@ public class MasterController extends BaseController {
 		}
 		return assetDetails;
 	}
+	
+	
+	@GetMapping("/getDocIdByAssetInward")
+	public ResponseEntity<ResponseDTO> getDocIdByAssetInward() {
+		String methodName = "getDocIdByAssetInward()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		String assetInwardDocId = null;
+		try {
+			assetInwardDocId = masterService.getDocIdByAssetInward();
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Asset Inward DocId found success");
+			responseObjectsMap.put("assetInwardDocId", assetInwardDocId);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			errorMsg = " not found for ID: ";
+			responseDTO = createServiceResponseError(responseObjectsMap, "Asset Inward DocId not found", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
 
 }

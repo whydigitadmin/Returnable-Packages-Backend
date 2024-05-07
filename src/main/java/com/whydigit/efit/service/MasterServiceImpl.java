@@ -1290,7 +1290,6 @@ public class MasterServiceImpl implements MasterService {
 		String assetinward = finyr + "AI" + assetInwardRepo.finddocid();
 		assetInwardVO.setDocId(assetinward);
 		assetInwardRepo.nextseq();
-		assetInwardVO.setDocId(assetInwardDTO.getDocId());
 		assetInwardVO.setDocDate(assetInwardDTO.getDocDate());
 		assetInwardVO.setStockBranch(assetInwardDTO.getStockBranch());
 		assetInwardVO.setSourceFrom(assetInwardDTO.getSourceFrom());
