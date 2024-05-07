@@ -908,7 +908,7 @@ public class EmitterServiceImpl implements EmitterService {
 
 	@Override
 	public String getDocIdByBinOutward() {
-		String finyr = binOutwardRepo.finddocid();
+		String finyr = binOutwardRepo.findFinyr();
 		String binOutward = finyr + "BO" + binOutwardRepo.finddocid();
 		return binOutward;
 	}

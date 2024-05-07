@@ -878,6 +878,7 @@ public class MasterServiceImpl implements MasterService {
 			KitResponse.setKitCode(kit.getKitCode());
 			KitResponse.setPartQty(kit.getPartQty());
 			KitResponse.setOrgId(kit.getOrgId());
+			KitResponse.setEflag(kit.isEflag());		
 			Map<String, List<KitAssetVO>> kitAssetVOByCategory = kit.getKitAssetVO().stream()
 					.collect(Collectors.groupingBy(KitAssetVO::getAssetCategory));
 			KitResponse.setKitAssetCategory(kitAssetVOByCategory);
