@@ -1807,7 +1807,7 @@ public class MasterServiceImpl implements MasterService {
 			System.out.println(filePath);
 			// Create ProofOfDeliveryVO and set uploadReceipt
 			ProofOfDeliveryVO vo = createProofOfDeliveryVO(docId, refNo, Paths.get(UPLOAD_DIR));
-			proofOfDeliveryVO.setUploadReceipt(filePath.toString());
+			proofOfDeliveryVO.setUploadReceipt(filePath.toString().replace("\\", "/"));
 			proofOfDeliveryRepo.save(proofOfDeliveryVO);
 			return filePath.toString();
 		} catch (IOException e) {

@@ -894,7 +894,7 @@ public class EmitterServiceImpl implements EmitterService {
 		BinInwardVO vo = new BinInwardVO();
 		// Set other attributes as needed
 		vo.setAllotmentNo(allotNo);
-		vo.setPodFileUploadPath(filePath.toString());
+		vo.setPodFileUploadPath(filePath.toString().replace("\\", "/"));
 		return vo;
 	}
 
