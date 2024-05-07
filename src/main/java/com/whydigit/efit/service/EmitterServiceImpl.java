@@ -706,6 +706,8 @@ public class EmitterServiceImpl implements EmitterService {
 		binAllotmentNewVO.setPartName(binAllotmentDTO.getPartName());
 		binAllotmentNewVO.setPartCode(binAllotmentDTO.getPartCode());
 		binAllotmentNewVO.setStockBranch(binAllotmentDTO.getStockBranch());
+		binAllotmentNewVO.setFlowId(binAllotmentDTO.getFlowId());
+		binAllotmentNewVO.setFlow(binAllotmentDTO.getFlow());
 		binAllotmentNewVO.setKitCode(binAllotmentDTO.getKitCode());
 		binAllotmentNewVO.setReqKitQty(binAllotmentDTO.getReqKitQty());
 		binAllotmentNewVO.setAvlKitQty(binAllotmentDTO.getAvlKitQty());

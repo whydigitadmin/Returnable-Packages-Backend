@@ -1107,10 +1107,6 @@ public class MasterServiceImpl implements MasterService {
 
 		if (vendorDTO.getId() != 0) {
 			vendorVO = vendorRepo.findById(vendorDTO.getId()).get();
-			if (vendorRepo.existsByEntityLegalNameAndDisplyNameAndOrgId(vendorDTO.getEntityLegalName(),
-					vendorDTO.getDisplyName(), vendorDTO.getOrgId())) {
-				throw new RuntimeException("The Vendor LegalName or DisplayName already exists");
-			}
 			vendorVO.setOrgId(vendorDTO.getOrgId());
 			vendorVO.setVenderType(vendorDTO.getVenderType());
 			vendorVO.setDisplyName(vendorDTO.getDisplyName());
@@ -1294,7 +1290,6 @@ public class MasterServiceImpl implements MasterService {
 		String assetinward = finyr + "AI" + assetInwardRepo.finddocid();
 		assetInwardVO.setDocId(assetinward);
 		assetInwardRepo.nextseq();
-		assetInwardVO.setDocId(assetInwardDTO.getDocId());
 		assetInwardVO.setDocDate(assetInwardDTO.getDocDate());
 		assetInwardVO.setStockBranch(assetInwardDTO.getStockBranch());
 		assetInwardVO.setSourceFrom(assetInwardDTO.getSourceFrom());
@@ -2197,10 +2192,8 @@ public class MasterServiceImpl implements MasterService {
 					predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("flow"), flow)));
 				}
 				if (ObjectUtils.isNotEmpty(startAllotDate) && ObjectUtils.isNotEmpty(endAllotDate)) {
-					predicates.add(criteriaBuilder.between(root.get("requestedDate"),
-							LocalDateTime.of(startAllotDate, LocalTime.MIDNIGHT),
-							LocalDateTime.of(endAllotDate, LocalTime.MIDNIGHT)));
-				}
+	                predicates.add(criteriaBuilder.between(root.get("docDate"),startAllotDate,endAllotDate));
+	            }
 				if (StringUtils.isNoneBlank(emitter)) {
 					predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("emitter"), emitter)));
 				}
@@ -2208,5 +2201,11 @@ public class MasterServiceImpl implements MasterService {
 			}
 
 		});
+	}
+
+	// get Available Asset Details.
+	@Override
+	public List<Object[]> availableAllAssetDetails() {
+		return assetStockDetailsRepo.getAvailableAssetDetails();
 	}
 }

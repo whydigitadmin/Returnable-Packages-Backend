@@ -302,5 +302,7 @@ public interface MasterService {
 	
 	List<BinAllotmentNewVO> getIssueRequest(String kitCode, String flow, String emitter, LocalDate startAllotDate,
 			LocalDate endAllotDate);
+	
+	List<Object[]>availableAllAssetDetails();
 
 }
