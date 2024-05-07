@@ -118,6 +118,8 @@ public interface EmitterService {
 	String getDocIdByBinallotment();
 
 	String getDocIdByBinOutward();
+	
+	
 
 
 }

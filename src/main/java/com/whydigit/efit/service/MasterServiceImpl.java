@@ -1333,6 +1333,7 @@ public class MasterServiceImpl implements MasterService {
 				assetStockDetailsVO.setStockLocation(assetdetails.getStockLocation());
 				assetStockDetailsVO.setBinLocation(assetdetails.getBinLocation());
 				assetStockDetailsVO.setSCode(assetInwardVO1.getSCode());
+				assetStockDetailsVO.setOrgId(assetInwardVO1.getOrgId());
 				assetStockDetailsVO.setScreen("Asset Inward");
 				assetStockDetailsVO.setPm("M");
 				assetStockDetailsVO.setStatus("S");
@@ -1361,6 +1362,7 @@ public class MasterServiceImpl implements MasterService {
 				assetStockDetailsVO.setStockLocation(assetdetails.getStockLocation());
 				assetStockDetailsVO.setBinLocation(assetdetails.getBinLocation());
 				assetStockDetailsVO.setSCode(assetInwardVO1.getSCode());
+				assetStockDetailsVO.setOrgId(assetInwardVO1.getOrgId());
 				assetStockDetailsVO.setScreen("Asset Inward");
 				assetStockDetailsVO.setPm("P");
 				assetStockDetailsVO.setStatus("S");
@@ -1479,6 +1481,7 @@ public class MasterServiceImpl implements MasterService {
 				assetStockDetailsVO.setSkuCode(assetTaggingDetails.getAssetCode());
 				assetStockDetailsVO.setSku(assetTaggingDetails.getAsset());
 				assetStockDetailsVO.setSkuQty(1);
+				assetStockDetailsVO.setOrgId(savedAssetTaggingVO.getOrgId());
 				assetStockDetailsVO.setRfId(assetTaggingDetails.getRfId());
 				assetStockDetailsVO.setTagCode(assetTaggingDetails.getTagCode());
 				assetStockDetailsVO.setSCode(savedAssetTaggingVO.getScode()); // Assuming getScode() returns the correct
@@ -1745,37 +1748,31 @@ public class MasterServiceImpl implements MasterService {
 
 	@Override
 	public AssetGroupVO getAssetGroupByAssetCode(Long orgId, String assetCodeId) {
-
 		return assetGroupRepo.findAssetByAssetCodeId(orgId, assetCodeId);
 	}
 
 	@Override
 	public AssetVO getAssetByOrgId(Long orgId, String assetId) {
-
 		return assetRepo.getAssetByOrgId(orgId, assetId);
 	}
 
 	@Override
 	public List<ServiceVO> getAllServiceByOrgId(Long OrgId) {
-
 		return serviceRepo.findAllByOrgId(OrgId);
 	}
 
 	@Override
 	public List<AssetInwardVO> getAllAssetInwardOrgId(Long orgId) {
-
 		return assetInwardRepo.findAssetInwardByOrgId(orgId);
 	}
 
 	@Override
 	public AssetInwardVO getAssetInwardByDocId(String docId) {
-
 		return assetInwardRepo.findAssetInwardByDocId(docId);
 	}
 
 	@Override
 	public Set<Object[]> getPoNoByCreateAsset(Long orgId) {
-
 		return poRepo.getPoNoByCreateAsset(orgId);
 	}
 
@@ -1873,13 +1870,11 @@ public class MasterServiceImpl implements MasterService {
 
 	@Override
 	public Set<Object[]> getAllotmentNoByEmitterIdAndOrgId(Long orgId, Long emitterId) {
-
 		return binAllotmentNewRepo.getAllotmentNoByEmitterIdAndOrgId(orgId, emitterId);
 	}
 
 	@Override
 	public Set<Object[]> getAllotmentDetailsByAllotmentNoAndOrgId(Long orgId, String docid) {
-
 		return binAllotmentNewRepo.getAllotmentDetailsByAllotmentNoAndOrgId(orgId, docid);
 	}
 
@@ -1901,7 +1896,6 @@ public class MasterServiceImpl implements MasterService {
 				binInwardDetails.setTagCode(binInwardDetailsDTO.getTagCode());
 				binInwardDetails.setBinInwardVO(binInwardVO);
 				binInwardDetails.setRfId(assetTaggingDetailsRepo.findRfIdByTagCode(binInwardDetailsDTO.getTagCode()));
-
 				binInwardDetailsVO.add(binInwardDetails);
 			}
 		}
@@ -1912,13 +1906,11 @@ public class MasterServiceImpl implements MasterService {
 		List<BinInwardDetailsVO> savedBinInwardDetailsVO = savedBinInwardVO.getBinInwardDetailsVO();
 
 		if (savedBinInwardDetailsVO != null && !savedBinInwardDetailsVO.isEmpty()) {
-
 			for (BinInwardDetailsVO binInwardDetails : savedBinInwardDetailsVO) {
 
 				Long flow = issueRequestRepo.getFlowIdByrequestId(binInwardDTO.getReqNo());
 				String emitter = flowRepo.findEmiterbyFlowId(flow);
 				String orgin = flowRepo.findOrigionbyFlowId(flow);
-
 				AssetStockDetailsVO assetStockDetailsVO = new AssetStockDetailsVO();
 				assetStockDetailsVO.setStockRef(savedBinInwardVO.getAllotmentNo());
 				assetStockDetailsVO.setStockDate(savedBinInwardVO.getAllotDate());
@@ -1929,6 +1921,7 @@ public class MasterServiceImpl implements MasterService {
 				assetStockDetailsVO.setTagCode(binInwardDetails.getTagCode());
 				assetStockDetailsVO.setSCode(savedBinInwardVO.getScode()); // Assuming getScode() returns the correct
 				assetStockDetailsVO.setSourceId(binInwardDetails.getBinInwardDetailsId()); // value
+				assetStockDetailsVO.setOrgId(savedBinInwardVO.getOrgId());
 				assetStockDetailsVO.setScreen("Bin Inward");
 				assetStockDetailsVO.setPm("M");
 				assetStockDetailsVO.setStatus("M");
@@ -1942,11 +1935,9 @@ public class MasterServiceImpl implements MasterService {
 			}
 
 			for (BinInwardDetailsVO binInwardDetails : savedBinInwardDetailsVO) {
-
 				Long flow = issueRequestRepo.getFlowIdByrequestId(savedBinInwardVO.getReqNo());
 				String emitter = flowRepo.findEmiterbyFlowId(flow);
 				String orgin = flowRepo.findOrigionbyFlowId(flow);
-
 				AssetStockDetailsVO assetStockDetailsVO = new AssetStockDetailsVO();
 				assetStockDetailsVO.setStockRef(savedBinInwardVO.getDocid());
 				assetStockDetailsVO.setStockDate(savedBinInwardVO.getDocDate());
@@ -1958,6 +1949,7 @@ public class MasterServiceImpl implements MasterService {
 				assetStockDetailsVO.setStockSource("");
 				assetStockDetailsVO.setSCode(savedBinInwardVO.getScode()); // Assuming getScode() returns the correct
 				assetStockDetailsVO.setSourceId(binInwardDetails.getBinInwardDetailsId()); // value
+				assetStockDetailsVO.setOrgId(savedBinInwardVO.getOrgId());
 				assetStockDetailsVO.setScreen("Bin Inward");
 				assetStockDetailsVO.setPm("P");
 				assetStockDetailsVO.setStatus("S");
@@ -1970,7 +1962,6 @@ public class MasterServiceImpl implements MasterService {
 				assetStockDetailsRepo.save(assetStockDetailsVO);
 			}
 		}
-
 		return binInwardVO;
 	}
 
@@ -2209,7 +2200,7 @@ public class MasterServiceImpl implements MasterService {
 
 	// get Available Asset Details.
 	@Override
-	public List<Object[]> availableAllAssetDetails() {
-		return assetStockDetailsRepo.getAvailableAssetDetails();
+	public List<Object[]> availableAllAssetDetails(Long orgId) {
+		return assetStockDetailsRepo.getAvailableAssetDetails(orgId);
 	}
 }

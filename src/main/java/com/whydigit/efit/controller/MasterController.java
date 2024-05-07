@@ -2975,7 +2975,7 @@ public class MasterController extends BaseController {
 	}
 	
 	@GetMapping("/getAvailableAssetDetails")
-	public ResponseEntity<ResponseDTO> getAvailableAssetDetails() {
+	public ResponseEntity<ResponseDTO> getAvailableAssetDetails(@RequestParam Long orgId) {
 		String methodName = "getAvailableAssetDetails()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -2983,7 +2983,7 @@ public class MasterController extends BaseController {
 		ResponseDTO responseDTO = null;
 		List<Object[]> stock = new ArrayList<>();
 		try {
-			stock = masterService.availableAllAssetDetails();
+			stock = masterService.availableAllAssetDetails(orgId);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
