@@ -2202,4 +2202,17 @@ public class MasterServiceImpl implements MasterService {
 	public List<Object[]> availableAllAssetDetails(Long orgId) {
 		return assetStockDetailsRepo.getAvailableAssetDetails(orgId);
 	}
+
+	@Override
+	public List<FlowVO> getFlowByKitCode(String kitcode) {
+		List<FlowVO> flowVOs = new ArrayList<>();
+		if (ObjectUtils.isNotEmpty(kitcode)) {
+			LOGGER.info("Successfully Received Flow BY kitcode : {}", kitcode);
+			flowVOs = flowRepo.getFlowByKitCode(kitcode);
+		} else {
+			LOGGER.info("Successfully Received Flow Information For All.");
+			flowVOs = flowRepo.findAll();
+		}
+		return flowVOs;
+	}
 }

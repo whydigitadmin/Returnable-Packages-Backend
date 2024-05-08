@@ -84,7 +84,7 @@ public class MasterController extends BaseController {
 
 	@Autowired
 	MasterService masterService;
-
+ 
 	@GetMapping("/asset")
 	public ResponseEntity<ResponseDTO> getAllAsset(@RequestParam(required = false) Long orgId) {
 		String methodName = "getAllAsset()";
@@ -865,6 +865,32 @@ public class MasterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
+	
+	@GetMapping("/getFlowByKitCode")
+	public ResponseEntity<ResponseDTO> getFlowByKitCode(@RequestParam(required = false) String kitcode) {
+		String methodName = "getFlowByKitCode()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<FlowVO> flowVO = new ArrayList<>();
+		try {
+			flowVO = masterService.getFlowByKitCode(kitcode);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Flow information get successfully");
+			responseObjectsMap.put("flowVO", flowVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "Flow information receive failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+	
 	// Vendor
 
 	@GetMapping("/Vendor")
