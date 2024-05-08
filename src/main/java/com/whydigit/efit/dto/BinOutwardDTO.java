@@ -18,12 +18,14 @@ public class BinOutwardDTO {
 	private String createdBy;
 	private Long orgId;
 	private String destination;
-	private String reciever;
+	private String receiver;
 	private String orgin;
 	private Long emitterId;
 	private String emitter;
 
 	private List<BinOutwardDetailsDTO> binOutwardDetailsDTO;
+
+	
 
 	
 }

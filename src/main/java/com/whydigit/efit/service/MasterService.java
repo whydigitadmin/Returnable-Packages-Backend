@@ -286,7 +286,7 @@ public interface MasterService {
 
 	// Bin allotment Issue manifest pdf
 
-	List<Object[]> getBinAllotmentPdfHeaderDetails(String docid);
+	Set<Object[]> getBinAllotmentPdfHeaderDetails(String docid);
 
 	List<Object[]> getBinAllotmentPdfGridDetails(String docid);
 

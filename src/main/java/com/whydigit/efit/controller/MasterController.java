@@ -2797,7 +2797,7 @@ public class MasterController extends BaseController {
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
-		List<Object[]> header = new ArrayList<>();
+		Set<Object[]> header = new HashSet<>();
 
 		try {
 			header = masterService.getBinAllotmentPdfHeaderDetails(docid);
@@ -2818,7 +2818,7 @@ public class MasterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
-	private List<Map<String, String>> findwaitingHeader(List<Object[]> header) {
+	private List<Map<String, String>> findwaitingHeader(Set<Object[]> header) {
 		List<Map<String, String>> allotDetails = new ArrayList<>();
 		for (Object[] ps : header) {
 			Map<String, String> part = new HashMap<>();
@@ -3013,7 +3013,7 @@ public class MasterController extends BaseController {
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
 		}
 		if (StringUtils.isEmpty(errorMsg)) {
-			List<Map<String, String>> assetDetails = getAssetStockDetails(stock);
+			List<Map<String, Object>> assetDetails = getAssetStockDetails(stock);
 			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Asset Details found by ID");
 			responseObjectsMap.put("assetDetails", assetDetails);
 			responseDTO = createServiceResponse(responseObjectsMap);
@@ -3025,14 +3025,14 @@ public class MasterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
-	private List<Map<String, String>> getAssetStockDetails(List<Object[]> stock) {
-		List<Map<String, String>> assetDetails = new ArrayList<>();
+	private List<Map<String, Object>> getAssetStockDetails(List<Object[]> stock) {
+		List<Map<String, Object>> assetDetails = new ArrayList<>();
 		for (Object[] ps : stock) {
-			Map<String, String> part = new HashMap<>();
+			Map<String, Object> part = new HashMap<>();
 			part.put("stockBranch", ps[0] != null ? ps[0].toString() : "");
 			part.put("asset", ps[1] != null ? ps[1].toString() : "");
 			part.put("assetCode", ps[2] != null ? ps[2].toString() : "");
-			part.put("qty", ps[3] != null ? ps[3].toString() : "");
+			part.put("qty", ps[3] != null ? Integer.parseInt(ps[3].toString()) : 0);
 			assetDetails.add(part);
 		}
 		return assetDetails;

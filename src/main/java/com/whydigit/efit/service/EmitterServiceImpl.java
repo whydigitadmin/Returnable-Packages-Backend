@@ -845,9 +845,8 @@ public class EmitterServiceImpl implements EmitterService {
 	public String uploadPodFilePath(MultipartFile file, String allotNo) {
 		String uploadResult = uploadFile(file, allotNo); // Call uploadFile method with docId and refNo
 		// Create ProofOfDeliveryVO
-		BinInwardVO vo = createBinInwardUpload(allotNo, Paths.get(UPLOAD_DIR));
 		// Here you can do further processing or return both results combined
-		return uploadResult + "\n" + vo.toString(); // Example: Combining both results into a single string
+		return uploadResult;
 	}
 
 	public String uploadFile(MultipartFile file, String allotNo) {
@@ -869,8 +868,8 @@ public class EmitterServiceImpl implements EmitterService {
 			file.transferTo(filePath);
 			System.out.println(filePath);
 			// Create ProofOfDeliveryVO and set uploadReceipt
-			BinInwardVO vo = createBinInwardUpload(allotNo, Paths.get(UPLOAD_DIR));
-			vo.setPodFileUploadPath(filePath.toString());
+			BinInwardVO vo = binInwardRepo.findByAllotmentNo(allotNo);
+			vo.setPodFileUploadPath(filePath.toString().replace("\\", "/"));
 			binInwardRepo.save(vo);
 			return filePath.toString();
 		} catch (IOException e) {
@@ -888,14 +887,6 @@ public class EmitterServiceImpl implements EmitterService {
 
 	private String getCustomizedFileName(String allotNo) {
 		return allotNo;
-	}
-
-	private BinInwardVO createBinInwardUpload(String allotNo, Path filePath) {
-		BinInwardVO vo = new BinInwardVO();
-		// Set other attributes as needed
-		vo.setAllotmentNo(allotNo);
-		vo.setPodFileUploadPath(filePath.toString().replace("\\", "/"));
-		return vo;
 	}
 
 
@@ -932,7 +923,7 @@ public class EmitterServiceImpl implements EmitterService {
 			binOutwardVO.setModifiedby(binOutwardDTO.getCreatedBy());
 			binOutwardVO.setDestination(binOutwardDTO.getDestination());
 			binOutwardVO.setOrgin(binOutwardDTO.getOrgin());
-			binOutwardVO.setReciever(binOutwardDTO.getReciever());
+			binOutwardVO.setReceiver(binOutwardDTO.getReceiver());
 			binOutwardVO.setKit(binOutwardDTO.getKit());
 			binOutwardVO.setOutwardKitQty(binOutwardDTO.getOutwardKitQty());
 
@@ -979,7 +970,7 @@ public class EmitterServiceImpl implements EmitterService {
 
 				AssetStockDetailsVO stockDetailsVO = new AssetStockDetailsVO();
 				stockDetailsVO.setStockRef(savedBinOutwardVO.getDocId());
-				stockDetailsVO.setStockBranch(savedBinOutwardVO.getReciever() + "-" + savedBinOutwardVO.getDestination());
+				stockDetailsVO.setStockBranch(savedBinOutwardVO.getReceiver() + "-" + savedBinOutwardVO.getDestination());
 				stockDetailsVO.setStockDate(savedBinOutwardVO.getDocDate());
 				stockDetailsVO.setSku(binOutwardDetailsVO.getAsset());
 				stockDetailsVO.setSkuCode(binOutwardDetailsVO.getAssetCode());
