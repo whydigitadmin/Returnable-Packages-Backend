@@ -2528,7 +2528,7 @@ public class MasterController extends BaseController {
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
 		}
 		if (StringUtils.isEmpty(errorMsg)) {
-			List<Map<String, String>> allotDetails = findAllotdetails(partstudy);
+			List<Map<String, Object>> allotDetails = findAllotdetails(partstudy);
 			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Bin Allotment Details found by ID");
 			responseObjectsMap.put("allotDetails", allotDetails);
 			responseDTO = createServiceResponse(responseObjectsMap);
@@ -2540,17 +2540,17 @@ public class MasterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
-	private List<Map<String, String>> findAllotdetails(Set<Object[]> partstudy) {
-		List<Map<String, String>> allotDetails = new ArrayList<>();
+	private List<Map<String, Object>> findAllotdetails(Set<Object[]> partstudy) {
+		List<Map<String, Object>> allotDetails = new ArrayList<>();
 		for (Object[] ps : partstudy) {
-			Map<String, String> part = new HashMap<>();
+			Map<String, Object> part = new HashMap<>();
 			part.put("allotDate", ps[0] != null ? ps[0].toString() : "");
 			part.put("reqNo", ps[1] != null ? ps[1].toString() : "");
 			part.put("reqDate", ps[2] != null ? ps[2].toString() : "");
 			part.put("flow", ps[3] != null ? ps[3].toString() : "");
 			part.put("kitCode", ps[4] != null ? ps[4].toString() : "");
-			part.put("allotKitQty", ps[5] != null ? ps[5].toString() : "");
-			part.put("reqKitQty", ps[6] != null ? ps[6].toString() : "");
+			part.put("allotKitQty", ps[5] != null ? Integer.parseInt(ps[5].toString()) : 0);
+			part.put("reqKitQty", ps[6] != null ? Integer.parseInt(ps[6].toString()) : 0);
 			allotDetails.add(part);
 		}
 		return allotDetails;
@@ -2596,7 +2596,7 @@ public class MasterController extends BaseController {
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
 		}
 		if (StringUtils.isEmpty(errorMsg)) {
-			List<Map<String, String>> allotAssetDetails = findAllotAssetdetails(partstudy);
+			List<Map<String, Object>> allotAssetDetails = findAllotAssetdetails(partstudy);
 			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Bin Allotment Asset Details found by ID");
 			responseObjectsMap.put("allotAssetDetails", allotAssetDetails);
 			responseDTO = createServiceResponse(responseObjectsMap);
@@ -2609,16 +2609,16 @@ public class MasterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
-	private List<Map<String, String>> findAllotAssetdetails(Set<Object[]> partstudy) {
-		List<Map<String, String>> allotAssetDetails = new ArrayList<>();
+	private List<Map<String, Object>> findAllotAssetdetails(Set<Object[]> partstudy) {
+		List<Map<String, Object>> allotAssetDetails = new ArrayList<>();
 		for (Object[] ps : partstudy) {
-			Map<String, String> part = new HashMap<>();
+			Map<String, Object> part = new HashMap<>();
 			part.put("asset", ps[0] != null ? ps[0].toString() : "");
 			part.put("assetCode", ps[1] != null ? ps[1].toString() : "");
 			part.put("rfId", ps[2] != null ? ps[2].toString() : "");
 			part.put("tagCode", ps[3] != null ? ps[3].toString() : "");
-			part.put("skuQty", ps[4] != null ? ps[4].toString() : "");
-			part.put("recQty", ps[4] != null ? ps[4].toString() : "");
+			part.put("skuQty", ps[4] != null ? Integer.parseInt(ps[4].toString()) : 0);
+			part.put("recQty", ps[4] != null ? Integer.parseInt(ps[4].toString()) : 0);
 			allotAssetDetails.add(part);
 		}
 		return allotAssetDetails;
@@ -2639,7 +2639,7 @@ public class MasterController extends BaseController {
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
 		}
 		if (StringUtils.isEmpty(errorMsg)) {
-			List<Map<String, String>> binInwardVos = getAllBinInward(binInwardVO);
+			List<Map<String, Object>> binInwardVos = getAllBinInward(binInwardVO);
 			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "BinInward founded");
 			responseObjectsMap.put("binInwardVO", binInwardVos);
 			responseDTO = createServiceResponse(responseObjectsMap);
@@ -2651,18 +2651,18 @@ public class MasterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
-	private List<Map<String, String>> getAllBinInward(Set<Object[]> binInwardVO) {
-		List<Map<String, String>> binInwardVos = new ArrayList<>();
+	private List<Map<String, Object>> getAllBinInward(Set<Object[]> binInwardVO) {
+		List<Map<String, Object>> binInwardVos = new ArrayList<>();
 		for (Object[] bininward : binInwardVO) {
-			Map<String, String> bininwards = new HashMap<>();
+			Map<String, Object> bininwards = new HashMap<>();
 			bininwards.put("docid", bininward[0] != null ? bininward[0].toString() : "");
 			bininwards.put("docDate", bininward[1] != null ? bininward[1].toString() : "");
 			bininwards.put("allotmentNo", bininward[2] != null ? bininward[2].toString() : "");
 			bininwards.put("allotDate", bininward[3] != null ? bininward[3].toString() : "");
 			bininwards.put("flow", bininward[4] != null ? bininward[4].toString() : "");
 			bininwards.put("kitCode", bininward[5] != null ? bininward[5].toString() : "");
-			bininwards.put("reqKitQty", bininward[6] != null ? bininward[6].toString() : "");
-			bininwards.put("allotedQty", bininward[6] != null ? bininward[6].toString() : "");
+			bininwards.put("reqKitQty", bininward[6] != null ? Integer.parseInt(bininward[6].toString()) : 0);
+			bininwards.put("allotedQty", bininward[7] != null ?Integer.parseInt(bininward[7].toString()) : 0);
 			binInwardVos.add(bininwards);
 		}
 		return binInwardVos;
@@ -2736,7 +2736,7 @@ public class MasterController extends BaseController {
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
 		}
 		if (StringUtils.isEmpty(errorMsg)) {
-			List<Map<String, String>> allotDetails = findwaitingAllodetails(allot);
+			List<Map<String, Object>> allotDetails = findwaitingAllodetails(allot);
 			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Bin Allotment Details found by ID");
 			responseObjectsMap.put("allotDetails", allotDetails);
 			responseDTO = createServiceResponse(responseObjectsMap);
@@ -2748,16 +2748,16 @@ public class MasterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
-	private List<Map<String, String>> findwaitingAllodetails(Set<Object[]> allot) {
-		List<Map<String, String>> allotDetails = new ArrayList<>();
+	private List<Map<String, Object>> findwaitingAllodetails(Set<Object[]> allot) {
+		List<Map<String, Object>> allotDetails = new ArrayList<>();
 		for (Object[] ps : allot) {
-			Map<String, String> part = new HashMap<>();
+			Map<String, Object> part = new HashMap<>();
 			part.put("allotNo", ps[0] != null ? ps[0].toString() : "");
 			part.put("allotDate", ps[1] != null ? ps[1].toString() : "");
 			part.put("flow", ps[2] != null ? ps[2].toString() : "");
 			part.put("kitCode", ps[3] != null ? ps[3].toString() : "");
-			part.put("allotKitQty", ps[4] != null ? ps[4].toString() : "");
-			part.put("reqKitQty", ps[5] != null ? ps[5].toString() : "");
+			part.put("allotKitQty", ps[4] != null ? Integer.parseInt(ps[4].toString()) : 0);
+			part.put("reqKitQty", ps[5] != null ? Integer.parseInt(ps[5].toString()) : 0);
 			part.put("emitterId", ps[6] != null ? ps[6].toString() : "");
 			allotDetails.add(part);
 		}
@@ -2853,7 +2853,7 @@ public class MasterController extends BaseController {
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
 		}
 		if (StringUtils.isEmpty(errorMsg)) {
-			List<Map<String, String>> allotDetails = getBinAllotmentPdfGridDetails(grid);
+			List<Map<String, Object>> allotDetails = getBinAllotmentPdfGridDetails(grid);
 			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "PDF Grid Details found by ID");
 			responseObjectsMap.put("allotDetails", allotDetails);
 			responseDTO = createServiceResponse(responseObjectsMap);
@@ -2865,15 +2865,15 @@ public class MasterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
-	private List<Map<String, String>> getBinAllotmentPdfGridDetails(List<Object[]> allot) {
-		List<Map<String, String>> allotDetails = new ArrayList<>();
+	private List<Map<String, Object>> getBinAllotmentPdfGridDetails(List<Object[]> allot) {
+		List<Map<String, Object>> allotDetails = new ArrayList<>();
 		for (Object[] ps : allot) {
-			Map<String, String> part = new HashMap<>();
+			Map<String, Object> part = new HashMap<>();
 			part.put("kitcode", ps[0] != null ? ps[0].toString() : "");
-			part.put("allotkitqty", ps[1] != null ? ps[1].toString() : "");
+			part.put("allotkitqty", ps[1] != null ? Integer.parseInt(ps[1].toString()) : 0);
 			part.put("productName", ps[2] != null ? ps[2].toString() : "");
 			part.put("productCode", ps[3] != null ? ps[3].toString() : "");
-			part.put("productQty", ps[4] != null ? ps[4].toString() : "");
+			part.put("productQty", ps[4] != null ? Integer.parseInt(ps[4].toString()) : 0);
 			allotDetails.add(part);
 		}
 		return allotDetails;

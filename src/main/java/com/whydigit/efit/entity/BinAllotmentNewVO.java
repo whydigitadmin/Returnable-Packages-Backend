@@ -88,6 +88,7 @@ public class BinAllotmentNewVO {
 
 	@Column(name = "allotkitqty", length = 25)
 	private int allotkKitQty;
+	
 	private String finyr;
 
 	@Column(name = "stockbranch", length = 50)
