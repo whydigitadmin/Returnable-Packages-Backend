@@ -3064,5 +3064,44 @@ public class MasterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
+	
+	@GetMapping("/getAvailableKitQtyByEmitter")
+	public ResponseEntity<ResponseDTO> getBalanceQtyByKitCode(@RequestParam Long orgId,@RequestParam Long emitterId,@RequestParam String kitId,@RequestParam Long flowId) {
+		String methodName = "getAvailableKitQtyByEmitter()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<Object[]> stock = new ArrayList<>();
+		try {
+			stock = masterService.getAvailableKitQtyByEmitter(orgId,emitterId,kitId,flowId);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			List<Map<String, Object>> avlKitQty= getAvailableKitQty(stock);
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Available Kit Qty found by ID");
+			responseObjectsMap.put("avlKitQty", avlKitQty);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			errorMsg = " not found for ID: ";
+			responseDTO = createServiceResponseError(responseObjectsMap, "Available Kit Qty not found", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
+	private List<Map<String, Object>> getAvailableKitQty(List<Object[]> stock) {
+		List<Map<String, Object>> avlKitQty = new ArrayList<>();
+		for (Object[] ps : stock) {
+			Map<String, Object> part = new HashMap<>();
+			part.put("kitCode", ps[0] != null ? ps[0].toString() : "");
+			part.put("kitQty", ps[1] != null ? Integer.parseInt(ps[1].toString()) : 0);
+			avlKitQty.add(part);
+		}
+		return avlKitQty;
+	}
+
 
 }

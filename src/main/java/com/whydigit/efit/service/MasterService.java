@@ -307,4 +307,6 @@ public interface MasterService {
 
 	List<FlowVO> getFlowByKitCode(String kitcode);
 
+	List<Object[]> getAvailableKitQtyByEmitter(Long orgId, Long emitterId, String kitId, Long flowId);
+
 }
