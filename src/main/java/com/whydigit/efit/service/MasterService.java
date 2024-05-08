@@ -305,4 +305,6 @@ public interface MasterService {
 	
 	List<Object[]>availableAllAssetDetails(Long orgId);
 
+	List<FlowVO> getFlowByKitCode(String kitcode);
+
 }
