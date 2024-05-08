@@ -40,6 +40,10 @@ public interface KitRepo  extends JpaRepository<KitVO, Long>{
 	int getFinyr();
 
 	KitVO findAllByKitCode(String kitName);
+	
+	
+@Query(nativeQuery = true,value = "SELECT kit, availkitqty FROM availablekitemitter WHERE orgid =?1 AND emitterid =?2 AND kit =?3 AND flowid =?4;")
+	List<Object[]> findByavaliableKitQtyByEmitter(Long orgId, Long emitterId, String kitId, Long flowId);
 
 
 	

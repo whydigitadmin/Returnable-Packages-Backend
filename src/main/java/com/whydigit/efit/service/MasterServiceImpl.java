@@ -2215,4 +2215,10 @@ public class MasterServiceImpl implements MasterService {
 		}
 		return flowVOs;
 	}
+
+	@Override
+	public List<Object[]> getAvailableKitQtyByEmitter(Long orgId, Long emitterId, String kitId, Long flowId) {
+		
+		return kitRepo.findByavaliableKitQtyByEmitter(orgId,emitterId,kitId,flowId);
+	}
 }
