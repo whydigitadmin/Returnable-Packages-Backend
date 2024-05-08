@@ -2046,13 +2046,13 @@ public class MasterServiceImpl implements MasterService {
 	// Bin allotment Issue manifest pdf
 
 	@Override
-	public List<Object[]> getBinAllotmentPdfHeaderDetails(String docid) {
-		return binAllotmentRepo.getBinAllotmentHeader(docid);
+	public Set<Object[]> getBinAllotmentPdfHeaderDetails(String docid) {
+		return binAllotmentNewRepo.getBinAllotmentHeader(docid);
 	}
 
 	@Override
 	public List<Object[]> getBinAllotmentPdfGridDetails(String docid) {
-		return binAllotmentRepo.getBinAllotmentGrid(docid);
+		return binAllotmentNewRepo.getBinAllotmentGrid(docid);
 	}
 
 	@Override

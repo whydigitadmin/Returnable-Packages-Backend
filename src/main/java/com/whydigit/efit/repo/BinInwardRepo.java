@@ -30,4 +30,6 @@ public interface BinInwardRepo extends JpaRepository<BinInwardVO, Long>{
 	
 	Optional<BinInwardVO> findAllByDocid(String docid);
 
+	BinInwardVO findByAllotmentNo(String allotNo);
+
 }

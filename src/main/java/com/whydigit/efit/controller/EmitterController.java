@@ -946,7 +946,7 @@ public class EmitterController extends BaseController {
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
 		}
 		if (StringUtils.isBlank(errorMsg)) {
-			List<Map<String, String>>getAssetDetails=findAsset(kitAssetVO);
+			List<Map<String, Object>>getAssetDetails=findAsset(kitAssetVO);
 			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Kit Asset information get successfully");
 			responseObjectsMap.put("kitAssetVO", getAssetDetails);
 			responseDTO = createServiceResponse(responseObjectsMap);
@@ -958,15 +958,15 @@ public class EmitterController extends BaseController {
 
 	}
 
-	private List<Map<String, String>> findAsset(Set<Object[]> kitAssetVO) {
-		List<Map<String, String>>getAssetDetails=new ArrayList<>();
+	private List<Map<String, Object>> findAsset(Set<Object[]> kitAssetVO) {
+		List<Map<String, Object>>getAssetDetails=new ArrayList<>();
 		for(Object[] asset:kitAssetVO)
 		{
-			Map<String, String> part = new HashMap<>();
+			Map<String, Object> part = new HashMap<>();
 			part.put("assetCategory", asset[0] != null ? asset[0].toString() : "");
 			part.put("asset", asset[1] != null ? asset[1].toString() : "");
 			part.put("assetCode", asset[2] != null ? asset[2].toString() : "");
-			part.put("qty", asset[3] != null ? asset[3].toString() : "");
+			part.put("qty", asset[3] != null ? Integer.parseInt(asset[3].toString()) : 0);
 			getAssetDetails.add(part);
 		}
 		return getAssetDetails;

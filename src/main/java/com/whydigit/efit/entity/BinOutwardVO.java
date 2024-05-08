@@ -61,7 +61,7 @@ public class BinOutwardVO {
 	@Column(name="emitterid")
 	private Long emitterId;
 	private String destination;
-	private String reciever;
+	private String receiver;
 	private String orgin;
 	private String emitter;
 	
