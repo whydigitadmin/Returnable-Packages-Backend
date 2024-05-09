@@ -3,6 +3,7 @@ package com.whydigit.efit.repo;
 
 import java.util.List;
 
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -11,15 +12,35 @@ import com.whydigit.efit.entity.AssetCategoryVO;
 
 @Repository
 public interface AssetCategoryRepo extends JpaRepository<AssetCategoryVO, Long> {
+	
 	@Query(value = "select a from AssetCategoryVO a Where a.orgId=?1")
-	List<AssetCategoryVO> getAllAssetCategory(Long orgId);
+	List<AssetCategoryVO> getAllCategoryByOrgId(Long orgId);
 
-	List<AssetCategoryVO> findByAssetCategory(String assetCategoryName);
+	List<AssetCategoryVO> findByCategory(String assetCategory);
 
-	List<AssetCategoryVO> findByAssetCategoryAndOrgId(String assetCategoryName, Long orgId);
+	List<AssetCategoryVO> findByOrgIdAndCategory(Long orgId, String assetCategory);
 
-	boolean existsByAssetCategoryAndOrgId(String assetCategory, Long orgId);
+	List<AssetCategoryVO> findAll(Specification<AssetCategoryVO> specification);
 
-	boolean existsByAssetCategoryIdAndOrgId(String assetCategoryId, Long orgId);
+	@Query("select a from AssetCategoryVO a where a.orgId=?1 and a.categoryCode=?2 ")
+	AssetCategoryVO findCategoryByCategoryCode(Long orgId, String categoryCode);
 
+	AssetCategoryVO findAllByCategoryCode(String assetCodeId);
+
+	boolean existsByCategoryCode(String categoryCode);
+
+	boolean existsByCategoryCodeAndOrgId(String categoryCode, Long orgId);
+
+	boolean existsByCategoryAndOrgId(String category, Long orgId);
+
+	boolean existsById(String string);
+
+	AssetCategoryVO findByCategoryAndAssetTypeAndOrgId(String category, String assetType, Long orgId);
+
+	
+
+	
+
+	
+	
 }

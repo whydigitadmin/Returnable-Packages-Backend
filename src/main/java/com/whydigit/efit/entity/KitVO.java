@@ -44,7 +44,11 @@ public class KitVO {
 	@Column(name="active")
 	private boolean active;
 	
-	private String kno;
+	@Column(name="kitno")
+	private String kitNo;
+	
+	@Column(name="kitdesc")
+	private String kitDesc;
 	
 	@Column(name="cancel")
 	private boolean cancel;
@@ -81,4 +85,7 @@ public class KitVO {
 	@Builder.Default
 	@Embedded
 	private CreatedUpdatedDate commonDate=new CreatedUpdatedDate();
+
+
+	
 }

@@ -20,4 +20,10 @@ public interface AssetRepo extends JpaRepository<AssetVO, Long> {
 	@Query(nativeQuery =true,value ="select * from asset where orgid=?1 and assetid=?2")
 	AssetVO getAssetByOrgId(Long orgId, String assetId);
 
+	boolean existsByCategoryAndAssetNameAndOrgId(String category, String assetName, Long orgId);
+
+	boolean existsByCategoryAndAssetCodeIdAndOrgId(String category, String assetCodeId, Long orgId);
+
+	AssetVO findByAssetCodeIdAndOrgId(String assetCodeId, long orgId);
+
 }

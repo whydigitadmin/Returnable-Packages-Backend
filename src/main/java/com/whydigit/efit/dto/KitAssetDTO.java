@@ -10,8 +10,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class KitAssetDTO {
+	private Long id;
+	private String assetType;
 	private String assetCategory;
+	private String categoryCode;
 	private String assetCodeId;
-	private String assetName;
+	private String assetDesc;
 	private int quantity;
 }

@@ -26,9 +26,9 @@ import com.whydigit.efit.dto.StockBranchDTO;
 import com.whydigit.efit.dto.TermsAndConditionsDTO;
 import com.whydigit.efit.dto.VendorDTO;
 import com.whydigit.efit.entity.AssetCategoryVO;
-import com.whydigit.efit.entity.AssetGroupVO;
 import com.whydigit.efit.entity.AssetInwardVO;
 import com.whydigit.efit.entity.AssetTaggingVO;
+import com.whydigit.efit.entity.AssetTypeVO;
 import com.whydigit.efit.entity.AssetVO;
 import com.whydigit.efit.entity.BinAllotmentNewVO;
 import com.whydigit.efit.entity.BinInwardVO;
@@ -60,7 +60,7 @@ public interface MasterService {
 
 	Optional<AssetVO> getAssetById(Long id);
 
-	AssetVO createAsset(AssetVO assetVO);
+	AssetVO createAsset(AssetVO assetVO) throws ApplicationException;
 
 	Optional<AssetVO> updateAsset(AssetVO assetVO);
 
@@ -69,11 +69,11 @@ public interface MasterService {
 	Map<String, Object> getAllAssetGroup(Long orgId, String assetCategory, String assetName, String assetCodeId,
 			String manufacturer);
 
-	Optional<AssetGroupVO> getAssetGroupById(String id);
+	Optional<AssetCategoryVO> getAssetCategoryById(Long id);
 
-	AssetGroupVO createAssetGroup(AssetGroupVO assetGroupVO) throws ApplicationException;
+	AssetCategoryVO createAssetCategory(AssetCategoryVO assetGroupVO) throws ApplicationException;
 
-	Optional<AssetGroupVO> updateAssetGroup(AssetGroupVO assetGroupVO);
+	Optional<AssetCategoryVO> updateAssetCategory(AssetCategoryVO assetGroupVO);
 
 	// CUstomers
 
@@ -127,9 +127,9 @@ public interface MasterService {
 
 	ManufacturerProductVO createManufacturerProduct(ManufacturerProductVO manufacturerProductVO);
 
-	List<AssetCategoryVO> getAllAssetCategory(Long orgId, String assetCategoryName);
+	List<AssetTypeVO> getAllAssetType(Long orgId, String assetCategoryName);
 
-	AssetCategoryVO createAssetCategory(AssetCategoryVO assetCategoryVO);
+	AssetTypeVO createAssetType(AssetTypeVO assetCategoryVO);
 
 //unit
 
@@ -152,18 +152,18 @@ public interface MasterService {
 
 	KitVO createkit(KitDTO kitDTO) throws ApplicationException;
 
-	Optional<KitVO> updatedKit(KitVO kitVO);
+	KitVO updatedKit(KitDTO kitDTO) throws ApplicationException;
 
 	void deleteKit(Long id);
 
 	Map<String, List<CustomersVO>> CustomersType(Long orgId);
 
-	Map<String, Map<String, List<AssetGroupVO>>> getAssetGroupByCategoryType(Long orgId);
+	Map<String, Map<String, List<AssetCategoryVO>>> getAssetCategoryAssetType(Long orgId);
 
 	void uploadCustomerAttachmentDoc(MultipartFile[] files, CustomerAttachmentType type, Long customerId)
 			throws ApplicationException;
 
-	List<AssetGroupVO> createAssetGroupByCSV(MultipartFile assetFile) throws ApplicationException;
+	List<AssetCategoryVO> createAssetCategoryByCSV(MultipartFile assetFile) throws ApplicationException;
 
 	// Vendor
 	List<VendorVO> getAllVendor();
@@ -244,7 +244,7 @@ public interface MasterService {
 
 	List<PodVO> getAllPodByOrgId(Long orgId);
 
-	AssetGroupVO getAssetGroupByAssetCode(Long orgId, String assetCodeId);
+	AssetCategoryVO getAssetCategoryByCategoryCode(Long orgId, String categoryCode);
 
 	AssetVO getAssetByOrgId(Long orgId, String assetId);
 
@@ -308,5 +308,16 @@ public interface MasterService {
 	List<FlowVO> getFlowByKitCode(String kitcode);
 
 	List<Object[]> getAvailableKitQtyByEmitter(Long orgId, Long emitterId, String kitId, Long flowId);
+
+	
+
+	
+
+
+	
+
+	
+
+	
 
 }

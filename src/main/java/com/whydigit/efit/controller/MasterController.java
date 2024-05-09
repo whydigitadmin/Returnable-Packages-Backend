@@ -49,9 +49,9 @@ import com.whydigit.efit.dto.StockBranchDTO;
 import com.whydigit.efit.dto.TermsAndConditionsDTO;
 import com.whydigit.efit.dto.VendorDTO;
 import com.whydigit.efit.entity.AssetCategoryVO;
-import com.whydigit.efit.entity.AssetGroupVO;
 import com.whydigit.efit.entity.AssetInwardVO;
 import com.whydigit.efit.entity.AssetTaggingVO;
+import com.whydigit.efit.entity.AssetTypeVO;
 import com.whydigit.efit.entity.AssetVO;
 import com.whydigit.efit.entity.BinAllotmentNewVO;
 import com.whydigit.efit.entity.BinInwardVO;
@@ -241,9 +241,9 @@ public class MasterController extends BaseController {
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
-		Map<String, Map<String, List<AssetGroupVO>>> assetGroupVO = new HashMap<>();
+		Map<String, Map<String, List<AssetCategoryVO>>> assetGroupVO = new HashMap<>();
 		try {
-			assetGroupVO = masterService.getAssetGroupByCategoryType(orgId);
+			assetGroupVO = masterService.getAssetCategoryAssetType(orgId);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
@@ -268,19 +268,19 @@ public class MasterController extends BaseController {
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
-		AssetGroupVO assetGroupVO = null;
+		AssetCategoryVO assetGroupVO = null;
 		try {
-			assetGroupVO = masterService.getAssetGroupByAssetCode(orgId, assetCodeId);
+			assetGroupVO = masterService.getAssetCategoryByCategoryCode(orgId, assetCodeId);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
 		}
 		if (StringUtils.isBlank(errorMsg)) {
-			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "AssetGroup information get successfully");
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Asset Category information get successfully");
 			responseObjectsMap.put("assetGroupVO", assetGroupVO);
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} else {
-			responseDTO = createServiceResponseError(responseObjectsMap, "AssetGroup information receive failed",
+			responseDTO = createServiceResponseError(responseObjectsMap, "Asset Category information receive failed",
 					errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
@@ -288,40 +288,40 @@ public class MasterController extends BaseController {
 	}
 
 	@GetMapping("/assetGroup/{id}")
-	public ResponseEntity<ResponseDTO> getAssetGroupById(@PathVariable String id) {
+	public ResponseEntity<ResponseDTO> getAssetGroupById(@PathVariable Long id) {
 		String methodName = "getAssetGroupById()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
-		AssetGroupVO assetGroupVO = null;
+		AssetCategoryVO assetGroupVO = null;
 		try {
-			assetGroupVO = masterService.getAssetGroupById(id).orElse(null);
+			assetGroupVO = masterService.getAssetCategoryById(id).orElse(null);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
 		}
 		if (StringUtils.isEmpty(errorMsg)) {
-			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "AssetGroup found by ID");
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Asset Category found by ID");
 			responseObjectsMap.put("assetGroupVO", assetGroupVO);
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} else {
-			errorMsg = "AssetGroup not found for ID: " + id;
-			responseDTO = createServiceResponseError(responseObjectsMap, "AssetGroup not found", errorMsg);
+			errorMsg = "Asset Category not found for ID: " + id;
+			responseDTO = createServiceResponseError(responseObjectsMap, "Asset Category not found", errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
 	@PostMapping("/assetGroup")
-	public ResponseEntity<ResponseDTO> createAssetGroup(@Valid @RequestBody AssetGroupVO assetGroupVO) {
+	public ResponseEntity<ResponseDTO> createAssetGroup(@Valid @RequestBody AssetCategoryVO assetGroupVO) {
 		String methodName = "createAssetGroup()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
 		try {
-			AssetGroupVO createdAssetGroupVO = masterService.createAssetGroup(assetGroupVO);
+			AssetCategoryVO createdAssetGroupVO = masterService.createAssetCategory(assetGroupVO);
 			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "AssetGroup created successfully");
 			responseObjectsMap.put("assetGroupVO", createdAssetGroupVO);
 			responseDTO = createServiceResponse(responseObjectsMap);
@@ -335,26 +335,26 @@ public class MasterController extends BaseController {
 	}
 
 	@PutMapping("/assetGroup")
-	public ResponseEntity<ResponseDTO> updateAssetGroup(@RequestBody AssetGroupVO assetGroupVO) {
+	public ResponseEntity<ResponseDTO> updateAssetGroup(@RequestBody AssetCategoryVO assetGroupVO) {
 		String methodName = "updateAssetGroup()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
 		try {
-			AssetGroupVO updatedAssetGroupVO = masterService.updateAssetGroup(assetGroupVO).orElse(null);
+			AssetCategoryVO updatedAssetGroupVO = masterService.updateAssetCategory(assetGroupVO).orElse(null);
 			if (updatedAssetGroupVO != null) {
-				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "AssetGroup updated successfully");
+				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Asset Category updated successfully");
 				responseObjectsMap.put("assetGroupVO", updatedAssetGroupVO);
 				responseDTO = createServiceResponse(responseObjectsMap);
 			} else {
-				errorMsg = "AssetGroup not found for AssetCode ID: " + assetGroupVO.getAssetCodeId();
-				responseDTO = createServiceResponseError(responseObjectsMap, "AssetGroup update failed", errorMsg);
+				errorMsg = "Asset Category not found for AssetCode ID: " + assetGroupVO.getId();
+				responseDTO = createServiceResponseError(responseObjectsMap, "Asset Category update failed", errorMsg);
 			}
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-			responseDTO = createServiceResponseError(responseObjectsMap, "AssetGroup update failed", errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "Asset Category update failed", errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
@@ -1308,17 +1308,17 @@ public class MasterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
-	// add asset Category
+	// add asset Type
 
 	@PostMapping("/addAssetCategory")
-	public ResponseEntity<ResponseDTO> createAssetCategory(@RequestBody AssetCategoryVO assetCategoryVO) {
-		String methodName = "createAssetCategory()";
+	public ResponseEntity<ResponseDTO> createAssetType(@RequestBody AssetTypeVO assetCategoryVO) {
+		String methodName = "createAssetType()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
 		try {
-			AssetCategoryVO createdAssetCategoryVO = masterService.createAssetCategory(assetCategoryVO);
+			AssetTypeVO createdAssetCategoryVO = masterService.createAssetType(assetCategoryVO);
 			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "AssetCategory created successfully");
 			responseObjectsMap.put("assetCategoryVO", createdAssetCategoryVO);
 			responseDTO = createServiceResponse(responseObjectsMap);
@@ -1332,16 +1332,16 @@ public class MasterController extends BaseController {
 	}
 
 	@GetMapping("/getAllAssetCategory")
-	public ResponseEntity<ResponseDTO> getAllAssetCategory(@RequestParam(required = false) Long orgId,
+	public ResponseEntity<ResponseDTO> getAllAssetType(@RequestParam(required = false) Long orgId,
 			@RequestParam(required = false) String assetCategoryName) {
-		String methodName = "getAllAssetCategory()";
+		String methodName = "getAllAssetType()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
-		List<AssetCategoryVO> assetCategoryVO = new ArrayList<>();
+		List<AssetTypeVO> assetCategoryVO = new ArrayList<>();
 		try {
-			assetCategoryVO = masterService.getAllAssetCategory(orgId, assetCategoryName);
+			assetCategoryVO = masterService.getAllAssetType(orgId, assetCategoryName);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
@@ -1484,7 +1484,7 @@ public class MasterController extends BaseController {
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
 		try {
-			List<AssetGroupVO> createdAssetGroupVO = masterService.createAssetGroupByCSV(assetFile);
+			List<AssetCategoryVO> createdAssetGroupVO = masterService.createAssetCategoryByCSV(assetFile);
 			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "AssetGroup created successfully");
 			responseObjectsMap.put("assetGroupVO", createdAssetGroupVO);
 			responseDTO = createServiceResponse(responseObjectsMap);
@@ -1599,20 +1599,20 @@ public class MasterController extends BaseController {
 	}
 
 	@PutMapping("/updateKit")
-	public ResponseEntity<ResponseDTO> updateKit(@RequestBody KitVO kitVO) {
+	public ResponseEntity<ResponseDTO> updateKit(@RequestBody KitDTO kitDTO) {
 		String methodName = "updateKit()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
 		try {
-			KitVO updatedKit = masterService.updatedKit(kitVO).orElse(null);
+			KitVO updatedKit = masterService.updatedKit(kitDTO);
 			if (updatedKit != null) {
 				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Kit updated successfully");
 				responseObjectsMap.put("KitVO", updatedKit);
 				responseDTO = createServiceResponse(responseObjectsMap);
 			} else {
-				errorMsg = "LocalCurrency not found for ID: " + kitVO.getId();
+				errorMsg = "LocalCurrency not found for ID: " + kitDTO.getId();
 				responseDTO = createServiceResponseError(responseObjectsMap, "Kit update failed", errorMsg);
 			}
 		} catch (Exception e) {

@@ -33,13 +33,19 @@ public class KitAssetVO {
 	@Column(name="kit2rowid")
 	private int kit2RowId;
 	
-	@Column(name="assetcategory",length = 25)
+	@Column(name="assettype")
+	private String assetType;
+	
+	@Column(name="assetcategory")
 	private String assetCategory;
 	
-	@Column(name="assetcode",length = 25)
+	@Column(name="categorycode")
+	private String categoryCode;
+	
+	@Column(name="assetcode")
 	private String assetCodeId;
 	
-	@Column(name="asset",length = 25)
+	@Column(name="asset")
 	private String assetName;
 	
 	@Column(name="quantity")

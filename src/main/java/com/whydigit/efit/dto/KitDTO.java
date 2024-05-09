@@ -12,7 +12,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class KitDTO {
-	private String kitCode;
+	private Long id;
+	private String kitNo;
+	private String kitDesc;
 	private long orgId;
 	private int partQuantity;
 	private List<KitAssetDTO> kitAssetDTO;
