@@ -20,4 +20,6 @@ public interface AssetCategoryRepo extends JpaRepository<AssetCategoryVO, Long> 
 
 	boolean existsByAssetCategoryAndOrgId(String assetCategory, Long orgId);
 
+	boolean existsByAssetCategoryIdAndOrgId(String assetCategoryId, Long orgId);
+
 }

@@ -770,7 +770,11 @@ public class MasterServiceImpl implements MasterService {
 	public AssetCategoryVO createAssetCategory(AssetCategoryVO assetCategoryVO) {
 		if (assetCategoryRepo.existsByAssetCategoryAndOrgId(assetCategoryVO.getAssetCategory(),
 				assetCategoryVO.getOrgId())) {
-			throw new RuntimeException("Asset category already exists for this organization");
+			throw new RuntimeException("Asset Category already exists for this organization");
+		}
+		if (assetCategoryRepo.existsByAssetCategoryIdAndOrgId(assetCategoryVO.getAssetCategoryId(),
+				assetCategoryVO.getOrgId())) {
+			throw new RuntimeException("Asset Category Code already exists for this organization");
 		}
 		return assetCategoryRepo.save(assetCategoryVO);
 	}

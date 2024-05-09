@@ -3097,7 +3097,7 @@ public class MasterController extends BaseController {
 		for (Object[] ps : stock) {
 			Map<String, Object> part = new HashMap<>();
 			part.put("kitCode", ps[0] != null ? ps[0].toString() : "");
-			part.put("kitQty", ps[1] != null ? Integer.parseInt(ps[1].toString()) : 0);
+			part.put("kitAvailQty", ps[1] != null ? Integer.parseInt(ps[1].toString()) : 0);
 			avlKitQty.add(part);
 		}
 		return avlKitQty;
