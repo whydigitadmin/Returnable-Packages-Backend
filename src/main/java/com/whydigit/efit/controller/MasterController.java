@@ -1332,8 +1332,7 @@ public class MasterController extends BaseController {
 	}
 
 	@GetMapping("/getAllAssetCategory")
-	public ResponseEntity<ResponseDTO> getAllAssetType(@RequestParam(required = false) Long orgId,
-			@RequestParam(required = false) String assetCategoryName) {
+	public ResponseEntity<ResponseDTO> getAllAssetType(@RequestParam(required = false) Long orgId) {
 		String methodName = "getAllAssetType()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -1341,7 +1340,7 @@ public class MasterController extends BaseController {
 		ResponseDTO responseDTO = null;
 		List<AssetTypeVO> assetCategoryVO = new ArrayList<>();
 		try {
-			assetCategoryVO = masterService.getAllAssetType(orgId, assetCategoryName);
+			assetCategoryVO = masterService.getAllAssetType(orgId);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);

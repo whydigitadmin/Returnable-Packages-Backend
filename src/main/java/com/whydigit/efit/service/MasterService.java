@@ -127,7 +127,7 @@ public interface MasterService {
 
 	ManufacturerProductVO createManufacturerProduct(ManufacturerProductVO manufacturerProductVO);
 
-	List<AssetTypeVO> getAllAssetType(Long orgId, String assetCategoryName);
+	List<AssetTypeVO> getAllAssetType(Long orgId);
 
 	AssetTypeVO createAssetType(AssetTypeVO assetCategoryVO);
 

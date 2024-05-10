@@ -775,22 +775,12 @@ public class MasterServiceImpl implements MasterService {
 	}
 
 	@Override
-	public List<AssetTypeVO> getAllAssetType(Long orgId, String assetCategoryName) {
+	public List<AssetTypeVO> getAllAssetType(Long orgId) {
 		List<AssetTypeVO> assetCategoryVO = new ArrayList<>();
-		if (ObjectUtils.isNotEmpty(orgId) && (ObjectUtils.isEmpty(assetCategoryName))) {
-			LOGGER.info("Successfully Received AssetCategory BY OrgId : {}", orgId);
-			assetCategoryVO = assetTypeRepo.getAllAssetType(orgId);
-		} else if (ObjectUtils.isEmpty(orgId) && (ObjectUtils.isNotEmpty(assetCategoryName))) {
-			LOGGER.info("Successfully Received AssetCategory BY AssetCategoryName : {}", assetCategoryName);
-			assetCategoryVO = assetTypeRepo.findByAssetType(assetCategoryName);
-		} else if (ObjectUtils.isNotEmpty(orgId) && (ObjectUtils.isNotEmpty(assetCategoryName))) {
-			LOGGER.info("Successfully Received AssetCategory BY AssetCategoryName : {} orgId : {}", assetCategoryName,
-					orgId);
-			assetCategoryVO = assetTypeRepo.findByAssetTypeAndOrgId(assetCategoryName, orgId);
-		} else {
-			LOGGER.info("Successfully Received AssetCategory Information For All OrgId.");
-			assetCategoryVO = assetTypeRepo.findAll();
-		}
+		if (ObjectUtils.isNotEmpty(orgId)) {
+			LOGGER.info("Successfully Received Asset Type BY OrgId : {}", orgId);
+			assetCategoryVO = assetTypeRepo.findByOrgId(orgId);
+		} 
 		return assetCategoryVO;
 	}
 

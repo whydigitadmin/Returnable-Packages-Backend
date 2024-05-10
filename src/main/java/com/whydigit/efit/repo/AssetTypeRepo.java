@@ -11,8 +11,8 @@ import com.whydigit.efit.entity.AssetTypeVO;
 
 @Repository
 public interface AssetTypeRepo extends JpaRepository<AssetTypeVO, Long> {
-	@Query(value = "select a from AssetCategoryVO a Where a.orgId=?1")
-	List<AssetTypeVO> getAllAssetType(Long orgId);
+
+	List<AssetTypeVO> findByOrgId(Long orgId);
 
 	List<AssetTypeVO> findByAssetType(String assetCategoryName);
 
@@ -23,5 +23,6 @@ public interface AssetTypeRepo extends JpaRepository<AssetTypeVO, Long> {
 	boolean existsByTypeCodeAndOrgId(String assetCategoryId, Long orgId);
 
 	AssetTypeVO findByOrgIdAndAssetType(Long orgId, String assetType);
+
 
 }
