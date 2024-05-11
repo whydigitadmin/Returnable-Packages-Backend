@@ -58,7 +58,11 @@ public interface MasterService {
 
 	List<AssetVO> getAllAsset(Long orgId);
 
+	List<AssetVO> getAllAssetByCategory(Long orgId,String category);
+	
 	Optional<AssetVO> getAssetById(Long id);
+	
+	
 
 	AssetVO createAsset(AssetVO assetVO) throws ApplicationException;
 
@@ -130,6 +134,8 @@ public interface MasterService {
 	List<AssetTypeVO> getAllAssetType(Long orgId);
 
 	AssetTypeVO createAssetType(AssetTypeVO assetCategoryVO);
+	
+	AssetTypeVO updateAssetType(AssetTypeVO assetTypeVO) throws ApplicationException;
 
 //unit
 

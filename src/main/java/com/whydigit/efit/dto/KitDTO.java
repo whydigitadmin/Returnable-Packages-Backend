@@ -17,5 +17,6 @@ public class KitDTO {
 	private String kitDesc;
 	private long orgId;
 	private int partQuantity;
+	private String createdBy;
 	private List<KitAssetDTO> kitAssetDTO;
 }

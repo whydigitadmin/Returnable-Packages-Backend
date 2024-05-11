@@ -110,6 +110,32 @@ public class MasterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 
 	}
+	
+	@GetMapping("/getAllAssetByCategory")
+	public ResponseEntity<ResponseDTO> getAllAssetByCategory(@RequestParam(required = false) Long orgId,@RequestParam(required = false) String category) {
+		String methodName = "getAllAssetByCategory()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<AssetVO> assetVO = new ArrayList<>();
+		try {
+			assetVO = masterService.getAllAssetByCategory(orgId,category);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Asset information get successfully");
+			responseObjectsMap.put("assetVO", assetVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "Asset information receive failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+
+	}
 
 	@GetMapping("/getAssetByOrgId")
 	public ResponseEntity<ResponseDTO> getAssetByOrgId(@RequestParam(required = false) Long orgId,
@@ -1331,6 +1357,33 @@ public class MasterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
+	// Update Asset Type
+	
+	@PutMapping("/updateAssetType")
+	public ResponseEntity<ResponseDTO> updateAssetType(@RequestBody AssetTypeVO assetTypeVO) {
+		String methodName = "updateAssetType()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		try {
+			AssetTypeVO updateAssetType = masterService.updateAssetType(assetTypeVO);
+			if (updateAssetType != null) {
+				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Asset Type updated successfully");
+				responseObjectsMap.put("assetTypeVO", updateAssetType);
+				responseDTO = createServiceResponse(responseObjectsMap);
+			} else {
+				errorMsg = "Asset Type not found for ID: " + assetTypeVO.getId();
+				responseDTO = createServiceResponseError(responseObjectsMap, "Asset Type update failed", errorMsg);
+			}
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "Asset Type update failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
 	@GetMapping("/getAllAssetCategory")
 	public ResponseEntity<ResponseDTO> getAllAssetType(@RequestParam(required = false) Long orgId) {
 		String methodName = "getAllAssetType()";

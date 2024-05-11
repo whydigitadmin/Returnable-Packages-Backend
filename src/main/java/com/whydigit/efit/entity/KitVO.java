@@ -53,22 +53,22 @@ public class KitVO {
 	@Column(name="cancel")
 	private boolean cancel;
 	
-	@Column(name="finyear",length = 10)
+	@Column(name="finyear")
 	private String finyr;
 	
-	@Column(name = "createdby", length = 25)
+	@Column(name = "createdby")
 	private String createdBy;
 
-	@Column(name = "modifiedby",length = 25)
+	@Column(name = "modifiedby")
 	private String modifiedBy;
 	
-	@Column(name = "cancelremarks",length = 25)
+	@Column(name = "cancelremarks")
 	private String cancelRemarks;
 	
-	@Column(name = "kitcode",length = 25)
-	private String kitCode;
+	@Column(name = "docid")
+	private String docId;
 	
-	@Column(name = "partqty",length = 25)
+	@Column(name = "partqty")
 	private int partQty;
 	
 	@Column(name = "block")

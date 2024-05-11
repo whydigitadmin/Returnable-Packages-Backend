@@ -44,7 +44,7 @@ public class AssetTaggingVO {
 	@Column(name="active")
 	private boolean active;
 	
-	@Column(name="docid",length = 25)
+	@Column(name="docid")
 	private String docid;
 	
 	@Column(name="docdate")
@@ -53,25 +53,28 @@ public class AssetTaggingVO {
 	@Column(name="cancel")
 	private boolean cancel;
 	
-	@Column(name = "createdby", length = 25)
+	@Column(name = "createdby")
 	private String createdBy;
 
-	@Column(name = "modifiedby",length = 25)
+	@Column(name = "modifiedby")
 	private String modifiedBy;
 	
-	@Column(name = "cancelremarks",length = 25)
+	@Column(name = "cancelremarks")
 	private String cancelRemarks;
+	
+	@Column(name = "assetcategory")
+	private String category;
 
-	@Column(name = "assetcode",length = 25)
+	@Column(name = "assetcode")
 	private String assetCode;
 	
-	@Column(name = "asset",length = 25)
+	@Column(name = "asset")
 	private String asset;
 	
-	@Column(name = "seqfrom",length = 4)
+	@Column(name = "seqfrom")
 	private int seqFrom;
 	
-	@Column(name = "seqto",length = 4)
+	@Column(name = "seqto")
 	private int seqTo;
 	
 	public String finyr;

@@ -14,11 +14,11 @@ public interface KitRepo extends JpaRepository<KitVO, Long> {
 
 	List<KitVO> findByOrgId(Long orgId);
 
-	@Query("select a from KitVO a where a.kitCode=?1 and a.orgId=?2")
+	@Query("select a from KitVO a where a.kitNo=?1 and a.orgId=?2")
 	CharSequence findKitcode(String kitCode, long orgId);
 
-	@Query("select a from KitVO a where a.kitCode=?1")
-	Optional<KitVO> findByKitCode(String kitName);
+	@Query("select a from KitVO a where a.kitNo=?1")
+	Optional<KitVO> findByKitNo(String kitName);
 
 	@Query(nativeQuery = true, value = "select sequence_value from kitnoseq")
 	Long finddocid();
@@ -26,7 +26,7 @@ public interface KitRepo extends JpaRepository<KitVO, Long> {
 	@Query(nativeQuery = true, value = "CALL next_sequence_value()")
 	void updatesequence();
 
-	@Query("select a.partQty from KitVO a where a.kitCode=?1 ")
+	@Query("select a.partQty from KitVO a where a.kitNo=?1 ")
 	int findPartqty(String kitName);
 
 	@Query(nativeQuery = true, value = "SELECT RIGHT(\r\n" + "    IF(\r\n"
@@ -35,7 +35,7 @@ public interface KitRepo extends JpaRepository<KitVO, Long> {
 			+ ") AS finyr")
 	int getFinyr();
 
-	KitVO findAllByKitCode(String kitName);
+	KitVO findAllByKitNo(String kitName);
 
 	@Query(nativeQuery = true, value = "SELECT kit, availkitqty FROM availablekitemitter WHERE orgid =?1 AND emitterid =?2 AND kit =?3 AND flowid =?4")
 	List<Object[]> findByavaliableKitQtyByEmitter(Long orgId, Long emitterId, String kitId, Long flowId);
@@ -46,6 +46,6 @@ public interface KitRepo extends JpaRepository<KitVO, Long> {
 
 	KitVO findAllByKitNoAndOrgId(String kitName, long orgId);
 
-	KitVO findByKitNo(String kitNo);
+	
 
 }

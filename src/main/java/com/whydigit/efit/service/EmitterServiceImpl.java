@@ -192,7 +192,7 @@ public class EmitterServiceImpl implements EmitterService {
 				FlowDetailVO flowDetailVO = flowVO.getFlowDetailVO().stream()
 						.filter(fd -> StringUtils.equalsIgnoreCase(fd.getPartNumber(), issueItemDTO.getPartNo()))
 						.findFirst().orElseThrow(() -> new ApplicationException("Flow not Match with part"));
-				issueItem.setKitName(flowDetailVO.getKitName());
+				issueItem.setKitName(flowDetailVO.getKitNo());
 				issueItem.setPartName(flowDetailVO.getPartName());
 			} else {
 				throw new ApplicationException("Invalid issue request type");
@@ -369,7 +369,7 @@ public class EmitterServiceImpl implements EmitterService {
 
 	private List<AssetStockDetailsVO> getAssetStockDetailsVO(IssueItemVO issueItemVO, int issuedQty,
 			IssueRequestQtyApprovelDTO issueRequestQtyApprovelDTO) {
-		KitVO kitVO = kitRepo.findByKitCode(issueItemVO.getKitName()).get();
+		KitVO kitVO = kitRepo.findByKitNo(issueItemVO.getKitName()).get();
 
 		return kitVO.getKitAssetVO().stream().map(kavo -> {
 			AssetStockDetailsVO assetStockDetailsVO = new AssetStockDetailsVO();

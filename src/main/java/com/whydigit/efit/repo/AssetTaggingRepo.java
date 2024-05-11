@@ -29,8 +29,8 @@ public interface AssetTaggingRepo extends JpaRepository<AssetTaggingVO, Long> {
 			+ " )\r\n"
 			+ " SELECT ?1 assetcode, ?2 asset,\r\n"
 			+ "   CASE \r\n"
-			+ "     WHEN CHAR_LENGTH(level) = 1 THEN CONCAT('AI',?5,?1, LPAD(level, 4, '0'))\r\n"
-			+ "     ELSE CONCAT('AI',?5,?1, LPAD(level, 4, '0'))\r\n"
+			+ "     WHEN CHAR_LENGTH(level) = 1 THEN CONCAT('AI',?5,?1,'-', LPAD(level, 4, '0'))\r\n"
+			+ "     ELSE CONCAT('AI',?5,?1,'-', LPAD(level, 4, '0'))\r\n"
 			+ "   END AS num\r\n"
 			+ " FROM NumberSequence\r\n"
 			+ " WHERE level BETWEEN ?3 AND ?4")

@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class KitResponseDTO {
 	private Long id;
-	private String kitCode;
+	private String docId;
 	private String kitNo;
 	private String kitDesc;
 	private long orgId;

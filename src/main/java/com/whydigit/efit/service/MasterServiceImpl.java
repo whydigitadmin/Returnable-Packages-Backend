@@ -284,6 +284,20 @@ public class MasterServiceImpl implements MasterService {
 		}
 		return assetVO;
 	}
+	
+	@Override
+	public List<AssetVO> getAllAssetByCategory(Long orgId,String category) {
+		List<AssetVO> assetVO = new ArrayList<>();
+		if (ObjectUtils.isNotEmpty(orgId) && ObjectUtils.isNotEmpty(category)) {
+			LOGGER.info("Successfully Received  Asset Information BY Category : {}", category);
+			assetVO = assetRepo.getAllAssetByOrgIdAndCategory(orgId,category);
+		} else {
+			LOGGER.info("Successfully Received  AssetInformation For All OrgId.");
+			assetVO = assetRepo.findAll();
+		}
+		return assetVO;
+	}
+
 
 	@Override
 	public Optional<AssetVO> getAssetById(Long id) {
@@ -293,11 +307,11 @@ public class MasterServiceImpl implements MasterService {
 	@Override
 	public AssetVO createAsset(AssetVO assetVO) throws ApplicationException {
 
-		if (assetRepo.existsByCategoryAndAssetNameAndOrgId(assetVO.getCategory(), assetVO.getAssetName(),
+		if (assetRepo.existsByCategoryAndAssetNameAndOrgId(assetVO.getCategory().toUpperCase(),assetVO.getAssetName().toUpperCase(),
 				assetVO.getOrgId())) {
 			throw new ApplicationException("AssetName already exists for this Category ");
 		}
-		if (assetRepo.existsByCategoryAndAssetCodeIdAndOrgId(assetVO.getCategory(), assetVO.getAssetCodeId(),
+		if (assetRepo.existsByCategoryAndAssetCodeIdAndOrgId(assetVO.getCategory().toUpperCase(), assetVO.getAssetCodeId().toUpperCase(),
 				assetVO.getOrgId())) {
 			throw new ApplicationException("Asset Code already exists for this Category ");
 		}
@@ -413,11 +427,11 @@ public class MasterServiceImpl implements MasterService {
 	@Override
 	public AssetCategoryVO createAssetCategory(AssetCategoryVO assetGroupVO) throws ApplicationException {
 		if (ObjectUtils.isNotEmpty(assetGroupVO) && StringUtils.isNotBlank(assetGroupVO.getCategoryCode())) {
-			if (assetCategoryRepo.existsByCategoryCodeAndOrgId(assetGroupVO.getCategoryCode(),
+			if (assetCategoryRepo.existsByCategoryCodeAndOrgId(assetGroupVO.getCategoryCode().toUpperCase(),
 					assetGroupVO.getOrgId())) {
 				throw new ApplicationException("Asset categoryCode already exist  Please try another one.");
 			}
-			if (assetCategoryRepo.existsByCategoryAndOrgId(assetGroupVO.getCategory(), assetGroupVO.getOrgId())) {
+			if (assetCategoryRepo.existsByCategoryAndOrgId(assetGroupVO.getCategory().toUpperCase(), assetGroupVO.getOrgId())) {
 				throw new ApplicationException("Asset Category already exist Please try another one.");
 			}
 
@@ -688,13 +702,13 @@ public class MasterServiceImpl implements MasterService {
 				.destination(flowDTO.getDestination()).orgId(flowDTO.getOrgId()).warehouseId(flowDTO.getWarehouseId())
 				.flowDetailVO(flowDetailVOList).build();
 		flowDetailVOList = flowDTO.getFlowDetailDTO().stream().map(fdDTO -> {
-			KitVO kitVO = kitRepo.findAllByKitNoAndOrgId(fdDTO.getKitName(),fdDTO.getOrgId());
+			KitVO kitVO = kitRepo.findAllByKitNoAndOrgId(fdDTO.getKitNo(),fdDTO.getOrgId());
 			kitVO.setEflag(true);
 			kitRepo.save(kitVO);
 			return FlowDetailVO.builder().active(fdDTO.isActive()).cycleTime(fdDTO.getCycleTime())
 					.emitterId(flowDTO.getEmitterId()).orgId(flowDTO.getOrgId()).partName(fdDTO.getPartName())
-					.kitName(fdDTO.getKitName()).partNumber(fdDTO.getPartNumber())
-					.partQty(kitRepo.findPartqty(fdDTO.getKitName()))
+					.kitDesc(fdDTO.getKitDesc()).kitNo(fdDTO.getKitNo()).partNumber(fdDTO.getPartNumber())
+					.partQty(kitRepo.findPartqty(fdDTO.getKitNo()))
 					.emitter(flowRepo.findEmiterbyId(flowVO.getEmitterId())).flowVO(flowVO).build();
 		}).collect(Collectors.toList());
 
@@ -786,13 +800,29 @@ public class MasterServiceImpl implements MasterService {
 
 	@Override
 	public AssetTypeVO createAssetType(AssetTypeVO assetCategoryVO) {
-		if (assetTypeRepo.existsByAssetTypeAndOrgId(assetCategoryVO.getAssetType(), assetCategoryVO.getOrgId())) {
+		if (assetTypeRepo.existsByAssetTypeAndOrgId(assetCategoryVO.getAssetType().toUpperCase(), assetCategoryVO.getOrgId())) {
 			throw new RuntimeException("Asset Type already exists for this organization");
 		}
-		if (assetTypeRepo.existsByTypeCodeAndOrgId(assetCategoryVO.getTypeCode(), assetCategoryVO.getOrgId())) {
+		if (assetTypeRepo.existsByTypeCodeAndOrgId(assetCategoryVO.getTypeCode().toUpperCase(), assetCategoryVO.getOrgId())) {
 			throw new RuntimeException("Asset Type Code already exists for this organization");
 		}
 		return assetTypeRepo.save(assetCategoryVO);
+	}
+	
+	@Override
+	public AssetTypeVO updateAssetType(AssetTypeVO assetTypeVO) throws ApplicationException {
+		
+	    if (assetTypeVO.getId() != null) {
+	    	assetTypeVO = assetTypeRepo.findById(assetTypeVO.getId())
+	                .orElseThrow(() -> new ApplicationException("Invalid Asset Type details"));
+	    }
+	    AssetTypeVO assetTypeVO2=assetTypeRepo.findById(assetTypeVO.getId()).get();
+	    assetTypeVO2.setAssetType(assetTypeVO.getAssetType());
+	    assetTypeVO2.setTypeCode(assetTypeVO.getTypeCode());
+	    assetTypeVO2.setModifiedby(assetTypeVO.getModifiedby());
+	    assetTypeVO2.setAssetType(assetTypeVO.getAssetType());
+		return assetTypeRepo.save(assetTypeVO2);
+		
 	}
 
 	// Unit
@@ -896,7 +926,7 @@ public class MasterServiceImpl implements MasterService {
 		kitResponseDTO = kitVO.stream().map(kit -> {
 			KitResponseDTO KitResponse = new KitResponseDTO();
 			KitResponse.setId(kit.getId());
-			KitResponse.setKitCode(kit.getKitCode());
+			KitResponse.setDocId(kit.getDocId());
 			KitResponse.setKitNo(kit.getKitNo());
 			KitResponse.setKitDesc(kit.getKitDesc());
 			KitResponse.setPartQty(kit.getPartQty());
@@ -917,7 +947,7 @@ public class MasterServiceImpl implements MasterService {
 
 	@Override
 	public Optional<KitVO> getKitByKitCode(String kitName) {
-		return kitRepo.findByKitCode(kitName);
+		return kitRepo.findByKitNo(kitName);
 	}
 
 	@Override
@@ -926,7 +956,7 @@ public class MasterServiceImpl implements MasterService {
 		int finyr = kitRepo.getFinyr();
 		String kit = finyr + "KT" + kitRepo.finddocid();
 		List<KitAssetVO> kitAssetVO = new ArrayList<>();
-		KitVO kitVO = KitVO.builder().kitDesc(kitDTO.getKitDesc()).kitNo(kitDTO.getKitNo()).kitCode(kit)
+		KitVO kitVO = KitVO.builder().kitDesc(kitDTO.getKitDesc()).kitNo(kitDTO.getKitNo()).docId(kit).createdBy(kitDTO.getCreatedBy()).modifiedBy(kitDTO.getCreatedBy())
 				.orgId(kitDTO.getOrgId()).partQty(kitDTO.getPartQuantity()).kitAssetVO(kitAssetVO).build();
 		for (KitAssetDTO kitAsset : kitDTO.getKitAssetDTO()) {
 			AssetVO assetVO=assetRepo.findByAssetCodeIdAndOrgId(kitAsset.getAssetCodeId(),kitDTO.getOrgId());
@@ -938,16 +968,17 @@ public class MasterServiceImpl implements MasterService {
 		}
 		kitRepo.updatesequence();
 
-		if (kitRepo.existsByKitNoAndOrgId(kitDTO.getKitNo(), kitDTO.getOrgId())) {
+		if (kitRepo.existsByKitNoAndOrgId(kitDTO.getKitNo().toUpperCase(), kitDTO.getOrgId())) {
 			throw new ApplicationException("KitNo already exists");
 		}
-		if (kitRepo.existsByKitDescAndOrgId(kitDTO.getKitDesc(), kitDTO.getOrgId())) {
+		if (kitRepo.existsByKitDescAndOrgId(kitDTO.getKitDesc().toUpperCase(), kitDTO.getOrgId())) {
 			throw new ApplicationException("KitDesc already exists");
 		}
 
 		return kitRepo.save(kitVO);
 	}
 
+	
 	@Override
 	public KitVO updatedKit(KitDTO kitDTO) throws ApplicationException {
 
@@ -998,6 +1029,7 @@ public class MasterServiceImpl implements MasterService {
 	        kitVO = kitRepo.findById(kitDTO.getId()).get();
 	        kitVO.setOrgId(kitDTO.getOrgId());
 	        kitVO.setKitNo(kitDTO.getKitNo());
+	        kitVO.setModifiedBy(kitDTO.getCreatedBy());
 	        kitVO.setKitDesc(kitDTO.getKitDesc());
 	        kitVO.setPartQty(kitDTO.getPartQuantity());
 
@@ -1520,6 +1552,7 @@ public class MasterServiceImpl implements MasterService {
 		assetTaggingVO.setCreatedBy(assetTaggingDTO.getCreatedBy());
 		assetTaggingVO.setModifiedBy(assetTaggingDTO.getCreatedBy());
 		assetTaggingVO.setActive(true);
+		assetTaggingVO.setCategory(assetTaggingVO.getCategory());
 		assetTaggingVO.setAsset(assetTaggingDTO.getAsset());
 		assetTaggingVO.setAssetCode(assetTaggingDTO.getAssetCode());
 		assetTaggingVO.setSeqFrom(assetTaggingDTO.getSeqFrom());
@@ -2307,5 +2340,7 @@ public class MasterServiceImpl implements MasterService {
 
 		return kitRepo.findByavaliableKitQtyByEmitter(orgId, emitterId, kitId, flowId);
 	}
+
+	
 
 }
