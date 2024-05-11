@@ -22,6 +22,7 @@ public class FlowDTO {
 //	private String flowInfo;
 //	private String flowType;
 	private String orgin;
+	private String createdBy;
 	private String destination;
     private String warehouseLocation;
     private Long warehouseId;      

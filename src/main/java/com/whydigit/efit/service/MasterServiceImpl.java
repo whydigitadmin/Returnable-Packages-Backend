@@ -45,6 +45,7 @@ import com.opencsv.CSVReader;
 import com.whydigit.efit.common.CommonConstant;
 import com.whydigit.efit.common.CustomerConstant;
 import com.whydigit.efit.common.MasterConstant;
+import com.whydigit.efit.dto.AssetDTO;
 import com.whydigit.efit.dto.AssetInwardDTO;
 import com.whydigit.efit.dto.AssetInwardDetailDTO;
 import com.whydigit.efit.dto.AssetTaggingDTO;
@@ -306,11 +307,10 @@ public class MasterServiceImpl implements MasterService {
 
 	@Override
 	public AssetVO createAsset(AssetVO assetVO) throws ApplicationException {
-
 		if (assetRepo.existsByCategoryAndAssetNameAndOrgId(assetVO.getCategory().toUpperCase(),assetVO.getAssetName().toUpperCase(),
 				assetVO.getOrgId())) {
 			throw new ApplicationException("AssetName already exists for this Category ");
-		}
+		}		
 		if (assetRepo.existsByCategoryAndAssetCodeIdAndOrgId(assetVO.getCategory().toUpperCase(), assetVO.getAssetCodeId().toUpperCase(),
 				assetVO.getOrgId())) {
 			throw new ApplicationException("Asset Code already exists for this Category ");
@@ -337,9 +337,46 @@ public class MasterServiceImpl implements MasterService {
 	}
 
 	@Override
-	public Optional<AssetVO> updateAsset(AssetVO assetVO) {
-		if (assetRepo.existsById(assetVO.getId())) {
-			return Optional.of(assetRepo.save(assetVO));
+	public Optional<AssetVO> updateAsset(AssetDTO assetDTO) throws ApplicationException {
+		if (assetRepo.existsById(assetDTO.getId())) {
+			AssetVO asset=assetRepo.findById(assetDTO.getId()).get();
+			if(asset.getAssetCodeId()!=assetDTO.getAssetCodeId()) {
+				if (assetRepo.existsByCategoryAndAssetCodeIdAndOrgId(assetDTO.getCategory().toUpperCase(),assetDTO.getAssetCodeId().toUpperCase(),
+						assetDTO.getOrgId())) {
+					throw new ApplicationException("Asset Code already exists for this Category ");
+				}
+			}
+			asset.setId(assetDTO.getId());
+			asset.setOrgId(assetDTO.getOrgId());
+			asset.setCategory(assetDTO.getCategory());
+			asset.setCategoryCode(assetDTO.getCategoryCode());
+			asset.setAssetCodeId(assetDTO.getAssetCodeId());
+			asset.setAssetName(assetDTO.getAssetName());
+			asset.setLength(assetDTO.getLength());
+			asset.setBreath(assetDTO.getBreadth());
+			asset.setHeight(assetDTO.getHeight());
+			asset.setWeight(assetDTO.getWeight());
+			asset.setQuantity(assetDTO.getQuantity());
+			asset.setDimUnit(assetDTO.getDimUnit());
+			asset.setManufacturer(assetDTO.getManufacturer());
+			asset.setChargableWeight(assetDTO.getChargableWeight());
+			asset.setBrand(assetDTO.getBrand());
+			asset.setEanUpc(assetDTO.getEanUpc());
+			asset.setAssetType(assetDTO.getAssetType());
+			asset.setExpectedLife(assetDTO.getExpectedLife());
+			asset.setMaintanencePeriod(assetDTO.getMaintenancePeriod());
+			asset.setExpectedTrips(assetDTO.getExpectedTrips());
+			asset.setHsnCode(assetDTO.getHsnCode());
+			asset.setTaxRate(assetDTO.getTaxRate());
+			asset.setSkuFrom(assetDTO.getSkuFrom());
+			asset.setSkuTo(assetDTO.getSkuTo());
+			asset.setCostPrice(assetDTO.getCostPrice());
+			asset.setSellPrice(assetDTO.getSellPrice());
+			asset.setScrapValue(assetDTO.getScrapValue());
+			asset.setModifiedby(assetDTO.getModifiedBy());
+			asset.setPoNo(assetDTO.getPoNo());
+			asset.setActive(assetDTO.isActive());
+			return Optional.of(assetRepo.save(asset));
 		} else {
 			return Optional.empty();
 		}
@@ -686,6 +723,8 @@ public class MasterServiceImpl implements MasterService {
 	public FlowVO createFlow(FlowDTO flowDTO) {
 
 		FlowVO flowVO = createFlowVOByFlowDTO(flowDTO);
+		flowVO.setCreatedBy(flowDTO.getCreatedBy());
+		flowVO.setModifiedBy(flowDTO.getCreatedBy());
 		flowVO.setEmitter(flowRepo.findEmiterbyId(flowVO.getEmitterId()));
 //		flowVO.setDublicateFlowName(flowDTO.getOrgId()+flowDTO.getFlowName());
 		flowVO.setWarehouseLocation(flowRepo.getWarehouseLocationByLocationId(flowDTO.getWarehouseId()));

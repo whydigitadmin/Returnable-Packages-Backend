@@ -30,6 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.whydigit.efit.common.CommonConstant;
 import com.whydigit.efit.common.UserConstants;
+import com.whydigit.efit.dto.AssetDTO;
 import com.whydigit.efit.dto.AssetInwardDTO;
 import com.whydigit.efit.dto.AssetTaggingDTO;
 import com.whydigit.efit.dto.BinInwardDTO;
@@ -185,20 +186,20 @@ public class MasterController extends BaseController {
 	}
 
 	@PutMapping("/asset")
-	public ResponseEntity<ResponseDTO> updateAsset(@RequestBody AssetVO assetVO) {
+	public ResponseEntity<ResponseDTO> updateAsset(@RequestBody AssetDTO assetDTO) {
 		String methodName = "updateAsset()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
 		try {
-			AssetVO updateAssetVO = masterService.updateAsset(assetVO).orElse(null);
+			AssetVO updateAssetVO = masterService.updateAsset(assetDTO).orElse(null);
 			if (updateAssetVO != null) {
 				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Asset updated successfully");
 				responseObjectsMap.put("assetVO", updateAssetVO);
 				responseDTO = createServiceResponse(responseObjectsMap);
 			} else {
-				errorMsg = "Asset not found for ID: " + assetVO.getId();
+				errorMsg = "Asset not found for ID: " + assetDTO.getId();
 				responseDTO = createServiceResponseError(responseObjectsMap, "Asset update failed", errorMsg);
 			}
 		} catch (Exception e) {
