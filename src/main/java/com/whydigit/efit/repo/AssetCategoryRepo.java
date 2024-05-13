@@ -31,20 +31,15 @@ public interface AssetCategoryRepo extends JpaRepository<AssetCategoryVO, Long> 
 
 	boolean existsByCategoryCodeAndOrgId(String categoryCode, Long orgId);
 
-	boolean existsByCategoryAndOrgId(String category, Long orgId);
-
 	boolean existsById(String string);
 
 	AssetCategoryVO findByCategoryAndAssetTypeAndOrgId(String category, String assetType, Long orgId);
 
-	boolean existsByCategoryAndAssetTypeAndOrgId(String category, String assetType, Long orgId);
-
-	boolean existsByCategoryCodeAndAssetTypeAndOrgId(String categoryCode, String assetType, Long orgId);
-
-	
 
 	boolean existsByAssetTypeAndCategoryAndCategoryCodeAndOrgId(String assetType, String category, String categoryCode,
 			Long orgId);
+
+	boolean existsByCategoryAndOrgId(String upperCase, Long orgId);
 
 
 	

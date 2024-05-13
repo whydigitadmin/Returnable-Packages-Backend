@@ -308,19 +308,15 @@ public class MasterServiceImpl implements MasterService {
 
 	@Override
 	public AssetVO createAsset(AssetVO assetVO) throws ApplicationException {
-		if (assetRepo.existsByAssetNameAndCategoryAndAssetTypeAndOrgId(
+		if (assetRepo.existsByAssetNameAndOrgId(
 				assetVO.getAssetName(),
-				assetVO.getCategory(),
-				assetVO.getAssetType(),
 				assetVO.getOrgId())) {
-            throw new ApplicationException("Asset Name Already exists for this Category, Asset Type, and Organization.");
+            throw new ApplicationException("Asset Name Already exists.");
         }
-		if (assetRepo.existsByAssetCodeIdAndCategoryAndAssetTypeAndOrgId(
+		if (assetRepo.existsByAssetCodeIdAndOrgId(
 				assetVO.getAssetCodeId(),
-				assetVO.getCategory(),
-				assetVO.getAssetType(),
 				assetVO.getOrgId())) {
-            throw new ApplicationException("Asset Code Id Already exists for this Category, Asset Type, and Organization.");
+            throw new ApplicationException("Asset Code Id Already exists.");
         }
 
 		List<AssetItemVO> assetItemVO = new ArrayList<>();
@@ -351,12 +347,10 @@ public class MasterServiceImpl implements MasterService {
 	    // Check if assetName is being updated
 	    if (!existingAsset.getAssetName().equals(assetDTO.getAssetName())) {
 	        // Check if there's already an entry with the same assetName, category, and orgId
-	    	if (assetRepo.existsByAssetNameAndCategoryAndAssetTypeAndOrgId(
+	    	if (assetRepo.existsByAssetNameAndOrgId(
 	                assetDTO.getAssetName(),
-	                existingAsset.getCategory(),
-	                existingAsset.getAssetType(),
 	                existingAsset.getOrgId())) {
-	            throw new ApplicationException("Asset Name Already exists for this Category, Asset Type, and Organization.");
+	            throw new ApplicationException("Asset Name Already exists. ");
 	        }
 	        // Update assetName if there's no duplicate
 	        existingAsset.setAssetName(assetDTO.getAssetName());
@@ -365,12 +359,10 @@ public class MasterServiceImpl implements MasterService {
 	    // Check if assetCodeId is being updated
 	    if (!existingAsset.getAssetCodeId().equals(assetDTO.getAssetCodeId())) {
 	        // Check if there's already an entry with the same assetCodeId, category, and orgId
-	    	if (assetRepo.existsByAssetCodeIdAndCategoryAndAssetTypeAndOrgId(
+	    	if (assetRepo.existsByAssetCodeIdAndOrgId(
 	                assetDTO.getAssetCodeId(),
-	                existingAsset.getCategory(),
-	                existingAsset.getAssetType(),
 	                existingAsset.getOrgId())) {
-	            throw new ApplicationException("Asset Code Id Already exists for this Category, Asset Type, and Organization.");
+	            throw new ApplicationException("Asset Code Id Already exists.");
 	        }
 	        // Update assetCodeId if there's no duplicate
 	        existingAsset.setAssetCodeId(assetDTO.getAssetCodeId());
@@ -493,14 +485,16 @@ public class MasterServiceImpl implements MasterService {
 	@Override
 	public AssetCategoryVO createAssetCategory(AssetCategoryVO assetGroupVO) throws ApplicationException {
 		if (ObjectUtils.isNotEmpty(assetGroupVO) && StringUtils.isNotBlank(assetGroupVO.getCategoryCode())) {
-			if (assetCategoryRepo.existsByCategoryCodeAndOrgId(assetGroupVO.getCategoryCode().toUpperCase(),
+			if (assetCategoryRepo.existsByCategoryAndOrgId(
+					assetGroupVO.getCategory(), 
 					assetGroupVO.getOrgId())) {
-				throw new ApplicationException("Asset categoryCode already exist  Please try another one.");
-			}
-			if (assetCategoryRepo.existsByCategoryAndOrgId(assetGroupVO.getCategory().toUpperCase(),
+	            throw new ApplicationException("Category Already exists for this Organization.");
+	        }
+			if (assetCategoryRepo.existsByCategoryCodeAndOrgId(
+					assetGroupVO.getCategoryCode(),
 					assetGroupVO.getOrgId())) {
-				throw new ApplicationException("Asset Category already exist Please try another one.");
-			}
+	            throw new ApplicationException("Category Code Already exists for this  Organization.");
+	        }
 
 			AssetTypeVO assetTypeVO = assetTypeRepo.findByOrgIdAndAssetType(assetGroupVO.getOrgId(),
 					assetGroupVO.getAssetType());
@@ -519,11 +513,10 @@ public class MasterServiceImpl implements MasterService {
 	    // Check if category is being updated
 	    if (!existingAssetCategory.getCategory().equals(assetCategoryDTO.getCategory())) {
 	        // Check if there's already an entry with the same category, assetType, and orgId
-	        if (assetCategoryRepo.existsByCategoryAndAssetTypeAndOrgId(
+	        if (assetCategoryRepo.existsByCategoryAndOrgId(
 	                assetCategoryDTO.getCategory(), 
-	                existingAssetCategory.getAssetType(), 
 	                existingAssetCategory.getOrgId())) {
-	            throw new ApplicationException("Category Already exists for this Asset Type and Organization.");
+	            throw new ApplicationException("Category Already exists for this Organization.");
 	        }
 	        // Update category if there's no duplicate
 	        existingAssetCategory.setCategory(assetCategoryDTO.getCategory());
@@ -532,11 +525,10 @@ public class MasterServiceImpl implements MasterService {
 	    // Check if categoryCode is being updated
 	    if (!existingAssetCategory.getCategoryCode().equals(assetCategoryDTO.getCategoryCode())) {
 	        // Check if there's already an entry with the same categoryCode, assetType, and orgId
-	        if (assetCategoryRepo.existsByCategoryCodeAndAssetTypeAndOrgId(
-	                assetCategoryDTO.getCategoryCode(), 
-	                existingAssetCategory.getAssetType(), 
+	        if (assetCategoryRepo.existsByCategoryCodeAndOrgId(
+	                assetCategoryDTO.getCategoryCode(),
 	                existingAssetCategory.getOrgId())) {
-	            throw new ApplicationException("Category Code Already exists for this Asset Type and Organization.");
+	            throw new ApplicationException("Category Code Already exists for this  Organization.");
 	        }
 	        // Update categoryCode if there's no duplicate
 	        existingAssetCategory.setCategoryCode(assetCategoryDTO.getCategoryCode());
@@ -1705,7 +1697,7 @@ public class MasterServiceImpl implements MasterService {
 				}
 
 				AssetTaggingDetailsVO assetTaggingDetails = new AssetTaggingDetailsVO();
-				assetTaggingDetails.setRfId(taggingDetailsDTO.getRfId());
+				assetTaggingDetails.setRfId(taggingDetailsDTO.getTagCode());
 				assetTaggingDetails.setTaggingDocDd(assetTaggingVO.getDocid());
 				assetTaggingDetails.setAssetCode(taggingDetailsDTO.getAssetCode());
 				assetTaggingDetails.setAsset(taggingDetailsDTO.getAsset());
