@@ -8,9 +8,11 @@ import java.util.Set;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.whydigit.efit.dto.AssetCategoryDTO;
 import com.whydigit.efit.dto.AssetDTO;
 import com.whydigit.efit.dto.AssetInwardDTO;
 import com.whydigit.efit.dto.AssetTaggingDTO;
+import com.whydigit.efit.dto.AssetTypeDTO;
 import com.whydigit.efit.dto.BinInwardDTO;
 import com.whydigit.efit.dto.CnoteDTO;
 import com.whydigit.efit.dto.CustomerAttachmentType;
@@ -67,7 +69,7 @@ public interface MasterService {
 
 	AssetVO createAsset(AssetVO assetVO) throws ApplicationException;
 
-	Optional<AssetVO> updateAsset(AssetDTO assetDTO) throws ApplicationException;
+	AssetVO updateAsset(AssetDTO assetDTO) throws ApplicationException;
 
 	void deleteAsset(Long id);
 
@@ -78,7 +80,7 @@ public interface MasterService {
 
 	AssetCategoryVO createAssetCategory(AssetCategoryVO assetGroupVO) throws ApplicationException;
 
-	Optional<AssetCategoryVO> updateAssetCategory(AssetCategoryVO assetGroupVO);
+	AssetCategoryVO updateAssetCategory(AssetCategoryDTO assetGroupVO) throws ApplicationException;
 
 	// CUstomers
 
@@ -136,7 +138,7 @@ public interface MasterService {
 
 	AssetTypeVO createAssetType(AssetTypeVO assetCategoryVO);
 	
-	AssetTypeVO updateAssetType(AssetTypeVO assetTypeVO) throws ApplicationException;
+	AssetTypeVO updateAssetType(AssetTypeDTO assetTypeVO) throws ApplicationException;
 
 //unit
 
@@ -315,6 +317,8 @@ public interface MasterService {
 	List<FlowVO> getFlowByKitCode(String kitcode);
 
 	List<Object[]> getAvailableKitQtyByEmitter(Long orgId, Long emitterId, String kitId, Long flowId);
+
+	
 
 
 	

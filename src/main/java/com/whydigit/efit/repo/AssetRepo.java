@@ -28,4 +28,13 @@ public interface AssetRepo extends JpaRepository<AssetVO, Long> {
 
 	List<AssetVO> getAllAssetByOrgIdAndCategory(Long orgId, String category);
 
+
+
+
+	boolean existsByAssetCodeIdAndCategoryAndAssetTypeAndOrgId(String assetCodeId, String category, String assetType,
+			Long orgId);
+
+	boolean existsByAssetNameAndCategoryAndAssetTypeAndOrgId(String assetName, String category, String assetType,
+			Long orgId);
+
 }

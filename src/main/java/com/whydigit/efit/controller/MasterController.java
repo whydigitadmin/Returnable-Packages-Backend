@@ -30,9 +30,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.whydigit.efit.common.CommonConstant;
 import com.whydigit.efit.common.UserConstants;
+import com.whydigit.efit.dto.AssetCategoryDTO;
 import com.whydigit.efit.dto.AssetDTO;
 import com.whydigit.efit.dto.AssetInwardDTO;
 import com.whydigit.efit.dto.AssetTaggingDTO;
+import com.whydigit.efit.dto.AssetTypeDTO;
 import com.whydigit.efit.dto.BinInwardDTO;
 import com.whydigit.efit.dto.CnoteDTO;
 import com.whydigit.efit.dto.CustomerAttachmentType;
@@ -193,7 +195,7 @@ public class MasterController extends BaseController {
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
 		try {
-			AssetVO updateAssetVO = masterService.updateAsset(assetDTO).orElse(null);
+			AssetVO updateAssetVO = masterService.updateAsset(assetDTO);
 			if (updateAssetVO != null) {
 				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Asset updated successfully");
 				responseObjectsMap.put("assetVO", updateAssetVO);
@@ -362,14 +364,14 @@ public class MasterController extends BaseController {
 	}
 
 	@PutMapping("/assetGroup")
-	public ResponseEntity<ResponseDTO> updateAssetGroup(@RequestBody AssetCategoryVO assetGroupVO) {
+	public ResponseEntity<ResponseDTO> updateAssetGroup(@RequestBody AssetCategoryDTO assetGroupVO) {
 		String methodName = "updateAssetGroup()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
 		try {
-			AssetCategoryVO updatedAssetGroupVO = masterService.updateAssetCategory(assetGroupVO).orElse(null);
+			AssetCategoryVO updatedAssetGroupVO = masterService.updateAssetCategory(assetGroupVO);
 			if (updatedAssetGroupVO != null) {
 				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Asset Category updated successfully");
 				responseObjectsMap.put("assetGroupVO", updatedAssetGroupVO);
@@ -1361,7 +1363,7 @@ public class MasterController extends BaseController {
 	// Update Asset Type
 	
 	@PutMapping("/updateAssetType")
-	public ResponseEntity<ResponseDTO> updateAssetType(@RequestBody AssetTypeVO assetTypeVO) {
+	public ResponseEntity<ResponseDTO> updateAssetType(@RequestBody AssetTypeDTO assetTypeVO) {
 		String methodName = "updateAssetType()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;

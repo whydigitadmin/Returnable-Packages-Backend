@@ -45,11 +45,13 @@ import com.opencsv.CSVReader;
 import com.whydigit.efit.common.CommonConstant;
 import com.whydigit.efit.common.CustomerConstant;
 import com.whydigit.efit.common.MasterConstant;
+import com.whydigit.efit.dto.AssetCategoryDTO;
 import com.whydigit.efit.dto.AssetDTO;
 import com.whydigit.efit.dto.AssetInwardDTO;
 import com.whydigit.efit.dto.AssetInwardDetailDTO;
 import com.whydigit.efit.dto.AssetTaggingDTO;
 import com.whydigit.efit.dto.AssetTaggingDetailsDTO;
+import com.whydigit.efit.dto.AssetTypeDTO;
 import com.whydigit.efit.dto.BinInwardDTO;
 import com.whydigit.efit.dto.BinInwardDetailsDTO;
 import com.whydigit.efit.dto.CnoteDTO;
@@ -169,10 +171,10 @@ public class MasterServiceImpl implements MasterService {
 	FlowRepo flowRepo;
 	@Autowired
 	VendorRepo vendorRepo;
-	
+
 	@Autowired
 	KitAssetRepo kitAssetRepo;
-	
+
 	@Autowired
 	AssetTaggingRepo assetTaggingRepo;
 	@Autowired
@@ -285,20 +287,19 @@ public class MasterServiceImpl implements MasterService {
 		}
 		return assetVO;
 	}
-	
+
 	@Override
-	public List<AssetVO> getAllAssetByCategory(Long orgId,String category) {
+	public List<AssetVO> getAllAssetByCategory(Long orgId, String category) {
 		List<AssetVO> assetVO = new ArrayList<>();
 		if (ObjectUtils.isNotEmpty(orgId) && ObjectUtils.isNotEmpty(category)) {
 			LOGGER.info("Successfully Received  Asset Information BY Category : {}", category);
-			assetVO = assetRepo.getAllAssetByOrgIdAndCategory(orgId,category);
+			assetVO = assetRepo.getAllAssetByOrgIdAndCategory(orgId, category);
 		} else {
 			LOGGER.info("Successfully Received  AssetInformation For All OrgId.");
 			assetVO = assetRepo.findAll();
 		}
 		return assetVO;
 	}
-
 
 	@Override
 	public Optional<AssetVO> getAssetById(Long id) {
@@ -307,14 +308,20 @@ public class MasterServiceImpl implements MasterService {
 
 	@Override
 	public AssetVO createAsset(AssetVO assetVO) throws ApplicationException {
-		if (assetRepo.existsByCategoryAndAssetNameAndOrgId(assetVO.getCategory().toUpperCase(),assetVO.getAssetName().toUpperCase(),
+		if (assetRepo.existsByAssetNameAndCategoryAndAssetTypeAndOrgId(
+				assetVO.getAssetName(),
+				assetVO.getCategory(),
+				assetVO.getAssetType(),
 				assetVO.getOrgId())) {
-			throw new ApplicationException("AssetName already exists for this Category ");
-		}		
-		if (assetRepo.existsByCategoryAndAssetCodeIdAndOrgId(assetVO.getCategory().toUpperCase(), assetVO.getAssetCodeId().toUpperCase(),
+            throw new ApplicationException("Asset Name Already exists for this Category, Asset Type, and Organization.");
+        }
+		if (assetRepo.existsByAssetCodeIdAndCategoryAndAssetTypeAndOrgId(
+				assetVO.getAssetCodeId(),
+				assetVO.getCategory(),
+				assetVO.getAssetType(),
 				assetVO.getOrgId())) {
-			throw new ApplicationException("Asset Code already exists for this Category ");
-		}
+            throw new ApplicationException("Asset Code Id Already exists for this Category, Asset Type, and Organization.");
+        }
 
 		List<AssetItemVO> assetItemVO = new ArrayList<>();
 		long skuId = assetVO.getSkuFrom();
@@ -337,50 +344,72 @@ public class MasterServiceImpl implements MasterService {
 	}
 
 	@Override
-	public Optional<AssetVO> updateAsset(AssetDTO assetDTO) throws ApplicationException {
-		if (assetRepo.existsById(assetDTO.getId())) {
-			AssetVO asset=assetRepo.findById(assetDTO.getId()).get();
-			if(asset.getAssetCodeId()!=assetDTO.getAssetCodeId()) {
-				if (assetRepo.existsByCategoryAndAssetCodeIdAndOrgId(assetDTO.getCategory().toUpperCase(),assetDTO.getAssetCodeId().toUpperCase(),
-						assetDTO.getOrgId())) {
-					throw new ApplicationException("Asset Code already exists for this Category ");
-				}
-			}
-			asset.setId(assetDTO.getId());
-			asset.setOrgId(assetDTO.getOrgId());
-			asset.setCategory(assetDTO.getCategory());
-			asset.setCategoryCode(assetDTO.getCategoryCode());
-			asset.setAssetCodeId(assetDTO.getAssetCodeId());
-			asset.setAssetName(assetDTO.getAssetName());
-			asset.setLength(assetDTO.getLength());
-			asset.setBreath(assetDTO.getBreadth());
-			asset.setHeight(assetDTO.getHeight());
-			asset.setWeight(assetDTO.getWeight());
-			asset.setQuantity(assetDTO.getQuantity());
-			asset.setDimUnit(assetDTO.getDimUnit());
-			asset.setManufacturer(assetDTO.getManufacturer());
-			asset.setChargableWeight(assetDTO.getChargableWeight());
-			asset.setBrand(assetDTO.getBrand());
-			asset.setEanUpc(assetDTO.getEanUpc());
-			asset.setAssetType(assetDTO.getAssetType());
-			asset.setExpectedLife(assetDTO.getExpectedLife());
-			asset.setMaintanencePeriod(assetDTO.getMaintenancePeriod());
-			asset.setExpectedTrips(assetDTO.getExpectedTrips());
-			asset.setHsnCode(assetDTO.getHsnCode());
-			asset.setTaxRate(assetDTO.getTaxRate());
-			asset.setSkuFrom(assetDTO.getSkuFrom());
-			asset.setSkuTo(assetDTO.getSkuTo());
-			asset.setCostPrice(assetDTO.getCostPrice());
-			asset.setSellPrice(assetDTO.getSellPrice());
-			asset.setScrapValue(assetDTO.getScrapValue());
-			asset.setModifiedby(assetDTO.getModifiedBy());
-			asset.setPoNo(assetDTO.getPoNo());
-			asset.setActive(assetDTO.isActive());
-			return Optional.of(assetRepo.save(asset));
-		} else {
-			return Optional.empty();
-		}
+	public AssetVO updateAsset(AssetDTO assetDTO) throws ApplicationException {
+	    // Retrieve existing AssetVO by id
+	    AssetVO existingAsset = assetRepo.findById(assetDTO.getId()).get();
+
+	    // Check if assetName is being updated
+	    if (!existingAsset.getAssetName().equals(assetDTO.getAssetName())) {
+	        // Check if there's already an entry with the same assetName, category, and orgId
+	    	if (assetRepo.existsByAssetNameAndCategoryAndAssetTypeAndOrgId(
+	                assetDTO.getAssetName(),
+	                existingAsset.getCategory(),
+	                existingAsset.getAssetType(),
+	                existingAsset.getOrgId())) {
+	            throw new ApplicationException("Asset Name Already exists for this Category, Asset Type, and Organization.");
+	        }
+	        // Update assetName if there's no duplicate
+	        existingAsset.setAssetName(assetDTO.getAssetName());
+	    }
+
+	    // Check if assetCodeId is being updated
+	    if (!existingAsset.getAssetCodeId().equals(assetDTO.getAssetCodeId())) {
+	        // Check if there's already an entry with the same assetCodeId, category, and orgId
+	    	if (assetRepo.existsByAssetCodeIdAndCategoryAndAssetTypeAndOrgId(
+	                assetDTO.getAssetCodeId(),
+	                existingAsset.getCategory(),
+	                existingAsset.getAssetType(),
+	                existingAsset.getOrgId())) {
+	            throw new ApplicationException("Asset Code Id Already exists for this Category, Asset Type, and Organization.");
+	        }
+	        // Update assetCodeId if there's no duplicate
+	        existingAsset.setAssetCodeId(assetDTO.getAssetCodeId());
+	    }
+
+	    // Update other fields
+	    existingAsset.setOrgId(assetDTO.getOrgId());
+	    existingAsset.setCategory(assetDTO.getCategory());
+	    existingAsset.setCategoryCode(assetDTO.getCategoryCode());
+	    existingAsset.setLength(assetDTO.getLength());
+	    existingAsset.setBreath(assetDTO.getBreadth());
+	    existingAsset.setHeight(assetDTO.getHeight());
+	    existingAsset.setWeight(assetDTO.getWeight());
+	    existingAsset.setQuantity(assetDTO.getQuantity());
+	    existingAsset.setDimUnit(assetDTO.getDimUnit());
+	    existingAsset.setManufacturer(assetDTO.getManufacturer());
+	    existingAsset.setChargableWeight(assetDTO.getChargableWeight());
+	    existingAsset.setBrand(assetDTO.getBrand());
+	    existingAsset.setEanUpc(assetDTO.getEanUpc());
+	    existingAsset.setAssetType(assetDTO.getAssetType());
+	    existingAsset.setExpectedLife(assetDTO.getExpectedLife());
+	    existingAsset.setMaintanencePeriod(assetDTO.getMaintenancePeriod());
+	    existingAsset.setExpectedTrips(assetDTO.getExpectedTrips());
+	    existingAsset.setHsnCode(assetDTO.getHsnCode());
+	    existingAsset.setTaxRate(assetDTO.getTaxRate());
+	    existingAsset.setSkuFrom(assetDTO.getSkuFrom());
+	    existingAsset.setSkuTo(assetDTO.getSkuTo());
+	    existingAsset.setCostPrice(assetDTO.getCostPrice());
+	    existingAsset.setSellPrice(assetDTO.getSellPrice());
+	    existingAsset.setScrapValue(assetDTO.getScrapValue());
+	    existingAsset.setModifiedby(assetDTO.getModifiedBy());
+	    existingAsset.setCancelremarks(assetDTO.getCancelRemarks());
+	    existingAsset.setPoNo(assetDTO.getPoNo());
+	    existingAsset.setActive(assetDTO.isActive());
+
+	    // Save the updated AssetVO
+	    return assetRepo.save(existingAsset);
 	}
+
 
 	@Override
 	public void deleteAsset(Long id) {
@@ -468,7 +497,8 @@ public class MasterServiceImpl implements MasterService {
 					assetGroupVO.getOrgId())) {
 				throw new ApplicationException("Asset categoryCode already exist  Please try another one.");
 			}
-			if (assetCategoryRepo.existsByCategoryAndOrgId(assetGroupVO.getCategory().toUpperCase(), assetGroupVO.getOrgId())) {
+			if (assetCategoryRepo.existsByCategoryAndOrgId(assetGroupVO.getCategory().toUpperCase(),
+					assetGroupVO.getOrgId())) {
 				throw new ApplicationException("Asset Category already exist Please try another one.");
 			}
 
@@ -483,14 +513,54 @@ public class MasterServiceImpl implements MasterService {
 	}
 
 	@Override
-	public Optional<AssetCategoryVO> updateAssetCategory(AssetCategoryVO assetGroupVO) {
-		if (assetCategoryRepo.existsByCategoryCodeAndOrgId(assetGroupVO.getCategoryCode(), assetGroupVO.getOrgId())) {
-			return Optional.of(assetCategoryRepo.save(assetGroupVO));
-		} else {
-			return Optional.empty();
-		}
-	}
+	public AssetCategoryVO updateAssetCategory(AssetCategoryDTO assetCategoryDTO) throws ApplicationException {
+	    // Retrieve existing AssetCategoryVO by id
+	    AssetCategoryVO existingAssetCategory = assetCategoryRepo.findById(assetCategoryDTO.getId()).get();
+	    // Check if category is being updated
+	    if (!existingAssetCategory.getCategory().equals(assetCategoryDTO.getCategory())) {
+	        // Check if there's already an entry with the same category, assetType, and orgId
+	        if (assetCategoryRepo.existsByCategoryAndAssetTypeAndOrgId(
+	                assetCategoryDTO.getCategory(), 
+	                existingAssetCategory.getAssetType(), 
+	                existingAssetCategory.getOrgId())) {
+	            throw new ApplicationException("Category Already exists for this Asset Type and Organization.");
+	        }
+	        // Update category if there's no duplicate
+	        existingAssetCategory.setCategory(assetCategoryDTO.getCategory());
+	    }
+	    
+	    // Check if categoryCode is being updated
+	    if (!existingAssetCategory.getCategoryCode().equals(assetCategoryDTO.getCategoryCode())) {
+	        // Check if there's already an entry with the same categoryCode, assetType, and orgId
+	        if (assetCategoryRepo.existsByCategoryCodeAndAssetTypeAndOrgId(
+	                assetCategoryDTO.getCategoryCode(), 
+	                existingAssetCategory.getAssetType(), 
+	                existingAssetCategory.getOrgId())) {
+	            throw new ApplicationException("Category Code Already exists for this Asset Type and Organization.");
+	        }
+	        // Update categoryCode if there's no duplicate
+	        existingAssetCategory.setCategoryCode(assetCategoryDTO.getCategoryCode());
+	    }
+	    if (!existingAssetCategory.getAssetType().equals(assetCategoryDTO.getAssetType())) {
+	        // Check if there's already an entry with the same category, categoryCode, and orgId
+	        if (assetCategoryRepo.existsByAssetTypeAndCategoryAndCategoryCodeAndOrgId(
+	                assetCategoryDTO.getAssetType(),
+	                existingAssetCategory.getCategory(),
+	                existingAssetCategory.getCategoryCode(),
+	                existingAssetCategory.getOrgId())) {
+	            throw new ApplicationException("Asset Type Already exists for this Category and Category Code.");
+	        }
+	        // Update assetType if there's no duplicate
+	        existingAssetCategory.setAssetType(assetCategoryDTO.getAssetType());
+	    }
 
+	    // Update other fields
+	    existingAssetCategory.setActive(assetCategoryDTO.isActive());
+	    existingAssetCategory.setModifiedby(assetCategoryDTO.getModifiedBy());
+
+	    // Save the updated AssetCategoryVO
+	    return assetCategoryRepo.save(existingAssetCategory);
+	}
 	@Override
 	public List<CustomersVO> getAllCustomers(Long orgId) {
 		List<CustomersVO> customersVO = new ArrayList<>();
@@ -741,7 +811,7 @@ public class MasterServiceImpl implements MasterService {
 				.destination(flowDTO.getDestination()).orgId(flowDTO.getOrgId()).warehouseId(flowDTO.getWarehouseId())
 				.flowDetailVO(flowDetailVOList).build();
 		flowDetailVOList = flowDTO.getFlowDetailDTO().stream().map(fdDTO -> {
-			KitVO kitVO = kitRepo.findAllByKitNoAndOrgId(fdDTO.getKitNo(),fdDTO.getOrgId());
+			KitVO kitVO = kitRepo.findAllByKitNoAndOrgId(fdDTO.getKitNo(), fdDTO.getOrgId());
 			kitVO.setEflag(true);
 			kitRepo.save(kitVO);
 			return FlowDetailVO.builder().active(fdDTO.isActive()).cycleTime(fdDTO.getCycleTime())
@@ -833,35 +903,54 @@ public class MasterServiceImpl implements MasterService {
 		if (ObjectUtils.isNotEmpty(orgId)) {
 			LOGGER.info("Successfully Received Asset Type BY OrgId : {}", orgId);
 			assetCategoryVO = assetTypeRepo.findByOrgId(orgId);
-		} 
+		}
 		return assetCategoryVO;
 	}
 
 	@Override
 	public AssetTypeVO createAssetType(AssetTypeVO assetCategoryVO) {
-		if (assetTypeRepo.existsByAssetTypeAndOrgId(assetCategoryVO.getAssetType().toUpperCase(), assetCategoryVO.getOrgId())) {
+		if (assetTypeRepo.existsByAssetTypeAndOrgId(assetCategoryVO.getAssetType().toUpperCase(),
+				assetCategoryVO.getOrgId())) {
 			throw new RuntimeException("Asset Type already exists for this organization");
 		}
-		if (assetTypeRepo.existsByTypeCodeAndOrgId(assetCategoryVO.getTypeCode().toUpperCase(), assetCategoryVO.getOrgId())) {
+		if (assetTypeRepo.existsByTypeCodeAndOrgId(assetCategoryVO.getTypeCode().toUpperCase(),
+				assetCategoryVO.getOrgId())) {
 			throw new RuntimeException("Asset Type Code already exists for this organization");
 		}
 		return assetTypeRepo.save(assetCategoryVO);
 	}
-	
+
 	@Override
-	public AssetTypeVO updateAssetType(AssetTypeVO assetTypeVO) throws ApplicationException {
-		
-	    if (assetTypeVO.getId() != null) {
-	    	assetTypeVO = assetTypeRepo.findById(assetTypeVO.getId())
-	                .orElseThrow(() -> new ApplicationException("Invalid Asset Type details"));
+	public AssetTypeVO updateAssetType(AssetTypeDTO assetTypeDTO) throws ApplicationException {
+	    // Retrieve existing AssetTypeVO by id
+	    AssetTypeVO existingAssetType = assetTypeRepo.findById(assetTypeDTO.getId()).get();
+
+	    // Check if assetType is being updated
+	    if (!existingAssetType.getAssetType().equals(assetTypeDTO.getAssetType())) {
+	        // Check if there's already an entry with the same assetType and orgId
+	        if (assetTypeRepo.existsByAssetTypeAndOrgId(assetTypeDTO.getAssetType(), existingAssetType.getOrgId())) {
+	            throw new ApplicationException("Asset Type Already exists for this Organization.");
+	        }
+	        // Update assetType if there's no duplicate
+	        existingAssetType.setAssetType(assetTypeDTO.getAssetType());
 	    }
-	    AssetTypeVO assetTypeVO2=assetTypeRepo.findById(assetTypeVO.getId()).get();
-	    assetTypeVO2.setAssetType(assetTypeVO.getAssetType());
-	    assetTypeVO2.setTypeCode(assetTypeVO.getTypeCode());
-	    assetTypeVO2.setModifiedby(assetTypeVO.getModifiedby());
-	    assetTypeVO2.setAssetType(assetTypeVO.getAssetType());
-		return assetTypeRepo.save(assetTypeVO2);
-		
+
+	    // Check if typeCode is being updated
+	    if (!existingAssetType.getTypeCode().equals(assetTypeDTO.getTypeCode())) {
+	        // Check if there's already an entry with the same typeCode and orgId
+	        if (assetTypeRepo.existsByTypeCodeAndOrgId(assetTypeDTO.getTypeCode(), existingAssetType.getOrgId())) {
+	            throw new ApplicationException("Type Code Already exists for this Organization.");
+	        }
+	        // Update typeCode if there's no duplicate
+	        existingAssetType.setTypeCode(assetTypeDTO.getTypeCode());
+	    }
+
+	    // Update other fields
+	    existingAssetType.setActive(assetTypeDTO.isActive());
+	    existingAssetType.setModifiedby(assetTypeDTO.getModifiedby());
+
+	    // Save the updated AssetTypeVO
+	    return assetTypeRepo.save(existingAssetType);
 	}
 
 	// Unit
@@ -995,15 +1084,18 @@ public class MasterServiceImpl implements MasterService {
 		int finyr = kitRepo.getFinyr();
 		String kit = finyr + "KT" + kitRepo.finddocid();
 		List<KitAssetVO> kitAssetVO = new ArrayList<>();
-		KitVO kitVO = KitVO.builder().kitDesc(kitDTO.getKitDesc()).kitNo(kitDTO.getKitNo()).docId(kit).createdBy(kitDTO.getCreatedBy()).modifiedBy(kitDTO.getCreatedBy())
-				.orgId(kitDTO.getOrgId()).partQty(kitDTO.getPartQuantity()).kitAssetVO(kitAssetVO).build();
+		KitVO kitVO = KitVO.builder().kitDesc(kitDTO.getKitDesc()).kitNo(kitDTO.getKitNo()).docId(kit)
+				.createdBy(kitDTO.getCreatedBy()).modifiedBy(kitDTO.getCreatedBy()).orgId(kitDTO.getOrgId())
+				.partQty(kitDTO.getPartQuantity()).kitAssetVO(kitAssetVO).build();
 		for (KitAssetDTO kitAsset : kitDTO.getKitAssetDTO()) {
-			AssetVO assetVO=assetRepo.findByAssetCodeIdAndOrgId(kitAsset.getAssetCodeId(),kitDTO.getOrgId());
+			AssetVO assetVO = assetRepo.findByAssetCodeIdAndOrgId(kitAsset.getAssetCodeId(), kitDTO.getOrgId());
 			assetVO.setEflag(true);
-			assetRepo.save(assetVO);;
-			 kitAssetVO.add(KitAssetVO.builder().assetType(kitAsset.getAssetType()).assetCategory(kitAsset.getAssetCategory())
-					.categoryCode(kitAsset.getCategoryCode()).assetCodeId(kitAsset.getAssetCodeId()).assetName(kitAsset.getAssetDesc())
-					.quantity(kitAsset.getQuantity()).kitVO(kitVO).build());
+			assetRepo.save(assetVO);
+			;
+			kitAssetVO.add(
+					KitAssetVO.builder().assetType(kitAsset.getAssetType()).assetCategory(kitAsset.getAssetCategory())
+							.categoryCode(kitAsset.getCategoryCode()).assetCodeId(kitAsset.getAssetCodeId())
+							.assetName(kitAsset.getAssetDesc()).quantity(kitAsset.getQuantity()).kitVO(kitVO).build());
 		}
 		kitRepo.updatesequence();
 
@@ -1017,73 +1109,71 @@ public class MasterServiceImpl implements MasterService {
 		return kitRepo.save(kitVO);
 	}
 
-	
 	@Override
 	public KitVO updatedKit(KitDTO kitDTO) throws ApplicationException {
 
-	    KitVO kitVO = new KitVO();
-	    if (kitDTO.getId() != null && !kitDTO.getKitNo().isEmpty()) {
-	        kitVO = kitRepo.findById(kitDTO.getId())
-	                .orElseThrow(() -> new ApplicationException("Invalid Kit details"));
-	    }
+		KitVO kitVO = new KitVO();
+		if (kitDTO.getId() != null && !kitDTO.getKitNo().isEmpty()) {
+			kitVO = kitRepo.findById(kitDTO.getId()).orElseThrow(() -> new ApplicationException("Invalid Kit details"));
+		}
 
-	    // Update kit details
-	    getKitVOFromKitDTO(kitDTO, kitVO);
+		// Update kit details
+		getKitVOFromKitDTO(kitDTO, kitVO);
 
-	    // Update or create kit asset details
-	    List<KitAssetVO> kitAssetVOList = new ArrayList<>();
-	    if (kitDTO.getKitAssetDTO() != null) {
-	        for (KitAssetDTO kitAssetDTO : kitDTO.getKitAssetDTO()) {
-	            if (kitAssetDTO.getId() != 0) {
-	                KitAssetVO kitAssetVO = kitAssetRepo.findById(kitAssetDTO.getId()).get();
-	                kitAssetVO.setAssetType(kitAssetDTO.getAssetType());
-	                kitAssetVO.setAssetCategory(kitAssetDTO.getAssetCategory());
-	                kitAssetVO.setCategoryCode(kitAssetDTO.getCategoryCode());
-	                kitAssetVO.setAssetCodeId(kitAssetDTO.getAssetCodeId());
-	                kitAssetVO.setAssetName(kitAssetDTO.getAssetDesc());
-	                kitAssetVO.setQuantity(kitAssetDTO.getQuantity());
-	                kitAssetVO.setKitVO(kitVO);
-	                kitAssetVOList.add(kitAssetVO);
-	            } else {
-	                KitAssetVO kitAssetVO = new KitAssetVO();
-	                kitAssetVO.setAssetType(kitAssetDTO.getAssetType());
-	                kitAssetVO.setAssetCategory(kitAssetDTO.getAssetCategory());
-	                kitAssetVO.setCategoryCode(kitAssetDTO.getCategoryCode());
-	                kitAssetVO.setAssetCodeId(kitAssetDTO.getAssetCodeId());
-	                kitAssetVO.setAssetName(kitAssetDTO.getAssetDesc());
-	                kitAssetVO.setQuantity(kitAssetDTO.getQuantity());
-	                kitAssetVO.setKitVO(kitVO);
-	                kitAssetVOList.add(kitAssetVO);
-	            }
-	        }
-	    }
-	    kitVO.setKitAssetVO(kitAssetVOList);
+		// Update or create kit asset details
+		List<KitAssetVO> kitAssetVOList = new ArrayList<>();
+		if (kitDTO.getKitAssetDTO() != null) {
+			for (KitAssetDTO kitAssetDTO : kitDTO.getKitAssetDTO()) {
+				if (kitAssetDTO.getId() != 0) {
+					KitAssetVO kitAssetVO = kitAssetRepo.findById(kitAssetDTO.getId()).get();
+					kitAssetVO.setAssetType(kitAssetDTO.getAssetType());
+					kitAssetVO.setAssetCategory(kitAssetDTO.getAssetCategory());
+					kitAssetVO.setCategoryCode(kitAssetDTO.getCategoryCode());
+					kitAssetVO.setAssetCodeId(kitAssetDTO.getAssetCodeId());
+					kitAssetVO.setAssetName(kitAssetDTO.getAssetDesc());
+					kitAssetVO.setQuantity(kitAssetDTO.getQuantity());
+					kitAssetVO.setKitVO(kitVO);
+					kitAssetVOList.add(kitAssetVO);
+				} else {
+					KitAssetVO kitAssetVO = new KitAssetVO();
+					kitAssetVO.setAssetType(kitAssetDTO.getAssetType());
+					kitAssetVO.setAssetCategory(kitAssetDTO.getAssetCategory());
+					kitAssetVO.setCategoryCode(kitAssetDTO.getCategoryCode());
+					kitAssetVO.setAssetCodeId(kitAssetDTO.getAssetCodeId());
+					kitAssetVO.setAssetName(kitAssetDTO.getAssetDesc());
+					kitAssetVO.setQuantity(kitAssetDTO.getQuantity());
+					kitAssetVO.setKitVO(kitVO);
+					kitAssetVOList.add(kitAssetVO);
+				}
+			}
+		}
+		kitVO.setKitAssetVO(kitAssetVOList);
 
-	    return kitRepo.save(kitVO);
+		return kitRepo.save(kitVO);
 	}
 
 	private void getKitVOFromKitDTO(KitDTO kitDTO, KitVO kitVO) throws ApplicationException {
 
-	    if (kitDTO.getKitNo() != null && !kitDTO.getKitNo().isEmpty()) {
-	        kitVO = kitRepo.findById(kitDTO.getId()).get();
-	        kitVO.setOrgId(kitDTO.getOrgId());
-	        kitVO.setKitNo(kitDTO.getKitNo());
-	        kitVO.setModifiedBy(kitDTO.getCreatedBy());
-	        kitVO.setKitDesc(kitDTO.getKitDesc());
-	        kitVO.setPartQty(kitDTO.getPartQuantity());
+		if (kitDTO.getKitNo() != null && !kitDTO.getKitNo().isEmpty()) {
+			kitVO = kitRepo.findById(kitDTO.getId()).get();
+			kitVO.setOrgId(kitDTO.getOrgId());
+			kitVO.setKitNo(kitDTO.getKitNo());
+			kitVO.setModifiedBy(kitDTO.getCreatedBy());
+			kitVO.setKitDesc(kitDTO.getKitDesc());
+			kitVO.setPartQty(kitDTO.getPartQuantity());
 
-	    } else {
-	    	if (kitRepo.existsByKitNoAndOrgId(kitDTO.getKitNo(), kitDTO.getOrgId())) {
+		} else {
+			if (kitRepo.existsByKitNoAndOrgId(kitDTO.getKitNo(), kitDTO.getOrgId())) {
 				throw new ApplicationException("KitNo already exists");
 			}
 			if (kitRepo.existsByKitDescAndOrgId(kitDTO.getKitDesc(), kitDTO.getOrgId())) {
 				throw new ApplicationException("KitDesc already exists");
 			}
-	        kitVO.setOrgId(kitDTO.getOrgId());
-	        kitVO.setKitNo(kitDTO.getKitNo());
-	        kitVO.setKitDesc(kitDTO.getKitDesc());
-	        kitVO.setPartQty(kitDTO.getPartQuantity());
-	    }
+			kitVO.setOrgId(kitDTO.getOrgId());
+			kitVO.setKitNo(kitDTO.getKitNo());
+			kitVO.setKitDesc(kitDTO.getKitDesc());
+			kitVO.setPartQty(kitDTO.getPartQuantity());
+		}
 	}
 
 	@Override
@@ -2379,7 +2469,5 @@ public class MasterServiceImpl implements MasterService {
 
 		return kitRepo.findByavaliableKitQtyByEmitter(orgId, emitterId, kitId, flowId);
 	}
-
-	
 
 }
