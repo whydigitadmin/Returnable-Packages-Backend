@@ -15,6 +15,7 @@ public class AssetInwardDTO {
 	private LocalDate docDate;
 	private String sourceFrom; 
 	private String stockBranch;
+	private String createdBy;
 	
 	private List<AssetInwardDetailDTO> assetInwardDetailDTO;
 }

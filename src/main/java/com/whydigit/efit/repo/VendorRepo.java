@@ -16,6 +16,10 @@ public interface VendorRepo extends JpaRepository<VendorVO, Long> {
 
 	boolean existsByEntityLegalNameAndDisplyNameAndOrgId(String entityLegalName, String displyName, long orgId);
 
+	boolean existsByDisplyNameAndOrgId(String displyName, Long orgId);
+
+	boolean existsByEntityLegalNameAndOrgId(String entityLegalName, Long orgId);
+
 	
 
 }

@@ -92,15 +92,11 @@ public interface MasterService {
 
 	CustomersVO updateCustomers(CustomersDTO customersDTO) throws ApplicationException;
 
-//	CustomersBankDetailsVO createUpdateBankDetails(CustomersBankDetailsDTO customersBankDetailsDTO)
-//			throws ApplicationException;
 
 	void deleteCustomers(Long id);
 
 	void deleteCustomersBankDetails(Long id);
 
-//	CustomersAddressVO createUpdateCustomersAddress(CustomersAddressDTO customersAddressDTO)
-//			throws ApplicationException;
 
 	void deleteCustomersAddress(Long id);
 
@@ -317,6 +313,8 @@ public interface MasterService {
 	List<FlowVO> getFlowByKitCode(String kitcode);
 
 	List<Object[]> getAvailableKitQtyByEmitter(Long orgId, Long emitterId, String kitId, Long flowId);
+
+	Set<Object[]> getAssetDetailsByAssetForAssetInward(Long orgId, String stockBranch, String sku,int qty);
 
 	
 

@@ -551,12 +551,12 @@ public class MasterController extends BaseController {
 				responseDTO = createServiceResponse(responseObjectsMap);
 			} else {
 				errorMsg = "Customers not found for ID: " + customersDTO.getId();
-				responseDTO = createServiceResponseError(responseObjectsMap, "Customers update failed", errorMsg);
+				responseDTO = createServiceResponseError(responseObjectsMap,errorMsg,errorMsg);
 			}
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-			responseDTO = createServiceResponseError(responseObjectsMap, "Customers" + " update failed", errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, errorMsg, errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
@@ -993,7 +993,7 @@ public class MasterController extends BaseController {
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-			responseDTO = createServiceResponseError(responseObjectsMap, "Vendor update failed", errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, errorMsg, errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
@@ -2001,7 +2001,7 @@ public class MasterController extends BaseController {
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-			responseDTO = createServiceResponseError(responseObjectsMap, "Tagging Creation failed", errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, errorMsg, errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
@@ -3156,6 +3156,47 @@ public class MasterController extends BaseController {
 			avlKitQty.add(part);
 		}
 		return avlKitQty;
+	}
+	
+	@GetMapping("/getAssetDetailsForAssetInward")
+	public ResponseEntity<ResponseDTO> getAssetDetailsForAssetInward(@RequestParam Long orgId,@RequestParam String stockBranch,@RequestParam String sku,
+			@RequestParam int qty) {
+		String methodName = "getAssetDetailsForAssetInward()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		Set<Object[]> stock = new HashSet<>();
+		try {
+			stock = masterService.getAssetDetailsByAssetForAssetInward(orgId, stockBranch, sku,qty);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			List<Map<String, Object>> assetDetails= getAsset(stock);
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Asset details Founded");
+			responseObjectsMap.put("assetTaggingDetailsVO", assetDetails);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			errorMsg = " not found for ID: ";
+			responseDTO = createServiceResponseError(responseObjectsMap, "Asset details not found", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
+	private List<Map<String, Object>> getAsset(Set<Object[]> stock) {
+		List<Map<String, Object>> assetDetails = new ArrayList<>();
+		for (Object[] ps : stock) {
+			Map<String, Object> part = new HashMap<>();
+			part.put("tagCode", ps[1] != null ? ps[1].toString() : "");
+			part.put("rfId", ps[2] != null ? ps[2].toString() : "");
+			part.put("asset", ps[3] != null ? ps[3].toString() : "");
+			part.put("assetCode", ps[4] != null ? ps[4].toString() : "");
+			assetDetails.add(part);
+		}
+		return assetDetails;
 	}
 
 
