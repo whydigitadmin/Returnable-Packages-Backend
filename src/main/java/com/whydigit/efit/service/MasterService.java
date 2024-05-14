@@ -316,6 +316,8 @@ public interface MasterService {
 
 	Set<Object[]> getAssetDetailsByAssetForAssetInward(Long orgId, String stockBranch, String sku,int qty);
 
+	Set<Object[]> getAvailAssetDetailsByBranch(Long orgId, String stockBranch);
+
 	
 
 

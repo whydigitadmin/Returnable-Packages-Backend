@@ -36,6 +36,12 @@ public class KitAssetVO {
 	@Column(name="assettype")
 	private String assetType;
 	
+	@Column(name = "belongsto")
+	private String belongsTo;
+	
+	@Column(name = "manufacturepartcode")
+	private String manufacturePartCode;
+	
 	@Column(name="assetcategory")
 	private String assetCategory;
 	

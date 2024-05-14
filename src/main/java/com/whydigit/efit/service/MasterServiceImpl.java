@@ -1097,7 +1097,7 @@ public class MasterServiceImpl implements MasterService {
 			assetRepo.save(assetVO);
 			;
 			kitAssetVO.add(
-					KitAssetVO.builder().assetType(kitAsset.getAssetType()).assetCategory(kitAsset.getAssetCategory())
+					KitAssetVO.builder().assetType(kitAsset.getAssetType()).belongsTo(kitAsset.getBelongsTo()).manufacturePartCode(kitAsset.getManufacturePartCode()).assetCategory(kitAsset.getAssetCategory())
 							.categoryCode(kitAsset.getCategoryCode()).assetCodeId(kitAsset.getAssetCodeId())
 							.assetName(kitAsset.getAssetDesc()).quantity(kitAsset.getQuantity()).kitVO(kitVO).build());
 		}
@@ -1135,12 +1135,16 @@ public class MasterServiceImpl implements MasterService {
 					kitAssetVO.setCategoryCode(kitAssetDTO.getCategoryCode());
 					kitAssetVO.setAssetCodeId(kitAssetDTO.getAssetCodeId());
 					kitAssetVO.setAssetName(kitAssetDTO.getAssetDesc());
+					kitAssetVO.setBelongsTo(kitAssetDTO.getBelongsTo());
+					kitAssetVO.setManufacturePartCode(kitAssetDTO.getManufacturePartCode());
 					kitAssetVO.setQuantity(kitAssetDTO.getQuantity());
 					kitAssetVO.setKitVO(kitVO);
 					kitAssetVOList.add(kitAssetVO);
 				} else {
 					KitAssetVO kitAssetVO = new KitAssetVO();
 					kitAssetVO.setAssetType(kitAssetDTO.getAssetType());
+					kitAssetVO.setBelongsTo(kitAssetDTO.getBelongsTo());
+					kitAssetVO.setManufacturePartCode(kitAssetDTO.getManufacturePartCode());
 					kitAssetVO.setAssetCategory(kitAssetDTO.getAssetCategory());
 					kitAssetVO.setCategoryCode(kitAssetDTO.getCategoryCode());
 					kitAssetVO.setAssetCodeId(kitAssetDTO.getAssetCodeId());
@@ -2501,6 +2505,11 @@ public class MasterServiceImpl implements MasterService {
 	public Set<Object[]> getAssetDetailsByAssetForAssetInward(Long orgId, String stockBranch, String assetCode,int qty) {
 
 		return assetStockDetailsRepo.getAssetDetailsByAssetForAssetInward(orgId, stockBranch, assetCode,qty);
+	}
+	
+	@Override
+	public Set<Object[]> getAvailAssetDetailsByBranch(Long orgId, String stockBranch) {
+		return assetStockDetailsRepo.getAvailAssetDetailsByBranch(orgId, stockBranch);
 	}
 
 }

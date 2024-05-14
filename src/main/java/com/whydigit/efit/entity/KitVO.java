@@ -59,6 +59,7 @@ public class KitVO {
 	@Column(name="finyear")
 	private String finyr;
 	
+	
 	@Column(name = "createdby")
 	private String createdBy;
 
