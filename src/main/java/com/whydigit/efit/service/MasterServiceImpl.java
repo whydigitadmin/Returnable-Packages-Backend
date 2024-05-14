@@ -368,6 +368,10 @@ public class MasterServiceImpl implements MasterService {
 		existingAsset.setCategoryCode(assetDTO.getCategoryCode());
 		existingAsset.setLength(assetDTO.getLength());
 		existingAsset.setBreath(assetDTO.getBreadth());
+		existingAsset.setBelongsTo(assetDTO.getBelongsTo());
+		existingAsset.setMaterialIdentification(assetDTO.getMaterialIdentification());
+		existingAsset.setManufacturePartCode(assetDTO.getManufacturePartCode());
+		existingAsset.setDesign(assetDTO.getDesign());
 		existingAsset.setHeight(assetDTO.getHeight());
 		existingAsset.setWeight(assetDTO.getWeight());
 		existingAsset.setQuantity(assetDTO.getQuantity());
@@ -2494,9 +2498,9 @@ public class MasterServiceImpl implements MasterService {
 	}
 	
 	@Override
-	public Set<Object[]> getAssetDetailsByAssetForAssetInward(Long orgId, String stockBranch, String sku,int qty) {
+	public Set<Object[]> getAssetDetailsByAssetForAssetInward(Long orgId, String stockBranch, String assetCode,int qty) {
 
-		return assetStockDetailsRepo.getAssetDetailsByAssetForAssetInward(orgId, stockBranch, sku,qty);
+		return assetStockDetailsRepo.getAssetDetailsByAssetForAssetInward(orgId, stockBranch, assetCode,qty);
 	}
 
 }

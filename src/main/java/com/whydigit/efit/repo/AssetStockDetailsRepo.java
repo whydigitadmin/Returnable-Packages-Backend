@@ -15,8 +15,8 @@ public interface AssetStockDetailsRepo extends JpaRepository<AssetStockDetailsVO
 	List<Object[]> getAvailableAssetDetails(Long orgId);
 	
 	@Query(nativeQuery = true,value = "select a.stockbranch,a.tagcode,a.rfid,a.sku,a.skucode,a.skuqty,a.tn from(\r\n"
-			+ "select stockbranch,tagcode,rfid,sku,skucode,sum(skuqty)skuqty,ROW_NUMBER() OVER (PARTITION BY skucode) AS tn from stockdetails where stockbranch=?2 and orgid=?1 and status='S' and sku=?3 group by stockbranch,tagcode,rfid,sku,skucode having sum(skuqty)>0)a\r\n"
+			+ "select stockbranch,tagcode,rfid,sku,skucode,sum(skuqty)skuqty,ROW_NUMBER() OVER (PARTITION BY skucode) AS tn from stockdetails where stockbranch=?2 and orgid=?1 and status='S' and skucode=?3 group by stockbranch,tagcode,rfid,sku,skucode having sum(skuqty)>0)a\r\n"
 			+ "where a.tn between 1 and ?4")
-	Set<Object[]> getAssetDetailsByAssetForAssetInward(Long orgId, String stockBranch, String sku,int qty);
+	Set<Object[]> getAssetDetailsByAssetForAssetInward(Long orgId, String stockBranch, String assetCode,int qty);
 
 }

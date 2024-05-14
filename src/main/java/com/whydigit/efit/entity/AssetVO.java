@@ -53,6 +53,18 @@ public class AssetVO {
 
 	@Column(name = "asset")
 	private String assetName;
+	
+	@Column(name = "belongsto")
+	private String belongsTo;
+	
+	@Column(name = "materialidentification")
+    private String materialIdentification;
+    
+	@Column(name = "manufacturepartcode")
+	private String manufacturePartCode;
+    
+	@Column(name = "design")
+	private String design;
 
 	@Column(name = "length")
 	private float length;

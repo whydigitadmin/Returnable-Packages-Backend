@@ -18,6 +18,10 @@ public class AssetDTO {
     private String categoryCode;
     private String assetCodeId;
     private String assetName;
+    private String belongsTo;
+    private String materialIdentification;
+    private String manufacturePartCode;
+    private String design;
     private float length;
     private float breadth;
     private float height;

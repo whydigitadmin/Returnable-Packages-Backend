@@ -3159,7 +3159,7 @@ public class MasterController extends BaseController {
 	}
 	
 	@GetMapping("/getAssetDetailsForAssetInward")
-	public ResponseEntity<ResponseDTO> getAssetDetailsForAssetInward(@RequestParam Long orgId,@RequestParam String stockBranch,@RequestParam String sku,
+	public ResponseEntity<ResponseDTO> getAssetDetailsForAssetInward(@RequestParam Long orgId,@RequestParam String stockBranch,@RequestParam String assetCode,
 			@RequestParam int qty) {
 		String methodName = "getAssetDetailsForAssetInward()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
@@ -3168,7 +3168,7 @@ public class MasterController extends BaseController {
 		ResponseDTO responseDTO = null;
 		Set<Object[]> stock = new HashSet<>();
 		try {
-			stock = masterService.getAssetDetailsByAssetForAssetInward(orgId, stockBranch, sku,qty);
+			stock = masterService.getAssetDetailsByAssetForAssetInward(orgId, stockBranch, assetCode,qty);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
