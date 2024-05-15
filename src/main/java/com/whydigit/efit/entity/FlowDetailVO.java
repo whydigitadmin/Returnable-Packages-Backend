@@ -36,29 +36,31 @@ public class FlowDetailVO {
 	private Long flow2RowId;
 	@Column(name="orgid")
 	private Long orgId;
-	@Column(name="kitcode",length = 25)
-	private String kitName;
-	@Column(name="partno",length = 25)
+	@Column(name="kitno")
+	private String kitNo;
+	@Column(name="kitdesc")
+	private String kitDesc;
+	@Column(name="partno")
 	private String partNumber;
-	@Column(name="emitter",length = 25)
+	@Column(name="emitter")
 	private String emitter;
 	@Column(name="emitterid")
 	private Long emitterId;
 	@Column(name="partqty")
 	private int partQty;
-	@Column(name="partname",length = 25)
+	@Column(name="partname")
 	private String partName;
-	@Column(name="cycletime",length = 25)
+	@Column(name="cycletime")
 	private String cycleTime;
-	@Column(name="subreceiver",length = 25)
+	@Column(name="subreceiver")
 	private String subReceiver;
 	private boolean active;
 
-	@Column(name = "createdby", length = 25)
+	@Column(name = "createdby")
 	private String createdBy;
-	@Column(name = "modifiedby", length = 25)
+	@Column(name = "modifiedby")
 	private String modifiedBy;
-	@Column(name = "cancelRemarks", length = 25)
+	@Column(name = "cancelRemarks")
 	private String cancelRemarks;
 
 	

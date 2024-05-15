@@ -8,8 +8,11 @@ import java.util.Set;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.whydigit.efit.dto.AssetCategoryDTO;
+import com.whydigit.efit.dto.AssetDTO;
 import com.whydigit.efit.dto.AssetInwardDTO;
 import com.whydigit.efit.dto.AssetTaggingDTO;
+import com.whydigit.efit.dto.AssetTypeDTO;
 import com.whydigit.efit.dto.BinInwardDTO;
 import com.whydigit.efit.dto.CnoteDTO;
 import com.whydigit.efit.dto.CustomerAttachmentType;
@@ -26,9 +29,9 @@ import com.whydigit.efit.dto.StockBranchDTO;
 import com.whydigit.efit.dto.TermsAndConditionsDTO;
 import com.whydigit.efit.dto.VendorDTO;
 import com.whydigit.efit.entity.AssetCategoryVO;
-import com.whydigit.efit.entity.AssetGroupVO;
 import com.whydigit.efit.entity.AssetInwardVO;
 import com.whydigit.efit.entity.AssetTaggingVO;
+import com.whydigit.efit.entity.AssetTypeVO;
 import com.whydigit.efit.entity.AssetVO;
 import com.whydigit.efit.entity.BinAllotmentNewVO;
 import com.whydigit.efit.entity.BinInwardVO;
@@ -58,22 +61,26 @@ public interface MasterService {
 
 	List<AssetVO> getAllAsset(Long orgId);
 
+	List<AssetVO> getAllAssetByCategory(Long orgId,String category);
+	
 	Optional<AssetVO> getAssetById(Long id);
+	
+	
 
-	AssetVO createAsset(AssetVO assetVO);
+	AssetVO createAsset(AssetVO assetVO) throws ApplicationException;
 
-	Optional<AssetVO> updateAsset(AssetVO assetVO);
+	AssetVO updateAsset(AssetDTO assetDTO) throws ApplicationException;
 
 	void deleteAsset(Long id);
 
 	Map<String, Object> getAllAssetGroup(Long orgId, String assetCategory, String assetName, String assetCodeId,
 			String manufacturer);
 
-	Optional<AssetGroupVO> getAssetGroupById(String id);
+	Optional<AssetCategoryVO> getAssetCategoryById(Long id);
 
-	AssetGroupVO createAssetGroup(AssetGroupVO assetGroupVO) throws ApplicationException;
+	AssetCategoryVO createAssetCategory(AssetCategoryVO assetGroupVO) throws ApplicationException;
 
-	Optional<AssetGroupVO> updateAssetGroup(AssetGroupVO assetGroupVO);
+	AssetCategoryVO updateAssetCategory(AssetCategoryDTO assetGroupVO) throws ApplicationException;
 
 	// CUstomers
 
@@ -85,15 +92,11 @@ public interface MasterService {
 
 	CustomersVO updateCustomers(CustomersDTO customersDTO) throws ApplicationException;
 
-//	CustomersBankDetailsVO createUpdateBankDetails(CustomersBankDetailsDTO customersBankDetailsDTO)
-//			throws ApplicationException;
 
 	void deleteCustomers(Long id);
 
 	void deleteCustomersBankDetails(Long id);
 
-//	CustomersAddressVO createUpdateCustomersAddress(CustomersAddressDTO customersAddressDTO)
-//			throws ApplicationException;
 
 	void deleteCustomersAddress(Long id);
 
@@ -127,9 +130,11 @@ public interface MasterService {
 
 	ManufacturerProductVO createManufacturerProduct(ManufacturerProductVO manufacturerProductVO);
 
-	List<AssetCategoryVO> getAllAssetCategory(Long orgId, String assetCategoryName);
+	List<AssetTypeVO> getAllAssetType(Long orgId);
 
-	AssetCategoryVO createAssetCategory(AssetCategoryVO assetCategoryVO);
+	AssetTypeVO createAssetType(AssetTypeVO assetCategoryVO);
+	
+	AssetTypeVO updateAssetType(AssetTypeDTO assetTypeVO) throws ApplicationException;
 
 //unit
 
@@ -152,18 +157,18 @@ public interface MasterService {
 
 	KitVO createkit(KitDTO kitDTO) throws ApplicationException;
 
-	Optional<KitVO> updatedKit(KitVO kitVO);
+	KitVO updatedKit(KitDTO kitDTO) throws ApplicationException;
 
 	void deleteKit(Long id);
 
 	Map<String, List<CustomersVO>> CustomersType(Long orgId);
 
-	Map<String, Map<String, List<AssetGroupVO>>> getAssetGroupByCategoryType(Long orgId);
+	Map<String, Map<String, List<AssetCategoryVO>>> getAssetCategoryAssetType(Long orgId);
 
 	void uploadCustomerAttachmentDoc(MultipartFile[] files, CustomerAttachmentType type, Long customerId)
 			throws ApplicationException;
 
-	List<AssetGroupVO> createAssetGroupByCSV(MultipartFile assetFile) throws ApplicationException;
+	List<AssetCategoryVO> createAssetCategoryByCSV(MultipartFile assetFile) throws ApplicationException;
 
 	// Vendor
 	List<VendorVO> getAllVendor();
@@ -244,7 +249,7 @@ public interface MasterService {
 
 	List<PodVO> getAllPodByOrgId(Long orgId);
 
-	AssetGroupVO getAssetGroupByAssetCode(Long orgId, String assetCodeId);
+	AssetCategoryVO getAssetCategoryByCategoryCode(Long orgId, String categoryCode);
 
 	AssetVO getAssetByOrgId(Long orgId, String assetId);
 
@@ -308,5 +313,23 @@ public interface MasterService {
 	List<FlowVO> getFlowByKitCode(String kitcode);
 
 	List<Object[]> getAvailableKitQtyByEmitter(Long orgId, Long emitterId, String kitId, Long flowId);
+
+	Set<Object[]> getAssetDetailsByAssetForAssetInward(Long orgId, String stockBranch, String sku,int qty);
+
+	Set<Object[]> getAvailAssetDetailsByBranch(Long orgId, String stockBranch);
+
+	
+
+
+	
+
+	
+
+
+	
+
+	
+
+	
 
 }
