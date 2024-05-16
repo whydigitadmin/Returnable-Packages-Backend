@@ -13,6 +13,7 @@ public class AssetTaggingDetailsDTO {
 	private String asset;
 	private String tagCode;
 	private String rfId;
+	private String category;
 
 
 }

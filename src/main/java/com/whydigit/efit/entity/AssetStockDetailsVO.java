@@ -31,45 +31,45 @@ public class AssetStockDetailsVO {
 	private Long stockDetailsId;
 	private boolean active;
 	private boolean cancel;
-	@Column(name="cancelremarks",length=25)
+	@Column(name="cancelremarks")
 	private String cancelRemarks;
-	@Column(name="createdby",length=25)
+	@Column(name="createdby")
 	private String createdBy;
-	@Column(name="modifiedby",length=25)
+	@Column(name="modifiedby")
 	private String modifiedBy;
-	@Column(name="scode",length=5)
+	@Column(name="scode")
 	private String sCode="";
-	@Column(name="stockbranch",length=250)
+	@Column(name="stockbranch")
 	private String stockBranch;
-	@Column(name="stocklocation",length=40)
+	@Column(name="stocklocation")
 	private String stockLocation;
-	@Column(name="stockvalue",precision = 2,scale =4)
+	@Column(name="stockvalue")
 	private Float stockValue;
-	@Column(name="stockref",length=30)
+	@Column(name="stockref")
 	private String stockRef;
 	@Column(name="stockdate")
 	private LocalDate stockDate;
 	@Column(name="stockdatetime")
 	private LocalDateTime stockDateAndTime=LocalDateTime.now();
-	@Column(name="skucode",length=15)
+	@Column(name="skucode")
 	private String skuCode;
-	@Column(name="skuqty",length=15)
+	@Column(name="skuqty")
 	private int skuQty;
-	@Column(name="sku",length=25)
+	@Column(name="sku")
 	private String sku;
-	@Column(name="pm",length=10)
+	@Column(name="pm")
 	private String pm;
-	@Column(name="screen",length=20)
+	@Column(name="screen")
 	private String screen;
-	@Column(name="tagcode",length=30)
+	@Column(name="tagcode")
 	private String tagCode;
-	@Column(name="stocksource",length=20) 
+	@Column(name="stocksource") 
 	private String stockSource;
-	@Column(name="binlocation",length=20)
+	@Column(name="binlocation")
 	private String binLocation;
-	@Column(name="rfid",length=100)
+	@Column(name="rfid")
 	private String rfId;
-	@Column(name="sourceid",length=100)
+	@Column(name="sourceid")
 	private Long sourceId;
 	@Column(name="finyr")
 	private String finyr;
@@ -77,6 +77,7 @@ public class AssetStockDetailsVO {
 	private long orgId;
 	@Column(name="status")
 	private String status;
+	private String category;
 	
 
 	@Embedded

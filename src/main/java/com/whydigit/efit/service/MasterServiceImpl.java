@@ -1742,8 +1742,10 @@ public class MasterServiceImpl implements MasterService {
 				assetTaggingDetails.setAsset(taggingDetailsDTO.getAsset());
 				assetTaggingDetails.setOrgId(assetTaggingVO.getOrgId());
 				assetTaggingDetails.setTagCode(taggingDetailsDTO.getTagCode());
+				assetTaggingDetails.setCategory(taggingDetailsDTO.getCategory());
 				assetTaggingDetails.setTaggingVO(assetTaggingVO);
 				assetTaggingDetailsVO.add(assetTaggingDetails);
+				
 			}
 		}
 		assetTaggingVO.setTaggingDetails(assetTaggingDetailsVO);
@@ -1759,6 +1761,7 @@ public class MasterServiceImpl implements MasterService {
 				assetStockDetailsVO.setSkuCode(assetTaggingDetails.getAssetCode());
 				assetStockDetailsVO.setSku(assetTaggingDetails.getAsset());
 				assetStockDetailsVO.setSkuQty(1);
+				assetStockDetailsVO.setCategory(assetTaggingDetails.getCategory());		
 				assetStockDetailsVO.setOrgId(savedAssetTaggingVO.getOrgId());
 				assetStockDetailsVO.setRfId(assetTaggingDetails.getRfId());
 				assetStockDetailsVO.setTagCode(assetTaggingDetails.getTagCode());
