@@ -62,6 +62,7 @@ import com.whydigit.efit.dto.CustomersDTO;
 import com.whydigit.efit.dto.DmapDTO;
 import com.whydigit.efit.dto.DmapDetailsDTO;
 import com.whydigit.efit.dto.FlowDTO;
+import com.whydigit.efit.dto.FlowDetailDTO;
 import com.whydigit.efit.dto.KitAssetDTO;
 import com.whydigit.efit.dto.KitDTO;
 import com.whydigit.efit.dto.KitResponseDTO;
@@ -135,6 +136,7 @@ import com.whydigit.efit.repo.CustomersBankDetailsRepo;
 import com.whydigit.efit.repo.CustomersRepo;
 import com.whydigit.efit.repo.DmapDetailsRepo;
 import com.whydigit.efit.repo.DmapRepo;
+import com.whydigit.efit.repo.FlowDetailRepo;
 import com.whydigit.efit.repo.FlowRepo;
 import com.whydigit.efit.repo.IssueItemRepo;
 import com.whydigit.efit.repo.IssueRequestRepo;
@@ -167,6 +169,10 @@ public class MasterServiceImpl implements MasterService {
 	AssetCategoryRepo assetCategoryRepo;
 	@Autowired
 	CustomersRepo customersRepo;
+	
+	@Autowired
+	FlowDetailRepo flowDetailRepo;
+	
 	@Autowired
 	FlowRepo flowRepo;
 	@Autowired
@@ -794,23 +800,27 @@ public class MasterServiceImpl implements MasterService {
 	}
 
 	@Override
-	public FlowVO createFlow(FlowDTO flowDTO) {
+	public FlowVO createFlow(FlowDTO flowDTO) throws ApplicationException {
 
-		FlowVO flowVO = createFlowVOByFlowDTO(flowDTO);
+		FlowVO flowVO = createFlowVOByFlowDTO(flowDTO);		
 		flowVO.setCreatedBy(flowDTO.getCreatedBy());
 		flowVO.setModifiedBy(flowDTO.getCreatedBy());
 		flowVO.setEmitter(flowRepo.findEmiterbyId(flowVO.getEmitterId()));
 //		flowVO.setDublicateFlowName(flowDTO.getOrgId()+flowDTO.getFlowName());
 		flowVO.setWarehouseLocation(flowRepo.getWarehouseLocationByLocationId(flowDTO.getWarehouseId()));
+		flowVO.setRetrievalWarehouseLocation(flowRepo.getWarehouseLocationByLocationId(flowDTO.getRetrievalWarehouseId()));
 		flowVO.setReceiver(flowRepo.getReceiverByReceiverId(flowDTO.getReceiverId()));
 
 		return flowRepo.save(flowVO);
 	}
 
-	private FlowVO createFlowVOByFlowDTO(FlowDTO flowDTO) {
+	private FlowVO createFlowVOByFlowDTO(FlowDTO flowDTO) throws ApplicationException {
+		if (flowRepo.existsByFlowNameAndOrgId(flowDTO.getFlowName(), flowDTO.getOrgId())) {
+		    throw new ApplicationException("Flow Name Already exists.");
+		}
 		List<FlowDetailVO> flowDetailVOList = new ArrayList<>();
-		FlowVO flowVO = FlowVO.builder().active(flowDTO.isActive()).orgin(flowDTO.getOrgin())
-				.warehouseLocation(flowDTO.getWarehouseLocation()).flowName(flowDTO.getFlowName())
+		FlowVO flowVO = FlowVO.builder().active(flowDTO.isActive()).orgin(flowDTO.getOrgin()).retrievalWarehouseId(flowDTO.getRetrievalWarehouseId())
+				.retrievalWarehouseLocation(flowDTO.getRetrievalWarehouseLocation()).warehouseLocation(flowDTO.getWarehouseLocation()).flowName(flowDTO.getFlowName())
 				.receiverId(flowDTO.getReceiverId()).emitterId(flowDTO.getEmitterId()).emitter(flowDTO.getEmitter())
 				.destination(flowDTO.getDestination()).orgId(flowDTO.getOrgId()).warehouseId(flowDTO.getWarehouseId())
 				.flowDetailVO(flowDetailVOList).build();
@@ -830,14 +840,84 @@ public class MasterServiceImpl implements MasterService {
 	}
 
 	@Override
-	public Optional<FlowVO> updateFlow(FlowVO flowVO) {
-		if (flowRepo.existsById(flowVO.getId())) {
-			flowVO.setEmitter(flowRepo.findEmiterbyId(flowVO.getEmitterId()));
-			return Optional.of(flowRepo.save(flowVO));
-		} else {
-			return Optional.empty();
+	public FlowVO updateFlow(FlowDTO flowDTO) throws ApplicationException {
+		FlowVO flowVO = new FlowVO();
+		if (ObjectUtils.isNotEmpty(flowDTO.getId())) {
+			flowVO = flowRepo.findById(flowDTO.getId())
+					.orElseThrow(() -> new ApplicationException("Flow details not found"));
 		}
+
+		getFlowVOFromFlowDTO(flowDTO, flowVO);
+
+		// Update customer details excluding customer type and customer code
+		// Update or add new address details
+		List<FlowDetailVO> flowDetailVOList = new ArrayList<>();
+		if (flowDTO.getFlowDetailDTO() != null) {
+		    for (FlowDetailDTO flowDetailDTO : flowDTO.getFlowDetailDTO()) {
+		        if (flowDetailDTO.getId() != 0) {
+		            FlowDetailVO flowDetailVO1 = flowDetailRepo.findById(flowDetailDTO.getId()).orElseThrow(
+		                    () -> new ApplicationException("Flow details not found for ID: " + flowDetailDTO.getId()));
+		            flowDetailVO1.setActive(flowDetailDTO.isActive());
+		            flowDetailVO1.setCycleTime(flowDetailDTO.getCycleTime());
+		            flowDetailVO1.setEmitterId(flowDTO.getEmitterId());
+		            flowDetailVO1.setOrgId(flowDetailDTO.getOrgId());
+		            flowDetailVO1.setPartName(flowDetailDTO.getPartName());
+		            flowDetailVO1.setKitDesc(flowDetailDTO.getKitDesc());
+		            flowDetailVO1.setKitNo(flowDetailDTO.getKitNo());
+		            flowDetailVO1.setPartNumber(flowDetailDTO.getPartNumber());
+		            flowDetailVO1.setPartQty(kitRepo.findPartqty(flowDetailDTO.getKitNo()));
+		            flowDetailVO1.setEmitter(flowRepo.findEmiterbyId(flowDTO.getEmitterId()));
+		            flowDetailVO1.setFlowVO(flowVO);
+		            flowDetailVOList.add(flowDetailVO1);
+		        } else {
+		            FlowDetailVO flowDetailVO1 = new FlowDetailVO();
+		            flowDetailVO1.setActive(flowDetailDTO.isActive());
+		            flowDetailVO1.setCycleTime(flowDetailDTO.getCycleTime());
+		            flowDetailVO1.setEmitterId(flowDTO.getEmitterId());
+		            flowDetailVO1.setOrgId(flowDetailDTO.getOrgId());
+		            flowDetailVO1.setPartName(flowDetailDTO.getPartName());
+		            flowDetailVO1.setKitDesc(flowDetailDTO.getKitDesc());
+		            flowDetailVO1.setKitNo(flowDetailDTO.getKitNo());
+		            flowDetailVO1.setPartNumber(flowDetailDTO.getPartNumber());
+		            flowDetailVO1.setPartQty(kitRepo.findPartqty(flowDetailDTO.getKitNo()));
+		            flowDetailVO1.setEmitter(flowRepo.findEmiterbyId(flowDTO.getEmitterId()));
+		            flowDetailVO1.setFlowVO(flowVO);
+		            flowDetailVOList.add(flowDetailVO1);
+		        }
+		    }
+		}
+		flowVO.setFlowDetailVO(flowDetailVOList);
+		return flowRepo.save(flowVO);
 	}
+	private void getFlowVOFromFlowDTO(FlowDTO flowDTO, FlowVO flowVO)
+			throws ApplicationException {
+		FlowVO existingFlow = flowRepo.findById(flowDTO.getId())
+	            .orElseThrow(() -> new ApplicationException("Flow with ID " + flowDTO.getId() + " not found"));
+
+	    if (!existingFlow.getFlowName().equals(flowDTO.getFlowName())) {
+	        // Check if there's already an entry with the same Flow Name and orgId
+	        if (flowRepo.existsByFlowNameAndOrgId(flowDTO.getFlowName(), existingFlow.getOrgId())) {
+	            throw new ApplicationException("Flow Name Already exists");
+	        }
+	        // Update Flow Name if there's no duplicate
+	        flowVO.setFlowName(flowDTO.getFlowName());
+	    }
+
+	    // Update other fields
+	    flowVO.setActive(flowDTO.isActive());
+	    flowVO.setOrgin(flowDTO.getOrgin());
+	    flowVO.setRetrievalWarehouseId(flowDTO.getRetrievalWarehouseId());
+	    flowVO.setRetrievalWarehouseLocation(flowDTO.getRetrievalWarehouseLocation());
+	    flowVO.setWarehouseLocation(flowDTO.getWarehouseLocation());
+	    flowVO.setReceiverId(flowDTO.getReceiverId());
+	    flowVO.setEmitterId(flowDTO.getEmitterId());
+	    flowVO.setEmitter(flowRepo.findEmiterbyId(flowDTO.getEmitterId()));
+	    flowVO.setDestination(flowDTO.getDestination());
+	    flowVO.setOrgId(flowDTO.getOrgId());
+	    flowVO.setWarehouseId(flowDTO.getWarehouseId());
+	    flowVO.setReceiver(flowRepo.getReceiverByReceiverId(flowDTO.getReceiverId()));
+	}
+
 
 	@Override
 	public void deleteFlow(long id) {

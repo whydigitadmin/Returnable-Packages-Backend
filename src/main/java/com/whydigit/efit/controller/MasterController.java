@@ -823,20 +823,20 @@ public class MasterController extends BaseController {
 	}
 
 	@PutMapping("/flow")
-	public ResponseEntity<ResponseDTO> updateFlow(@RequestBody FlowVO flowVO) {
+	public ResponseEntity<ResponseDTO> updateFlow(@RequestBody FlowDTO flowDTO) {
 		String methodName = "updateFlow()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
 		try {
-			FlowVO updatedFlowVO = masterService.updateFlow(flowVO).orElse(null);
+			FlowVO updatedFlowVO = masterService.updateFlow(flowDTO);
 			if (updatedFlowVO != null) {
 				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Flow updated successfully");
 				responseObjectsMap.put("flowVO", updatedFlowVO);
 				responseDTO = createServiceResponse(responseObjectsMap);
 			} else {
-				errorMsg = "Flow not found for ID: " + flowVO.getId();
+				errorMsg = "Flow not found for ID: " + flowDTO.getId();
 				responseDTO = createServiceResponseError(responseObjectsMap, "Flow update failed", errorMsg);
 			}
 		} catch (Exception e) {
@@ -2069,8 +2069,8 @@ public class MasterController extends BaseController {
 			Map<String, String> assetcode = new HashMap<>();
 			assetcode.put("AssetCode", tag[0].toString());
 			assetcode.put("Asset", tag[1].toString());
-			assetcode.put("TagCode", tag[2].toString());
-			assetcode.put("category", tag[3].toString());
+			assetcode.put("TagCode", tag[3].toString());
+			assetcode.put("category", tag[2].toString());
 			assetTagCode.add(assetcode);
 		}
 		return assetTagCode;

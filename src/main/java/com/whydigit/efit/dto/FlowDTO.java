@@ -2,6 +2,8 @@ package com.whydigit.efit.dto;
 
 import java.util.List;
 
+import javax.persistence.Column;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,7 +27,9 @@ public class FlowDTO {
 	private String createdBy;
 	private String destination;
     private String warehouseLocation;
-    private Long warehouseId;      
+    private Long warehouseId;  
+    private String retrievalWarehouseLocation;
+	private Long retrievalWarehouseId;
 	private boolean active;
 	private List<FlowDetailDTO> flowDetailDTO;
 }

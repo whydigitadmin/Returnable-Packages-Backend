@@ -110,9 +110,9 @@ public interface MasterService {
 	
 	Optional<FlowVO> getFlowById(long id);
 
-	FlowVO createFlow(FlowDTO flowDTO);
+	FlowVO createFlow(FlowDTO flowDTO) throws ApplicationException;
 
-	Optional<FlowVO> updateFlow(FlowVO flowVO);
+	FlowVO updateFlow(FlowDTO flowDTO) throws ApplicationException;
 
 	void deleteFlow(long id);
 
@@ -317,6 +317,8 @@ public interface MasterService {
 	Set<Object[]> getAssetDetailsByAssetForAssetInward(Long orgId, String stockBranch, String sku,int qty);
 
 	Set<Object[]> getAvailAssetDetailsByBranch(Long orgId, String stockBranch);
+
+	
 
 	
 
