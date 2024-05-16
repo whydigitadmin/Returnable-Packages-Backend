@@ -2036,7 +2036,7 @@ public class MasterController extends BaseController {
 
 	@GetMapping("/Tagcode")
 	public ResponseEntity<ResponseDTO> getTagCodeByAsset(@RequestParam String assetcode, @RequestParam String asset,
-			@RequestParam int startno, @RequestParam int endno) {
+			@RequestParam int startno, @RequestParam int endno,@RequestParam String category) {
 		String methodName = "getTagCodeByAsset()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -2044,7 +2044,7 @@ public class MasterController extends BaseController {
 		ResponseDTO responseDTO = null;
 		Set<Object[]> tagcode = new HashSet<>();
 		try {
-			tagcode = masterService.getTagCodeByAsset(assetcode, asset, startno, endno);
+			tagcode = masterService.getTagCodeByAsset(assetcode, asset, startno, endno,category);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
@@ -2063,12 +2063,14 @@ public class MasterController extends BaseController {
 	}
 
 	private List<Map<String, String>> TagCodes(Set<Object[]> tagcode) {
+		
 		List<Map<String, String>> assetTagCode = new ArrayList<>();
 		for (Object[] tag : tagcode) {
 			Map<String, String> assetcode = new HashMap<>();
 			assetcode.put("AssetCode", tag[0].toString());
 			assetcode.put("Asset", tag[1].toString());
 			assetcode.put("TagCode", tag[2].toString());
+			assetcode.put("category", tag[3].toString());
 			assetTagCode.add(assetcode);
 		}
 		return assetTagCode;
