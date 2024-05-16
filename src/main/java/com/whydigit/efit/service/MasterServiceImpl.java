@@ -1687,6 +1687,7 @@ public class MasterServiceImpl implements MasterService {
 				assetStockDetailsVO.setStockDate(assetInwardVO1.getDocDate());
 				assetStockDetailsVO.setStockBranch(assetInwardVO1.getSourceFrom());
 				assetStockDetailsVO.setSku(assetdetails.getSkuDetail());
+				assetStockDetailsVO.setCategory(assetInwardVO1.getCategory());
 				assetStockDetailsVO.setSkuCode(assetdetails.getSkucode());
 				assetStockDetailsVO.setSkuQty(assetdetails.getSkuQty() * -1);
 				assetStockDetailsVO.setStockValue(assetdetails.getStockValue());
@@ -1718,6 +1719,7 @@ public class MasterServiceImpl implements MasterService {
 				assetStockDetailsVO.setSku(assetdetails.getSkuDetail());
 				assetStockDetailsVO.setSkuCode(assetdetails.getSkucode());
 				assetStockDetailsVO.setSkuQty(assetdetails.getSkuQty());
+				assetStockDetailsVO.setCategory(assetInwardVO1.getCategory());
 				assetStockDetailsVO.setStockValue(assetdetails.getStockValue());
 				assetStockDetailsVO.setStockLocation(assetdetails.getStockLocation());
 				assetStockDetailsVO.setBinLocation(assetdetails.getBinLocation());
