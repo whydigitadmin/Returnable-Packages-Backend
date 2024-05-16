@@ -39,6 +39,8 @@ public class StateVO {
 	@Column(name="stateno",length = 30)
 	private String stateNo;
 	
+	private boolean cancel;
+	
 	@JsonGetter("active")
     public String getActive() {
         return active ? "Active" : "In-Active";
