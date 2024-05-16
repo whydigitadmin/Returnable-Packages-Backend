@@ -1279,137 +1279,137 @@ public class MasterServiceImpl implements MasterService {
 	@Override
 	public VendorVO updateCreateVendor(VendorDTO vendorDTO) throws ApplicationException {
 
-		VendorVO vendorVO = new VendorVO();
-		if (vendorDTO.getId() != 0) {
-			vendorVO = vendorRepo.findById(vendorDTO.getId())
-					.orElseThrow(() -> new ApplicationException("Invalid Vendor details"));
-		}
+	    VendorVO vendorVO = new VendorVO();
+	    if (vendorDTO.getId() !=null ) {
+	        vendorVO = vendorRepo.findById(vendorDTO.getId())
+	                .orElseThrow(() -> new ApplicationException("Invalid Vendor details"));
+	    }
 
-		// Update vendor details
-		getVendorVOFromVendorDTO(vendorDTO, vendorVO);
+	    // Update vendor details
+	    getVendorVOFromVendorDTO(vendorDTO, vendorVO);
 
-		// Update or create bank details
-		List<VendorBankDetailsVO> vendorBankDetailsVO = new ArrayList<>();
-		if (vendorDTO.getVendorBankDetailsDTO() != null) {
-			for (VendorBankDetailsDTO vendorbankDetailsDTO : vendorDTO.getVendorBankDetailsDTO()) {
-				if (vendorbankDetailsDTO.getId() != 0) {
-					VendorBankDetailsVO bankDetailsVO = vendorBankDetailsRepo.findById(vendorbankDetailsDTO.getId())
-							.get();
-					bankDetailsVO.setAccountNo(vendorbankDetailsDTO.getAccountNo());
-					bankDetailsVO.setBank(vendorbankDetailsDTO.getBank());
-					bankDetailsVO.setBranch(vendorbankDetailsDTO.getBranch());
-					bankDetailsVO.setAccountName(vendorbankDetailsDTO.getAccountName());
-					bankDetailsVO.setIfscCode(vendorbankDetailsDTO.getIfscCode());
-					bankDetailsVO.setVendorVO(vendorVO);
-					vendorBankDetailsVO.add(bankDetailsVO);
-				} else {
-					VendorBankDetailsVO bankDetailsVO = new VendorBankDetailsVO();
-					bankDetailsVO.setAccountNo(vendorbankDetailsDTO.getAccountNo());
-					bankDetailsVO.setBank(vendorbankDetailsDTO.getBank());
-					bankDetailsVO.setBranch(vendorbankDetailsDTO.getBranch());
-					bankDetailsVO.setAccountName(vendorbankDetailsDTO.getAccountName());
-					bankDetailsVO.setIfscCode(vendorbankDetailsDTO.getIfscCode());
-					bankDetailsVO.setVendorVO(vendorVO);
-					vendorBankDetailsVO.add(bankDetailsVO);
-				}
-			}
-		}
-		vendorVO.setVendorBankDetailsVO(vendorBankDetailsVO);
+	    // Update or create bank details
+	    List<VendorBankDetailsVO> vendorBankDetailsVO = new ArrayList<>();
+	    if (vendorDTO.getVendorBankDetailsDTO() != null) {
+	        for (VendorBankDetailsDTO vendorbankDetailsDTO : vendorDTO.getVendorBankDetailsDTO()) {
+	            if (vendorbankDetailsDTO.getId() != 0) {
+	                VendorBankDetailsVO bankDetailsVO = vendorBankDetailsRepo.findById(vendorbankDetailsDTO.getId())
+	                        .get();
+	                bankDetailsVO.setAccountNo(vendorbankDetailsDTO.getAccountNo());
+	                bankDetailsVO.setBank(vendorbankDetailsDTO.getBank());
+	                bankDetailsVO.setBranch(vendorbankDetailsDTO.getBranch());
+	                bankDetailsVO.setAccountName(vendorbankDetailsDTO.getAccountName());
+	                bankDetailsVO.setIfscCode(vendorbankDetailsDTO.getIfscCode());
+	                bankDetailsVO.setVendorVO(vendorVO);
+	                vendorBankDetailsVO.add(bankDetailsVO);
+	            } else {
+	                VendorBankDetailsVO bankDetailsVO = new VendorBankDetailsVO();
+	                bankDetailsVO.setAccountNo(vendorbankDetailsDTO.getAccountNo());
+	                bankDetailsVO.setBank(vendorbankDetailsDTO.getBank());
+	                bankDetailsVO.setBranch(vendorbankDetailsDTO.getBranch());
+	                bankDetailsVO.setAccountName(vendorbankDetailsDTO.getAccountName());
+	                bankDetailsVO.setIfscCode(vendorbankDetailsDTO.getIfscCode());
+	                bankDetailsVO.setVendorVO(vendorVO);
+	                vendorBankDetailsVO.add(bankDetailsVO);
+	            }
+	        }
+	    }
+	    vendorVO.setVendorBankDetailsVO(vendorBankDetailsVO);
 
-		// Update or create address details
-		List<VendorAddressVO> vendorAddressVO = new ArrayList<>();
-		if (vendorDTO.getVendorAddressDTO() != null) {
-			for (VendorAddressDTO vendorAddressDTO : vendorDTO.getVendorAddressDTO()) {
-				if (vendorAddressDTO.getId() != 0) {
-					VendorAddressVO vendorAddress = vendorAddressRepo.findById(vendorAddressDTO.getId()).get();
-					vendorAddress.setGstNumber(vendorAddressDTO.getGstNumber());
-					vendorAddress.setStreet1(vendorAddressDTO.getStreet1());
-					vendorAddress.setStreet2(vendorAddressDTO.getStreet2());
-					vendorAddress.setCity(vendorAddressDTO.getCity());
-					vendorAddress.setPinCode(vendorAddressDTO.getPinCode());
-					vendorAddress.setContactName(vendorAddressDTO.getContactName());
-					vendorAddress.setPhoneNumber(vendorAddressDTO.getPhoneNumber());
-					vendorAddress.setDesignation(vendorAddressDTO.getDesignation());
-					vendorAddress.setEmail(vendorAddressDTO.getEmail());
-					vendorAddress.setGstRegistrationStatus(vendorAddressDTO.getGstRegistrationStatus());
-					vendorAddress.setState(vendorAddressDTO.getState());
-					vendorAddress.setVendorVO(vendorVO);
-					vendorAddress.setCountry(vendorAddressDTO.getCountry());
-					vendorAddressVO.add(vendorAddress);
-				} else {
-					VendorAddressVO vendorAddress = new VendorAddressVO();
-					vendorAddress.setGstNumber(vendorAddressDTO.getGstNumber());
-					vendorAddress.setStreet1(vendorAddressDTO.getStreet1());
-					vendorAddress.setStreet2(vendorAddressDTO.getStreet2());
-					vendorAddress.setCity(vendorAddressDTO.getCity());
-					vendorAddress.setPinCode(vendorAddressDTO.getPinCode());
-					vendorAddress.setContactName(vendorAddressDTO.getContactName());
-					vendorAddress.setPhoneNumber(vendorAddressDTO.getPhoneNumber());
-					vendorAddress.setDesignation(vendorAddressDTO.getDesignation());
-					vendorAddress.setEmail(vendorAddressDTO.getEmail());
-					vendorAddress.setGstRegistrationStatus(vendorAddressDTO.getGstRegistrationStatus());
-					vendorAddress.setState(vendorAddressDTO.getState());
-					vendorAddress.setVendorVO(vendorVO);
-					vendorAddress.setCountry(vendorAddressDTO.getCountry());
-					vendorAddressVO.add(vendorAddress);
-				}
+	    // Update or create address details
+	    List<VendorAddressVO> vendorAddressVO = new ArrayList<>();
+	    if (vendorDTO.getVendorAddressDTO() != null) {
+	        for (VendorAddressDTO vendorAddressDTO : vendorDTO.getVendorAddressDTO()) {
+	            if (vendorAddressDTO.getId() != 0) {
+	                VendorAddressVO vendorAddress = vendorAddressRepo.findById(vendorAddressDTO.getId()).get();
+	                vendorAddress.setGstNumber(vendorAddressDTO.getGstNumber());
+	                vendorAddress.setStreet1(vendorAddressDTO.getStreet1());
+	                vendorAddress.setStreet2(vendorAddressDTO.getStreet2());
+	                vendorAddress.setCity(vendorAddressDTO.getCity());
+	                vendorAddress.setPinCode(vendorAddressDTO.getPinCode());
+	                vendorAddress.setContactName(vendorAddressDTO.getContactName());
+	                vendorAddress.setPhoneNumber(vendorAddressDTO.getPhoneNumber());
+	                vendorAddress.setDesignation(vendorAddressDTO.getDesignation());
+	                vendorAddress.setEmail(vendorAddressDTO.getEmail());
+	                vendorAddress.setGstRegistrationStatus(vendorAddressDTO.getGstRegistrationStatus());
+	                vendorAddress.setState(vendorAddressDTO.getState());
+	                vendorAddress.setVendorVO(vendorVO);
+	                vendorAddress.setCountry(vendorAddressDTO.getCountry());
+	                vendorAddressVO.add(vendorAddress);
+	            } else {
+	                VendorAddressVO vendorAddress = new VendorAddressVO();
+	                vendorAddress.setGstNumber(vendorAddressDTO.getGstNumber());
+	                vendorAddress.setStreet1(vendorAddressDTO.getStreet1());
+	                vendorAddress.setStreet2(vendorAddressDTO.getStreet2());
+	                vendorAddress.setCity(vendorAddressDTO.getCity());
+	                vendorAddress.setPinCode(vendorAddressDTO.getPinCode());
+	                vendorAddress.setContactName(vendorAddressDTO.getContactName());
+	                vendorAddress.setPhoneNumber(vendorAddressDTO.getPhoneNumber());
+	                vendorAddress.setDesignation(vendorAddressDTO.getDesignation());
+	                vendorAddress.setEmail(vendorAddressDTO.getEmail());
+	                vendorAddress.setGstRegistrationStatus(vendorAddressDTO.getGstRegistrationStatus());
+	                vendorAddress.setState(vendorAddressDTO.getState());
+	                vendorAddress.setVendorVO(vendorVO);
+	                vendorAddress.setCountry(vendorAddressDTO.getCountry());
+	                vendorAddressVO.add(vendorAddress);
+	            }
 
-			}
-		}
-		vendorVO.setVendorAddressVO(vendorAddressVO);
+	        }
+	    }
+	    vendorVO.setVendorAddressVO(vendorAddressVO);
 
-		return vendorRepo.save(vendorVO);
+	    return vendorRepo.save(vendorVO);
 	}
 
 	private void getVendorVOFromVendorDTO(VendorDTO vendorDTO, VendorVO vendorVO) throws ApplicationException {
 
-		if (vendorDTO.getId() != 0) {
-			VendorVO existingVendor = vendorRepo.findById(vendorDTO.getId())
-					.orElseThrow(() -> new ApplicationException("Vendor with ID " + vendorDTO.getId() + " not found"));
+	    if (vendorDTO.getId() != 0) {
+	        VendorVO existingVendor = vendorRepo.findById(vendorDTO.getId())
+	                .orElseThrow(() -> new ApplicationException("Vendor with ID " + vendorDTO.getId() + " not found"));
 
-			if (!existingVendor.getEntityLegalName().equals(vendorDTO.getEntityLegalName())) {
-				// Check if there's already an entry with the same Entity Legal Name and orgId
-				if (vendorRepo.existsByEntityLegalNameAndOrgId(vendorDTO.getEntityLegalName(),
-						existingVendor.getOrgId())) {
-					throw new ApplicationException("Entity Legal Name already exists");
-				}
-				// Update Entity Legal Name if there's no duplicate
-				vendorVO.setEntityLegalName(vendorDTO.getEntityLegalName());
-			}
+	        if (!existingVendor.getEntityLegalName().equals(vendorDTO.getEntityLegalName())) {
+	            // Check if there's already an entry with the same Entity Legal Name and orgId
+	            if (vendorRepo.existsByEntityLegalNameAndOrgId(vendorDTO.getEntityLegalName(),
+	                    existingVendor.getOrgId())) {
+	                throw new ApplicationException("Entity Legal Name already exists");
+	            }
+	            // Update Entity Legal Name if there's no duplicate
+	            vendorVO.setEntityLegalName(vendorDTO.getEntityLegalName());
+	        }
 
-			if (!existingVendor.getDisplyName().equals(vendorDTO.getDisplyName())) {
-				// Check if there's already an entry with the same Display Name and orgId
-				if (vendorRepo.existsByDisplyNameAndOrgId(vendorDTO.getDisplyName(), existingVendor.getOrgId())) {
-					throw new ApplicationException("Display Name already exists");
-				}
-				// Update Display Name if there's no duplicate
-				vendorVO.setDisplyName(vendorDTO.getDisplyName());
-			}
+	        if (!existingVendor.getDisplyName().equals(vendorDTO.getDisplyName())) {
+	            // Check if there's already an entry with the same Display Name and orgId
+	            if (vendorRepo.existsByDisplyNameAndOrgId(vendorDTO.getDisplyName(), existingVendor.getOrgId())) {
+	                throw new ApplicationException("Display Name already exists");
+	            }
+	            // Update Display Name if there's no duplicate
+	            vendorVO.setDisplyName(vendorDTO.getDisplyName());
+	        }
 
-			vendorVO.setOrgId(vendorDTO.getOrgId());
-			vendorVO.setVenderType(vendorDTO.getVenderType());
-			vendorVO.setPhoneNumber(vendorDTO.getPhoneNumber());
-			vendorVO.setEmail(vendorDTO.getEmail());
-			vendorVO.setVenderActivePortal(vendorDTO.isVenderActivePortal());
-			vendorVO.setActive(vendorDTO.isActive());
-		} 
-		else {
-			if (vendorRepo.existsByEntityLegalNameAndOrgId(vendorDTO.getEntityLegalName(),
-					vendorDTO.getOrgId())) {
-				throw new ApplicationException("Entity Legal Name already exists");
-			}
-			if (vendorRepo.existsByDisplyNameAndOrgId(vendorDTO.getDisplyName(), vendorDTO.getOrgId())) {
-				throw new ApplicationException("Display Name already exists");
-			}
-			vendorVO.setOrgId(vendorDTO.getOrgId());
-			vendorVO.setVenderType(vendorDTO.getVenderType());
-			vendorVO.setDisplyName(vendorDTO.getDisplyName());
-			vendorVO.setPhoneNumber(vendorDTO.getPhoneNumber());
-			vendorVO.setEntityLegalName(vendorDTO.getEntityLegalName());
-			vendorVO.setEmail(vendorDTO.getEmail());
-			vendorVO.setVenderActivePortal(vendorDTO.isActive());
-			vendorVO.setActive(vendorDTO.isActive());
-		}
+	        vendorVO.setOrgId(vendorDTO.getOrgId());
+	        vendorVO.setVenderType(vendorDTO.getVenderType());
+	        vendorVO.setPhoneNumber(vendorDTO.getPhoneNumber());
+	        vendorVO.setEmail(vendorDTO.getEmail());
+	        vendorVO.setVenderActivePortal(vendorDTO.isVenderActivePortal());
+	        vendorVO.setActive(vendorDTO.isActive());
+	    } 
+	    else {
+	        if (vendorRepo.existsByEntityLegalNameAndOrgId(vendorDTO.getEntityLegalName(),
+	                vendorDTO.getOrgId())) {
+	            throw new ApplicationException("Entity Legal Name already exists");
+	        }
+	        if (vendorRepo.existsByDisplyNameAndOrgId(vendorDTO.getDisplyName(), vendorDTO.getOrgId())) {
+	            throw new ApplicationException("Display Name already exists");
+	        }
+	        vendorVO.setOrgId(vendorDTO.getOrgId());
+	        vendorVO.setVenderType(vendorDTO.getVenderType());
+	        vendorVO.setDisplyName(vendorDTO.getDisplyName());
+	        vendorVO.setPhoneNumber(vendorDTO.getPhoneNumber());
+	        vendorVO.setEntityLegalName(vendorDTO.getEntityLegalName());
+	        vendorVO.setEmail(vendorDTO.getEmail());
+	        vendorVO.setVenderActivePortal(vendorDTO.isActive());
+	        vendorVO.setActive(vendorDTO.isActive());
+	    }
 	}
 
 	@Override
