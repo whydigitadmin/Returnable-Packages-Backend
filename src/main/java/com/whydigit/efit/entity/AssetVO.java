@@ -11,13 +11,11 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.whydigit.efit.dto.CreatedUpdatedDate;
 
@@ -153,6 +151,17 @@ public class AssetVO {
 	@OneToMany(mappedBy = "assetVO", cascade = CascadeType.ALL)
 	@JsonManagedReference
 	private List<AssetItemVO> assetItemVO;
+	
+	@JsonGetter("active")
+    public String getActive() {
+        return active ? "Active" : "In-Active";
+    }
+
+    // Optionally, if you want to control serialization for 'cancel' field similarly
+    @JsonGetter("cancel")
+    public String getCancel() {
+        return cancel ? "T" : "F";
+    }
 
 	@Embedded
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();

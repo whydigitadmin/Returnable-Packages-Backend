@@ -14,6 +14,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.whydigit.efit.dto.CreatedUpdatedDate;
 
@@ -67,6 +68,17 @@ public class FlowVO {
 	private String modifiedBy;
 	@Column(name = "cancelRemarks", length = 25)
 	private String cancelRemarks;
+	
+	@JsonGetter("active")
+    public String getActive() {
+        return active ? "Active" : "In-Active";
+    }
+
+    // Optionally, if you want to control serialization for 'cancel' field similarly
+    @JsonGetter("cancel")
+    public String getCancel() {
+        return cancel ? "T" : "F";
+    }
 
 	@JsonManagedReference
 	@OneToMany(mappedBy = "flowVO", cascade = CascadeType.ALL)
