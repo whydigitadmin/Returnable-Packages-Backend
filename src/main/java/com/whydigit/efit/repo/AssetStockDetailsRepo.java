@@ -19,7 +19,7 @@ public interface AssetStockDetailsRepo extends JpaRepository<AssetStockDetailsVO
 			+ "where a.tn between 1 and ?4")
 	Set<Object[]> getAssetDetailsByAssetForAssetInward(Long orgId, String stockBranch, String assetCode,int qty);
 	
-	@Query(nativeQuery = true,value = "select  skucode,sku,sum(skuqty)skuqty from stockdetails where stockbranch=?2 and status='S' and orgid=?1 group by skucode,sku having sum(skuqty)>0") 
-	Set<Object[]> getAvailAssetDetailsByBranch(Long orgId, String stockBranch);
+	@Query(nativeQuery = true,value = "select  skucode,sku,sum(skuqty)skuqty from stockdetails where stockbranch=?2 and status='S' and orgid=?1 and category=?3 group by skucode,sku having sum(skuqty)>0") 
+	Set<Object[]> getAvailAssetDetailsByBranch(Long orgId, String stockBranch,String category);
 
 }

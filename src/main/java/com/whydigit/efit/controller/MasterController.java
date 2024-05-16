@@ -3202,7 +3202,7 @@ public class MasterController extends BaseController {
 	}
 	
 	@GetMapping("/getAvailAssetDetailsByBranchForAssetInward")
-	public ResponseEntity<ResponseDTO> getAvailAssetDetailsByBranchForAssetInward(@RequestParam Long orgId,@RequestParam String stockBranch) {
+	public ResponseEntity<ResponseDTO> getAvailAssetDetailsByBranchForAssetInward(@RequestParam Long orgId,@RequestParam String stockBranch,@RequestParam String category) {
 		String methodName = "getAvailAssetDetailsByBranchForAssetInward()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -3210,7 +3210,7 @@ public class MasterController extends BaseController {
 		ResponseDTO responseDTO = null;
 		Set<Object[]> stock = new HashSet<>();
 		try {
-			stock = masterService.getAvailAssetDetailsByBranch(orgId, stockBranch);
+			stock = masterService.getAvailAssetDetailsByBranch(orgId, stockBranch,category);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
@@ -3233,6 +3233,8 @@ public class MasterController extends BaseController {
 		for (Object[] ps : stock) {
 			Map<String, Object> part = new HashMap<>();
 			part.put("assetCode", ps[0] != null ? ps[0].toString() : "");
+			part.put("asset", ps[1] != null ? ps[1].toString() : "");
+			part.put("avalqty", ps[2] != null ? Integer.parseInt(ps[2].toString()) : 0);
 			availAssetDetails.add(part);
 		}
 		return availAssetDetails;

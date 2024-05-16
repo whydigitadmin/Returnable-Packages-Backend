@@ -1654,6 +1654,9 @@ public class MasterServiceImpl implements MasterService {
 		assetInwardVO.setStockBranch(assetInwardDTO.getStockBranch());
 		assetInwardVO.setSourceFrom(assetInwardDTO.getSourceFrom());
 		assetInwardVO.setOrgId(assetInwardDTO.getOrgId());
+		assetInwardVO.setCategory(assetInwardDTO.getCategory());
+		assetInwardVO.setAssetCode(assetInwardDTO.getAssetCode());
+		assetInwardVO.setQty(assetInwardDTO.getQty());
 		assetInwardVO.setCreatedBy(assetInwardDTO.getCreatedBy());
 		assetInwardVO.setModifiedBy(assetInwardDTO.getCreatedBy());
 		List<AssetInwardDetailVO> assetInwardDetailVO = new ArrayList<>();
@@ -2591,8 +2594,8 @@ public class MasterServiceImpl implements MasterService {
 	}
 	
 	@Override
-	public Set<Object[]> getAvailAssetDetailsByBranch(Long orgId, String stockBranch) {
-		return assetStockDetailsRepo.getAvailAssetDetailsByBranch(orgId, stockBranch);
+	public Set<Object[]> getAvailAssetDetailsByBranch(Long orgId, String stockBranch,String category) {
+		return assetStockDetailsRepo.getAvailAssetDetailsByBranch(orgId, stockBranch,category);
 	}
 
 }
