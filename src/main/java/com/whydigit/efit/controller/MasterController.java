@@ -3090,6 +3090,7 @@ public class MasterController extends BaseController {
 			part.put("asset", ps[1] != null ? ps[1].toString() : "");
 			part.put("assetCode", ps[2] != null ? ps[2].toString() : "");
 			part.put("qty", ps[3] != null ? Integer.parseInt(ps[3].toString()) : 0);
+			part.put("category", ps[5] != null ? ps[5].toString() : "");
 			assetDetails.add(part);
 		}
 		return assetDetails;
