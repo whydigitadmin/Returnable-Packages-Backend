@@ -2283,7 +2283,7 @@ public class MasterServiceImpl implements MasterService {
 				assetStockDetailsVO.setStockDate(savedBinInwardVO.getAllotDate());
 				assetStockDetailsVO.setSkuCode(binInwardDetails.getAssetCode());
 				assetStockDetailsVO.setSku(binInwardDetails.getAsset());
-				assetStockDetailsVO.setCategory(assetRepo.findCategoryByAssetCodeId(binInwardDetails.getAssetCode()));
+				assetStockDetailsVO.setCategory(assetRepo.getCategoryByAssetCodeId(binInwardDetails.getAssetCode()));
 				assetStockDetailsVO.setSkuQty(binInwardDetails.getRecQty() * -1);
 				assetStockDetailsVO.setRfId(binInwardDetails.getRfId());
 				assetStockDetailsVO.setTagCode(binInwardDetails.getTagCode());
@@ -2310,7 +2310,7 @@ public class MasterServiceImpl implements MasterService {
 				assetStockDetailsVO.setStockRef(savedBinInwardVO.getDocid());
 				assetStockDetailsVO.setStockDate(savedBinInwardVO.getDocDate());
 				assetStockDetailsVO.setSkuCode(binInwardDetails.getAssetCode());
-				assetStockDetailsVO.setCategory(assetRepo.findCategoryByAssetCodeId(binInwardDetails.getAssetCode()));
+				assetStockDetailsVO.setCategory(assetRepo.getCategoryByAssetCodeId(binInwardDetails.getAssetCode()));
 				assetStockDetailsVO.setSku(binInwardDetails.getAsset());
 				assetStockDetailsVO.setSkuQty(binInwardDetails.getRecQty());
 				assetStockDetailsVO.setRfId(binInwardDetails.getRfId());
