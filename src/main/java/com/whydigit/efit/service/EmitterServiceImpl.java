@@ -69,6 +69,7 @@ import com.whydigit.efit.entity.OutwardView;
 import com.whydigit.efit.entity.ReturnStockVO;
 import com.whydigit.efit.entity.VwEmitterInwardVO;
 import com.whydigit.efit.exception.ApplicationException;
+import com.whydigit.efit.repo.AssetRepo;
 import com.whydigit.efit.repo.AssetStockDetailsRepo;
 import com.whydigit.efit.repo.AssetTaggingDetailsRepo;
 import com.whydigit.efit.repo.BinAllotmentDetailsRepo;
@@ -102,6 +103,9 @@ public class EmitterServiceImpl implements EmitterService {
 
 	@Autowired
 	UserRepo userRepo;
+	
+	@Autowired
+	AssetRepo assetRepo;
 
 	@Autowired
 	EmitterInwardRepo emitterInwardRepo;
@@ -742,6 +746,7 @@ public class EmitterServiceImpl implements EmitterService {
 				assetStockDetailsVO.setRfId(allotmentDetailsVO2.getRfId());
 				assetStockDetailsVO.setTagCode(allotmentDetailsVO2.getTagCode());
 				assetStockDetailsVO.setStockSource("");
+				assetStockDetailsVO.setCategory(assetRepo.findCategoryByAssetCodeId(allotmentDetailsVO2.getAssetCode()));
 				assetStockDetailsVO.setSCode(allotmentNewVO.getScode()); // Assuming getScode() returns the correct
 				assetStockDetailsVO.setSourceId(allotmentDetailsVO2.getId()); // value
 				assetStockDetailsVO.setScreen("Bin Allotment");
@@ -769,6 +774,7 @@ public class EmitterServiceImpl implements EmitterService {
 				assetStockDetailsVO.setStockSource("");
 				assetStockDetailsVO.setBinLocation("");
 				assetStockDetailsVO.setCancelRemarks("");
+				assetStockDetailsVO.setCategory(assetRepo.findCategoryByAssetCodeId(allotmentDetailsVO2.getAssetCode()));
 				assetStockDetailsVO.setStockLocation("");
 				assetStockDetailsVO.setSCode(allotmentNewVO.getScode()); // Assuming getScode() returns the correct
 				assetStockDetailsVO.setSourceId(allotmentDetailsVO2.getId()); // value
@@ -953,6 +959,7 @@ public class EmitterServiceImpl implements EmitterService {
 					stockDetailsVO.setSkuCode(binOutwardDetailsVO.getAssetCode());
 					stockDetailsVO.setSkuQty(binOutwardDetailsVO.getQty() * -1);
 					stockDetailsVO.setOrgId(savedBinOutwardVO.getOrgId());
+					stockDetailsVO.setCategory(assetRepo.findCategoryByAssetCodeId(binOutwardDetailsVO.getAssetCode()));
 					stockDetailsVO.setStatus("S");
 					stockDetailsVO.setScreen("Bin Outward");
 					stockDetailsVO.setSCode(savedBinOutwardVO.getScode());
@@ -976,6 +983,7 @@ public class EmitterServiceImpl implements EmitterService {
 				stockDetailsVO.setSkuCode(binOutwardDetailsVO.getAssetCode());
 				stockDetailsVO.setSkuQty(binOutwardDetailsVO.getQty());
 				stockDetailsVO.setOrgId(savedBinOutwardVO.getOrgId());
+				stockDetailsVO.setCategory(assetRepo.findCategoryByAssetCodeId(binOutwardDetailsVO.getAssetCode()));
 				stockDetailsVO.setStatus("M");
 				stockDetailsVO.setScreen("Bin Outward");
 				stockDetailsVO.setSCode(savedBinOutwardVO.getScode());

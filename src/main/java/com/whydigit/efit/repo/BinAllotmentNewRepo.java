@@ -126,7 +126,7 @@ public interface BinAllotmentNewRepo extends JpaRepository<BinAllotmentNewVO, Lo
 			+ "                            INNER JOIN \r\n"
 			+ "                                kit b ON a.kitid = b.kitid\r\n"
 			+ "                            WHERE \r\n"
-			+ "                                kitcode = ?1\r\n"
+			+ "                                kitno = ?1\r\n"
 			+ "                      ) AS sub\r\n"
 			+ "                        GROUP BY \r\n"
 			+ "                            asset\r\n"

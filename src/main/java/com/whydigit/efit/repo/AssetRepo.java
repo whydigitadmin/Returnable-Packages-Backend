@@ -30,4 +30,7 @@ public interface AssetRepo extends JpaRepository<AssetVO, Long> {
 
 	boolean existsByAssetCodeIdAndOrgId(String assetCodeId, Long orgId);
 
+	@Query(value="select a.category form assetVO a where a.assetCodeId=?1")
+	String findCategoryByAssetCodeId(String assetCode);
+
 }
