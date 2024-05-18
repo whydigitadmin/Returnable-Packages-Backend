@@ -554,17 +554,25 @@ public class MasterServiceImpl implements MasterService {
 	}
 
 	@Override
+	public List<CustomersVO> getAllActiveCustomers(Long orgId) {
+		List<CustomersVO> customersVO = new ArrayList<>();
+		if (ObjectUtils.isNotEmpty(orgId)) {
+			LOGGER.info("Successfully Received  CustomerInformation BY OrgId : {}", orgId);
+			customersVO = customersRepo.getAllActiveCustomersByOrgId(orgId);
+		} 
+		return customersVO;
+	}
+	
+	@Override
 	public List<CustomersVO> getAllCustomers(Long orgId) {
 		List<CustomersVO> customersVO = new ArrayList<>();
 		if (ObjectUtils.isNotEmpty(orgId)) {
 			LOGGER.info("Successfully Received  CustomerInformation BY OrgId : {}", orgId);
 			customersVO = customersRepo.getAllCustomersByOrgId(orgId);
-		} else {
-			LOGGER.info("Successfully Received  CustomerInformation For All OrgId.");
-			customersVO = customersRepo.findAll();
-		}
+		} 
 		return customersVO;
 	}
+	
 
 	@Override
 	public CustomersVO getCustomersById(Long id) throws ApplicationException {
@@ -1273,7 +1281,7 @@ public class MasterServiceImpl implements MasterService {
 
 	@Override
 	public Map<String, List<CustomersVO>> CustomersType(Long orgId) {
-		List<CustomersVO> customersVO = customersRepo.findByOrgId(orgId);
+		List<CustomersVO> customersVO = customersRepo.getAllActiveCustomersByOrgId(orgId);
 		Map<String, List<CustomersVO>> customers = new HashMap<>();
 		List<CustomersVO> emitterCustomersVO = customersVO.stream()
 				.filter(c -> c.getCustomerType() == CustomerConstant.CUSTOMER_TYPE_EMITTER
@@ -1346,8 +1354,23 @@ public class MasterServiceImpl implements MasterService {
 	}
 
 	@Override
-	public List<VendorVO> getAllVendor() {
-		return VendorRepo.findAll();
+	public List<VendorVO> getAllVendor(Long orgId) {
+		List<VendorVO> vendorVO = new ArrayList<>();
+		if (ObjectUtils.isNotEmpty(orgId)) {
+			LOGGER.info("Successfully Received Vendor Information BY OrgId : {}", orgId);
+			vendorVO = vendorRepo.getAllVenderByOrgId(orgId);
+		} 
+		return vendorVO;
+	}
+	
+	@Override
+	public List<VendorVO> getAllActiveVendor(Long orgId) {
+		List<VendorVO> vendorVO = new ArrayList<>();
+		if (ObjectUtils.isNotEmpty(orgId)) {
+			LOGGER.info("Successfully Received Vendor Information BY OrgId : {}", orgId);
+			vendorVO = vendorRepo.getAllActiveVenderByOrgId(orgId);
+		} 
+		return vendorVO;
 	}
 
 	@Override

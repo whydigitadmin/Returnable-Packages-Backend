@@ -392,6 +392,32 @@ public class MasterController extends BaseController {
 	// customers
 
 	@GetMapping("/customers")
+	public ResponseEntity<ResponseDTO> getAllActiveCustomers(@RequestParam(required = false) Long orgId) {
+		String methodName = "getAllActiveCustomers()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<CustomersVO> customersVO = new ArrayList<>();
+		try {
+			customersVO = masterService.getAllActiveCustomers(orgId);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Customers information get successfully");
+			responseObjectsMap.put("customersVO", customersVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "Customers information receive failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+	
+	@GetMapping("/allCustomers")
 	public ResponseEntity<ResponseDTO> getAllCustomers(@RequestParam(required = false) Long orgId) {
 		String methodName = "getAllCustomers()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
@@ -923,7 +949,7 @@ public class MasterController extends BaseController {
 	// Vendor
 
 	@GetMapping("/Vendor")
-	public ResponseEntity<ResponseDTO> getAllVendor() {
+	public ResponseEntity<ResponseDTO> getAllActiveVendor(@RequestParam Long orgId) {
 		String methodName = "getAllVendor()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -931,7 +957,32 @@ public class MasterController extends BaseController {
 		ResponseDTO responseDTO = null;
 		List<VendorVO> vendorVO = new ArrayList<>();
 		try {
-			vendorVO = masterService.getAllVendor();
+			vendorVO = masterService.getAllActiveVendor(orgId);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Vendor information get successfully");
+			responseObjectsMap.put("vendorVO", vendorVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "Vendor information receive failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+	
+	@GetMapping("/AllVendor")
+	public ResponseEntity<ResponseDTO> getAllVendor(@RequestParam Long orgId) {
+		String methodName = "getAllVendor()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<VendorVO> vendorVO = new ArrayList<>();
+		try {
+			vendorVO = masterService.getAllVendor(orgId);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);

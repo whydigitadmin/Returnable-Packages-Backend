@@ -83,6 +83,8 @@ public interface MasterService {
 	AssetCategoryVO updateAssetCategory(AssetCategoryDTO assetGroupVO) throws ApplicationException;
 
 	// CUstomers
+	
+	List<CustomersVO> getAllActiveCustomers(Long orgId);
 
 	List<CustomersVO> getAllCustomers(Long orgId);
 
@@ -171,7 +173,9 @@ public interface MasterService {
 	List<AssetCategoryVO> createAssetCategoryByCSV(MultipartFile assetFile) throws ApplicationException;
 
 	// Vendor
-	List<VendorVO> getAllVendor();
+	List<VendorVO> getAllVendor(Long orgId);
+	
+	List<VendorVO> getAllActiveVendor(Long orgId);
 
 	Optional<VendorVO> getVendorById(Long id);
 
@@ -317,6 +321,12 @@ public interface MasterService {
 	Set<Object[]> getAssetDetailsByAssetForAssetInward(Long orgId, String stockBranch, String sku,int qty);
 
 	Set<Object[]> getAvailAssetDetailsByBranch(Long orgId, String stockBranch, String category);
+
+	
+
+	
+
+	
 
 	
 
