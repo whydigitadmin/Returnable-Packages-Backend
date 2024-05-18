@@ -175,15 +175,22 @@ public class AuthServiceImpl implements AuthService {
 		}
 		UserVO userVO = userRepo.findByUserName(loginRequest.getUserName());
 		if (ObjectUtils.isNotEmpty(userVO)) {
-			if (compareEncodedPasswordWithEncryptedPassword(loginRequest.getPassword(), userVO.getPassword())) {
+			if(userVO.isActive())
+			{
+				if (compareEncodedPasswordWithEncryptedPassword(loginRequest.getPassword(), userVO.getPassword())) {
 				updateUserLoginInformation(userVO);
-			} else {
-				throw new ApplicationContextException(UserConstants.ERRROR_MSG_PASSWORD_MISMATCH);
+				} else {
+					throw new ApplicationContextException(UserConstants.ERRROR_MSG_PASSWORD_MISMATCH);
+				}
+			}
+			else
+			{
+				throw new ApplicationContextException(UserConstants.ACCOUNT_INACTIVE_MESSAGE);
 			}
 		} else {
 			throw new ApplicationContextException(
 					UserConstants.ERRROR_MSG_USER_INFORMATION_NOT_FOUND_AND_ASKING_SIGNUP);
-		}
+		} 
 		UserResponseDTO userResponseDTO = mapUserVOToDTO(userVO);
 		TokenVO tokenVO = tokenProvider.createToken(userVO.getUserId(), loginRequest.getUserName());
 		userResponseDTO.setToken(tokenVO.getToken());
@@ -419,6 +426,7 @@ public class AuthServiceImpl implements AuthService {
 		userVO.setFirstName(createUserFormDTO.getFirstName());
 		userVO.setLastName(createUserFormDTO.getLastName());
 		userVO.setPNo(createUserFormDTO.getPNo());
+		userVO.setActive(createUserFormDTO.isActive());
 		userVO.setRole(createUserFormDTO.getRole());
 		userVO.setAccessRightsRoleId(createUserFormDTO.getAccessRightsRoleId());
 		 

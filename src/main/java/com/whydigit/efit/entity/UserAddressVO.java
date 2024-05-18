@@ -1,13 +1,10 @@
 package com.whydigit.efit.entity;
 
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-
-import com.whydigit.efit.dto.CreatedUpdatedDate;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -30,8 +27,5 @@ public class UserAddressVO {
 	private String state;
 	private String pin;
 	private String city;
-
-	@Embedded
-	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
 
 }

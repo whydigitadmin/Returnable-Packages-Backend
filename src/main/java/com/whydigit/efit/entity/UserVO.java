@@ -14,6 +14,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.whydigit.efit.dto.CreatedUpdatedDate;
 import com.whydigit.efit.dto.Role;
 
@@ -60,7 +61,14 @@ public class UserVO {
 	@ManyToOne
 	@JoinColumn(name = "emitter_id")
 	private CustomersVO customersVO;
-
 	
+	@JsonGetter("active")
+    public String getActive() {
+        return isActive ? "Active" : "In-Active";
+    }
+	
+	public boolean isActive() {
+        return isActive;
+    }
 	
 }
