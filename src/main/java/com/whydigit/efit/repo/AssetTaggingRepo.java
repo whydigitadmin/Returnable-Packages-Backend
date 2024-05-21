@@ -44,6 +44,17 @@ public interface AssetTaggingRepo extends JpaRepository<AssetTaggingVO, Long> {
 
 	List<AssetTaggingVO> findAllByOrgId(Long orgId);
 
+	@Query(nativeQuery = true, value = "select 1 as \"a\" from dual where not exists\r\n"
+			+ "(\r\n"
+			+ "select * from taggingdetails where assetcode = ?1\r\n"
+			+ ")\r\n"
+			+ "union\r\n"
+			+ "select sum(seqto)+1 a from tagging where exists\r\n"
+			+ "(\r\n"
+			+ "select * from tagging where assetcode = ?1\r\n"
+			+ ") and assetcode = ?1")
+	int getStartNo(String assetcode);
+
 	
 
 }
