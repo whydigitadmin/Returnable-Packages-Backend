@@ -1,6 +1,8 @@
 package com.whydigit.efit.entity;
 
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -40,7 +42,7 @@ public class UserVO {
 	private String userName;
 	private String password;
 	private boolean loginStatus;
-	private String accessaddId;
+	private Long accessaddId;
 	private String accessWarehouse;
 	private String accessFlowId;
 	private Long pNo;
@@ -69,6 +71,21 @@ public class UserVO {
 	
 	public boolean isActive() {
         return isActive;
+    }
+	
+	// Custom getter for accessWarehouse
+    @JsonGetter("accessWarehouse")
+    public List<String> getAccessWarehouseAsList() {
+        return accessWarehouse != null ? Arrays.asList(accessWarehouse.split(",")) : null;
+    }
+
+    // Standard getters and setters
+    public String getAccessWarehouse() {
+        return accessWarehouse;
+    }
+
+    public void setAccessWarehouse(String accessWarehouse) {
+        this.accessWarehouse = accessWarehouse;
     }
 	
 }
