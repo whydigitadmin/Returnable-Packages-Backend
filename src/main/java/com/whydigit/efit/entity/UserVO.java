@@ -3,6 +3,7 @@ package com.whydigit.efit.entity;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -73,10 +74,14 @@ public class UserVO {
         return isActive;
     }
 	
-	// Custom getter for accessWarehouse
-    @JsonGetter("accessWarehouse")
-    public List<String> getAccessWarehouseAsList() {
-        return accessWarehouse != null ? Arrays.asList(accessWarehouse.split(",")) : null;
+	@JsonGetter("accessWarehouse")
+    public List<Long> getAccessWarehouseAsList() {
+        if (accessWarehouse != null && !accessWarehouse.isEmpty()) {
+            return Arrays.stream(accessWarehouse.split(","))
+                         .map(Long::parseLong)
+                         .collect(Collectors.toList());
+        }
+        return null;
     }
 
     // Standard getters and setters
@@ -87,5 +92,25 @@ public class UserVO {
     public void setAccessWarehouse(String accessWarehouse) {
         this.accessWarehouse = accessWarehouse;
     }
+    
+    @JsonGetter("accessFlowId")
+    public List<Long> getAccessFlowIdAsList() {
+        if (accessFlowId != null && !accessFlowId.isEmpty()) {
+            return Arrays.stream(accessFlowId.split(","))
+                         .map(Long::parseLong)
+                         .collect(Collectors.toList());
+        }
+        return null;
+    }
+
+    // Standard getters and setters
+    public String getAccessFlowId() {
+        return accessFlowId;
+    }
+
+    public void setAccessFlowId(String accessFlowId) {
+        this.accessFlowId = accessFlowId;
+    }
+ 
 	
 }
