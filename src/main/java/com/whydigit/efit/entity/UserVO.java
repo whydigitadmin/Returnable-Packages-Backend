@@ -42,7 +42,7 @@ public class UserVO {
 	private String userName;
 	private String password;
 	private boolean loginStatus;
-	private Long accessaddId;
+	private String accessaddId;
 	private String accessWarehouse;
 	private String accessFlowId;
 	private Long pNo;
