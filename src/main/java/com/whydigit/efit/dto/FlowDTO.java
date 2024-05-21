@@ -18,11 +18,8 @@ public class FlowDTO {
 	private long orgId;
 	private Long receiverId;
 	private String flowName;
-//	private String receiver;
 	private String emitter;
 	private long emitterId;
-//	private String flowInfo;
-//	private String flowType;
 	private String orgin;
 	private String createdBy;
 	private String destination;
