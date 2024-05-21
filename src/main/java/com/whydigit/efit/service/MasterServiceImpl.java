@@ -1899,8 +1899,20 @@ public class MasterServiceImpl implements MasterService {
 	public Set<Object[]> getTagCodeByAsset(String assetcode, String asset,int endno,String category) {
 
 		int finyr = assetTaggingRepo.getFinyr();
-		int startno=assetTaggingRepo.getStartNo(assetcode);
-		return assetTaggingRepo.getTagCodeByAsset(assetcode, asset, startno, endno, finyr,category);
+		int start=assetTaggingRepo.getstno(assetcode);
+		int st=0;
+		int end=0;
+		if(start!=1) {
+			 st=start+1;
+			 end=start+endno;
+		}
+		else
+		{
+			st=start;
+			end=endno;
+		}
+		
+		return assetTaggingRepo.getTagCodeByAsset(assetcode, asset, st, end, finyr,category);
 	}
 
 	@Override
