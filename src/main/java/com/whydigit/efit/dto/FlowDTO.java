@@ -2,8 +2,6 @@ package com.whydigit.efit.dto;
 
 import java.util.List;
 
-import javax.persistence.Column;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
