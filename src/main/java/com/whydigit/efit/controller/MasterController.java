@@ -392,6 +392,32 @@ public class MasterController extends BaseController {
 	// customers
 
 	@GetMapping("/customers")
+	public ResponseEntity<ResponseDTO> getAllActiveCustomers(@RequestParam(required = false) Long orgId) {
+		String methodName = "getAllActiveCustomers()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<CustomersVO> customersVO = new ArrayList<>();
+		try {
+			customersVO = masterService.getAllActiveCustomers(orgId);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Customers information get successfully");
+			responseObjectsMap.put("customersVO", customersVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "Customers information receive failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+	
+	@GetMapping("/allCustomers")
 	public ResponseEntity<ResponseDTO> getAllCustomers(@RequestParam(required = false) Long orgId) {
 		String methodName = "getAllCustomers()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
@@ -823,20 +849,20 @@ public class MasterController extends BaseController {
 	}
 
 	@PutMapping("/flow")
-	public ResponseEntity<ResponseDTO> updateFlow(@RequestBody FlowVO flowVO) {
+	public ResponseEntity<ResponseDTO> updateFlow(@RequestBody FlowDTO flowDTO) {
 		String methodName = "updateFlow()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
 		try {
-			FlowVO updatedFlowVO = masterService.updateFlow(flowVO).orElse(null);
+			FlowVO updatedFlowVO = masterService.updateFlow(flowDTO);
 			if (updatedFlowVO != null) {
 				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Flow updated successfully");
 				responseObjectsMap.put("flowVO", updatedFlowVO);
 				responseDTO = createServiceResponse(responseObjectsMap);
 			} else {
-				errorMsg = "Flow not found for ID: " + flowVO.getId();
+				errorMsg = "Flow not found for ID: " + flowDTO.getId();
 				responseDTO = createServiceResponseError(responseObjectsMap, "Flow update failed", errorMsg);
 			}
 		} catch (Exception e) {
@@ -923,7 +949,7 @@ public class MasterController extends BaseController {
 	// Vendor
 
 	@GetMapping("/Vendor")
-	public ResponseEntity<ResponseDTO> getAllVendor() {
+	public ResponseEntity<ResponseDTO> getAllActiveVendor(@RequestParam Long orgId) {
 		String methodName = "getAllVendor()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -931,7 +957,32 @@ public class MasterController extends BaseController {
 		ResponseDTO responseDTO = null;
 		List<VendorVO> vendorVO = new ArrayList<>();
 		try {
-			vendorVO = masterService.getAllVendor();
+			vendorVO = masterService.getAllActiveVendor(orgId);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Vendor information get successfully");
+			responseObjectsMap.put("vendorVO", vendorVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "Vendor information receive failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+	
+	@GetMapping("/AllVendor")
+	public ResponseEntity<ResponseDTO> getAllVendor(@RequestParam Long orgId) {
+		String methodName = "getAllVendor()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<VendorVO> vendorVO = new ArrayList<>();
+		try {
+			vendorVO = masterService.getAllVendor(orgId);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
@@ -2036,7 +2087,7 @@ public class MasterController extends BaseController {
 
 	@GetMapping("/Tagcode")
 	public ResponseEntity<ResponseDTO> getTagCodeByAsset(@RequestParam String assetcode, @RequestParam String asset,
-			@RequestParam int startno, @RequestParam int endno) {
+			@RequestParam int endno,@RequestParam String category) {
 		String methodName = "getTagCodeByAsset()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -2044,7 +2095,7 @@ public class MasterController extends BaseController {
 		ResponseDTO responseDTO = null;
 		Set<Object[]> tagcode = new HashSet<>();
 		try {
-			tagcode = masterService.getTagCodeByAsset(assetcode, asset, startno, endno);
+			tagcode = masterService.getTagCodeByAsset(assetcode, asset,endno,category);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
@@ -2063,12 +2114,14 @@ public class MasterController extends BaseController {
 	}
 
 	private List<Map<String, String>> TagCodes(Set<Object[]> tagcode) {
+		
 		List<Map<String, String>> assetTagCode = new ArrayList<>();
 		for (Object[] tag : tagcode) {
 			Map<String, String> assetcode = new HashMap<>();
 			assetcode.put("AssetCode", tag[0].toString());
 			assetcode.put("Asset", tag[1].toString());
-			assetcode.put("TagCode", tag[2].toString());
+			assetcode.put("TagCode", tag[3].toString());
+			assetcode.put("category", tag[2].toString());
 			assetTagCode.add(assetcode);
 		}
 		return assetTagCode;
@@ -3088,6 +3141,7 @@ public class MasterController extends BaseController {
 			part.put("asset", ps[1] != null ? ps[1].toString() : "");
 			part.put("assetCode", ps[2] != null ? ps[2].toString() : "");
 			part.put("qty", ps[3] != null ? Integer.parseInt(ps[3].toString()) : 0);
+			part.put("category", ps[5] != null ? ps[5].toString() : "");
 			assetDetails.add(part);
 		}
 		return assetDetails;
@@ -3200,7 +3254,7 @@ public class MasterController extends BaseController {
 	}
 	
 	@GetMapping("/getAvailAssetDetailsByBranchForAssetInward")
-	public ResponseEntity<ResponseDTO> getAvailAssetDetailsByBranchForAssetInward(@RequestParam Long orgId,@RequestParam String stockBranch) {
+	public ResponseEntity<ResponseDTO> getAvailAssetDetailsByBranchForAssetInward(@RequestParam Long orgId,@RequestParam String stockBranch,@RequestParam String category) {
 		String methodName = "getAvailAssetDetailsByBranchForAssetInward()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -3208,7 +3262,7 @@ public class MasterController extends BaseController {
 		ResponseDTO responseDTO = null;
 		Set<Object[]> stock = new HashSet<>();
 		try {
-			stock = masterService.getAvailAssetDetailsByBranch(orgId, stockBranch);
+			stock = masterService.getAvailAssetDetailsByBranch(orgId, stockBranch,category);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
@@ -3231,6 +3285,8 @@ public class MasterController extends BaseController {
 		for (Object[] ps : stock) {
 			Map<String, Object> part = new HashMap<>();
 			part.put("assetCode", ps[0] != null ? ps[0].toString() : "");
+			part.put("asset", ps[1] != null ? ps[1].toString() : "");
+			part.put("avalqty", ps[2] != null ? Integer.parseInt(ps[2].toString()) : 0);
 			availAssetDetails.add(part);
 		}
 		return availAssetDetails;

@@ -32,23 +32,25 @@ public class AssetTaggingDetailsVO {
 	@Column(name="orgid")
 	private Long orgId;
 	
-	@Column(name="rfid",length = 50,unique = true)
+	@Column(name="rfid",unique = true)
 	private String rfId;
 	
 	
-	@Column(name="taggingdocid",length = 25)
+	@Column(name="taggingdocid")
 	private String taggingDocDd;
 
 
-	@Column(name = "assetcode",length = 25)
+	@Column(name = "assetcode")
 	private String assetCode;
 	
-	@Column(name = "asset",length = 25)
+	@Column(name = "asset")
 	private String asset;
 	
 	
-	@Column(name = "tagcode",length = 30,unique = true)
+	@Column(name = "tagcode",unique = true)
 	private String tagCode;
+	
+	private String category;
 
 	@ManyToOne
 	@JoinColumn(name = "taggingid")

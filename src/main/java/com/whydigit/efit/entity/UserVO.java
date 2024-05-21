@@ -1,6 +1,8 @@
 package com.whydigit.efit.entity;
 
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -14,6 +16,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.whydigit.efit.dto.CreatedUpdatedDate;
 import com.whydigit.efit.dto.Role;
 
@@ -60,7 +63,29 @@ public class UserVO {
 	@ManyToOne
 	@JoinColumn(name = "emitter_id")
 	private CustomersVO customersVO;
-
 	
+	@JsonGetter("active")
+    public String getActive() {
+        return isActive ? "Active" : "In-Active";
+    }
+	
+	public boolean isActive() {
+        return isActive;
+    }
+	
+	// Custom getter for accessWarehouse
+    @JsonGetter("accessWarehouse")
+    public List<String> getAccessWarehouseAsList() {
+        return accessWarehouse != null ? Arrays.asList(accessWarehouse.split(",")) : null;
+    }
+
+    // Standard getters and setters
+    public String getAccessWarehouse() {
+        return accessWarehouse;
+    }
+
+    public void setAccessWarehouse(String accessWarehouse) {
+        this.accessWarehouse = accessWarehouse;
+    }
 	
 }

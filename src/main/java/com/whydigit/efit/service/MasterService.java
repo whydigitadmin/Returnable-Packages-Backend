@@ -83,6 +83,8 @@ public interface MasterService {
 	AssetCategoryVO updateAssetCategory(AssetCategoryDTO assetGroupVO) throws ApplicationException;
 
 	// CUstomers
+	
+	List<CustomersVO> getAllActiveCustomers(Long orgId);
 
 	List<CustomersVO> getAllCustomers(Long orgId);
 
@@ -110,9 +112,9 @@ public interface MasterService {
 	
 	Optional<FlowVO> getFlowById(long id);
 
-	FlowVO createFlow(FlowDTO flowDTO);
+	FlowVO createFlow(FlowDTO flowDTO) throws ApplicationException;
 
-	Optional<FlowVO> updateFlow(FlowVO flowVO);
+	FlowVO updateFlow(FlowDTO flowDTO) throws ApplicationException;
 
 	void deleteFlow(long id);
 
@@ -171,7 +173,9 @@ public interface MasterService {
 	List<AssetCategoryVO> createAssetCategoryByCSV(MultipartFile assetFile) throws ApplicationException;
 
 	// Vendor
-	List<VendorVO> getAllVendor();
+	List<VendorVO> getAllVendor(Long orgId);
+	
+	List<VendorVO> getAllActiveVendor(Long orgId);
 
 	Optional<VendorVO> getVendorById(Long id);
 
@@ -225,7 +229,7 @@ public interface MasterService {
 
 	List<AssetTaggingVO> getAllAsetTaggingByOrgId(Long orgId);
 
-	Set<Object[]> getTagCodeByAsset(String assetcode, String asset, int startno, int endno);
+	Set<Object[]> getTagCodeByAsset(String assetcode, String asset, int endno, String category);
 
 	Set<Object[]> getAvalKitQty(Long warehouseId, String Kitname);
 
@@ -316,7 +320,17 @@ public interface MasterService {
 
 	Set<Object[]> getAssetDetailsByAssetForAssetInward(Long orgId, String stockBranch, String sku,int qty);
 
-	Set<Object[]> getAvailAssetDetailsByBranch(Long orgId, String stockBranch);
+	Set<Object[]> getAvailAssetDetailsByBranch(Long orgId, String stockBranch, String category);
+
+	
+
+	
+
+	
+
+	
+
+	
 
 	
 

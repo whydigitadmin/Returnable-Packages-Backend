@@ -62,6 +62,7 @@ import com.whydigit.efit.dto.CustomersDTO;
 import com.whydigit.efit.dto.DmapDTO;
 import com.whydigit.efit.dto.DmapDetailsDTO;
 import com.whydigit.efit.dto.FlowDTO;
+import com.whydigit.efit.dto.FlowDetailDTO;
 import com.whydigit.efit.dto.KitAssetDTO;
 import com.whydigit.efit.dto.KitDTO;
 import com.whydigit.efit.dto.KitResponseDTO;
@@ -135,6 +136,7 @@ import com.whydigit.efit.repo.CustomersBankDetailsRepo;
 import com.whydigit.efit.repo.CustomersRepo;
 import com.whydigit.efit.repo.DmapDetailsRepo;
 import com.whydigit.efit.repo.DmapRepo;
+import com.whydigit.efit.repo.FlowDetailRepo;
 import com.whydigit.efit.repo.FlowRepo;
 import com.whydigit.efit.repo.IssueItemRepo;
 import com.whydigit.efit.repo.IssueRequestRepo;
@@ -167,6 +169,10 @@ public class MasterServiceImpl implements MasterService {
 	AssetCategoryRepo assetCategoryRepo;
 	@Autowired
 	CustomersRepo customersRepo;
+	
+	@Autowired
+	FlowDetailRepo flowDetailRepo;
+	
 	@Autowired
 	FlowRepo flowRepo;
 	@Autowired
@@ -548,17 +554,25 @@ public class MasterServiceImpl implements MasterService {
 	}
 
 	@Override
+	public List<CustomersVO> getAllActiveCustomers(Long orgId) {
+		List<CustomersVO> customersVO = new ArrayList<>();
+		if (ObjectUtils.isNotEmpty(orgId)) {
+			LOGGER.info("Successfully Received  CustomerInformation BY OrgId : {}", orgId);
+			customersVO = customersRepo.getAllActiveCustomersByOrgId(orgId);
+		} 
+		return customersVO;
+	}
+	
+	@Override
 	public List<CustomersVO> getAllCustomers(Long orgId) {
 		List<CustomersVO> customersVO = new ArrayList<>();
 		if (ObjectUtils.isNotEmpty(orgId)) {
 			LOGGER.info("Successfully Received  CustomerInformation BY OrgId : {}", orgId);
 			customersVO = customersRepo.getAllCustomersByOrgId(orgId);
-		} else {
-			LOGGER.info("Successfully Received  CustomerInformation For All OrgId.");
-			customersVO = customersRepo.findAll();
-		}
+		} 
 		return customersVO;
 	}
+	
 
 	@Override
 	public CustomersVO getCustomersById(Long id) throws ApplicationException {
@@ -794,23 +808,27 @@ public class MasterServiceImpl implements MasterService {
 	}
 
 	@Override
-	public FlowVO createFlow(FlowDTO flowDTO) {
+	public FlowVO createFlow(FlowDTO flowDTO) throws ApplicationException {
 
-		FlowVO flowVO = createFlowVOByFlowDTO(flowDTO);
+		FlowVO flowVO = createFlowVOByFlowDTO(flowDTO);		
 		flowVO.setCreatedBy(flowDTO.getCreatedBy());
 		flowVO.setModifiedBy(flowDTO.getCreatedBy());
 		flowVO.setEmitter(flowRepo.findEmiterbyId(flowVO.getEmitterId()));
 //		flowVO.setDublicateFlowName(flowDTO.getOrgId()+flowDTO.getFlowName());
 		flowVO.setWarehouseLocation(flowRepo.getWarehouseLocationByLocationId(flowDTO.getWarehouseId()));
+		flowVO.setRetrievalWarehouseLocation(flowRepo.getWarehouseLocationByLocationId(flowDTO.getRetrievalWarehouseId()));
 		flowVO.setReceiver(flowRepo.getReceiverByReceiverId(flowDTO.getReceiverId()));
 
 		return flowRepo.save(flowVO);
 	}
 
-	private FlowVO createFlowVOByFlowDTO(FlowDTO flowDTO) {
+	private FlowVO createFlowVOByFlowDTO(FlowDTO flowDTO) throws ApplicationException {
+		if (flowRepo.existsByFlowNameAndOrgId(flowDTO.getFlowName(), flowDTO.getOrgId())) {
+		    throw new ApplicationException("Flow Name Already exists.");
+		}
 		List<FlowDetailVO> flowDetailVOList = new ArrayList<>();
-		FlowVO flowVO = FlowVO.builder().active(flowDTO.isActive()).orgin(flowDTO.getOrgin())
-				.warehouseLocation(flowDTO.getWarehouseLocation()).flowName(flowDTO.getFlowName())
+		FlowVO flowVO = FlowVO.builder().active(flowDTO.isActive()).orgin(flowDTO.getOrgin()).retrievalWarehouseId(flowDTO.getRetrievalWarehouseId())
+				.retrievalWarehouseLocation(flowDTO.getRetrievalWarehouseLocation()).warehouseLocation(flowDTO.getWarehouseLocation()).flowName(flowDTO.getFlowName())
 				.receiverId(flowDTO.getReceiverId()).emitterId(flowDTO.getEmitterId()).emitter(flowDTO.getEmitter())
 				.destination(flowDTO.getDestination()).orgId(flowDTO.getOrgId()).warehouseId(flowDTO.getWarehouseId())
 				.flowDetailVO(flowDetailVOList).build();
@@ -830,14 +848,84 @@ public class MasterServiceImpl implements MasterService {
 	}
 
 	@Override
-	public Optional<FlowVO> updateFlow(FlowVO flowVO) {
-		if (flowRepo.existsById(flowVO.getId())) {
-			flowVO.setEmitter(flowRepo.findEmiterbyId(flowVO.getEmitterId()));
-			return Optional.of(flowRepo.save(flowVO));
-		} else {
-			return Optional.empty();
+	public FlowVO updateFlow(FlowDTO flowDTO) throws ApplicationException {
+		FlowVO flowVO = new FlowVO();
+		if (ObjectUtils.isNotEmpty(flowDTO.getId())) {
+			flowVO = flowRepo.findById(flowDTO.getId())
+					.orElseThrow(() -> new ApplicationException("Flow details not found"));
 		}
+
+		getFlowVOFromFlowDTO(flowDTO, flowVO);
+
+		// Update customer details excluding customer type and customer code
+		// Update or add new address details
+		List<FlowDetailVO> flowDetailVOList = new ArrayList<>();
+		if (flowDTO.getFlowDetailDTO() != null) {
+		    for (FlowDetailDTO flowDetailDTO : flowDTO.getFlowDetailDTO()) {
+		        if (flowDetailDTO.getId() != 0) {
+		            FlowDetailVO flowDetailVO1 = flowDetailRepo.findById(flowDetailDTO.getId()).orElseThrow(
+		                    () -> new ApplicationException("Flow details not found for ID: " + flowDetailDTO.getId()));
+		            flowDetailVO1.setActive(flowDetailDTO.isActive());
+		            flowDetailVO1.setCycleTime(flowDetailDTO.getCycleTime());
+		            flowDetailVO1.setEmitterId(flowDTO.getEmitterId());
+		            flowDetailVO1.setOrgId(flowDetailDTO.getOrgId());
+		            flowDetailVO1.setPartName(flowDetailDTO.getPartName());
+		            flowDetailVO1.setKitDesc(flowDetailDTO.getKitDesc());
+		            flowDetailVO1.setKitNo(flowDetailDTO.getKitNo());
+		            flowDetailVO1.setPartNumber(flowDetailDTO.getPartNumber());
+		            flowDetailVO1.setPartQty(kitRepo.findPartqty(flowDetailDTO.getKitNo()));
+		            flowDetailVO1.setEmitter(flowRepo.findEmiterbyId(flowDTO.getEmitterId()));
+		            flowDetailVO1.setFlowVO(flowVO);
+		            flowDetailVOList.add(flowDetailVO1);
+		        } else {
+		            FlowDetailVO flowDetailVO1 = new FlowDetailVO();
+		            flowDetailVO1.setActive(flowDetailDTO.isActive());
+		            flowDetailVO1.setCycleTime(flowDetailDTO.getCycleTime());
+		            flowDetailVO1.setEmitterId(flowDTO.getEmitterId());
+		            flowDetailVO1.setOrgId(flowDetailDTO.getOrgId());
+		            flowDetailVO1.setPartName(flowDetailDTO.getPartName());
+		            flowDetailVO1.setKitDesc(flowDetailDTO.getKitDesc());
+		            flowDetailVO1.setKitNo(flowDetailDTO.getKitNo());
+		            flowDetailVO1.setPartNumber(flowDetailDTO.getPartNumber());
+		            flowDetailVO1.setPartQty(kitRepo.findPartqty(flowDetailDTO.getKitNo()));
+		            flowDetailVO1.setEmitter(flowRepo.findEmiterbyId(flowDTO.getEmitterId()));
+		            flowDetailVO1.setFlowVO(flowVO);
+		            flowDetailVOList.add(flowDetailVO1);
+		        }
+		    }
+		}
+		flowVO.setFlowDetailVO(flowDetailVOList);
+		return flowRepo.save(flowVO);
 	}
+	private void getFlowVOFromFlowDTO(FlowDTO flowDTO, FlowVO flowVO)
+			throws ApplicationException {
+		FlowVO existingFlow = flowRepo.findById(flowDTO.getId())
+	            .orElseThrow(() -> new ApplicationException("Flow with ID " + flowDTO.getId() + " not found"));
+
+	    if (!existingFlow.getFlowName().equals(flowDTO.getFlowName())) {
+	        // Check if there's already an entry with the same Flow Name and orgId
+	        if (flowRepo.existsByFlowNameAndOrgId(flowDTO.getFlowName(), existingFlow.getOrgId())) {
+	            throw new ApplicationException("Flow Name Already exists");
+	        }
+	        // Update Flow Name if there's no duplicate
+	        flowVO.setFlowName(flowDTO.getFlowName());
+	    }
+
+	    // Update other fields
+	    flowVO.setActive(flowDTO.isActive());
+	    flowVO.setOrgin(flowDTO.getOrgin());
+	    flowVO.setRetrievalWarehouseId(flowDTO.getRetrievalWarehouseId());
+	    flowVO.setRetrievalWarehouseLocation(flowDTO.getRetrievalWarehouseLocation());
+	    flowVO.setWarehouseLocation(flowDTO.getWarehouseLocation());
+	    flowVO.setReceiverId(flowDTO.getReceiverId());
+	    flowVO.setEmitterId(flowDTO.getEmitterId());
+	    flowVO.setEmitter(flowRepo.findEmiterbyId(flowDTO.getEmitterId()));
+	    flowVO.setDestination(flowDTO.getDestination());
+	    flowVO.setOrgId(flowDTO.getOrgId());
+	    flowVO.setWarehouseId(flowDTO.getWarehouseId());
+	    flowVO.setReceiver(flowRepo.getReceiverByReceiverId(flowDTO.getReceiverId()));
+	}
+
 
 	@Override
 	public void deleteFlow(long id) {
@@ -1063,6 +1151,7 @@ public class MasterServiceImpl implements MasterService {
 			KitResponse.setKitDesc(kit.getKitDesc());
 			KitResponse.setPartQty(kit.getPartQty());
 			KitResponse.setOrgId(kit.getOrgId());
+			KitResponse.setActive(kit.getActive());
 			KitResponse.setEflag(kit.isEflag());
 			Map<String, List<KitAssetVO>> kitAssetVOByCategory = kit.getKitAssetVO().stream()
 					.collect(Collectors.groupingBy(KitAssetVO::getAssetCategory));
@@ -1192,7 +1281,7 @@ public class MasterServiceImpl implements MasterService {
 
 	@Override
 	public Map<String, List<CustomersVO>> CustomersType(Long orgId) {
-		List<CustomersVO> customersVO = customersRepo.findByOrgId(orgId);
+		List<CustomersVO> customersVO = customersRepo.getAllActiveCustomersByOrgId(orgId);
 		Map<String, List<CustomersVO>> customers = new HashMap<>();
 		List<CustomersVO> emitterCustomersVO = customersVO.stream()
 				.filter(c -> c.getCustomerType() == CustomerConstant.CUSTOMER_TYPE_EMITTER
@@ -1265,8 +1354,23 @@ public class MasterServiceImpl implements MasterService {
 	}
 
 	@Override
-	public List<VendorVO> getAllVendor() {
-		return VendorRepo.findAll();
+	public List<VendorVO> getAllVendor(Long orgId) {
+		List<VendorVO> vendorVO = new ArrayList<>();
+		if (ObjectUtils.isNotEmpty(orgId)) {
+			LOGGER.info("Successfully Received Vendor Information BY OrgId : {}", orgId);
+			vendorVO = vendorRepo.getAllVenderByOrgId(orgId);
+		} 
+		return vendorVO;
+	}
+	
+	@Override
+	public List<VendorVO> getAllActiveVendor(Long orgId) {
+		List<VendorVO> vendorVO = new ArrayList<>();
+		if (ObjectUtils.isNotEmpty(orgId)) {
+			LOGGER.info("Successfully Received Vendor Information BY OrgId : {}", orgId);
+			vendorVO = vendorRepo.getAllActiveVenderByOrgId(orgId);
+		} 
+		return vendorVO;
 	}
 
 	@Override
@@ -1574,6 +1678,9 @@ public class MasterServiceImpl implements MasterService {
 		assetInwardVO.setStockBranch(assetInwardDTO.getStockBranch());
 		assetInwardVO.setSourceFrom(assetInwardDTO.getSourceFrom());
 		assetInwardVO.setOrgId(assetInwardDTO.getOrgId());
+		assetInwardVO.setCategory(assetInwardDTO.getCategory());
+		assetInwardVO.setAssetCode(assetInwardDTO.getAssetCode());
+		assetInwardVO.setQty(assetInwardDTO.getQty());
 		assetInwardVO.setCreatedBy(assetInwardDTO.getCreatedBy());
 		assetInwardVO.setModifiedBy(assetInwardDTO.getCreatedBy());
 		List<AssetInwardDetailVO> assetInwardDetailVO = new ArrayList<>();
@@ -1604,6 +1711,7 @@ public class MasterServiceImpl implements MasterService {
 				assetStockDetailsVO.setStockDate(assetInwardVO1.getDocDate());
 				assetStockDetailsVO.setStockBranch(assetInwardVO1.getSourceFrom());
 				assetStockDetailsVO.setSku(assetdetails.getSkuDetail());
+				assetStockDetailsVO.setCategory(assetInwardVO1.getCategory());
 				assetStockDetailsVO.setSkuCode(assetdetails.getSkucode());
 				assetStockDetailsVO.setSkuQty(assetdetails.getSkuQty() * -1);
 				assetStockDetailsVO.setStockValue(assetdetails.getStockValue());
@@ -1635,6 +1743,7 @@ public class MasterServiceImpl implements MasterService {
 				assetStockDetailsVO.setSku(assetdetails.getSkuDetail());
 				assetStockDetailsVO.setSkuCode(assetdetails.getSkucode());
 				assetStockDetailsVO.setSkuQty(assetdetails.getSkuQty());
+				assetStockDetailsVO.setCategory(assetInwardVO1.getCategory());
 				assetStockDetailsVO.setStockValue(assetdetails.getStockValue());
 				assetStockDetailsVO.setStockLocation(assetdetails.getStockLocation());
 				assetStockDetailsVO.setBinLocation(assetdetails.getBinLocation());
@@ -1712,7 +1821,7 @@ public class MasterServiceImpl implements MasterService {
 		assetTaggingVO.setCreatedBy(assetTaggingDTO.getCreatedBy());
 		assetTaggingVO.setModifiedBy(assetTaggingDTO.getCreatedBy());
 		assetTaggingVO.setActive(true);
-		assetTaggingVO.setCategory(assetTaggingVO.getCategory());
+		assetTaggingVO.setCategory(assetTaggingDTO.getCategory());
 		assetTaggingVO.setAsset(assetTaggingDTO.getAsset());
 		assetTaggingVO.setAssetCode(assetTaggingDTO.getAssetCode());
 		assetTaggingVO.setSeqFrom(assetTaggingDTO.getSeqFrom());
@@ -1742,8 +1851,10 @@ public class MasterServiceImpl implements MasterService {
 				assetTaggingDetails.setAsset(taggingDetailsDTO.getAsset());
 				assetTaggingDetails.setOrgId(assetTaggingVO.getOrgId());
 				assetTaggingDetails.setTagCode(taggingDetailsDTO.getTagCode());
+				assetTaggingDetails.setCategory(taggingDetailsDTO.getCategory());
 				assetTaggingDetails.setTaggingVO(assetTaggingVO);
 				assetTaggingDetailsVO.add(assetTaggingDetails);
+				
 			}
 		}
 		assetTaggingVO.setTaggingDetails(assetTaggingDetailsVO);
@@ -1759,6 +1870,7 @@ public class MasterServiceImpl implements MasterService {
 				assetStockDetailsVO.setSkuCode(assetTaggingDetails.getAssetCode());
 				assetStockDetailsVO.setSku(assetTaggingDetails.getAsset());
 				assetStockDetailsVO.setSkuQty(1);
+				assetStockDetailsVO.setCategory(assetTaggingDetails.getCategory());		
 				assetStockDetailsVO.setOrgId(savedAssetTaggingVO.getOrgId());
 				assetStockDetailsVO.setRfId(assetTaggingDetails.getRfId());
 				assetStockDetailsVO.setTagCode(assetTaggingDetails.getTagCode());
@@ -1784,10 +1896,23 @@ public class MasterServiceImpl implements MasterService {
 	}
 
 	@Override
-	public Set<Object[]> getTagCodeByAsset(String assetcode, String asset, int startno, int endno) {
+	public Set<Object[]> getTagCodeByAsset(String assetcode, String asset,int endno,String category) {
 
 		int finyr = assetTaggingRepo.getFinyr();
-		return assetTaggingRepo.getTagCodeByAsset(assetcode, asset, startno, endno, finyr);
+		int start=assetTaggingRepo.getstno(assetcode);
+		int st=0;
+		int end=0;
+		if(start!=1) {
+			 st=start+1;
+			 end=start+endno;
+		}
+		else
+		{
+			st=start;
+			end=endno;
+		}
+		
+		return assetTaggingRepo.getTagCodeByAsset(assetcode, asset, st, end, finyr,category);
 	}
 
 	@Override
@@ -2194,6 +2319,7 @@ public class MasterServiceImpl implements MasterService {
 				assetStockDetailsVO.setStockDate(savedBinInwardVO.getAllotDate());
 				assetStockDetailsVO.setSkuCode(binInwardDetails.getAssetCode());
 				assetStockDetailsVO.setSku(binInwardDetails.getAsset());
+				assetStockDetailsVO.setCategory(assetRepo.getCategoryByAssetCodeId(binInwardDetails.getAssetCode()));
 				assetStockDetailsVO.setSkuQty(binInwardDetails.getRecQty() * -1);
 				assetStockDetailsVO.setRfId(binInwardDetails.getRfId());
 				assetStockDetailsVO.setTagCode(binInwardDetails.getTagCode());
@@ -2220,6 +2346,7 @@ public class MasterServiceImpl implements MasterService {
 				assetStockDetailsVO.setStockRef(savedBinInwardVO.getDocid());
 				assetStockDetailsVO.setStockDate(savedBinInwardVO.getDocDate());
 				assetStockDetailsVO.setSkuCode(binInwardDetails.getAssetCode());
+				assetStockDetailsVO.setCategory(assetRepo.getCategoryByAssetCodeId(binInwardDetails.getAssetCode()));
 				assetStockDetailsVO.setSku(binInwardDetails.getAsset());
 				assetStockDetailsVO.setSkuQty(binInwardDetails.getRecQty());
 				assetStockDetailsVO.setRfId(binInwardDetails.getRfId());
@@ -2508,8 +2635,8 @@ public class MasterServiceImpl implements MasterService {
 	}
 	
 	@Override
-	public Set<Object[]> getAvailAssetDetailsByBranch(Long orgId, String stockBranch) {
-		return assetStockDetailsRepo.getAvailAssetDetailsByBranch(orgId, stockBranch);
+	public Set<Object[]> getAvailAssetDetailsByBranch(Long orgId, String stockBranch,String category) {
+		return assetStockDetailsRepo.getAvailAssetDetailsByBranch(orgId, stockBranch,category);
 	}
 
 }

@@ -55,4 +55,6 @@ public interface FlowRepo extends JpaRepository<FlowVO, Long> {
 	@Query(nativeQuery = true,value = "select * from flow f left join flow1 f1 on f.flowid=f1.flowid where kitcode=?1")
 	List<FlowVO> getFlowByKitCode(String kitcode);
 
+	boolean existsByFlowNameAndOrgId(String flowName, long orgId);
+
 }

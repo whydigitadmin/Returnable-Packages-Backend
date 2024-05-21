@@ -11,8 +11,13 @@ import com.whydigit.efit.entity.CustomersVO;
 
 @Repository
 public interface CustomersRepo extends JpaRepository<CustomersVO, Long> {
+	@Query(value = "select a from CustomersVO a Where a.orgId=?1 and a.active=true")
+	List<CustomersVO> getAllActiveCustomersByOrgId(Long orgId);
+	
 	@Query(value = "select a from CustomersVO a Where a.orgId=?1")
 	List<CustomersVO> getAllCustomersByOrgId(Long orgId);
+	
+	
 
 	List<CustomersVO> findByOrgId(Long orgId);
 
@@ -39,5 +44,7 @@ public interface CustomersRepo extends JpaRepository<CustomersVO, Long> {
 	boolean existsByEntityLegalNameAndOrgId(String entityLegalName, long orgId);
 
 	boolean existsByDisplayNameAndOrgId(String displayName, long orgId);
+
+	
 
 }

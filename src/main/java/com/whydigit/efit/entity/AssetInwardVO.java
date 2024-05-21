@@ -56,6 +56,13 @@ public class AssetInwardVO {
 	@Column(name="finyr",length = 15)
 	private String finyr;
 	
+	@Column(name="assetcategory")
+	private String category;
+	@Column(name="assetcode")
+	private String assetCode;
+	
+	private int qty;
+	
 	
 	
 	

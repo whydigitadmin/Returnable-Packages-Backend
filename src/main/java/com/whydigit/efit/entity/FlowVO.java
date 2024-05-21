@@ -38,35 +38,42 @@ public class FlowVO {
 	private Long id;
 	@Column(name = "orgid")
 	private Long orgId;
-	@Column(name = "receiverid", length = 25)
+	@Column(name = "receiverid")
 	private Long receiverId;
-	@Column(name = "flow", length = 100)
+	@Column(name = "flow")
 	private String flowName;
 	@Column(name = "emitter")
 	private String emitter;
 	@Column(name = "emitterid")
 	private Long emitterId;
-	@Column(name = "receiver", length = 25)
+	@Column(name = "receiver")
 	private String receiver;
-	@Column(name = "orgin", length = 25)
+	@Column(name = "orgin")
 	private String orgin;
-	@Column(name = "destination", length = 25)
+	@Column(name = "destination")
 	private String destination;
 	private boolean active;
-	@Column(name = "whlocation", length = 25)
+	@Column(name = "whlocation")
 	private String warehouseLocation;
+	
 	@Column(name = "warehouseid")
 	private Long warehouseId;
+	
+	@Column(name = "retrievalwhlocation")
+	private String retrievalWarehouseLocation;
+	@Column(name = "retrievalwarehouseid")
+	private Long retrievalWarehouseId;
+	
 	private boolean cancel;
 	@Column(name = "docdate")
 	private LocalDate docDate;
-	@Column(name = "docid", length = 16)
+	@Column(name = "docid")
 	private String docId;
-	@Column(name = "createdby", length = 25)
+	@Column(name = "createdby")
 	private String createdBy;
-	@Column(name = "modifiedby", length = 25)
+	@Column(name = "modifiedby")
 	private String modifiedBy;
-	@Column(name = "cancelRemarks", length = 25)
+	@Column(name = "cancelRemarks")
 	private String cancelRemarks;
 	
 	@JsonGetter("active")
