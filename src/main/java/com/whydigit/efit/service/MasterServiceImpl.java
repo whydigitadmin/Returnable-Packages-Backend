@@ -2640,4 +2640,9 @@ public class MasterServiceImpl implements MasterService {
 		return assetStockDetailsRepo.getAvailAssetDetailsByBranch(orgId, stockBranch,category);
 	}
 
+	@Override
+	public AssetTaggingVO getTaggingById(Long id) {
+		return assetTaggingRepo.findById(id).get();
+	}
+
 }
