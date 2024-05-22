@@ -842,7 +842,6 @@ public class MasterServiceImpl implements MasterService {
 					.partQty(kitRepo.findPartqty(fdDTO.getKitNo()))
 					.emitter(flowRepo.findEmiterbyId(flowVO.getEmitterId())).flowVO(flowVO).build();
 		}).collect(Collectors.toList());
-
 		flowVO.setFlowDetailVO(flowDetailVOList);
 		return flowVO;
 	}
@@ -915,7 +914,6 @@ public class MasterServiceImpl implements MasterService {
 	    flowVO.setActive(flowDTO.isActive());
 	    flowVO.setOrgin(flowDTO.getOrgin());
 	    flowVO.setRetrievalWarehouseId(flowDTO.getRetrievalWarehouseId());
-	    flowVO.setRetrievalWarehouseLocation(flowDTO.getRetrievalWarehouseLocation());
 	    flowVO.setWarehouseLocation(flowDTO.getWarehouseLocation());
 	    flowVO.setReceiverId(flowDTO.getReceiverId());
 	    flowVO.setEmitterId(flowDTO.getEmitterId());
@@ -923,7 +921,10 @@ public class MasterServiceImpl implements MasterService {
 	    flowVO.setDestination(flowDTO.getDestination());
 	    flowVO.setOrgId(flowDTO.getOrgId());
 	    flowVO.setWarehouseId(flowDTO.getWarehouseId());
-	    flowVO.setReceiver(flowRepo.getReceiverByReceiverId(flowDTO.getReceiverId()));
+	    flowVO.setWarehouseLocation(flowRepo.getWarehouseLocationByLocationId(flowDTO.getWarehouseId()));
+		flowVO.setRetrievalWarehouseLocation(flowRepo.getWarehouseLocationByLocationId(flowDTO.getRetrievalWarehouseId()));
+		flowVO.setReceiver(flowRepo.getReceiverByReceiverId(flowDTO.getReceiverId()));
+	   
 	}
 
 
