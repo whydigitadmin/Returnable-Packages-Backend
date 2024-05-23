@@ -26,4 +26,7 @@ public interface StockBranchRepo extends JpaRepository<StockBranchVO, Long> {
 	@Query(value = "select a from StockBranchVO a where orgId=?1 and a.active=true")
 	List<StockBranchVO> findActiveBranchByOrgId(Long orgId);
 
+
+	boolean existsBybranchCodeAndOrgId(String branchCode, Long orgId);
+
 }

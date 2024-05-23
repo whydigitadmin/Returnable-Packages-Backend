@@ -1785,6 +1785,9 @@ public class MasterServiceImpl implements MasterService {
 		if(stockBranchRepo.existsByBranchAndOrgId(stockBranchDTO.getBranch(),stockBranchDTO.getOrgId())) {
 			throw new ApplicationException("Branch Already Exist");
 		}
+		if(stockBranchRepo.existsBybranchCodeAndOrgId(stockBranchDTO.getBranchCode(),stockBranchDTO.getOrgId())) {
+			throw new ApplicationException("Branch Code Already Exist");
+		}
 		
 		StockBranchVO stockBranchVO = new StockBranchVO();
 		stockBranchVO.setBranch(stockBranchDTO.getBranch());
@@ -1808,8 +1811,12 @@ public class MasterServiceImpl implements MasterService {
 				}
 				existingStockBranch.setBranch(stockBranchDTO.getBranch());
 			}
-			
-			existingStockBranch.setBranchCode(stockBranchDTO.getBranchCode());
+			if(!existingStockBranch.getBranchCode().equals(stockBranchDTO.getBranchCode())){
+				if(stockBranchRepo.existsBybranchCodeAndOrgId(stockBranchDTO.getBranchCode(),stockBranchDTO.getOrgId())) {
+					throw new ApplicationException("Branch Code Already Exist");
+				}
+				existingStockBranch.setBranchCode(stockBranchDTO.getBranchCode());
+			}
 			existingStockBranch.setActive(stockBranchDTO.isActive());
 			existingStockBranch.setModifiedBy(stockBranchDTO.getCreatedby());
 			return stockBranchRepo.save(existingStockBranch);

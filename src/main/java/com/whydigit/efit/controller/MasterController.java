@@ -3350,7 +3350,7 @@ public class MasterController extends BaseController {
 		
 		@PutMapping("/branch")
 		public ResponseEntity<ResponseDTO> updateCreateBranch(@RequestBody BranchDTO branchDTO) {
-			String methodName = "createBranch()";
+			String methodName = "updateCreateBranch()";
 			LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 			String errorMsg = null;
 			Map<String, Object> responseObjectsMap = new HashMap<>();
@@ -3421,11 +3421,5 @@ public class MasterController extends BaseController {
 			LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 			return ResponseEntity.ok().body(responseDTO);
 		}
-
-		
-		
-
-		
-
 
 }
