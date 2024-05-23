@@ -12,4 +12,6 @@ public interface WarehouseRepository extends JpaRepository<WarehouseVO, Long>{
 @Query(value = "select w.warehouseLocation,w.warehouseId  from WarehouseVO w where w.orgId=?1")
 	Set<Object[]> getWarehouseLocationByOrgID(Long orgId);
 
+boolean existsByLocationNameAndUnitAndOrgId(String locationName, String unit, Long orgId);
+
 }

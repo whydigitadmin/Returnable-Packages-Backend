@@ -35,19 +35,19 @@ public class StockBranchVO {
 	@Column(name="active")
 	private boolean active;
 	
-	@Column(name="createdby", length = 50)
+	@Column(name="createdby")
 	private String createdBy;
 	
-	@Column(name="modifiedby", length = 50)
+	@Column(name="modifiedby")
 	private String modifiedBy;
 	
-	@Column(name="cancelremarks", length = 50)
+	@Column(name="cancelremarks")
 	private String cancelRemarks;
 	
-	@Column(name="branchcode", length = 10)
+	@Column(name="branchcode")
 	private String branchCode;
 	
-	@Column(name="branch", length = 50)
+	@Column(name="branch"  )
 	private String branch;
 	
 	@Column(name="orgid")
