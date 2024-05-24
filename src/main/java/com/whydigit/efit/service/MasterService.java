@@ -62,6 +62,8 @@ import com.whydigit.efit.exception.ApplicationException;
 public interface MasterService {
 
 	List<AssetVO> getAllAsset(Long orgId);
+	
+	List<AssetVO> getAllActiveAsset(Long orgId);
 
 	List<AssetVO> getAllAssetByCategory(Long orgId,String category);
 	
@@ -109,6 +111,8 @@ public interface MasterService {
 	// FLOW
 
 	List<FlowVO> getAllFlow(Long orgId, Long emitterId);
+	
+	List<FlowVO> getAllActiveFlow(Long orgId, Long emitterId);
 
 	Set<Object[]> getKitDetailsByEmitter(Long emitterId, Long orgId);
 	
@@ -154,6 +158,8 @@ public interface MasterService {
 
 	// Create Kit
 	List<KitResponseDTO> getAllKit(Long orgId);
+	
+	List<KitResponseDTO> getActiveAllKit(Long orgId);
 	
 	Optional<KitVO> getKitById(Long id);
 

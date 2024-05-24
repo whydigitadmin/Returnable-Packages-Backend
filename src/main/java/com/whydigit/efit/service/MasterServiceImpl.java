@@ -300,6 +300,16 @@ public class MasterServiceImpl implements MasterService {
 		}
 		return assetVO;
 	}
+	
+	@Override
+	public List<AssetVO> getAllActiveAsset(Long orgId) {
+		List<AssetVO> assetVO = new ArrayList<>();
+		if (ObjectUtils.isNotEmpty(orgId)) {
+			LOGGER.info("Successfully Received  AssetInformation BY OrgId : {}", orgId);
+			assetVO = assetRepo.getAllActiveAssetByOrgId(orgId);
+		} 
+		return assetVO;
+	}
 
 	@Override
 	public List<AssetVO> getAllAssetByCategory(Long orgId, String category) {
@@ -802,10 +812,23 @@ public class MasterServiceImpl implements MasterService {
 		} else if (ObjectUtils.isNotEmpty(orgId) && (ObjectUtils.isNotEmpty(emitterId))) {
 			LOGGER.info("Successfully Received Flow BY EmitterId : {} orgId : {}", emitterId, orgId);
 			flowVO = flowRepo.findByOrgIdAndEmitterId(orgId, emitterId);
-		} else {
-			LOGGER.info("Successfully Received Flow Information For All OrgId.");
-			flowVO = flowRepo.findAll();
-		}
+		} 
+		return flowVO;
+	}
+	
+	@Override
+	public List<FlowVO> getAllActiveFlow(Long orgId, Long emitterId) {
+		List<FlowVO> flowVO = new ArrayList<>();
+		if (ObjectUtils.isNotEmpty(orgId) && (ObjectUtils.isEmpty(emitterId))) {
+			LOGGER.info("Successfully Received Flow BY OrgId : {}", orgId);
+			flowVO = flowRepo.getActiveAllFlow(orgId);
+		} else if (ObjectUtils.isEmpty(orgId) && (ObjectUtils.isNotEmpty(emitterId))) {
+			LOGGER.info("Successfully Received Flow BY EmitterId : {}", emitterId);
+			flowVO = flowRepo.findActiveByEmitterId(emitterId);
+		} else if (ObjectUtils.isNotEmpty(orgId) && (ObjectUtils.isNotEmpty(emitterId))) {
+			LOGGER.info("Successfully Received Flow BY EmitterId : {} orgId : {}", emitterId, orgId);
+			flowVO = flowRepo.findActiveByOrgIdAndEmitterId(orgId, emitterId);
+		} 
 		return flowVO;
 	}
 
@@ -821,7 +844,6 @@ public class MasterServiceImpl implements MasterService {
 		flowVO.setCreatedBy(flowDTO.getCreatedBy());
 		flowVO.setModifiedBy(flowDTO.getCreatedBy());
 		flowVO.setEmitter(flowRepo.findEmiterbyId(flowVO.getEmitterId()));
-//		flowVO.setDublicateFlowName(flowDTO.getOrgId()+flowDTO.getFlowName());
 		flowVO.setWarehouseLocation(flowRepo.getWarehouseLocationByLocationId(flowDTO.getWarehouseId()));
 		flowVO.setRetrievalWarehouseLocation(flowRepo.getWarehouseLocationByLocationId(flowDTO.getRetrievalWarehouseId()));
 		flowVO.setReceiver(flowRepo.getReceiverByReceiverId(flowDTO.getReceiverId()));
@@ -1168,6 +1190,35 @@ public class MasterServiceImpl implements MasterService {
 		}).collect(Collectors.toList());
 		return kitResponseDTO;
 	}
+	
+	@Override
+	public List<KitResponseDTO> getActiveAllKit(Long orgId) {
+		List<KitResponseDTO> kitResponseDTO = new ArrayList<>();
+		List<KitVO> kitVO = new ArrayList<>();
+		if (ObjectUtils.isEmpty(orgId)) {
+			LOGGER.info("Get All kit information.", orgId);
+			kitVO = kitRepo.findAll();
+		} else {
+			LOGGER.info("Get All kit information by orgID : {}", orgId);
+			kitVO = kitRepo.findActiveByOrgId(orgId);
+		}
+		kitResponseDTO = kitVO.stream().map(kit -> {
+			KitResponseDTO KitResponse = new KitResponseDTO();
+			KitResponse.setId(kit.getId());
+			KitResponse.setDocId(kit.getDocId());
+			KitResponse.setKitNo(kit.getKitNo());
+			KitResponse.setKitDesc(kit.getKitDesc());
+			KitResponse.setPartQty(kit.getPartQty());
+			KitResponse.setOrgId(kit.getOrgId());
+			KitResponse.setActive(kit.getActive());
+			KitResponse.setEflag(kit.isEflag());
+			Map<String, List<KitAssetVO>> kitAssetVOByCategory = kit.getKitAssetVO().stream()
+					.collect(Collectors.groupingBy(KitAssetVO::getAssetCategory));
+			KitResponse.setKitAssetCategory(kitAssetVOByCategory);
+			return KitResponse;
+		}).collect(Collectors.toList());
+		return kitResponseDTO;
+	}
 
 	@Override
 	public Optional<KitVO> getKitById(Long id) {
@@ -1186,7 +1237,7 @@ public class MasterServiceImpl implements MasterService {
 		String kit = finyr + "KT" + kitRepo.finddocid();
 		List<KitAssetVO> kitAssetVO = new ArrayList<>();
 		KitVO kitVO = KitVO.builder().kitDesc(kitDTO.getKitDesc()).kitNo(kitDTO.getKitNo()).docId(kit).active(kitDTO.isActive())
-				.createdBy(kitDTO.getCreatedBy()).modifiedBy(kitDTO.getCreatedBy()).orgId(kitDTO.getOrgId())
+				.createdBy(kitDTO.getCreatedBy()).modifiedBy(kitDTO.getCreatedBy()).orgId(kitDTO.getOrgId()).active(kitDTO.isActive())
 				.partQty(kitDTO.getPartQuantity()).kitAssetVO(kitAssetVO).build();
 		for (KitAssetDTO kitAsset : kitDTO.getKitAssetDTO()) {
 			AssetVO assetVO = assetRepo.findByAssetCodeIdAndOrgId(kitAsset.getAssetCodeId(), kitDTO.getOrgId());

@@ -42,7 +42,7 @@ public class WarehouseController extends BaseController {
 	WarehouseService warehouseService;
 
 	@GetMapping("/view")
-	public ResponseEntity<ResponseDTO> getAllWarehouse() {
+	public ResponseEntity<ResponseDTO> getAllWarehouse(@RequestParam Long orgId) {
 		String methodName = "getAllWarehouse()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -50,7 +50,34 @@ public class WarehouseController extends BaseController {
 		ResponseDTO responseDTO = null;
 		List<WarehouseVO> warehousevo = new ArrayList<>();
 		try {
-			warehousevo = warehouseService.getAllWarehouse();
+			warehousevo = warehouseService.getAllWarehouse(orgId);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Warehouse information get successfully");
+			responseObjectsMap.put("WarehouseVO", warehousevo);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "Warehouse information receive failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+
+	}
+	
+	@GetMapping("/ActiveWarehosue")
+	public ResponseEntity<ResponseDTO> getAllActiveWarehouse(@RequestParam Long orgId) {
+		String methodName = "getAllActiveWarehouse()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<WarehouseVO> warehousevo = new ArrayList<>();
+		try {
+			warehousevo = warehouseService.getAllActiveWarehouse(orgId);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);

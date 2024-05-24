@@ -13,4 +13,5 @@ import com.whydigit.efit.entity.LogisticsVO;
 public interface LogisticsRepo extends JpaRepository<LogisticsVO, Long> {
 	@Query(value = "select a from LogisticsVO a Where a.orgId=?1")
 	List<LogisticsVO> getLogisticsByOrgId(Long orgId);
+
 }

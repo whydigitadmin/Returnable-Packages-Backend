@@ -85,6 +85,16 @@ public class PartStudyServiceImpl implements PartStudyService {
 		}
 		return basicDetailVO;
 	}
+	
+	@Override
+	public List<BasicDetailVO> getAllActiveBasicDetail(Long orgId) {
+		List<BasicDetailVO> basicDetailVO = new ArrayList<>();
+		if (ObjectUtils.isNotEmpty(orgId)) {
+			LOGGER.info("Successfully Received  BasicDetail Information BY OrgId : {}", orgId);
+			basicDetailVO = basicDetailRepo.getAllActiveBasicDetailByOrgId(orgId);
+		} 
+		return basicDetailVO;
+	}
 
 	@Override
 	public BasicDetailVO getBasicDetailById(Long id) throws ApplicationException {
@@ -162,6 +172,8 @@ public class PartStudyServiceImpl implements PartStudyService {
 		}
 		return packingDetailVO;
 	}
+	
+	
 
 	@Override
 	public PackingDetailVO getPackingDetailById(Long id) throws ApplicationException {
@@ -244,6 +256,7 @@ public class PartStudyServiceImpl implements PartStudyService {
 		}
 		return logisticsVO;
 	}
+	
 
 	@Override
 	public Optional<LogisticsVO> getLogisticsById(Long id) {
@@ -288,6 +301,7 @@ public class PartStudyServiceImpl implements PartStudyService {
 		}
 		return stockDetailVO;
 	}
+	
 
 	@Override
 	public Optional<StockDetailVO> getStockDetailById(Long id) {

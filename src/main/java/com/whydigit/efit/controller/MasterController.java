@@ -117,6 +117,32 @@ public class MasterController extends BaseController {
 
 	}
 	
+	@GetMapping("/ActiveAsset")
+	public ResponseEntity<ResponseDTO> getAllActiveAsset(@RequestParam(required = false) Long orgId) {
+		String methodName = "getAllActiveAsset()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<AssetVO> assetVO = new ArrayList<>();
+		try {
+			assetVO = masterService.getAllActiveAsset(orgId);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Asset information get successfully");
+			responseObjectsMap.put("assetVO", assetVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "Asset information receive failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+
+	}
+	
 	@GetMapping("/getAllAssetByCategory")
 	public ResponseEntity<ResponseDTO> getAllAssetByCategory(@RequestParam(required = false) Long orgId,@RequestParam(required = false) String category) {
 		String methodName = "getAllAssetByCategory()";
@@ -653,6 +679,32 @@ public class MasterController extends BaseController {
 	}
 
 	// flow
+	@GetMapping("/activeflow")
+	public ResponseEntity<ResponseDTO> getAllActiveflow(@RequestParam(required = false) Long orgId,
+			@RequestParam(required = false) Long emitterId) {
+		String methodName = "getAllActiveflow()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<FlowVO> flowVO = new ArrayList<>();
+		try {
+			flowVO = masterService.getAllActiveFlow(orgId, emitterId);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Flow information get successfully");
+			responseObjectsMap.put("flowVO", flowVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "Flow information receive failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+	
 	@GetMapping("/flow")
 	public ResponseEntity<ResponseDTO> getAllflow(@RequestParam(required = false) Long orgId,
 			@RequestParam(required = false) Long emitterId) {
@@ -953,7 +1005,7 @@ public class MasterController extends BaseController {
 
 	@GetMapping("/Vendor")
 	public ResponseEntity<ResponseDTO> getAllActiveVendor(@RequestParam Long orgId) {
-		String methodName = "getAllVendor()";
+		String methodName = "getAllActiveVendor()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
@@ -1633,6 +1685,30 @@ public class MasterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
+	@GetMapping("/getallActivekit")
+	public ResponseEntity<ResponseDTO> getAllActiveKit(@RequestParam(required = false) Long orgId) {
+		String methodName = "getAllActiveKit()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<KitResponseDTO> kitResponseDTO = new ArrayList<>();
+		try {
+			kitResponseDTO = masterService.getActiveAllKit(orgId);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Kit information get successfully");
+			responseObjectsMap.put("KitVO", kitResponseDTO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "Kit information receive failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
 	@GetMapping("/kit/{id}")
 	public ResponseEntity<ResponseDTO> getKitById(@PathVariable Long id) {
 		String methodName = "getKitById()";
@@ -2021,6 +2097,32 @@ public class MasterController extends BaseController {
 		List<StockBranchVO> branchVOs = new ArrayList<>();
 		try {
 			branchVOs = masterService.getAllStockBranchByOrgId(orgId);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Stock Branch information get successfully");
+			responseObjectsMap.put("branch", branchVOs);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "Stock Branch information receive failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+	
+	@GetMapping("/ActivestockbranchByOrgId")
+	public ResponseEntity<ResponseDTO> getActiveStockBranchByOrgId(@RequestParam Long orgId) {
+		String methodName = "getActiveStockBranchByOrgId()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<StockBranchVO> branchVOs = new ArrayList<>();
+		try {
+			branchVOs = masterService.getAllActiveStockBranchByOrgId(orgId);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
