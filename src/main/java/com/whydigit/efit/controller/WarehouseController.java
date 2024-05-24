@@ -33,7 +33,7 @@ import com.whydigit.efit.service.WarehouseService;
 
 @CrossOrigin
 @RestController
-@RequestMapping("api/warehouse")
+@RequestMapping("/api/warehouse")
 
 public class WarehouseController extends BaseController {
 	public static final Logger LOGGER = LoggerFactory.getLogger(BasicMasterController.class);

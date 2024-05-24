@@ -23,6 +23,7 @@ public interface AssetRepo extends JpaRepository<AssetVO, Long> {
 
 	AssetVO findByAssetCodeIdAndOrgId(String assetCodeId, long orgId);
 
+	@Query(value = "select a from AssetVO a Where a.orgId=?1 and a.category=?2 and a.active=true")
 	List<AssetVO> getAllAssetByOrgIdAndCategory(Long orgId, String category);
 
 
