@@ -88,6 +88,7 @@ import com.whydigit.efit.entity.AssetTaggingDetailsVO;
 import com.whydigit.efit.entity.AssetTaggingVO;
 import com.whydigit.efit.entity.AssetTypeVO;
 import com.whydigit.efit.entity.AssetVO;
+import com.whydigit.efit.entity.BasicDetailVO;
 import com.whydigit.efit.entity.BinAllotmentNewVO;
 import com.whydigit.efit.entity.BinInwardDetailsVO;
 import com.whydigit.efit.entity.BinInwardVO;
@@ -127,6 +128,7 @@ import com.whydigit.efit.repo.AssetStockDetailsRepo;
 import com.whydigit.efit.repo.AssetTaggingDetailsRepo;
 import com.whydigit.efit.repo.AssetTaggingRepo;
 import com.whydigit.efit.repo.AssetTypeRepo;
+import com.whydigit.efit.repo.BasicDetailRepo;
 import com.whydigit.efit.repo.BinAllotmentNewRepo;
 import com.whydigit.efit.repo.BinAllotmentRepo;
 import com.whydigit.efit.repo.BinInwardRepo;
@@ -175,6 +177,9 @@ public class MasterServiceImpl implements MasterService {
 	
 	@Autowired
 	FlowDetailRepo flowDetailRepo;
+	
+	@Autowired
+	BasicDetailRepo basicDetailRepo;
 	
 	@Autowired
 	FlowRepo flowRepo;
@@ -865,6 +870,9 @@ public class MasterServiceImpl implements MasterService {
 			KitVO kitVO = kitRepo.findAllByKitNoAndOrgId(fdDTO.getKitNo(), fdDTO.getOrgId());
 			kitVO.setEflag(true);
 			kitRepo.save(kitVO);
+			BasicDetailVO basicDetailVO= basicDetailRepo.findByPartNumberAndOrgId(fdDTO.getPartNumber(),fdDTO.getOrgId());
+			basicDetailVO.setEflag(true);
+			basicDetailRepo.save(basicDetailVO);
 			return FlowDetailVO.builder().active(fdDTO.isActive()).cycleTime(fdDTO.getCycleTime())
 					.emitterId(flowDTO.getEmitterId()).orgId(flowDTO.getOrgId()).partName(fdDTO.getPartName())
 					.kitDesc(fdDTO.getKitDesc()).kitNo(fdDTO.getKitNo()).partNumber(fdDTO.getPartNumber())

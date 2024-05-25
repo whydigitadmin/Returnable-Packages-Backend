@@ -63,6 +63,7 @@ public class BasicDetailVO {
 	private String docid;
 	private boolean cancel;
 	private boolean active;
+	private boolean eflag=false;
 	
 	@JsonGetter("active")
     public String getActive() {
