@@ -119,6 +119,7 @@ import com.whydigit.efit.entity.UnitVO;
 import com.whydigit.efit.entity.VendorAddressVO;
 import com.whydigit.efit.entity.VendorBankDetailsVO;
 import com.whydigit.efit.entity.VendorVO;
+import com.whydigit.efit.entity.WarehouseVO;
 import com.whydigit.efit.exception.ApplicationException;
 import com.whydigit.efit.repo.AssetCategoryRepo;
 import com.whydigit.efit.repo.AssetInwardDetailRepo;
@@ -161,6 +162,7 @@ import com.whydigit.efit.repo.UserRepo;
 import com.whydigit.efit.repo.VendorAddressRepo;
 import com.whydigit.efit.repo.VendorBankDetailsRepo;
 import com.whydigit.efit.repo.VendorRepo;
+import com.whydigit.efit.repo.WarehouseRepository;
 import com.whydigit.efit.util.CommonUtils;
 
 @Service
@@ -174,6 +176,9 @@ public class MasterServiceImpl implements MasterService {
 	AssetCategoryRepo assetCategoryRepo;
 	@Autowired
 	CustomersRepo customersRepo;
+	
+	@Autowired
+	WarehouseRepository warehouseRepo;
 	
 	@Autowired
 	FlowDetailRepo flowDetailRepo;
@@ -860,12 +865,23 @@ public class MasterServiceImpl implements MasterService {
 		if (flowRepo.existsByFlowNameAndOrgId(flowDTO.getFlowName(), flowDTO.getOrgId())) {
 		    throw new ApplicationException("Flow Name Already exists.");
 		}
+		WarehouseVO warehouseVO = warehouseRepo.findById(flowDTO.getWarehouseId())
+		        .orElseThrow(() -> new ApplicationException("Warehouse not found"));
+		    warehouseVO.setEflag(true);
+		    warehouseRepo.save(warehouseVO);
+		    
+		    WarehouseVO warehouseVO1 = warehouseRepo.findById(flowDTO.getRetrievalWarehouseId())
+			        .orElseThrow(() -> new ApplicationException("Warehouse not found"));
+			    warehouseVO1.setEflag(true);
+			    warehouseRepo.save(warehouseVO1);
+		    
 		List<FlowDetailVO> flowDetailVOList = new ArrayList<>();
-		FlowVO flowVO = FlowVO.builder().active(flowDTO.isActive()).orgin(flowDTO.getOrgin()).retrievalWarehouseId(flowDTO.getRetrievalWarehouseId())
+		FlowVO flowVO =  FlowVO.builder().active(flowDTO.isActive()).orgin(flowDTO.getOrgin()).retrievalWarehouseId(flowDTO.getRetrievalWarehouseId())
 				.retrievalWarehouseLocation(flowDTO.getRetrievalWarehouseLocation()).warehouseLocation(flowDTO.getWarehouseLocation()).flowName(flowDTO.getFlowName())
 				.receiverId(flowDTO.getReceiverId()).emitterId(flowDTO.getEmitterId()).emitter(flowDTO.getEmitter())
 				.destination(flowDTO.getDestination()).orgId(flowDTO.getOrgId()).warehouseId(flowDTO.getWarehouseId())
 				.flowDetailVO(flowDetailVOList).build();
+		
 		flowDetailVOList = flowDTO.getFlowDetailDTO().stream().map(fdDTO -> {
 			KitVO kitVO = kitRepo.findAllByKitNoAndOrgId(fdDTO.getKitNo(), fdDTO.getOrgId());
 			kitVO.setEflag(true);
@@ -2823,8 +2839,6 @@ public class MasterServiceImpl implements MasterService {
 		}
 	    
 	}
-
-		
 	@Override
 	public void deleteBranch(Long id) {
 		branchRepo.deleteById(id);

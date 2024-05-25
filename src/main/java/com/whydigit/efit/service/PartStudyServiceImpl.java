@@ -138,8 +138,13 @@ public class PartStudyServiceImpl implements PartStudyService {
 		basicDetailVO.setEmitterId(basicDetailDTO.getEmitterId());
 		basicDetailVO.setReceiverId(basicDetailDTO.getReceiverId());
 		basicDetailVO.setPartName(basicDetailDTO.getPartName());
+		basicDetailVO.setActive(basicDetailDTO.isActive());
 		basicDetailVO.setPartNumber(basicDetailDTO.getPartNumber());
 		basicDetailVO.setWeight(basicDetailDTO.getWeight());
+		CustomersVO emitter=customersRepo.findById(basicDetailDTO.getEmitterId()).get();
+		basicDetailVO.setEmitterDisplayName(emitter.getDisplayName());
+		CustomersVO receiver=customersRepo.findById(basicDetailDTO.getReceiverId()).get();
+		basicDetailVO.setReceiverDisplayName(receiver.getDisplayName());
 		basicDetailVO.setWeightUnit(basicDetailDTO.getWeightUnit());
 		basicDetailVO.setPartVolume(basicDetailDTO.getPartVolume());
 		basicDetailVO.setHighestVolume(basicDetailDTO.getHighestVolume());

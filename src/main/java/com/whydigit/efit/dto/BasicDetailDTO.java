@@ -23,5 +23,6 @@ public class BasicDetailDTO {
 	private int partVolume;
 	private int highestVolume;
 	private int lowestVolume;
+	private boolean active;
 	
 }

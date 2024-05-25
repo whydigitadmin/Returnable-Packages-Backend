@@ -67,8 +67,7 @@ public class WarehouseController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 
 	}
-	
-	@GetMapping("/ActiveWarehosue")
+	@GetMapping("/activeWarehouse")
 	public ResponseEntity<ResponseDTO> getAllActiveWarehouse(@RequestParam Long orgId) {
 		String methodName = "getAllActiveWarehouse()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
