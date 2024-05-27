@@ -2322,6 +2322,47 @@ public class MasterController extends BaseController {
 		}
 		return kit;
 	}
+	
+	@GetMapping("/getEmitterAndReceiverByKitNo")
+	public ResponseEntity<ResponseDTO> getEmitterAndReceiverByKitNo(@RequestParam String kitNo) {
+		String methodName = "getEmitterAndReceiverByKitNo()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		Set<Object[]> emitterDetails1 = new HashSet<>();
+		try {
+			emitterDetails1 = masterService.getEmitterAndReceiverByKitNo(kitNo);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			List<Map<String, Object>> emitterDetails = getEmitterDetailsByKitNo(emitterDetails1);
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Available Kit Qty Information get successfully");
+			responseObjectsMap.put("emitterDetails", emitterDetails);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap,
+					"Available Kit Qty Information information receive failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+
+	}
+	
+	private List<Map<String, Object>> getEmitterDetailsByKitNo(Set<Object[]> emitterDetails1) {
+		List<Map<String, Object>> emitterDetails = new ArrayList<>();
+		for (Object[] w : emitterDetails1) {
+			Map<String, Object> kitd = new HashMap<>();
+			kitd.put("emitter", w[0] != null ? w[0].toString() : "");
+			kitd.put("reciver", w[1] != null ? w[1].toString() : "");
+			kitd.put("flow", w[2] != null ?  w[2].toString() : "");
+			emitterDetails.add(kitd);
+		}
+		return emitterDetails;
+	}
+	
 
 	@GetMapping("/getAvalkitqtyByBranch")
 	public ResponseEntity<ResponseDTO> getAvalkitqtyByBranch(@RequestParam String branch,

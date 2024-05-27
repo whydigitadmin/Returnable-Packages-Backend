@@ -970,6 +970,7 @@ public class MasterServiceImpl implements MasterService {
 	    flowVO.setWarehouseLocation(flowDTO.getWarehouseLocation());
 	    flowVO.setReceiverId(flowDTO.getReceiverId());
 	    flowVO.setEmitterId(flowDTO.getEmitterId());
+	    flowVO.setModifiedBy(flowDTO.getCreatedBy());  
 	    flowVO.setEmitter(flowRepo.findEmiterbyId(flowDTO.getEmitterId()));
 	    flowVO.setDestination(flowDTO.getDestination());
 	    flowVO.setOrgId(flowDTO.getOrgId());
@@ -1252,6 +1253,11 @@ public class MasterServiceImpl implements MasterService {
 	@Override
 	public Optional<KitVO> getKitByKitCode(String kitName) {
 		return kitRepo.findByKitNo(kitName);
+	}
+	
+	@Override
+	public Set<Object[]> getEmitterAndReceiverByKitNo(String kitNo) {
+		return flowRepo.findEmitterAndReceiverAndFlowByKitNo(kitNo);
 	}
 
 	@Override

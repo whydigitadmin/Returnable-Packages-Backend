@@ -15,7 +15,7 @@ public class BasicDetailDTO {
 	private Long orgId;
 	private LocalDate partStudyDate;
 	private Long emitterId;
-	private Long receiverId;
+//	private Long receiverId;
 	private String partName;
 	private String partNumber;
 	private Float weight;

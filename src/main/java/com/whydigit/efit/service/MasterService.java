@@ -345,6 +345,8 @@ public interface MasterService {
 	
 	void deleteBranch(Long id);
 
+	Set<Object[]> getEmitterAndReceiverByKitNo(String kitNo);
+
 	
 
 	

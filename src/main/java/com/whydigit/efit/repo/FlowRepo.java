@@ -67,5 +67,8 @@ public interface FlowRepo extends JpaRepository<FlowVO, Long> {
 	List<FlowVO> findByEmitterId(Long emitterId);
 
 	List<FlowVO> findByOrgIdAndEmitterId(Long orgId, Long emitterId);
+	
+	@Query(nativeQuery = true,value = "select a.emitter,a.receiver,a.flow from flow a,flow1 b where a.flowid=b.flow1id and b.kitno=?1 group by a.emitter,a.receiver,a.flow;")
+	Set<Object[]> findEmitterAndReceiverAndFlowByKitNo(String kitName);
 
 }
