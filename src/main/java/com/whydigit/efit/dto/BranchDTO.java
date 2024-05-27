@@ -24,5 +24,6 @@ public class BranchDTO {
 	private String pan;
 	private String currency;
 	private String createdBy;
+	private boolean active;
 
 }

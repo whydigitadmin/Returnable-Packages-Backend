@@ -14,14 +14,18 @@ import com.whydigit.efit.entity.FlowVO;
 public interface FlowRepo extends JpaRepository<FlowVO, Long> {
 
 	@Query(value = "select a from FlowVO a Where a.orgId=?1")
-	List<FlowVO> getAllFlow(Long orgId);
+	List<FlowVO> getActiveAllFlow(Long orgId);
 
-	List<FlowVO> findByOrgId(Long orgId);
+	@Query(value = "select a from FlowVO a Where a.orgId=?1 and a.active=true")
+	List<FlowVO> findActiveByOrgId(Long orgId);
 
-	List<FlowVO> findByEmitterId(Long emitterId);
+	@Query(value = "select a from FlowVO a Where a.emitterId=?1 and a.active=true")
+	List<FlowVO> findActiveByEmitterId(Long emitterId);
 
-	List<FlowVO> findByOrgIdAndEmitterId(Long orgId, Long emitterId);
+	@Query(value = "select a from FlowVO a Where a.orgId=?1 and a.emitterId=?2 and a.active=true")
+	List<FlowVO> findActiveByOrgIdAndEmitterId(Long orgId, Long emitterId);
 
+	@Query(value = "select a from FlowVO a Where a.id=?1  and a.active=true")
 	List<FlowVO> findById(String flowId);
 
 	@Query(value = "select a.flowid,a.emitter,a.flow from flow a where a.orgid=?1 and a.emitterid=?2 group by a.flowid,a.emitter,a.flow", nativeQuery = true)
@@ -56,5 +60,15 @@ public interface FlowRepo extends JpaRepository<FlowVO, Long> {
 	List<FlowVO> getFlowByKitCode(String kitcode);
 
 	boolean existsByFlowNameAndOrgId(String flowName, long orgId);
+
+
+	List<FlowVO> findByOrgId(Long orgId);
+
+	List<FlowVO> findByEmitterId(Long emitterId);
+
+	List<FlowVO> findByOrgIdAndEmitterId(Long orgId, Long emitterId);
+	
+	@Query(nativeQuery = true,value = "select a.emitter,a.receiver,a.flow from flow a,flow1 b where a.flowid=b.flow1id and b.kitno=?1 group by a.emitter,a.receiver,a.flow;")
+	Set<Object[]> findEmitterAndReceiverAndFlowByKitNo(String kitName);
 
 }

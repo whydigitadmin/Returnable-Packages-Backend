@@ -31,6 +31,7 @@ import com.whydigit.efit.dto.Role;
 import com.whydigit.efit.dto.UserAddressDTO;
 import com.whydigit.efit.dto.UserResponseDTO;
 import com.whydigit.efit.entity.CustomersVO;
+import com.whydigit.efit.entity.FlowVO;
 import com.whydigit.efit.entity.OrganizationVO;
 import com.whydigit.efit.entity.TokenVO;
 import com.whydigit.efit.entity.UserAddressVO;
@@ -38,6 +39,7 @@ import com.whydigit.efit.entity.UserVO;
 import com.whydigit.efit.exception.ApplicationException;
 import com.whydigit.efit.repo.AccessRightsRepo;
 import com.whydigit.efit.repo.CustomersRepo;
+import com.whydigit.efit.repo.FlowRepo;
 import com.whydigit.efit.repo.OrganizationRepo;
 import com.whydigit.efit.repo.TokenRepo;
 import com.whydigit.efit.repo.UserActionRepo;
@@ -61,6 +63,9 @@ public class AuthServiceImpl implements AuthService {
 
 	@Autowired
 	TokenProvider tokenProvider;
+	
+	@Autowired
+	FlowRepo flowRepo;
 
 	@Autowired
 	TokenRepo tokenRepo;
@@ -386,6 +391,16 @@ public class AuthServiceImpl implements AuthService {
 		String flowIds = ObjectUtils.isNotEmpty(createUserFormDTO.getAccessFlowId()) ? Arrays
 				.stream(createUserFormDTO.getAccessFlowId()).map(String::valueOf).collect(Collectors.joining(","))
 				: StringUtils.EMPTY;
+		
+		if (ObjectUtils.isNotEmpty(createUserFormDTO.getAccessFlowId())) {
+	        List<Long> flowIdList = Arrays.stream(createUserFormDTO.getAccessFlowId())
+	                .map(Long::valueOf)
+	                .collect(Collectors.toList());
+
+	        List<FlowVO> flows = flowRepo.findAllById(flowIdList);
+	        flows.forEach(flow -> flow.setEflag(false));
+	        flowRepo.saveAll(flows);
+	    }
 		userVO.setAccessFlowId(flowIds);
 		userVO.setAccessaddId(addIds);
 		userVO.setAccessWarehouse(warehouseIds);

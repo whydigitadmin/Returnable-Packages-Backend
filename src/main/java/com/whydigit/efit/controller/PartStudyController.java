@@ -73,6 +73,31 @@ public class PartStudyController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
+	
+	@GetMapping("/ActivebasicDetails")
+	public ResponseEntity<ResponseDTO> getAllActiveBasicDetail(@RequestParam(required = false) Long orgId) {
+		String methodName = "getAllActiveBasicDetail()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		ResponseDTO responseDTO = null;
+		List<BasicDetailVO> basicDetailVO = new ArrayList<>();
+		try {
+			basicDetailVO = partStudyService.getAllActiveBasicDetail(orgId);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "BasicDetail information get successfully");
+			responseObjectsMap.put("basicDetailVO", basicDetailVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "BasicDetail information receive failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
 
 	@GetMapping("/basicDetails/{id}")
 	public ResponseEntity<ResponseDTO> getBasicDetailById(@PathVariable Long id) {
@@ -194,6 +219,7 @@ public class PartStudyController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
+	
 
 	@GetMapping("/packageDetail/{id}")
 	public ResponseEntity<ResponseDTO> getPackingDetailById(@PathVariable Long id) {
@@ -293,31 +319,6 @@ public class PartStudyController extends BaseController {
 	}
 
 	// Add logistics
-	@GetMapping("/logistics")
-	public ResponseEntity<ResponseDTO> getAllLogistics(@RequestParam(required = false) Long orgId) {
-		String methodName = "getAllLogistics()";
-		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
-		String errorMsg = null;
-		Map<String, Object> responseObjectsMap = new HashMap<>();
-		ResponseDTO responseDTO = null;
-		List<LogisticsVO> logisticsVO = new ArrayList<>();
-		try {
-			logisticsVO = partStudyService.getAllLogistics(orgId);
-		} catch (Exception e) {
-			errorMsg = e.getMessage();
-			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-		}
-		if (StringUtils.isBlank(errorMsg)) {
-			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Logistics information get successfully");
-			responseObjectsMap.put("logisticsVO", logisticsVO);
-			responseDTO = createServiceResponse(responseObjectsMap);
-		} else {
-			responseDTO = createServiceResponseError(responseObjectsMap, "Logistics information receive failed",
-					errorMsg);
-		}
-		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
-		return ResponseEntity.ok().body(responseDTO);
-	}
 
 	@GetMapping("/logistics/{id}")
 	public ResponseEntity<ResponseDTO> getLogisticsById(@PathVariable Long id) {
@@ -418,6 +419,7 @@ public class PartStudyController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
+	
 
 	@GetMapping("/stockDetail/{id}")
 	public ResponseEntity<ResponseDTO> getStockDetailById(@PathVariable Long id) {
@@ -471,25 +473,25 @@ public class PartStudyController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
-	@DeleteMapping("/stockDetail/{id}")
-	public ResponseEntity<ResponseDTO> deleteStockDetail(@PathVariable Long id) {
-		String methodName = "deleteStockDetail()";
-		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
-		String errorMsg = null;
-		Map<String, Object> responseObjectsMap = new HashMap<>();
-		ResponseDTO responseDTO = null;
-		try {
-			partStudyService.deleteStockDetail(id);
-			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "StockDetail deleted successfully");
-			responseDTO = createServiceResponse(responseObjectsMap);
-		} catch (Exception e) {
-			errorMsg = e.getMessage();
-			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-			responseDTO = createServiceResponseError(responseObjectsMap, "StockDetail deletion failed", errorMsg);
-		}
-		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
-		return ResponseEntity.ok().body(responseDTO);
-	}
+//	@DeleteMapping("/stockDetail/{id}")
+//	public ResponseEntity<ResponseDTO> deleteStockDetail(@PathVariable Long id) {
+//		String methodName = "deleteStockDetail()";
+//		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+//		String errorMsg = null;
+//		Map<String, Object> responseObjectsMap = new HashMap<>();
+//		ResponseDTO responseDTO = null;
+//		try {
+//			partStudyService.deleteStockDetail(id);
+//			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "StockDetail deleted successfully");
+//			responseDTO = createServiceResponse(responseObjectsMap);
+//		} catch (Exception e) {
+//			errorMsg = e.getMessage();
+//			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+//			responseDTO = createServiceResponseError(responseObjectsMap, "StockDetail deletion failed", errorMsg);
+//		}
+//		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+//		return ResponseEntity.ok().body(responseDTO);
+//	}
 	
 	@GetMapping("/generatePartStudyId")
 	public ResponseEntity<ResponseDTO> generatePartStudyId(@RequestParam(required = false) String refPsId) {

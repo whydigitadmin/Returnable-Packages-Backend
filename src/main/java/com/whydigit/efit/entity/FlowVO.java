@@ -76,6 +76,8 @@ public class FlowVO {
 	@Column(name = "cancelRemarks")
 	private String cancelRemarks;
 	
+	private boolean eflag;
+	
 	@JsonGetter("active")
     public String getActive() {
         return active ? "Active" : "In-Active";
@@ -94,4 +96,6 @@ public class FlowVO {
 	@Embedded
 	@Builder.Default
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
+
+	
 }

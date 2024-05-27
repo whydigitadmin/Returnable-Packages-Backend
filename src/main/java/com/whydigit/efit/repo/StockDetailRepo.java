@@ -13,4 +13,5 @@ import com.whydigit.efit.entity.StockDetailVO;
 public interface StockDetailRepo extends JpaRepository<StockDetailVO, Long> {
 	@Query(value = "select a from StockDetailVO a Where a.orgId=?1")
 	List<StockDetailVO> getStockDetailByOrgId(Long orgId);
+
 }

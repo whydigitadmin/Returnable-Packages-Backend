@@ -14,6 +14,7 @@ import com.whydigit.efit.dto.AssetInwardDTO;
 import com.whydigit.efit.dto.AssetTaggingDTO;
 import com.whydigit.efit.dto.AssetTypeDTO;
 import com.whydigit.efit.dto.BinInwardDTO;
+import com.whydigit.efit.dto.BranchDTO;
 import com.whydigit.efit.dto.CnoteDTO;
 import com.whydigit.efit.dto.CustomerAttachmentType;
 import com.whydigit.efit.dto.CustomersDTO;
@@ -35,6 +36,7 @@ import com.whydigit.efit.entity.AssetTypeVO;
 import com.whydigit.efit.entity.AssetVO;
 import com.whydigit.efit.entity.BinAllotmentNewVO;
 import com.whydigit.efit.entity.BinInwardVO;
+import com.whydigit.efit.entity.BranchVO;
 import com.whydigit.efit.entity.CnoteVO;
 import com.whydigit.efit.entity.CustomersAddressVO;
 import com.whydigit.efit.entity.CustomersVO;
@@ -60,6 +62,8 @@ import com.whydigit.efit.exception.ApplicationException;
 public interface MasterService {
 
 	List<AssetVO> getAllAsset(Long orgId);
+	
+	List<AssetVO> getAllActiveAsset(Long orgId);
 
 	List<AssetVO> getAllAssetByCategory(Long orgId,String category);
 	
@@ -107,6 +111,8 @@ public interface MasterService {
 	// FLOW
 
 	List<FlowVO> getAllFlow(Long orgId, Long emitterId);
+	
+	List<FlowVO> getAllActiveFlow(Long orgId, Long emitterId);
 
 	Set<Object[]> getKitDetailsByEmitter(Long emitterId, Long orgId);
 	
@@ -152,6 +158,8 @@ public interface MasterService {
 
 	// Create Kit
 	List<KitResponseDTO> getAllKit(Long orgId);
+	
+	List<KitResponseDTO> getActiveAllKit(Long orgId);
 	
 	Optional<KitVO> getKitById(Long id);
 
@@ -215,11 +223,13 @@ public interface MasterService {
 
 	// Stock Branch
 
-	StockBranchVO createStockBranch(StockBranchDTO stockBranchDTO);
+	StockBranchVO createStockBranch(StockBranchDTO stockBranchDTO) throws ApplicationException;
 
 	StockBranchVO updateStockBranch(StockBranchDTO stockBranchDTO) throws ApplicationException;
 
 	List<StockBranchVO> getAllStockBranchByOrgId(Long orgId);
+	
+	List<StockBranchVO> getAllActiveStockBranchByOrgId(Long orgId);
 
 	AssetInwardVO createAssetInward(AssetInwardDTO assetInwardDTO);
 
@@ -228,6 +238,8 @@ public interface MasterService {
 	AssetTaggingVO createTagging(AssetTaggingDTO assetTaggingDTO);
 
 	List<AssetTaggingVO> getAllAsetTaggingByOrgId(Long orgId);
+	
+	AssetTaggingVO getTaggingById(Long id);
 
 	Set<Object[]> getTagCodeByAsset(String assetcode, String asset, int endno, String category);
 
@@ -321,6 +333,19 @@ public interface MasterService {
 	Set<Object[]> getAssetDetailsByAssetForAssetInward(Long orgId, String stockBranch, String sku,int qty);
 
 	Set<Object[]> getAvailAssetDetailsByBranch(Long orgId, String stockBranch, String category);
+	
+	
+	List<BranchVO> getAllBranch(Long orgId);
+	
+	List<BranchVO> getAllActiveBranch(Long orgId);
+	
+	Optional<BranchVO> getBranchById(Long id);
+
+	BranchVO createUpdateBranch(BranchDTO branchDTO) throws ApplicationException;
+	
+	void deleteBranch(Long id);
+
+	Set<Object[]> getEmitterAndReceiverByKitNo(String kitNo);
 
 	
 
