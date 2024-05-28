@@ -149,6 +149,8 @@ public class PartStudyServiceImpl implements PartStudyService {
 		basicDetailVO.setPartVolume(basicDetailDTO.getPartVolume());
 		basicDetailVO.setHighestVolume(basicDetailDTO.getHighestVolume());
 		basicDetailVO.setLowestVolume(basicDetailDTO.getLowestVolume());
+		basicDetailVO.setCreatedBy(basicDetailDTO.getCreatedBy());
+		basicDetailVO.setModifiedBy(basicDetailDTO.getModifiedBy());
 	}
 
 	@Override

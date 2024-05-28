@@ -24,5 +24,7 @@ public class BasicDetailDTO {
 	private int highestVolume;
 	private int lowestVolume;
 	private boolean active;
+	private String createdBy;
+	private String modifiedBy;
 	
 }

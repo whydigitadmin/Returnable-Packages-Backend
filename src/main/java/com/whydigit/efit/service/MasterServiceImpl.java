@@ -428,8 +428,7 @@ public class MasterServiceImpl implements MasterService {
 		existingAsset.setCancelremarks(assetDTO.getCancelRemarks());
 		existingAsset.setPoNo(assetDTO.getPoNo());
 		existingAsset.setActive(assetDTO.isActive());
-
-		// Save the updated AssetVO
+		existingAsset.setModifiedby(assetDTO.getModifiedBy());		
 		return assetRepo.save(existingAsset);
 	}
 
@@ -878,9 +877,8 @@ public class MasterServiceImpl implements MasterService {
 		List<FlowDetailVO> flowDetailVOList = new ArrayList<>();
 		FlowVO flowVO =  FlowVO.builder().active(flowDTO.isActive()).orgin(flowDTO.getOrgin()).retrievalWarehouseId(flowDTO.getRetrievalWarehouseId())
 				.retrievalWarehouseLocation(flowDTO.getRetrievalWarehouseLocation()).warehouseLocation(flowDTO.getWarehouseLocation()).flowName(flowDTO.getFlowName())
-				.receiverId(flowDTO.getReceiverId()).emitterId(flowDTO.getEmitterId()).emitter(flowDTO.getEmitter())
-				.destination(flowDTO.getDestination()).orgId(flowDTO.getOrgId()).warehouseId(flowDTO.getWarehouseId())
-				.flowDetailVO(flowDetailVOList).build();
+				.receiverId(flowDTO.getReceiverId()).emitterId(flowDTO.getEmitterId()).emitter(flowDTO.getEmitter()).createdBy(flowDTO.getCreatedBy())
+				.destination(flowDTO.getDestination()).orgId(flowDTO.getOrgId()).warehouseId(flowDTO.getWarehouseId()).modifiedBy(flowDTO.getCreatedBy()).flowDetailVO(flowDetailVOList).build();
 		
 		flowDetailVOList = flowDTO.getFlowDetailDTO().stream().map(fdDTO -> {
 			KitVO kitVO = kitRepo.findAllByKitNoAndOrgId(fdDTO.getKitNo(), fdDTO.getOrgId());

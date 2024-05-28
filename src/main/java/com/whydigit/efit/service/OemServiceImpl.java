@@ -2,6 +2,7 @@ package com.whydigit.efit.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.ObjectUtils;
@@ -163,6 +164,16 @@ public class OemServiceImpl implements OemService {
 		oemBinOutwardVO.setKit(oemBinOutwardDTO.getKit());
 		oemBinOutwardVO.setOutwardKitQty(oemBinOutwardDTO.getOutwardKitQty());
 
+	}
+
+	@Override
+	public Set<Object[]> getFlowByUserId(Long userId, Long orgId) {
+		return oemBinInwardDetailsRepo.findFlowFromOemByOrgId(userId,orgId);
+	}
+	
+	@Override
+	public Set<Object[]> getOutwardDetailsByFlow(Long flowId, Long orgId) {
+		return oemBinInwardDetailsRepo.findgetOutwardDetailsByFlow(flowId,orgId);
 	}
 
 }
