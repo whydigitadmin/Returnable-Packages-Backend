@@ -52,6 +52,9 @@ public class BranchVO {
 	private String GST;
 	@Column(name = "pan")
 	private String pan;
+	
+	private boolean eflag;
+	
 	@Column(name = "currency")
 	private String currency;
 	private boolean active;

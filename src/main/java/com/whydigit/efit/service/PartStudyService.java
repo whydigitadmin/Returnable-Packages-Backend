@@ -20,6 +20,8 @@ import com.whydigit.efit.exception.ApplicationException;
 public interface PartStudyService {
 
 	List<BasicDetailVO> getAllBasicDetail(Long orgId);
+	
+	List<BasicDetailVO> getAllActiveBasicDetail(Long orgId);
 
 	BasicDetailVO getBasicDetailById(Long id) throws ApplicationException;
 
@@ -30,6 +32,7 @@ public interface PartStudyService {
 	void deleteBasicDetail(Long id);
 
 	List<PackingDetailVO> getAllpackingDetail(Long orgId);
+	
 
 	PackingDetailVO getPackingDetailById(Long id) throws ApplicationException;
 
@@ -40,6 +43,7 @@ public interface PartStudyService {
 	void deletePackingDetail(Long id);
 
 	List<LogisticsVO> getAllLogistics(Long orgId);
+	
 
 	Optional<LogisticsVO> getLogisticsById(Long id);
 
@@ -50,6 +54,7 @@ public interface PartStudyService {
 	void deleteLogistics(Long id);
 
 	List<StockDetailVO> getAllStockDetail(Long orgId);
+	
 
 	Optional<StockDetailVO> getStockDetailById(Long id);
 

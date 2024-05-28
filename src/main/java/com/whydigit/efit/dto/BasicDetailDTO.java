@@ -15,7 +15,7 @@ public class BasicDetailDTO {
 	private Long orgId;
 	private LocalDate partStudyDate;
 	private Long emitterId;
-	private Long receiverId;
+//	private Long receiverId;
 	private String partName;
 	private String partNumber;
 	private Float weight;
@@ -23,5 +23,6 @@ public class BasicDetailDTO {
 	private int partVolume;
 	private int highestVolume;
 	private int lowestVolume;
+	private boolean active;
 	
 }

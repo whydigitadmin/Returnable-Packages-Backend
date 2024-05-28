@@ -39,8 +39,12 @@ public class BasicDetailVO {
 	private LocalDate partStudyDate=LocalDate.now();
 	@Column(name = "emitterid")
 	private Long emitterId;
-	@Column(name = "receiverid")
-	private Long receiverId;
+	@Column(name = "emitterdisplayname")
+	private String emitterDisplayName;
+//	@Column(name = "receiverid")
+//	private Long receiverId;
+//	@Column(name = "reciverdisplayname")
+//	private String receiverDisplayName;
 	@Column(name = "part", length = 50)
 	private String partName;
 	@Column(name = "code", length = 25)
@@ -63,6 +67,7 @@ public class BasicDetailVO {
 	private String docid;
 	private boolean cancel;
 	private boolean active;
+	private boolean eflag=false;
 	
 	@JsonGetter("active")
     public String getActive() {

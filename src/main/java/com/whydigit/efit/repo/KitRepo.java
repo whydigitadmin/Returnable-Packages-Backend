@@ -13,6 +13,9 @@ import com.whydigit.efit.entity.KitVO;
 public interface KitRepo extends JpaRepository<KitVO, Long> {
 
 	List<KitVO> findByOrgId(Long orgId);
+	
+	@Query("select a from KitVO a where  a.orgId=?1 and active=true")
+	List<KitVO> findActiveByOrgId(Long orgId);
 
 	@Query("select a from KitVO a where a.kitNo=?1 and a.orgId=?2")
 	CharSequence findKitcode(String kitCode, long orgId);

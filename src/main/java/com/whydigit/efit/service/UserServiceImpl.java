@@ -32,7 +32,7 @@ public class UserServiceImpl implements UserService {
 	PasswordEncoder encoder;
 
 	@Autowired
-	UserActionRepo userActionRepo;
+	UserActionRepo userActionRepo; 
 
 	@Autowired
 	TokenProvider tokenProvider;

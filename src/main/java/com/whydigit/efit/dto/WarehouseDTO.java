@@ -22,6 +22,7 @@ public class WarehouseDTO {
 	private String code;
 	private String city;
 	private String country;
+	private String createdBy;
 	private String gst;
 	private boolean active;
 	private String stockBranch;

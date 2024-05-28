@@ -10,7 +10,9 @@ import com.whydigit.efit.exception.ApplicationException;
 
 public interface WarehouseService {
 
-	List<WarehouseVO> getAllWarehouse();
+	List<WarehouseVO> getAllWarehouse(Long orgId);
+	
+	List<WarehouseVO> getAllActiveWarehouse(Long orgId);
 
 	Optional<WarehouseVO> getById(Long id);
 

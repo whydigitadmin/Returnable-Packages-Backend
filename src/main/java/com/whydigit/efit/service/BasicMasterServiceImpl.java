@@ -125,6 +125,8 @@ public class BasicMasterServiceImpl implements BasicMasterService {
 	            throw new ApplicationException("A CountryCode already exists for this organization.");
 	        }
 	        // Update the country
+	        CountryVO existingCountryVO = countryRepo.findById(countryVO.getId()).orElseThrow(() -> new ApplicationException("Country not found"));
+	        countryVO.setCommonDate(existingCountryVO.getCommonDate());
 	        return Optional.of(countryRepo.save(countryVO));
 	    } else {
 	        return Optional.empty(); // Country not found
@@ -194,6 +196,8 @@ public class BasicMasterServiceImpl implements BasicMasterService {
 	            throw new ApplicationException("A StateCode already exists for this country.");
 	        }
 	        // Update the state
+	        StateVO existingStateVO = stateRepo.findById(stateVO.getId()).orElseThrow(() -> new ApplicationException("State not found"));
+	        stateVO.setCommonDate(existingStateVO.getCommonDate());
 	        return Optional.of(stateRepo.save(stateVO));
 	    } else {
 	        return Optional.empty();
@@ -265,6 +269,8 @@ public class BasicMasterServiceImpl implements BasicMasterService {
 	            throw new ApplicationException("A CityName already exists for this country and state.");
 	        }
 	        // Update the city
+	        CityVO existingCityVO = cityRepo.findById(cityVO.getCityid()).orElseThrow(() -> new ApplicationException("City not found"));
+	        cityVO.setCommonDate(existingCityVO.getCommonDate());
 	        return Optional.of(cityRepo.save(cityVO));
 	    } else {
 	        return Optional.empty();

@@ -23,5 +23,11 @@ public interface BasicDetailRepo extends JpaRepository<BasicDetailVO, Long> {
 	@Query(nativeQuery = true,value = "CALL next_basicdetail_sequence_value()")
 	void updatesequence();
 
+	@Query(value = "select a from BasicDetailVO a Where a.orgId=?1 and a.active=true")
+	List<BasicDetailVO> getAllActiveBasicDetailByOrgId(Long orgId);
+
+	@Query(value = "select a from BasicDetailVO a Where a.orgId=?2 and a.partNumber=?1")
+	BasicDetailVO findByPartNumberAndOrgId(String partNumber,Long orgId);
+
 	
 }
