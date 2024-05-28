@@ -243,6 +243,7 @@ public class EmitterServiceImpl implements EmitterService {
 		issueRequestVO.setOrgId(issueRequestDTO.getOrgId());
 		issueRequestVO.setEmitterId(issueRequestDTO.getEmitterId());
 		issueRequestVO.setCustomerId(issueRequestDTO.getEmitterId());
+		issueRequestVO.setCreatedBy(issueRequestDTO.getCreatedBy());
 		issueRequestVO.setTat(
 				ChronoUnit.HOURS.between(currentDateTime, issueRequestDTO.getDemandDate().atTime(LocalTime.MAX)));
 		issueRequestVO.setIrType(issueRequestDTO.getIrType());

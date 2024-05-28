@@ -26,5 +26,6 @@ public class FlowDTO {
     private String retrievalWarehouseLocation;
 	private Long retrievalWarehouseId;
 	private boolean active;
+	private String modifiedBy;
 	private List<FlowDetailDTO> flowDetailDTO;
 }

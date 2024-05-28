@@ -49,6 +49,7 @@ public class UserVO {
 	private Long pNo;
 	private boolean isActive;
 	private String lastLogin;
+	private String createdBy;						
 	@Enumerated(EnumType.STRING)
 	private Role role;
 	private long accessRightsRoleId;

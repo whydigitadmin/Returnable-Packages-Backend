@@ -24,7 +24,31 @@ public class CustomQuery {
     private void executeQueries() {
 	
 	
-	jdbcTemplate.execute("CREATE OR REPLACE VIEW avalkitqty AS SELECT a.stockbranch AS stockbranch, a.kitcode AS kitcode, (CASE WHEN (FLOOR(MIN(a.avalqty)) IS NULL) THEN 0 ELSE FLOOR(MIN(a.avalqty)) END) AS avalqty FROM (SELECT c.stockbranch AS stockbranch, a.kitcode AS kitcode, b.asset AS asset, b.quantity AS quantity, SUM(c.skuqty) AS `SUM(skuqty)`, (SUM(c.skuqty) / b.quantity) AS avalqty FROM (kit a JOIN kit2 b) JOIN stockdetails c ON a.kitid = b.kitid AND b.asset = c.sku AND c.status='S' GROUP BY a.kitcode, c.stockbranch, b.asset, b.quantity) a GROUP BY a.kitcode, a.stockbranch");
+	jdbcTemplate.execute("CREATE or replace\r\n"
+			+ "VIEW `avalkitqty` AS\r\n"
+			+ "    SELECT \r\n"
+			+ "        `a`.`stockbranch` AS `stockbranch`,\r\n"
+			+ "        `a`.`kitcode` AS `kitcode`,\r\n"
+			+ "        (CASE\r\n"
+			+ "            WHEN (FLOOR(MIN(`a`.`avalqty`)) IS NULL) THEN 0\r\n"
+			+ "            ELSE FLOOR(MIN(`a`.`avalqty`))\r\n"
+			+ "        END) AS `avalqty`\r\n"
+			+ "    FROM\r\n"
+			+ "        (SELECT \r\n"
+			+ "            `c`.`stockbranch` AS `stockbranch`,\r\n"
+			+ "                `a`.`kitno` AS `kitcode`,\r\n"
+			+ "                `b`.`asset` AS `asset`,\r\n"
+			+ "                `b`.`quantity` AS `quantity`,\r\n"
+			+ "                SUM(`c`.`skuqty`) AS `SUM(skuqty)`,\r\n"
+			+ "                (SUM(`c`.`skuqty`) / `b`.`quantity`) AS `avalqty`\r\n"
+			+ "        FROM\r\n"
+			+ "            ((`kit` `a`\r\n"
+			+ "        JOIN `kit2` `b`)\r\n"
+			+ "        JOIN `stockdetails` `c` ON (((`a`.`kitid` = `b`.`kitid`)\r\n"
+			+ "            AND (`b`.`asset` = `c`.`sku`)\r\n"
+			+ "            AND (`c`.`status` = 'S'))))\r\n"
+			+ "        GROUP BY `a`.`kitno` , `c`.`stockbranch` , `b`.`asset` , `b`.`quantity`) `a`\r\n"
+			+ "    GROUP BY `a`.`kitcode` , `a`.`stockbranch`");
 
     // Add your new SQL query
     jdbcTemplate.execute("CREATE OR REPLACE VIEW rp_dev.availableasset AS SELECT stockdetails.stockbranch AS stockbranch, stockdetails.sku AS sku, stockdetails.skucode AS skucode, SUM(stockdetails.skuqty) AS `sum(skuqty)`, stockdetails.orgid AS orgid, category FROM stockdetails WHERE stockdetails.status = 'S' GROUP BY stockdetails.stockbranch, stockdetails.sku, stockdetails.skucode, category, stockdetails.orgid HAVING SUM(stockdetails.skuqty) > 0");

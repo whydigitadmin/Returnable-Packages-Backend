@@ -30,7 +30,7 @@ public class CustomersVO {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "customerseqgen")
-	@SequenceGenerator(name = "customerseqgen", sequenceName = "customerseqge", initialValue = 1000000001, allocationSize = 1)
+	@SequenceGenerator(name = "customerseqgen", sequenceName = "customerseq", initialValue = 1000000001, allocationSize = 1)
 	@Column(name = "customerid")
 	private Long id;
 
