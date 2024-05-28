@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 public class BinOutwardDTO {
 	private LocalDate docDate;
 	private String flow;
-	private String kit;
+	private String kitNo;
 	private int outwardKitQty;
 	private String createdBy;
 	private Long orgId;
