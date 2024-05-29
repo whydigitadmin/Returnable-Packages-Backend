@@ -116,8 +116,8 @@ public class OemController extends BaseController{
 		List<Map<String, Object>> flow = new ArrayList<>();
 		for (Object[] f : outwardDetails) {
 			Map<String, Object> f1 = new HashMap<>();
-			f1.put("flowId", f[0] != null ? f[0].toString() : "");
-			f1.put("flow", f[1] != null ? Integer.parseInt(f[1].toString()):0);
+			f1.put("flowId", f[0] != null ? Integer.parseInt(f[0].toString()):0);
+			f1.put("flow", f[1] != null ? f[1].toString() : "");
 //			f1.put("flowId", f[2] != null ? f[2].toString() : "");
 //			f1.put("flow", f[3] != null ? f[3].toString() : "");
 //			f1.put("kitNo", f[4] != null ? f[4].toString() : "");

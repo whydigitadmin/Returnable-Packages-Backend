@@ -1472,8 +1472,10 @@ public class MasterServiceImpl implements MasterService {
 	public VendorVO updateCreateVendor(VendorDTO vendorDTO) throws ApplicationException {
 
 	    VendorVO vendorVO = new VendorVO();
-	    if (vendorDTO.getId() !=null ) {
-	        vendorVO = vendorRepo.findById(vendorDTO.getId())
+	    Long vendorId = vendorDTO.getId();
+
+	    if (vendorId != null) {
+	        vendorVO = vendorRepo.findById(vendorId)
 	                .orElseThrow(() -> new ApplicationException("Invalid Vendor details"));
 	    }
 
@@ -1484,26 +1486,19 @@ public class MasterServiceImpl implements MasterService {
 	    List<VendorBankDetailsVO> vendorBankDetailsVO = new ArrayList<>();
 	    if (vendorDTO.getVendorBankDetailsDTO() != null) {
 	        for (VendorBankDetailsDTO vendorbankDetailsDTO : vendorDTO.getVendorBankDetailsDTO()) {
-	            if (vendorbankDetailsDTO.getId() != 0) {
-	                VendorBankDetailsVO bankDetailsVO = vendorBankDetailsRepo.findById(vendorbankDetailsDTO.getId())
-	                        .get();
-	                bankDetailsVO.setAccountNo(vendorbankDetailsDTO.getAccountNo());
-	                bankDetailsVO.setBank(vendorbankDetailsDTO.getBank());
-	                bankDetailsVO.setBranch(vendorbankDetailsDTO.getBranch());
-	                bankDetailsVO.setAccountName(vendorbankDetailsDTO.getAccountName());
-	                bankDetailsVO.setIfscCode(vendorbankDetailsDTO.getIfscCode());
-	                bankDetailsVO.setVendorVO(vendorVO);
-	                vendorBankDetailsVO.add(bankDetailsVO);
+	            VendorBankDetailsVO bankDetailsVO;
+	            if (vendorbankDetailsDTO.getId() != null && vendorbankDetailsDTO.getId() != 0) {
+	                bankDetailsVO = vendorBankDetailsRepo.findById(vendorbankDetailsDTO.getId()).orElse(new VendorBankDetailsVO());
 	            } else {
-	                VendorBankDetailsVO bankDetailsVO = new VendorBankDetailsVO();
-	                bankDetailsVO.setAccountNo(vendorbankDetailsDTO.getAccountNo());
-	                bankDetailsVO.setBank(vendorbankDetailsDTO.getBank());
-	                bankDetailsVO.setBranch(vendorbankDetailsDTO.getBranch());
-	                bankDetailsVO.setAccountName(vendorbankDetailsDTO.getAccountName());
-	                bankDetailsVO.setIfscCode(vendorbankDetailsDTO.getIfscCode());
-	                bankDetailsVO.setVendorVO(vendorVO);
-	                vendorBankDetailsVO.add(bankDetailsVO);
+	                bankDetailsVO = new VendorBankDetailsVO();
 	            }
+	            bankDetailsVO.setAccountNo(vendorbankDetailsDTO.getAccountNo());
+	            bankDetailsVO.setBank(vendorbankDetailsDTO.getBank());
+	            bankDetailsVO.setBranch(vendorbankDetailsDTO.getBranch());
+	            bankDetailsVO.setAccountName(vendorbankDetailsDTO.getAccountName());
+	            bankDetailsVO.setIfscCode(vendorbankDetailsDTO.getIfscCode());
+	            bankDetailsVO.setVendorVO(vendorVO);
+	            vendorBankDetailsVO.add(bankDetailsVO);
 	        }
 	    }
 	    vendorVO.setVendorBankDetailsVO(vendorBankDetailsVO);
@@ -1512,40 +1507,26 @@ public class MasterServiceImpl implements MasterService {
 	    List<VendorAddressVO> vendorAddressVO = new ArrayList<>();
 	    if (vendorDTO.getVendorAddressDTO() != null) {
 	        for (VendorAddressDTO vendorAddressDTO : vendorDTO.getVendorAddressDTO()) {
-	            if (vendorAddressDTO.getId() != 0) {
-	                VendorAddressVO vendorAddress = vendorAddressRepo.findById(vendorAddressDTO.getId()).get();
-	                vendorAddress.setGstNumber(vendorAddressDTO.getGstNumber());
-	                vendorAddress.setStreet1(vendorAddressDTO.getStreet1());
-	                vendorAddress.setStreet2(vendorAddressDTO.getStreet2());
-	                vendorAddress.setCity(vendorAddressDTO.getCity());
-	                vendorAddress.setPinCode(vendorAddressDTO.getPinCode());
-	                vendorAddress.setContactName(vendorAddressDTO.getContactName());
-	                vendorAddress.setPhoneNumber(vendorAddressDTO.getPhoneNumber());
-	                vendorAddress.setDesignation(vendorAddressDTO.getDesignation());
-	                vendorAddress.setEmail(vendorAddressDTO.getEmail());
-	                vendorAddress.setGstRegistrationStatus(vendorAddressDTO.getGstRegistrationStatus());
-	                vendorAddress.setState(vendorAddressDTO.getState());
-	                vendorAddress.setVendorVO(vendorVO);
-	                vendorAddress.setCountry(vendorAddressDTO.getCountry());
-	                vendorAddressVO.add(vendorAddress);
+	            VendorAddressVO vendorAddress;
+	            if (vendorAddressDTO.getId() != null && vendorAddressDTO.getId() != 0) {
+	                vendorAddress = vendorAddressRepo.findById(vendorAddressDTO.getId()).orElse(new VendorAddressVO());
 	            } else {
-	                VendorAddressVO vendorAddress = new VendorAddressVO();
-	                vendorAddress.setGstNumber(vendorAddressDTO.getGstNumber());
-	                vendorAddress.setStreet1(vendorAddressDTO.getStreet1());
-	                vendorAddress.setStreet2(vendorAddressDTO.getStreet2());
-	                vendorAddress.setCity(vendorAddressDTO.getCity());
-	                vendorAddress.setPinCode(vendorAddressDTO.getPinCode());
-	                vendorAddress.setContactName(vendorAddressDTO.getContactName());
-	                vendorAddress.setPhoneNumber(vendorAddressDTO.getPhoneNumber());
-	                vendorAddress.setDesignation(vendorAddressDTO.getDesignation());
-	                vendorAddress.setEmail(vendorAddressDTO.getEmail());
-	                vendorAddress.setGstRegistrationStatus(vendorAddressDTO.getGstRegistrationStatus());
-	                vendorAddress.setState(vendorAddressDTO.getState());
-	                vendorAddress.setVendorVO(vendorVO);
-	                vendorAddress.setCountry(vendorAddressDTO.getCountry());
-	                vendorAddressVO.add(vendorAddress);
+	                vendorAddress = new VendorAddressVO();
 	            }
-
+	            vendorAddress.setGstNumber(vendorAddressDTO.getGstNumber());
+	            vendorAddress.setStreet1(vendorAddressDTO.getStreet1());
+	            vendorAddress.setStreet2(vendorAddressDTO.getStreet2());
+	            vendorAddress.setCity(vendorAddressDTO.getCity());
+	            vendorAddress.setPinCode(vendorAddressDTO.getPinCode());
+	            vendorAddress.setContactName(vendorAddressDTO.getContactName());
+	            vendorAddress.setPhoneNumber(vendorAddressDTO.getPhoneNumber());
+	            vendorAddress.setDesignation(vendorAddressDTO.getDesignation());
+	            vendorAddress.setEmail(vendorAddressDTO.getEmail());
+	            vendorAddress.setGstRegistrationStatus(vendorAddressDTO.getGstRegistrationStatus());
+	            vendorAddress.setState(vendorAddressDTO.getState());
+	            vendorAddress.setVendorVO(vendorVO);
+	            vendorAddress.setCountry(vendorAddressDTO.getCountry());
+	            vendorAddressVO.add(vendorAddress);
 	        }
 	    }
 	    vendorVO.setVendorAddressVO(vendorAddressVO);
@@ -1555,14 +1536,15 @@ public class MasterServiceImpl implements MasterService {
 
 	private void getVendorVOFromVendorDTO(VendorDTO vendorDTO, VendorVO vendorVO) throws ApplicationException {
 
-	    if (vendorDTO.getId() != 0) {
-	        VendorVO existingVendor = vendorRepo.findById(vendorDTO.getId())
-	                .orElseThrow(() -> new ApplicationException("Vendor with ID " + vendorDTO.getId() + " not found"));
+	    Long vendorId = vendorDTO.getId();
+
+	    if (vendorId != null && vendorId != 0) {
+	        VendorVO existingVendor = vendorRepo.findById(vendorId)
+	                .orElseThrow(() -> new ApplicationException("Vendor with ID " + vendorId + " not found"));
 
 	        if (!existingVendor.getEntityLegalName().equals(vendorDTO.getEntityLegalName())) {
 	            // Check if there's already an entry with the same Entity Legal Name and orgId
-	            if (vendorRepo.existsByEntityLegalNameAndOrgId(vendorDTO.getEntityLegalName(),
-	                    existingVendor.getOrgId())) {
+	            if (vendorRepo.existsByEntityLegalNameAndOrgId(vendorDTO.getEntityLegalName(), existingVendor.getOrgId())) {
 	                throw new ApplicationException("Entity Legal Name already exists");
 	            }
 	            // Update Entity Legal Name if there's no duplicate
@@ -1584,10 +1566,8 @@ public class MasterServiceImpl implements MasterService {
 	        vendorVO.setEmail(vendorDTO.getEmail());
 	        vendorVO.setVenderActivePortal(vendorDTO.isVenderActivePortal());
 	        vendorVO.setActive(vendorDTO.isActive());
-	    } 
-	    else {
-	        if (vendorRepo.existsByEntityLegalNameAndOrgId(vendorDTO.getEntityLegalName(),
-	                vendorDTO.getOrgId())) {
+	    } else {
+	        if (vendorRepo.existsByEntityLegalNameAndOrgId(vendorDTO.getEntityLegalName(), vendorDTO.getOrgId())) {
 	            throw new ApplicationException("Entity Legal Name already exists");
 	        }
 	        if (vendorRepo.existsByDisplyNameAndOrgId(vendorDTO.getDisplyName(), vendorDTO.getOrgId())) {
