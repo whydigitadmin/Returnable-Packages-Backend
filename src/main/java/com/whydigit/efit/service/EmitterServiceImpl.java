@@ -931,7 +931,7 @@ public class EmitterServiceImpl implements EmitterService {
 			binOutwardVO.setDestination(binOutwardDTO.getDestination());
 			binOutwardVO.setOrgin(binOutwardDTO.getOrgin());
 			binOutwardVO.setReceiver(binOutwardDTO.getReceiver());
-			binOutwardVO.setKit(binOutwardDTO.getKit());
+			binOutwardVO.setKitNo(binOutwardDTO.getKitNo());
 			binOutwardVO.setOutwardKitQty(binOutwardDTO.getOutwardKitQty());
 
 			List<BinOutwardDetailsVO> binOutwardDetailsVO1 = new ArrayList<>();
