@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -49,7 +50,9 @@ public class UserVO {
 	private Long pNo;
 	private boolean isActive;
 	private String lastLogin;
-	private String createdBy;						
+	private String createdBy;	
+	@Column(name = "modifiedBy")
+	private String updatedBy;	
 	@Enumerated(EnumType.STRING)
 	private Role role;
 	private long accessRightsRoleId;
