@@ -68,6 +68,7 @@ public class OemServiceImpl implements OemService {
 		oemBinInwardVO.setRecievedKitQty(oemBinInwardDTO.getRecievedKitQty());
 		oemBinInwardVO.setCreatedby(oemBinInwardDTO.getCreatedBy());
 		oemBinInwardVO.setModifiedby(oemBinInwardDTO.getCreatedBy());
+		oemBinInwardDTO.setGrnNo(oemBinInwardDTO.getGrnNo());
 		oemBinInwardVO.setGrnDate(oemBinInwardDTO.getGrnDate());
 		oemBinInwardVO.setOutwardDocId(oemBinInwardDTO.getOutwardDocId());
 
