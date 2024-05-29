@@ -11,12 +11,14 @@ public interface OemBinInwardRepo extends JpaRepository<OemBinInwardVO, Long> {
 			+ "        DATE_FORMAT(CURDATE(), '%m%d') > '0331', \r\n" + "        DATE_FORMAT(CURDATE(), '%Y'), \r\n"
 			+ "        DATE_FORMAT(DATE_SUB(CURDATE(), INTERVAL 1 YEAR), '%Y')\r\n" + "    ), \r\n" + "    2\r\n"
 			+ ") AS finyr")
-	int findfinyr();
+	String findFinyr();
 
-	@Query(nativeQuery = true, value = "select sequence_value from oembininwardseq")
+	@Query(nativeQuery = true, value = "select oeminwarddocid from oembinoutwarddocidseq")
 	int finddocid();
 
-	@Query(nativeQuery = true, value = "CALL next_oembininward_sequence_value()")
+	@Query(nativeQuery = true, value = "CALL next_oeminwarddocid()")
 	void nextseq();
+
+
 
 }

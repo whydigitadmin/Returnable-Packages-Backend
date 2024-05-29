@@ -14,12 +14,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class OemBinInwardDTO {
 	private LocalDate docDate;
-	private String kitno;
+	private String kitNo;
 	private int recievedKitQty;
 	private String createdBy;
 	private Long orgId;
 	private String grnNo;
 	private LocalDate grnDate;
+	private String outwardDocId;
 
 	private List<OemBinInwardDetailsDTO> oemBinInwardDetails;
 }
