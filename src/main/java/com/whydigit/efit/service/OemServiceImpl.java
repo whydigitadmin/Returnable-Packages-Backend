@@ -13,6 +13,7 @@ import com.whydigit.efit.dto.OemBinInwardDTO;
 import com.whydigit.efit.dto.OemBinInwardDetailsDTO;
 import com.whydigit.efit.dto.OemBinOutwardDTO;
 import com.whydigit.efit.entity.AssetStockDetailsVO;
+import com.whydigit.efit.entity.BinInwardDetailsVO;
 import com.whydigit.efit.entity.BinOutwardVO;
 import com.whydigit.efit.entity.OemBinInwardDetailsVO;
 import com.whydigit.efit.entity.OemBinInwardVO;
@@ -88,6 +89,7 @@ public class OemServiceImpl implements OemService {
 		OemBinInwardVO savedoemBinInwardVO = oemBinInwardRepo.save(oemBinInwardVO);
 		List<OemBinInwardDetailsVO> binInwardDetailsVOs = savedoemBinInwardVO.getOemBinInwardDetails();
 		if (binInwardDetailsVOs != null && !binInwardDetailsVOs.isEmpty())
+		{
 			for (OemBinInwardDetailsVO binInwardDetailsVO : binInwardDetailsVOs) {
 
 				BinOutwardVO emitterOutwardVO = binOutwardRepo.findByDocId(savedoemBinInwardVO.getOutwardDocId());
@@ -139,12 +141,14 @@ public class OemServiceImpl implements OemService {
 			stockDetailsVO.setFinyr(savedoemBinInwardVO.getFinyr());
 			assetStockDetailsRepo.save(stockDetailsVO);
 		}
-		return oemBinInwardVO;
+	
 	}
+		return oemBinInwardVO; 
+	}
+	
 
 	@Override
 	public OemBinOutwardVO updateCreateOemBinOutward(OemBinOutwardDTO oemBinOutWardDTO) throws ApplicationException {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -156,6 +160,11 @@ public class OemServiceImpl implements OemService {
 	@Override
 	public Set<Object[]> getOutwardDetailsByFlow(Long flowId, Long orgId) {
 		return oemBinInwardDetailsRepo.findgetOutwardDetailsByFlow(flowId, orgId);
+	}
+
+	@Override
+	public List<OemBinInwardVO> getAllOemBinInward(Long orgId) {
+		return oemBinInwardRepo.findAllOemBinInwardByOrgIdAndUserId(orgId);
 	}
 
 }

@@ -1,8 +1,12 @@
 package com.whydigit.efit.repo;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import com.whydigit.efit.entity.BinInwardDetailsVO;
+import com.whydigit.efit.entity.OemBinInwardDetailsVO;
 import com.whydigit.efit.entity.OemBinInwardVO;
 
 public interface OemBinInwardRepo extends JpaRepository<OemBinInwardVO, Long> {
@@ -18,6 +22,9 @@ public interface OemBinInwardRepo extends JpaRepository<OemBinInwardVO, Long> {
 
 	@Query(nativeQuery = true, value = "CALL next_oeminwarddocid()")
 	void nextseq();
+
+@Query(value = "select * from oembininward where orgid=?1",nativeQuery =true)	
+	List<OemBinInwardVO> findAllOemBinInwardByOrgIdAndUserId(Long orgId);
 
 
 

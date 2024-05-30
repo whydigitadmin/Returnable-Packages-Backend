@@ -71,10 +71,10 @@ public class BinAllotmentNewVO {
 	@Column(name = "emitter", length = 100)
 	private String emitter;
 
-	@Column(name = "part", length = 50)
+	@Column(name = "part")
 	private String partName;
 
-	@Column(name = "partcode", length = 25)
+	@Column(name = "partcode")
 	private String partCode;
 
 	@Column(name = "kitcode", length = 25)

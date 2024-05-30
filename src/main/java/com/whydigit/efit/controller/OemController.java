@@ -23,6 +23,9 @@ import com.whydigit.efit.common.UserConstants;
 import com.whydigit.efit.dto.OemBinInwardDTO;
 import com.whydigit.efit.dto.OemBinOutwardDTO;
 import com.whydigit.efit.dto.ResponseDTO;
+import com.whydigit.efit.entity.AssetVO;
+import com.whydigit.efit.entity.BinInwardDetailsVO;
+import com.whydigit.efit.entity.OemBinInwardDetailsVO;
 import com.whydigit.efit.entity.OemBinInwardVO;
 import com.whydigit.efit.entity.OemBinOutwardVO;
 import com.whydigit.efit.service.OemService;
@@ -60,7 +63,8 @@ public class OemController extends BaseController{
 		return ResponseEntity.ok().body(responseDTO);
 	}
 	
-	//OEM Bin Outward
+	//OEM BinInward
+	
 	@PutMapping("/updateCreateOemBinOutward")
 	public ResponseEntity<ResponseDTO> updateCreateOemBinOutward(@RequestBody OemBinOutwardDTO oemBinOutwardDTO) {
 		String methodName = "updateCreateOemBinOutward()";
@@ -166,4 +170,33 @@ public class OemController extends BaseController{
 		}
 		return flowD;
 	}
+	
+	@GetMapping("/getAllOemBinInward")
+	public ResponseEntity<ResponseDTO> getAllOemBinInward(@RequestParam(required = false) Long orgId) {
+		String methodName = "getAllOemBinInward()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<OemBinInwardVO> oemBinInwardVOs = new ArrayList<>();
+		try {
+			oemBinInwardVOs = oemService.getAllOemBinInward(orgId);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "OemBinInward information get successfully");
+			responseObjectsMap.put("oemBinInwardVOs", oemBinInwardVOs);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "OemBinInward information receive failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+
+	}
+	
 }
+
+

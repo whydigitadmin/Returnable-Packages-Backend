@@ -2356,7 +2356,7 @@ public class MasterController extends BaseController {
 		for (Object[] w : emitterDetails1) {
 			Map<String, Object> kitd = new HashMap<>();
 			kitd.put("emitter", w[0] != null ? w[0].toString() : "");
-			kitd.put("reciver", w[1] != null ? w[1].toString() : "");
+			kitd.put("receiver", w[1] != null ? w[1].toString() : "");
 			kitd.put("flow", w[2] != null ?  w[2].toString() : "");
 			emitterDetails.add(kitd);
 		}
@@ -3038,6 +3038,8 @@ public class MasterController extends BaseController {
 			part.put("allotKitQty", ps[4] != null ? Integer.parseInt(ps[4].toString()) : 0);
 			part.put("reqKitQty", ps[5] != null ? Integer.parseInt(ps[5].toString()) : 0);
 			part.put("emitterId", ps[6] != null ? ps[6].toString() : "");
+			part.put("partName", ps[8] != null ? ps[8].toString() : "");
+			part.put("partNo", ps[9] != null ? ps[9].toString() : "");
 			allotDetails.add(part);
 		}
 		return allotDetails;

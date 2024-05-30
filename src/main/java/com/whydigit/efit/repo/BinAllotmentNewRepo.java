@@ -47,8 +47,8 @@ public interface BinAllotmentNewRepo extends JpaRepository<BinAllotmentNewVO, Lo
 	@Query(nativeQuery =true,value = "select * from binallotment where docid=?1")
 	List<BinAllotmentNewVO> getAllAssetByOrgId(String docId);
 	
-	@Query(nativeQuery =true,value = "SELECT a.docid, a.docdate, b.flow, a.kitcode, a.allotkitqty, a.reqkitqty,a.emitterid,a.orgid FROM binallotment a INNER JOIN issuerequest b ON a.binreqno = b.docid\r\n"
-			+ "WHERE a.docid NOT IN (SELECT allotmentno FROM bininward) and a.orgid=?1 and a.emitterid=?2")
+	@Query(nativeQuery =true,value = "SELECT a.docid, a.docdate, b.flow, a.kitcode, a.allotkitqty, a.reqkitqty,a.emitterid,a.orgid,a.part as partname,a.partcode FROM binallotment a \r\n"
+			+ "INNER JOIN issuerequest b ON a.binreqno = b.docid WHERE a.docid NOT IN (SELECT allotmentno FROM bininward) and a.orgid=?1 and a.emitterid=?2")
 	Set<Object[]> getWaitingforBinInwardDetailsByEmitterAndOrgId(Long orgId, Long emitterid);
 
 	
