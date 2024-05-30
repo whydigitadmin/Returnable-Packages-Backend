@@ -2356,7 +2356,7 @@ public class MasterController extends BaseController {
 		for (Object[] w : emitterDetails1) {
 			Map<String, Object> kitd = new HashMap<>();
 			kitd.put("emitter", w[0] != null ? w[0].toString() : "");
-			kitd.put("reciver", w[1] != null ? w[1].toString() : "");
+			kitd.put("receiver", w[1] != null ? w[1].toString() : "");
 			kitd.put("flow", w[2] != null ?  w[2].toString() : "");
 			emitterDetails.add(kitd);
 		}
