@@ -63,7 +63,8 @@ public class OemController extends BaseController{
 		return ResponseEntity.ok().body(responseDTO);
 	}
 	
-	//OEM Bin Outward
+	//OEM BinInward
+	
 	@PutMapping("/updateCreateOemBinOutward")
 	public ResponseEntity<ResponseDTO> updateCreateOemBinOutward(@RequestBody OemBinOutwardDTO oemBinOutwardDTO) {
 		String methodName = "updateCreateOemBinOutward()";

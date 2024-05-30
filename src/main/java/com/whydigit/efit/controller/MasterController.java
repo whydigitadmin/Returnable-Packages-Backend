@@ -3038,6 +3038,8 @@ public class MasterController extends BaseController {
 			part.put("allotKitQty", ps[4] != null ? Integer.parseInt(ps[4].toString()) : 0);
 			part.put("reqKitQty", ps[5] != null ? Integer.parseInt(ps[5].toString()) : 0);
 			part.put("emitterId", ps[6] != null ? ps[6].toString() : "");
+			part.put("partName", ps[8] != null ? ps[8].toString() : "");
+			part.put("partNo", ps[9] != null ? ps[9].toString() : "");
 			allotDetails.add(part);
 		}
 		return allotDetails;

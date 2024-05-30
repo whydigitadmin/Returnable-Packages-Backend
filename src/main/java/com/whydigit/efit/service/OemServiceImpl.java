@@ -89,6 +89,7 @@ public class OemServiceImpl implements OemService {
 		OemBinInwardVO savedoemBinInwardVO = oemBinInwardRepo.save(oemBinInwardVO);
 		List<OemBinInwardDetailsVO> binInwardDetailsVOs = savedoemBinInwardVO.getOemBinInwardDetails();
 		if (binInwardDetailsVOs != null && !binInwardDetailsVOs.isEmpty())
+		{
 			for (OemBinInwardDetailsVO binInwardDetailsVO : binInwardDetailsVOs) {
 
 				BinOutwardVO emitterOutwardVO = binOutwardRepo.findByDocId(savedoemBinInwardVO.getOutwardDocId());
@@ -140,8 +141,11 @@ public class OemServiceImpl implements OemService {
 			stockDetailsVO.setFinyr(savedoemBinInwardVO.getFinyr());
 			assetStockDetailsRepo.save(stockDetailsVO);
 		}
-		return oemBinInwardVO;
+	
 	}
+		return oemBinInwardVO; 
+	}
+	
 
 	@Override
 	public OemBinOutwardVO updateCreateOemBinOutward(OemBinOutwardDTO oemBinOutWardDTO) throws ApplicationException {
