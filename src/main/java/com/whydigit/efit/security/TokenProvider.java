@@ -5,12 +5,14 @@ import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
+import java.util.Optional;
 import java.util.UUID;
 
 import javax.annotation.PostConstruct;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -111,7 +113,16 @@ public class TokenProvider {
 		Key hmacSHA512Key = new SecretKeySpec(hmacSHA512Byte, HMAC_SHA512);
 		Claims claims = Jwts.claims();
 		claims.put("id", userId);
-		TokenVO tokenVO = tokenRepo.save(TokenVO.builder().id(UUID.randomUUID().toString()).userId(userId)
+		Optional<TokenVO> tokenVOOptional = tokenRepo.findLatestTokenByUserId(userId);
+	    
+	    if (tokenVOOptional.isPresent()) {
+	        TokenVO tokenVO1 = tokenVOOptional.get();
+	        tokenVO1.setExpDate(new Date());
+	        tokenRepo.save(tokenVO1);
+	    }
+		
+		TokenVO tokenVO= new TokenVO();
+		tokenVO = tokenRepo.save(TokenVO.builder().id(UUID.randomUUID().toString()).userId(userId)
 				.createdDate(new Date()).expDate(new Date(now.getTime() + refreshTokenExpInMSec)).build());
 		String token = Jwts.builder().setClaims(claims).setSubject(userName).setIssuedAt(now).setExpiration(expiryDate)
 				.signWith(hmacSHA512Key, SignatureAlgorithm.HS512).compact();
