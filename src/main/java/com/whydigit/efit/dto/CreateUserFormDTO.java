@@ -23,6 +23,7 @@ public class CreateUserFormDTO {
 	private Long[] accessWarehouse;
 	private Long[] accessFlowId;
 	private Long pNo;
+	private String createdBy;
 	private boolean isActive;
 
 	@NotBlank(message = "Email is required")

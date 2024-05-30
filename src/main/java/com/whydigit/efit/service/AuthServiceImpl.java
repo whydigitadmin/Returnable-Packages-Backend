@@ -376,6 +376,8 @@ public class AuthServiceImpl implements AuthService {
 		userVO.setEmail(createUserFormDTO.getEmail());
 		userVO.setAccessRightsRoleId(createUserFormDTO.getAccessRightsRoleId());
 		userVO.setPNo(createUserFormDTO.getPNo());
+		userVO.setCreatedBy(createUserFormDTO.getCreatedBy());
+		userVO.setUpdatedBy(createUserFormDTO.getCreatedBy());
 		try {
 			userVO.setPassword(encoder.encode(CryptoUtils.getDecrypt(createUserFormDTO.getPassword())));
 		} catch (Exception e) {
@@ -443,6 +445,7 @@ public class AuthServiceImpl implements AuthService {
 		userVO.setPNo(createUserFormDTO.getPNo());
 		userVO.setActive(createUserFormDTO.isActive());
 		userVO.setRole(createUserFormDTO.getRole());
+		userVO.setUpdatedBy(createUserFormDTO.getCreatedBy());
 		userVO.setAccessRightsRoleId(createUserFormDTO.getAccessRightsRoleId());
 		 
 	}
