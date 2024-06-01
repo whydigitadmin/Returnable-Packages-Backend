@@ -183,7 +183,13 @@ public class AuthServiceImpl implements AuthService {
 			if(userVO.isActive())
 			{
 				if (compareEncodedPasswordWithEncryptedPassword(loginRequest.getPassword(), userVO.getPassword())) {
-				updateUserLoginInformation(userVO);
+					if(!userVO.isLoginStatus()) {
+						updateUserLoginInformation(userVO);
+					}
+					else {
+						throw new ApplicationContextException(UserConstants.ERRROR_MSG_LOGIN_STATUS);
+					}
+				
 				} else {
 					throw new ApplicationContextException(UserConstants.ERRROR_MSG_PASSWORD_MISMATCH);
 				}
