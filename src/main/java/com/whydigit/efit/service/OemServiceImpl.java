@@ -12,13 +12,13 @@ import org.springframework.stereotype.Service;
 import com.whydigit.efit.dto.OemBinInwardDTO;
 import com.whydigit.efit.dto.OemBinInwardDetailsDTO;
 import com.whydigit.efit.dto.OemBinOutwardDTO;
+import com.whydigit.efit.dto.OemBinOutwardDetailsDTO;
 import com.whydigit.efit.entity.AssetStockDetailsVO;
-import com.whydigit.efit.entity.BinInwardDetailsVO;
 import com.whydigit.efit.entity.BinOutwardVO;
 import com.whydigit.efit.entity.OemBinInwardDetailsVO;
 import com.whydigit.efit.entity.OemBinInwardVO;
+import com.whydigit.efit.entity.OemBinOutwardDetailsVO;
 import com.whydigit.efit.entity.OemBinOutwardVO;
-import com.whydigit.efit.exception.ApplicationException;
 import com.whydigit.efit.repo.AssetRepo;
 import com.whydigit.efit.repo.AssetStockDetailsRepo;
 import com.whydigit.efit.repo.BinOutwardRepo;
@@ -69,7 +69,7 @@ public class OemServiceImpl implements OemService {
 		oemBinInwardVO.setRecievedKitQty(oemBinInwardDTO.getRecievedKitQty());
 		oemBinInwardVO.setCreatedby(oemBinInwardDTO.getCreatedBy());
 		oemBinInwardVO.setModifiedby(oemBinInwardDTO.getCreatedBy());
-		oemBinInwardDTO.setGrnNo(oemBinInwardDTO.getGrnNo());
+		oemBinInwardVO.setGrnNo(oemBinInwardDTO.getGrnNo());
 		oemBinInwardVO.setGrnDate(oemBinInwardDTO.getGrnDate());
 		oemBinInwardVO.setOutwardDocId(oemBinInwardDTO.getOutwardDocId());
 
@@ -146,12 +146,6 @@ public class OemServiceImpl implements OemService {
 		return oemBinInwardVO; 
 	}
 	
-
-	@Override
-	public OemBinOutwardVO updateCreateOemBinOutward(OemBinOutwardDTO oemBinOutWardDTO) throws ApplicationException {
-		return null;
-	}
-
 	@Override
 	public Set<Object[]> getFlowByUserId(Long userId, Long orgId) {
 		return oemBinInwardDetailsRepo.findFlowFromOemByOrgId(userId, orgId);
@@ -167,4 +161,97 @@ public class OemServiceImpl implements OemService {
 		return oemBinInwardRepo.findAllOemBinInwardByOrgIdAndUserId(orgId);
 	}
 
+
+	@Override
+	public OemBinOutwardVO createOemBinOutward(OemBinOutwardDTO oemBinOutwardDTO) {
+		
+		OemBinOutwardVO oemBinOutwardVO = new OemBinOutwardVO();
+		String finyr = oemBinOutwardRepo.findFinyr();
+		String binoutward = finyr + "OBI" + oemBinInwardRepo.finddocid();
+		oemBinOutwardVO.setDocId(binoutward);
+		oemBinOutwardRepo.nextSeq();
+
+		oemBinOutwardVO.setDocDate(oemBinOutwardDTO.getDocDate());
+		oemBinOutwardVO.setOrgId(oemBinOutwardDTO.getOrgId());
+		oemBinOutwardVO.setCreatedby(oemBinOutwardDTO.getCreatedBy());
+		oemBinOutwardVO.setModifiedby(oemBinOutwardDTO.getCreatedBy());
+		oemBinOutwardVO.setKit(oemBinOutwardDTO.getKit());
+		oemBinOutwardVO.setOutwardKitQty(oemBinOutwardDTO.getOutwardKitQty());
+		oemBinOutwardVO.setModifiedby(oemBinOutwardDTO.getCreatedBy());
+		oemBinOutwardVO.setOrgId(oemBinOutwardDTO.getOrgId());
+		oemBinOutwardVO.setOutwardDocId(oemBinOutwardDTO.getOutwardDocId());
+
+		List<OemBinOutwardDetailsVO> oemBinOutwardDetailsVOs = new ArrayList<>();
+		if (oemBinOutwardDTO.getOemBinOutwardDetails() != null) {
+			for (OemBinOutwardDetailsDTO oemBinOutwardDetailsDTO : oemBinOutwardDTO.getOemBinOutwardDetails()) {
+				OemBinOutwardDetailsVO oemBinOutwardDetailsVO = new OemBinOutwardDetailsVO();
+				oemBinOutwardDetailsVO.setAsset(oemBinOutwardDetailsDTO.getAsset());
+				oemBinOutwardDetailsVO.setAssetCode(oemBinOutwardDetailsDTO.getAssetCode());
+				oemBinOutwardDetailsVO.setQty(oemBinOutwardDetailsDTO.getQty());
+				oemBinOutwardDetailsVO.setOemBinOutwardVO(oemBinOutwardVO);
+				oemBinOutwardDetailsVOs.add(oemBinOutwardDetailsVO);
+			}
+		}
+		oemBinOutwardVO.setOemBinOutwardDetails(oemBinOutwardDetailsVOs);
+
+		OemBinOutwardVO savedOemBinOutwardVO = oemBinOutwardRepo.save(oemBinOutwardVO);
+		List<OemBinOutwardDetailsVO> binOutwardDetailsVOs = savedOemBinOutwardVO.getOemBinOutwardDetails();
+		if (binOutwardDetailsVOs != null && !binOutwardDetailsVOs.isEmpty())
+		{
+			for (OemBinOutwardDetailsVO binOutwardDetailsVO : binOutwardDetailsVOs) {
+
+				BinOutwardVO emitterOutwardVO = binOutwardRepo.findByDocId(savedOemBinOutwardVO.getOutwardDocId());
+
+				AssetStockDetailsVO stockDetailsVO = new AssetStockDetailsVO();
+				stockDetailsVO.setStockRef(savedOemBinOutwardVO.getOutwardDocId());
+				stockDetailsVO.setStockBranch(emitterOutwardVO.getReceiver() + "-" + emitterOutwardVO.getDestination());
+				stockDetailsVO.setStockDate(savedOemBinOutwardVO.getDocDate());
+				stockDetailsVO.setSku(binOutwardDetailsVO.getAsset());
+				stockDetailsVO.setSkuCode(binOutwardDetailsVO.getAssetCode());
+				stockDetailsVO.setSkuQty(binOutwardDetailsVO.getQty() * -1);
+				stockDetailsVO.setOrgId(savedOemBinOutwardVO.getOrgId());
+				stockDetailsVO.setCategory(assetRepo.getCategoryByAssetCodeId(binOutwardDetailsVO.getAssetCode()));
+				stockDetailsVO.setStatus("M");
+				stockDetailsVO.setScreen("Bin Outward");
+				stockDetailsVO.setSCode(savedOemBinOutwardVO.getScode());
+				stockDetailsVO.setPm("M");
+				stockDetailsVO.setStockSource("");
+				stockDetailsVO.setBinLocation("");
+				stockDetailsVO.setCancelRemarks("");
+				stockDetailsVO.setStockLocation("");
+				stockDetailsVO.setSourceId(savedOemBinOutwardVO.getId());
+				stockDetailsVO.setFinyr(savedOemBinOutwardVO.getFinYr());
+				assetStockDetailsRepo.save(stockDetailsVO);
+			}
+
+			for (OemBinOutwardDetailsVO binOutwardDetailsVO : binOutwardDetailsVOs) {
+
+				BinOutwardVO emitterOutwardVO = binOutwardRepo.findByDocId(savedOemBinOutwardVO.getOutwardDocId());
+
+			AssetStockDetailsVO stockDetailsVO = new AssetStockDetailsVO();
+			stockDetailsVO.setStockRef(savedOemBinOutwardVO.getDocId());
+			stockDetailsVO.setStockBranch(emitterOutwardVO.getReceiver() + "-" + emitterOutwardVO.getDestination());
+			stockDetailsVO.setStockDate(savedOemBinOutwardVO.getDocDate());
+			stockDetailsVO.setSku(binOutwardDetailsVO.getAsset());
+			stockDetailsVO.setSkuCode(binOutwardDetailsVO.getAssetCode());
+			stockDetailsVO.setSkuQty(binOutwardDetailsVO.getQty());
+			stockDetailsVO.setOrgId(savedOemBinOutwardVO.getOrgId());
+			stockDetailsVO.setCategory(assetRepo.getCategoryByAssetCodeId(binOutwardDetailsVO.getAssetCode()));
+			stockDetailsVO.setStatus("S");
+			stockDetailsVO.setScreen("Bin Outward");
+			stockDetailsVO.setSCode(savedOemBinOutwardVO.getScode());
+			stockDetailsVO.setPm("P");
+			stockDetailsVO.setStockSource("");
+			stockDetailsVO.setBinLocation("");
+			stockDetailsVO.setCancelRemarks("");
+			stockDetailsVO.setStockLocation("");
+			stockDetailsVO.setSourceId(binOutwardDetailsVO.getId());
+			stockDetailsVO.setFinyr(savedOemBinOutwardVO.getFinYr());
+			assetStockDetailsRepo.save(stockDetailsVO);
+		}
+	
+	}
+		return oemBinOutwardVO; 
+	}
+	
 }

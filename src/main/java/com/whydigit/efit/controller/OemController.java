@@ -63,32 +63,6 @@ public class OemController extends BaseController{
 		return ResponseEntity.ok().body(responseDTO);
 	}
 	
-	//OEM BinInward
-	
-	@PutMapping("/updateCreateOemBinOutward")
-	public ResponseEntity<ResponseDTO> updateCreateOemBinOutward(@RequestBody OemBinOutwardDTO oemBinOutwardDTO) {
-		String methodName = "updateCreateOemBinOutward()";
-		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
-		String errorMsg = null;
-		Map<String, Object> responseObjectsMap = new HashMap<>();
-		ResponseDTO responseDTO = null;
-		try {
-			OemBinOutwardVO updatedOemBinOutwardVO = oemService.updateCreateOemBinOutward(oemBinOutwardDTO);
-			if (updatedOemBinOutwardVO != null) {
-				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "OEM BinOutward updated successfully");
-				responseObjectsMap.put("OEMBinOutwardVO", updatedOemBinOutwardVO);
-				responseDTO = createServiceResponse(responseObjectsMap);
-			} else {
-			}
-		} catch (Exception e) {
-			errorMsg = e.getMessage();
-			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-			responseDTO = createServiceResponseError(responseObjectsMap, "OEM BinOutward update failed", errorMsg);
-		}
-		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
-		return ResponseEntity.ok().body(responseDTO);
-	}
-	
 	@GetMapping("/getFlowByUserId")
 	public ResponseEntity<ResponseDTO> getFlowByUserId(@RequestParam Long userId ,@RequestParam Long orgId) {
 		String methodName = "getFlowByUserId()";
@@ -196,6 +170,34 @@ public class OemController extends BaseController{
 		return ResponseEntity.ok().body(responseDTO);
 
 	}
+	
+	//OEM BIN OUTWARD
+	
+	//OEM Bin Inward
+		@PostMapping("/oemBinOutward")
+		public ResponseEntity<ResponseDTO> createOemBinOutward(@RequestBody OemBinOutwardDTO binOutwardDTO) {
+			String methodName = "createOemBinOutward()";
+			LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+			String errorMsg = null;
+			Map<String, Object> responseObjectsMap = new HashMap<>();
+			ResponseDTO responseDTO = null;
+			OemBinOutwardVO oemBinOutwardVO = new OemBinOutwardVO();
+			try {
+				oemBinOutwardVO = oemService.createOemBinOutward(binOutwardDTO);
+			} catch (Exception e) {
+				errorMsg = e.getMessage();
+				LOGGER.error(CommonConstant.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			}
+			if (StringUtils.isBlank(errorMsg)) {
+				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Oem Bin Outward Created Successfully");
+				responseObjectsMap.put("binOutwardDTO", binOutwardDTO);
+				responseDTO = createServiceResponse(responseObjectsMap);
+			} else {
+				responseDTO = createServiceResponseError(responseObjectsMap, "Oem Bin Outward Failed", errorMsg);
+			}
+			LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+			return ResponseEntity.ok().body(responseDTO);
+		}
 	
 }
 
