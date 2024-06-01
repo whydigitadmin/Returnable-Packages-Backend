@@ -666,4 +666,31 @@ public class PartStudyController extends BaseController {
 
 	}
 	
+	@PostMapping("/uploadPartImageInBloob")
+	public ResponseEntity<ResponseDTO> uploadPartImageInBloob(@RequestParam("file") MultipartFile file,
+			@RequestParam Long refPsId) {
+		String methodName = "uploadPartImageInBloob()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		PackingDetailVO packingDetailVO = null;
+		try {
+			packingDetailVO = partStudyService.uploadPartImageInBloob(file, refPsId);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error("Unable To Upload PartImage", methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "PartImage Successfully Upload");
+			responseObjectsMap.put("packingDetailVO", packingDetailVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "PartImage Upload Failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
+	
 }

@@ -27,4 +27,5 @@ public class BasicDetailDTO {
 	private String createdBy;
 	private String modifiedBy;
 	
+	
 }
