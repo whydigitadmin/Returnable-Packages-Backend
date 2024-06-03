@@ -103,7 +103,7 @@ public class EmitterServiceImpl implements EmitterService {
 
 	@Autowired
 	UserRepo userRepo;
-	
+
 	@Autowired
 	AssetRepo assetRepo;
 
@@ -163,10 +163,8 @@ public class EmitterServiceImpl implements EmitterService {
 	@Autowired
 	AssetStockDetailsRepo assetStockDetailsRepo;
 
-
 	@Autowired
 	BinOutwardRepo binOutwardRepo;
-
 
 	@Autowired
 	BinInwardRepo binInwardRepo;
@@ -481,6 +479,11 @@ public class EmitterServiceImpl implements EmitterService {
 		returnStockVO.setIssue_item_id(inwardDTO.getIssueItemId());
 		returnStockRepo.save(returnStockVO);
 
+	}
+
+	@Override
+	public List<Object[]> getEmitterDispatchByFlowId(Long orgId, Long flowId, Long emitterId) {
+		return emitterOutwardRepo.findEmitterDispatchByFlowId(orgId, flowId, emitterId);
 	}
 
 	@Override
@@ -820,7 +823,6 @@ public class EmitterServiceImpl implements EmitterService {
 		return taggingDetailsRepo.findByTagCode(tagCode);
 	}
 
-
 	@Override
 	public List<BinAllotmentNewVO> getAllAllotmentById(String docId) {
 		List<BinAllotmentNewVO> binAllotmentNewVO = new ArrayList<>();
@@ -840,11 +842,10 @@ public class EmitterServiceImpl implements EmitterService {
 	}
 
 	@Override
-	public Set<Object[]> getIssueRequestreportByOrgId(Long orgId,Long userId) {
+	public Set<Object[]> getIssueRequestreportByOrgId(Long orgId, Long userId) {
 		// TODO Auto-generated method stub
-		return issueRequestRepo.getIssueRequestByOrgId(orgId,userId);
+		return issueRequestRepo.getIssueRequestByOrgId(orgId, userId);
 	}
-
 
 	@Value("${proofOfDelivery.upload.dir}")
 	private String UPLOAD_DIR;
@@ -896,7 +897,6 @@ public class EmitterServiceImpl implements EmitterService {
 		return allotNo;
 	}
 
-
 	@Override
 	public String getDocIdByBinallotment() {
 		int finyr = binAllotmentNewRepo.getFinyr();
@@ -910,85 +910,61 @@ public class EmitterServiceImpl implements EmitterService {
 		String binOutward = finyr + "BO" + binOutwardRepo.finddocid();
 		return binOutward;
 	}
-	
+
 	// Bin Outward
 
-		@Override
-		public BinOutwardVO createBinOutward(BinOutwardDTO binOutwardDTO) {
-			BinOutwardVO binOutwardVO = new BinOutwardVO();
-			String finyr = binOutwardRepo.findFinyr();
-			String binoutward = finyr + "BO" + binOutwardRepo.finddocid();
-			binOutwardVO.setDocId(binoutward);
-			binOutwardRepo.nextseq();
+	@Override
+	public BinOutwardVO createBinOutward(BinOutwardDTO binOutwardDTO) {
+		BinOutwardVO binOutwardVO = new BinOutwardVO();
+		String finyr = binOutwardRepo.findFinyr();
+		String binoutward = finyr + "BO" + binOutwardRepo.finddocid();
+		binOutwardVO.setDocId(binoutward);
+		binOutwardRepo.nextseq();
 
-			binOutwardVO.setDocDate(binOutwardDTO.getDocDate());
-			binOutwardVO.setEmitter(binOutwardDTO.getEmitter());
-			binOutwardVO.setEmitterId(binOutwardDTO.getEmitterId());
-			binOutwardVO.setFlow(binOutwardDTO.getFlow());
-			binOutwardVO.setOrgId(binOutwardDTO.getOrgId());
-			binOutwardVO.setCreatedby(binOutwardDTO.getCreatedBy());
-			binOutwardVO.setModifiedby(binOutwardDTO.getCreatedBy());
-			binOutwardVO.setDestination(binOutwardDTO.getDestination());
-			binOutwardVO.setOrgin(binOutwardDTO.getOrgin());
-			binOutwardVO.setReceiver(binOutwardDTO.getReceiver());
-			binOutwardVO.setKitNo(binOutwardDTO.getKitNo());
-			binOutwardVO.setOutwardKitQty(binOutwardDTO.getOutwardKitQty());
+		binOutwardVO.setDocDate(binOutwardDTO.getDocDate());
+		binOutwardVO.setEmitter(binOutwardDTO.getEmitter());
+		binOutwardVO.setEmitterId(binOutwardDTO.getEmitterId());
+		binOutwardVO.setFlow(binOutwardDTO.getFlow());
+		binOutwardVO.setOrgId(binOutwardDTO.getOrgId());
+		binOutwardVO.setCreatedby(binOutwardDTO.getCreatedBy());
+		binOutwardVO.setModifiedby(binOutwardDTO.getCreatedBy());
+		binOutwardVO.setDestination(binOutwardDTO.getDestination());
+		binOutwardVO.setOrgin(binOutwardDTO.getOrgin());
+		binOutwardVO.setReceiver(binOutwardDTO.getReceiver());
+		binOutwardVO.setKitNo(binOutwardDTO.getKitNo());
+		binOutwardVO.setOutwardKitQty(binOutwardDTO.getOutwardKitQty());
 
-			List<BinOutwardDetailsVO> binOutwardDetailsVO1 = new ArrayList<>();
-			if (binOutwardDTO.getBinOutwardDetailsDTO() != null) {
-				for (BinOutwardDetailsDTO binOutwardDetailsDTO : binOutwardDTO.getBinOutwardDetailsDTO()) {
-					BinOutwardDetailsVO binOutwardDetails = new BinOutwardDetailsVO();
-					binOutwardDetails.setAsset(binOutwardDetailsDTO.getAsset());
-					binOutwardDetails.setAssetCode(binOutwardDetailsDTO.getAssetCode());
-					binOutwardDetails.setQty(binOutwardDetailsDTO.getQty());
-					binOutwardDetails.setBinOutwardVO(binOutwardVO);
-					binOutwardDetailsVO1.add(binOutwardDetails);
-				}
+		List<BinOutwardDetailsVO> binOutwardDetailsVO1 = new ArrayList<>();
+		if (binOutwardDTO.getBinOutwardDetailsDTO() != null) {
+			for (BinOutwardDetailsDTO binOutwardDetailsDTO : binOutwardDTO.getBinOutwardDetailsDTO()) {
+				BinOutwardDetailsVO binOutwardDetails = new BinOutwardDetailsVO();
+				binOutwardDetails.setAsset(binOutwardDetailsDTO.getAsset());
+				binOutwardDetails.setAssetCode(binOutwardDetailsDTO.getAssetCode());
+				binOutwardDetails.setQty(binOutwardDetailsDTO.getQty());
+				binOutwardDetails.setBinOutwardVO(binOutwardVO);
+				binOutwardDetailsVO1.add(binOutwardDetails);
 			}
-			binOutwardVO.setBinOutwardDetails(binOutwardDetailsVO1);
+		}
+		binOutwardVO.setBinOutwardDetails(binOutwardDetailsVO1);
 
-			BinOutwardVO savedBinOutwardVO = binOutwardRepo.save(binOutwardVO);
-			List<BinOutwardDetailsVO> binOutwardDetailsVOLists = savedBinOutwardVO.getBinOutwardDetails();
-			if (binOutwardDetailsVOLists != null && !binOutwardDetailsVOLists.isEmpty())
-				for (BinOutwardDetailsVO binOutwardDetailsVO : binOutwardDetailsVOLists) {
-
-					AssetStockDetailsVO stockDetailsVO = new AssetStockDetailsVO();
-					stockDetailsVO.setStockRef(savedBinOutwardVO.getDocId());
-					stockDetailsVO.setStockBranch(savedBinOutwardVO.getEmitter() + "-" + savedBinOutwardVO.getOrgin());
-					stockDetailsVO.setStockDate(savedBinOutwardVO.getDocDate());
-					stockDetailsVO.setSku(binOutwardDetailsVO.getAsset());
-					stockDetailsVO.setSkuCode(binOutwardDetailsVO.getAssetCode());
-					stockDetailsVO.setSkuQty(binOutwardDetailsVO.getQty() * -1);
-					stockDetailsVO.setOrgId(savedBinOutwardVO.getOrgId());
-					stockDetailsVO.setCategory(assetRepo.getCategoryByAssetCodeId(binOutwardDetailsVO.getAssetCode()));
-					stockDetailsVO.setStatus("S");
-					stockDetailsVO.setScreen("Bin Outward");
-					stockDetailsVO.setSCode(savedBinOutwardVO.getScode());
-					stockDetailsVO.setPm("M");
-					stockDetailsVO.setStockSource("");
-					stockDetailsVO.setBinLocation("");
-					stockDetailsVO.setCancelRemarks("");
-					stockDetailsVO.setStockLocation("");
-					stockDetailsVO.setSourceId(binOutwardDetailsVO.getId());
-					stockDetailsVO.setFinyr(savedBinOutwardVO.getFinyr());
-					assetStockDetailsRepo.save(stockDetailsVO);
-				}
-
+		BinOutwardVO savedBinOutwardVO = binOutwardRepo.save(binOutwardVO);
+		List<BinOutwardDetailsVO> binOutwardDetailsVOLists = savedBinOutwardVO.getBinOutwardDetails();
+		if (binOutwardDetailsVOLists != null && !binOutwardDetailsVOLists.isEmpty())
 			for (BinOutwardDetailsVO binOutwardDetailsVO : binOutwardDetailsVOLists) {
 
 				AssetStockDetailsVO stockDetailsVO = new AssetStockDetailsVO();
 				stockDetailsVO.setStockRef(savedBinOutwardVO.getDocId());
-				stockDetailsVO.setStockBranch(savedBinOutwardVO.getReceiver() + "-" + savedBinOutwardVO.getDestination());
+				stockDetailsVO.setStockBranch(savedBinOutwardVO.getEmitter() + "-" + savedBinOutwardVO.getOrgin());
 				stockDetailsVO.setStockDate(savedBinOutwardVO.getDocDate());
 				stockDetailsVO.setSku(binOutwardDetailsVO.getAsset());
 				stockDetailsVO.setSkuCode(binOutwardDetailsVO.getAssetCode());
-				stockDetailsVO.setSkuQty(binOutwardDetailsVO.getQty());
+				stockDetailsVO.setSkuQty(binOutwardDetailsVO.getQty() * -1);
 				stockDetailsVO.setOrgId(savedBinOutwardVO.getOrgId());
 				stockDetailsVO.setCategory(assetRepo.getCategoryByAssetCodeId(binOutwardDetailsVO.getAssetCode()));
-				stockDetailsVO.setStatus("M");
+				stockDetailsVO.setStatus("S");
 				stockDetailsVO.setScreen("Bin Outward");
 				stockDetailsVO.setSCode(savedBinOutwardVO.getScode());
-				stockDetailsVO.setPm("P");
+				stockDetailsVO.setPm("M");
 				stockDetailsVO.setStockSource("");
 				stockDetailsVO.setBinLocation("");
 				stockDetailsVO.setCancelRemarks("");
@@ -997,35 +973,58 @@ public class EmitterServiceImpl implements EmitterService {
 				stockDetailsVO.setFinyr(savedBinOutwardVO.getFinyr());
 				assetStockDetailsRepo.save(stockDetailsVO);
 			}
-			return binOutwardVO;
+
+		for (BinOutwardDetailsVO binOutwardDetailsVO : binOutwardDetailsVOLists) {
+
+			AssetStockDetailsVO stockDetailsVO = new AssetStockDetailsVO();
+			stockDetailsVO.setStockRef(savedBinOutwardVO.getDocId());
+			stockDetailsVO.setStockBranch(savedBinOutwardVO.getReceiver() + "-" + savedBinOutwardVO.getDestination());
+			stockDetailsVO.setStockDate(savedBinOutwardVO.getDocDate());
+			stockDetailsVO.setSku(binOutwardDetailsVO.getAsset());
+			stockDetailsVO.setSkuCode(binOutwardDetailsVO.getAssetCode());
+			stockDetailsVO.setSkuQty(binOutwardDetailsVO.getQty());
+			stockDetailsVO.setOrgId(savedBinOutwardVO.getOrgId());
+			stockDetailsVO.setCategory(assetRepo.getCategoryByAssetCodeId(binOutwardDetailsVO.getAssetCode()));
+			stockDetailsVO.setStatus("M");
+			stockDetailsVO.setScreen("Bin Outward");
+			stockDetailsVO.setSCode(savedBinOutwardVO.getScode());
+			stockDetailsVO.setPm("P");
+			stockDetailsVO.setStockSource("");
+			stockDetailsVO.setBinLocation("");
+			stockDetailsVO.setCancelRemarks("");
+			stockDetailsVO.setStockLocation("");
+			stockDetailsVO.setSourceId(binOutwardDetailsVO.getId());
+			stockDetailsVO.setFinyr(savedBinOutwardVO.getFinyr());
+			assetStockDetailsRepo.save(stockDetailsVO);
 		}
+		return binOutwardVO;
+	}
 
-		
-		@Override
-		public List<BinAllotmentNewVO> getCustomizedAllotmentDetailsByEmitter(String kitCode, String flow, Long emitterId,
-				LocalDate startAllotDate, LocalDate endAllotDate) {
-			return binAllotmentNewRepo.findAll(new Specification<BinAllotmentNewVO>() {
+	@Override
+	public List<BinAllotmentNewVO> getCustomizedAllotmentDetailsByEmitter(String kitCode, String flow, Long emitterId,
+			LocalDate startAllotDate, LocalDate endAllotDate) {
+		return binAllotmentNewRepo.findAll(new Specification<BinAllotmentNewVO>() {
 
-				@Override
-				public Predicate toPredicate(Root<BinAllotmentNewVO> root, CriteriaQuery<?> query,
-						CriteriaBuilder criteriaBuilder) {
-					List<Predicate> predicates = new ArrayList<>();
-					if (ObjectUtils.isNotEmpty(kitCode)) {
-						predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("kitCode"), kitCode)));
-					}
-					if (ObjectUtils.isNotEmpty(flow)) {
-						predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("flow"), flow)));
-					}
-					if (ObjectUtils.isNotEmpty(startAllotDate) && ObjectUtils.isNotEmpty(endAllotDate)) {
-		                predicates.add(criteriaBuilder.between(root.get("docDate"),startAllotDate,endAllotDate));
-		            }
-					if (emitterId != null) {
-						predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("emitterId"), emitterId)));
-					}
-					return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
+			@Override
+			public Predicate toPredicate(Root<BinAllotmentNewVO> root, CriteriaQuery<?> query,
+					CriteriaBuilder criteriaBuilder) {
+				List<Predicate> predicates = new ArrayList<>();
+				if (ObjectUtils.isNotEmpty(kitCode)) {
+					predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("kitCode"), kitCode)));
 				}
+				if (ObjectUtils.isNotEmpty(flow)) {
+					predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("flow"), flow)));
+				}
+				if (ObjectUtils.isNotEmpty(startAllotDate) && ObjectUtils.isNotEmpty(endAllotDate)) {
+					predicates.add(criteriaBuilder.between(root.get("docDate"), startAllotDate, endAllotDate));
+				}
+				if (emitterId != null) {
+					predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("emitterId"), emitterId)));
+				}
+				return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
+			}
 
-			});
-		}
+		});
+	}
+
 }
-
