@@ -2,7 +2,6 @@ package com.whydigit.efit.service;
 import java.util.List;
 import java.util.Optional;
 
-import com.whydigit.efit.entity.BranchVO;
 import com.whydigit.efit.entity.CompanySetVO;
 import com.whydigit.efit.entity.CompanySetupVO;
 
@@ -19,15 +18,7 @@ public interface CompanySetupService {
 	List<CompanySetupVO> getAllcompanies();
 	
 	
-	Optional<BranchVO> getBranchById(int id);
-
-	BranchVO createBranch(BranchVO branchVO);
-
-	Optional<BranchVO> updateBranch(BranchVO branchVO);
-
-	void deleteBranch(int id);
-
-	List<BranchVO> getAllBranch();
+	
 	
 	
 	Optional<CompanySetVO> getCompanySetById(int id);
@@ -39,5 +30,7 @@ public interface CompanySetupService {
 	void deleteCompanySet(int id);
 
 	List<CompanySetVO> getAllCompanySet();
+
+	
 
 }
