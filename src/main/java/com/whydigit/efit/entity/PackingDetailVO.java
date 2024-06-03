@@ -86,6 +86,8 @@ public class PackingDetailVO {
 	@Column(name="nesting",length =25 )
 	private String nesting;
 	
+	
+	
 //	@Column(name="partimage")
 //	private String partImg;
 //	
@@ -95,8 +97,8 @@ public class PackingDetailVO {
 //	@Column(name="partdrwaing" )
 //	private String pDrawing;
 	
-	@Column(name="approvedcomercial" )
-	private String comercial;
+//	@Column(name="approvedcomercial" )
+//	private String comercial;
 //	
 //	@Column(name="approvedpackagedrawing" )
 //	private String approvedDrawing;
@@ -117,6 +119,9 @@ public class PackingDetailVO {
 	@Lob
 	@Column(name ="approvedcommercialcontract",columnDefinition ="LONGBLOB")
 	private byte[] approvedCommercialContract;
+	
+	@Column(name ="approvedcomercial",columnDefinition ="LONGBLOB")
+	private byte[] comercial;
 
 	@JsonBackReference
 	@OneToOne

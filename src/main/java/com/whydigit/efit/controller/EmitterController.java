@@ -424,24 +424,24 @@ public class EmitterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
-//emitter outward
-	@GetMapping("/emitterOutward")
-	public ResponseEntity<ResponseDTO> getAllEmitterOutward(@RequestParam(required = false) Long orgId) {
-		String methodName = "getAllEmitterOutward()";
+//emitter  bin outward
+	@GetMapping("/getAllBinOutward")
+	public ResponseEntity<ResponseDTO> getAllBinOutward(@RequestParam(required = false) Long orgId) {
+		String methodName = "getAllBinOutward()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
-		List<EmitterOutwardVO> emitterOutwardVO = new ArrayList<>();
+		List<BinOutwardVO> binOutwardVO = new ArrayList<>();
 		try {
-			emitterOutwardVO = emitterService.getAllEmitterOutward(orgId);
+			binOutwardVO = emitterService.getAllBinOutward(orgId);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
 		}
 		if (StringUtils.isBlank(errorMsg)) {
 			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "EmitterOutward information get successfully");
-			responseObjectsMap.put("emitterOutwardVO", emitterOutwardVO);
+			responseObjectsMap.put("binOutwardVO", binOutwardVO);
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} else {
 			responseDTO = createServiceResponseError(responseObjectsMap, "emitterOutward information receive failed",
@@ -451,6 +451,34 @@ public class EmitterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 
 	}
+	
+	@GetMapping("/getAllBinOutwardByDocId")
+	public ResponseEntity<ResponseDTO> getAllBinOutwardByDocId(@RequestParam(required = false) String docId) {
+		String methodName = "getAllBinOutward()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<BinOutwardVO> binOutwardVO = new ArrayList<>();
+		try {
+			binOutwardVO = emitterService.getAllBinOutwardByDocId(docId);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "EmitterOutward information get successfully");
+			responseObjectsMap.put("binOutwardVO", binOutwardVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "emitterOutward information receive failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+
+	}
+
 
 	@GetMapping("/emitterOutward/{id}")
 	public ResponseEntity<ResponseDTO> getEmitterOutwardById(@PathVariable int id) {
