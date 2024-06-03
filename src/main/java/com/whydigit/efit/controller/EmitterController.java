@@ -255,15 +255,15 @@ public class EmitterController extends BaseController {
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
-		List<Object[]> inward = new ArrayList<>();
+		List<Object[]> outward = new ArrayList<>();
 		try {
-			inward = emitterService.getEmitterDispatchByFlowId(orgid, flowId, emitterId);
+			outward = emitterService.getEmitterDispatchByFlowId(orgid, flowId, emitterId);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
 		}
 		if (StringUtils.isEmpty(errorMsg)) {
-			List<Map<String, Object>> dispatch = findBinInward(inward);
+			List<Map<String, Object>> dispatch = findBinOutward(outward);
 			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Emitter Dispatch found by ID");
 			responseObjectsMap.put("EmitterDispatch", dispatch);
 			responseDTO = createServiceResponse(responseObjectsMap);
@@ -275,9 +275,9 @@ public class EmitterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
-	private List<Map<String, Object>> findBinInward(List<Object[]> inward) {
+	private List<Map<String, Object>> findBinOutward(List<Object[]> outward) {
 		List<Map<String, Object>> dispatch = new ArrayList<>();
-		for (Object[] ps : inward) {
+		for (Object[] ps : outward) {
 			Map<String, Object> part = new HashMap<>();
 			part.put("BinOutId", ps[0] != null ? ps[0].toString() : "");
 			part.put("Date", ps[1] != null ? ps[1].toString() : "");
