@@ -9,10 +9,9 @@ import org.springframework.stereotype.Repository;
 import com.whydigit.efit.entity.TokenVO;
 
 @Repository
-public interface TokenRepo extends JpaRepository<TokenVO, String>{
+public interface TokenRepo extends JpaRepository<TokenVO, String> {
 
-	@Query(nativeQuery = true, value="SELECT * FROM token WHERE user_id = ?1 ORDER BY created_date DESC LIMIT 1")
-    Optional<TokenVO> findLatestTokenByUserId(Long userId);
+	@Query(nativeQuery = true, value = "SELECT * FROM token WHERE user_id = ?1 ORDER BY created_date DESC LIMIT 1")
+	Optional<TokenVO> findLatestTokenByUserId(Long userId);
 
-	
 }

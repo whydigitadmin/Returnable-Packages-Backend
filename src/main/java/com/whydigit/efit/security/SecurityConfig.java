@@ -35,7 +35,7 @@ public class SecurityConfig {
 				.antMatchers("/v2/api-docs", "/configuration/ui", "/swagger-resources/**", "/configuration/security",
 						"/swagger-ui.html", "/swagger-ui/*", "/api/auth/signup", "/api/auth/login", "/api/auth/logout",
 						"/api/auth/user/{userId}", "/api/auth/getRefreshToken", "/api/basicSetting/companyInfo",
-						"/api/usersdetails/view","/api/auth/**",
+						"/api/usersdetails/view","/api/auth/**","/api/emitter/**",
 //						"/api/master/**",
 //						"/api/emitter/**",
 //						"/api/warehouse/**",
