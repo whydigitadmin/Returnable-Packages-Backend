@@ -65,6 +65,8 @@ public class OemBinOutwardVO {
 	private String screen = "OEM BIN OUTWARD";
 	@Column(name = "sourceid")
 	private String sourceId;
+	@Column(name="outwarddocid")
+	private String outwardDocId;
 
 	@OneToMany(mappedBy = "oemBinOutwardVO", cascade = CascadeType.ALL)
 	@JsonManagedReference

@@ -17,18 +17,14 @@ public interface OemService {
 
 //	OEM Bin Inward
 	OemBinInwardVO createOemBinInward(OemBinInwardDTO oemBinInwardDTO);
-	
 
 //	OEM Bin Outward
-	OemBinOutwardVO updateCreateOemBinOutward(OemBinOutwardDTO oemBinOutWardDTO) throws ApplicationException;
-
+	OemBinOutwardVO createOemBinOutward(OemBinOutwardDTO binOutwardDTO);
 
 	Set<Object[]> getFlowByUserId(Long userId, Long orgId);
 
-
 	Set<Object[]> getOutwardDetailsByFlow(Long flowId, Long orgId);
 
-
 	List<OemBinInwardVO> getAllOemBinInward(Long orgId);
-	
+
 }

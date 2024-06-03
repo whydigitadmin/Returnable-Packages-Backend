@@ -13,7 +13,7 @@ public interface OemBinOutwardRepo extends JpaRepository<OemBinOutwardVO, Long> 
 			+ "        DATE_FORMAT(CURDATE(), '%m%d') > '0331', \r\n" + "        DATE_FORMAT(CURDATE(), '%Y'), \r\n"
 			+ "        DATE_FORMAT(DATE_SUB(CURDATE(), INTERVAL 1 YEAR), '%Y')\r\n" + "    ), \r\n" + "    2\r\n"
 			+ ") AS finyr")
-	int findFinyr();
+	String findFinyr();
 
 	@Query(nativeQuery = true, value = "select sequence_value from oembinoutwardseq")
 	int finddocid();

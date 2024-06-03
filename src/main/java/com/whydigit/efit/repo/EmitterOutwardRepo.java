@@ -12,7 +12,7 @@ import com.whydigit.efit.entity.EmitterOutwardVO;
 
 public interface EmitterOutwardRepo extends JpaRepository<EmitterOutwardVO, Long> {
 
-	@Query(value = "select eo from EmitterOutwardVO eo Where eo.orgId=?1")
+	@Query(value = "select * from emitteroutward where orgid=?1",nativeQuery =true)
 	List<EmitterOutwardVO> getAllEmitterOutwardByOrgId(Long orgId);
 
 	@Query(value="select * from emitteroutward where issue_item_id=?1",nativeQuery = true)
