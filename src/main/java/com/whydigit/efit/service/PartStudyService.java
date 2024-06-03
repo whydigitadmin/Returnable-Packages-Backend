@@ -85,4 +85,17 @@ public interface PartStudyService {
 
 	PackingDetailVO uploadPartImageInBloob(MultipartFile file, Long refPsId) throws IOException;
 
+	PackingDetailVO uploadExistingPackingImageInBloob(MultipartFile file, Long refPsId) throws IOException;
+
+	PackingDetailVO uploadpartdrawingInBloob(MultipartFile file, Long refPsId) throws IOException;
+
+	PackingDetailVO uploadApprovedCommercialContractInBloob(MultipartFile file, Long refPsId) throws IOException;
+
+	PackingDetailVO uploadCommercialInBlob(MultipartFile file, Long refPsId) throws IOException;
+
+	byte[] getCommercialImageById(Long refPsId);
+
+	PackingDetailVO uploadCommercialInBloob(MultipartFile file, Long refPsId) throws IOException;
+
+
 }

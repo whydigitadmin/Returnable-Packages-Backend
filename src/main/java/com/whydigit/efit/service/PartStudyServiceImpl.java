@@ -608,7 +608,7 @@ public class PartStudyServiceImpl implements PartStudyService {
 			System.out.println(filePath);
 			// Create CustomerVO and set uploadReceipt
 			PackingDetailVO vo = packingDetailRepo.findById(id).orElse(null);
-			vo.setComercial(filePath.toString().replace("\\", "/"));
+		//	vo.setComercial(filePath.toString().replace("\\", "/"));
 			packingDetailRepo.save(vo);
 			return filePath.toString();
 		} catch (IOException e) {
@@ -660,6 +660,56 @@ public class PartStudyServiceImpl implements PartStudyService {
 		return packingDetailRepo.save(PackingDetailVO);
 	}
 
-	
-	
+	@Override
+	public PackingDetailVO uploadExistingPackingImageInBloob(MultipartFile file, Long refPsId) throws IOException {
+		PackingDetailVO PackingDetailVO = packingDetailRepo.findById(refPsId).get();
+		PackingDetailVO.setExistingPackingImage(file.getBytes());
+		return packingDetailRepo.save(PackingDetailVO);
+	}
+
+	@Override
+	public PackingDetailVO uploadpartdrawingInBloob(MultipartFile file, Long refPsId) throws IOException {
+		PackingDetailVO PackingDetailVO = packingDetailRepo.findById(refPsId).get();
+		PackingDetailVO.setPartDrawing(file.getBytes());
+		return packingDetailRepo.save(PackingDetailVO);
+	}
+
+	@Override
+	public PackingDetailVO uploadApprovedCommercialContractInBloob(MultipartFile file, Long refPsId)
+			throws IOException {
+		PackingDetailVO PackingDetailVO = packingDetailRepo.findById(refPsId).get();
+		PackingDetailVO.setApprovedCommercialContract(file.getBytes());
+		return packingDetailRepo.save(PackingDetailVO);
+	}
+
+	@Override
+	public PackingDetailVO uploadCommercialInBloob(MultipartFile file, Long refPsId) throws IOException {
+		PackingDetailVO PackingDetailVO = packingDetailRepo.findById(refPsId).get();
+		PackingDetailVO.setComercial(file.getBytes());
+		return packingDetailRepo.save(PackingDetailVO);
+	}
+
+	  @Override
+	    public PackingDetailVO uploadCommercialInBlob(MultipartFile file, Long refPsId) throws IOException {
+	        LOGGER.debug("Uploading commercial image for refPsId: {}", refPsId);
+	        PackingDetailVO packingDetailVO = packingDetailRepo.findById(refPsId).orElseThrow(() -> {
+	            LOGGER.error("PackingDetail not found for refPsId: {}", refPsId);
+	            return new RuntimeException("PackingDetail not found");
+	        });
+	        packingDetailVO.setComercial(file.getBytes());
+	        LOGGER.debug("Commercial image uploaded successfully for refPsId: {}", refPsId);
+	        return packingDetailRepo.save(packingDetailVO);
+	    }
+
+	    @Override
+	    public byte[] getCommercialImageById(Long id) {
+	        LOGGER.debug("Retrieving commercial image for id: {}", id);
+	        PackingDetailVO packingDetailVO = packingDetailRepo.findById(id).orElseThrow(() -> {
+	            LOGGER.error("PackingDetail not found for id: {}", id);
+	            return new RuntimeException("PackingDetail not found");
+	        });
+	        byte[] image = packingDetailVO.getComercial();
+	        LOGGER.debug("Commercial image retrieved successfully for id: {}", id);
+	        return image;
+	    }
 }
