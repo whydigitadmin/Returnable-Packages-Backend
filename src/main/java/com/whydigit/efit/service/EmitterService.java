@@ -45,6 +45,8 @@ public interface EmitterService {
 	Optional<EmitterInwardVO> getEmitterInwardById(int id);
 
 	EmitterInwardVO createEmitterInward(EmitterInwardVO emitterInwardVO);
+	
+	List<Object[]> getEmitterDispatchByFlowId(Long orgId , Long flowId , Long emitterId);
 
 	void deleteEmitterInward(int id);
 
