@@ -442,7 +442,7 @@ public class MasterServiceImpl implements MasterService {
 	public Map<String, Object> getAllAssetGroup(Long orgId, String assetCategory, String assetName, String assetCodeId,
 			String manufacturer) {
 		Map<String, Object> assetGroup = new HashMap<>();
-		List<AssetCategoryVO> assetGroupVO = assetCategoryRepo.findAll(new Specification<AssetCategoryVO>() {
+		List<AssetCategoryVO> assetGroupVO = assetCategoryRepo.findAllActive(new Specification<AssetCategoryVO>() {
 			@Override
 			public Predicate toPredicate(Root<AssetCategoryVO> root, CriteriaQuery<?> query,
 					CriteriaBuilder criteriaBuilder) {
