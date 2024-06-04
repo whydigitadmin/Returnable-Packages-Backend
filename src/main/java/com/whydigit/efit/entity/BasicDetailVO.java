@@ -14,6 +14,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.whydigit.efit.dto.CreatedUpdatedDate;
 
@@ -38,8 +39,12 @@ public class BasicDetailVO {
 	private LocalDate partStudyDate=LocalDate.now();
 	@Column(name = "emitterid")
 	private Long emitterId;
-	@Column(name = "receiverid")
-	private Long receiverId;
+	@Column(name = "emitterdisplayname")
+	private String emitterDisplayName;
+//	@Column(name = "receiverid")
+//	private Long receiverId;
+//	@Column(name = "reciverdisplayname")
+//	private String receiverDisplayName;
 	@Column(name = "part", length = 50)
 	private String partName;
 	@Column(name = "code", length = 25)
@@ -61,6 +66,19 @@ public class BasicDetailVO {
 	@Column(name = "docid", length = 30)
 	private String docid;
 	private boolean cancel;
+	private boolean active;
+	private boolean eflag=false;
+	
+	@JsonGetter("active")
+    public String getActive() {
+        return active ? "Active" : "In-Active";
+    }
+
+    // Optionally, if you want to control serialization for 'cancel' field similarly
+    @JsonGetter("cancel")
+    public String getCancel() {
+        return cancel ? "T" : "F";
+    }
 
 	@Embedded
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();

@@ -1,3 +1,4 @@
+
 package com.whydigit.efit.entity;
 
 import javax.persistence.Column;
@@ -17,29 +18,41 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "state")
+@Table(name = "assettype")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class StateVO {
+public class AssetTypeVO {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "stategen")
-	@SequenceGenerator(name = "stategen", sequenceName = "stateseq", initialValue = 1000000001, allocationSize = 1)
-	@Column(name="stateid")
+	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "assettypegen")
+	@SequenceGenerator(name = "assettypegen", sequenceName = "assettypeseq", initialValue = 1000000001, allocationSize = 1)
+	@Column(name = "assettypeid")
 	private Long id;
-	@Column(name="code",length = 30)
-	private String stateCode;
-	@Column(name="state",length = 50)
-	private String stateName;
-	@Column(name="country",length = 30)
-    private String country;
-	@Column(name="active",length = 30)
-    private boolean active;
-	@Column(name="stateno",length = 30)
-	private String stateNo;
-	
+
+	@Column(name = "orgid")
+	private Long orgId;
+
+	@Column(name = "type")
+	private String assetType;
+
+	@Column(name = "code")
+	private String typeCode;
+
 	private boolean cancel;
+
+	@Column(name = "createdby")
+	private String createdby;
+
+	@Column(name = "modifiedby")
+	private String modifiedby;
+
+	@Column(name = "cancelremarks")
+	private String cancelremarks;
+
+	private boolean active;
+	
+	private boolean eflag=false;
 	
 	@JsonGetter("active")
     public String getActive() {
@@ -51,9 +64,7 @@ public class StateVO {
     public String getCancel() {
         return cancel ? "T" : "F";
     }
-	
-	@Column(name="orgid")
-	private Long orgId;
-    @Embedded
+
+	@Embedded
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
 }

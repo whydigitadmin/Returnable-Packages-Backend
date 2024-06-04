@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.whydigit.efit.dto.CreatedUpdatedDate;
 
 import lombok.AllArgsConstructor;
@@ -29,41 +30,53 @@ public class WarehouseVO {
 	private Long warehouseId;
 	@Column(name="orgid")
 	private Long orgId;
-	@Column(name="whlocation",length = 30)
+	@Column(name="whlocation")
 	private String warehouseLocation;
-	@Column(name="location",length = 30)
+	@Column(name="location")
 	private String locationName;
-	@Column(name="address",length = 100)
+	@Column(name="address")
 	private String address;
-	@Column(name="state",length = 25)
+	@Column(name="state")
 	private String state;
-	@Column(name="pincode",length = 10)
+	@Column(name="pincode")
 	private String pincode;
-	@Column(name="unit",length = 30)
+	@Column(name="unit")
 	private String unit;
-	@Column(name="code",length = 30)
+	@Column(name="code")
 	private String code;
-	@Column(name="city",length = 30)
+	@Column(name="city")
 	private String city;
-	@Column(name="country",length = 30)
+	@Column(name="country")
 	private String country;
-	@Column(name="gst",length = 30)
+	@Column(name="gst")
 	private String gst;
-	@Column(name="active",length = 30)
+	@Column(name="active")
 	private boolean active;
-	@Column(name="cancel",length = 30)
+	@Column(name="cancel")
 	private boolean cancel;
-	@Column(name="cancelremarks",length = 30)
+	@Column(name="cancelremarks")
 	private String cancelremarks;
-	@Column(name="createdby",length = 30)
+	@Column(name="createdby")
 	private String createdby;
-	@Column(name="modifiedby",length = 30)
+	@Column(name="modifiedby")
 	private String modifiedby;
 	
-	@Column(name="stockbranch",length = 30)
+	@Column(name="stockbranch")
 	private String stockBranch;
 	
+	private boolean eflag;
+	
+	@JsonGetter("active")
+    public String getActive() {
+        return active ? "Active" : "In-Active";
+    }
 
+    // Optionally, if you want to control serialization for 'cancel' field similarly
+    @JsonGetter("cancel")
+    public String getCancel() {
+        return cancel ? "T" : "F";
+    }
+	
 	@Embedded
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
 

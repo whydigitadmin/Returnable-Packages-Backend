@@ -1,7 +1,11 @@
 package com.whydigit.efit.entity;
 
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -14,6 +18,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.whydigit.efit.dto.CreatedUpdatedDate;
 import com.whydigit.efit.dto.Role;
 
@@ -45,6 +50,9 @@ public class UserVO {
 	private Long pNo;
 	private boolean isActive;
 	private String lastLogin;
+	private String createdBy;	
+	@Column(name = "modifiedBy")
+	private String updatedBy;	
 	@Enumerated(EnumType.STRING)
 	private Role role;
 	private long accessRightsRoleId;
@@ -60,7 +68,53 @@ public class UserVO {
 	@ManyToOne
 	@JoinColumn(name = "emitter_id")
 	private CustomersVO customersVO;
-
 	
+	@JsonGetter("active")
+    public String getActive() {
+        return isActive ? "Active" : "In-Active";
+    }
+	
+	public boolean isActive() {
+        return isActive;
+    }
+	
+	@JsonGetter("accessWarehouse")
+    public List<Long> getAccessWarehouseAsList() {
+        if (accessWarehouse != null && !accessWarehouse.isEmpty()) {
+            return Arrays.stream(accessWarehouse.split(","))
+                         .map(Long::parseLong)
+                         .collect(Collectors.toList());
+        }
+        return null;
+    }
+
+    // Standard getters and setters
+    public String getAccessWarehouse() {
+        return accessWarehouse;
+    }
+
+    public void setAccessWarehouse(String accessWarehouse) {
+        this.accessWarehouse = accessWarehouse;
+    }
+    
+    @JsonGetter("accessFlowId")
+    public List<Long> getAccessFlowIdAsList() {
+        if (accessFlowId != null && !accessFlowId.isEmpty()) {
+            return Arrays.stream(accessFlowId.split(","))
+                         .map(Long::parseLong)
+                         .collect(Collectors.toList());
+        }
+        return null;
+    }
+
+    // Standard getters and setters
+    public String getAccessFlowId() {
+        return accessFlowId;
+    }
+
+    public void setAccessFlowId(String accessFlowId) {
+        this.accessFlowId = accessFlowId;
+    }
+ 
 	
 }

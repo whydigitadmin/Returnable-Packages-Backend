@@ -20,5 +20,6 @@ public class IssueRequestDTO {
 	private LocalDate demandDate;
 	private IssueRequestType irType;
 	private String remark;
+	private String createdBy;
 	private List<IssueItemDTO> issueItemDTO = new ArrayList<>();
 }

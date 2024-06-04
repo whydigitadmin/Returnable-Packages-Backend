@@ -39,28 +39,28 @@ public class EmitterOutwardVO {
 	@Column(name="orgid")
 	private Long orgId;
 	
-	@Column(name="location",length = 25)
+	@Column(name="location")
 	private String location;
-	@Column(name="kitcode",length = 25)
+	@Column(name="kitcode")
 	private String kitNo;
-	@Column(name="kitqty",length = 10)
+	@Column(name="kitqty")
 	private int kitQty;
-	@Column(name="kitreturnqty",length = 10)
+	@Column(name="kitreturnqty")
 	private int kitReturnqty;
 	
-	@Column(name="balancekit",length = 10)
+	@Column(name="balancekit")
 	private int balancedKit;
 	
-	@Column(name="invoiceno",length = 25)
+	@Column(name="invoiceno")
 	private String invoiceNo;
 	
-	@Column(name="cycletime",length = 25)
+	@Column(name="cycletime")
 	private String cycleTime;
 	
-	@Column(name="previousdispatch",length = 25)
+	@Column(name="previousdispatch")
 	private String previousDispatch;
 	
-	@Column(name="o2otat",length = 25)
+	@Column(name="o2otat")
 	private String o2oTat;
 	
 	private boolean active;
@@ -69,13 +69,13 @@ public class EmitterOutwardVO {
 	@Column(name="cancel")
 	private boolean cancel;
 	
-	@Column(name = "createdby", length = 25)
+	@Column(name = "createdby")
 	private String createdBy;
 
-	@Column(name = "modifiedby",length = 25)
+	@Column(name = "modifiedby")
 	private String modifiedBy;
 	
-	@Column(name = "cancelremarks",length = 25)
+	@Column(name = "cancelremarks")
 	private String cancelRemarks;
 	
 	@JsonBackReference

@@ -23,7 +23,7 @@ public class UserResponseDTO {
 	private String email;
 	private String userName;
 	private boolean loginStatus;
-	private boolean isActive;
+	private boolean active;
 	@Enumerated(EnumType.STRING)
 	private Role role;
 	private Date accountRemovedDate;
@@ -32,4 +32,5 @@ public class UserResponseDTO {
 	private String lastLogin;
 	private AccessRightsVO accessRightsVO;
 	private UserAddressVO userAddressVO;
+	
 }

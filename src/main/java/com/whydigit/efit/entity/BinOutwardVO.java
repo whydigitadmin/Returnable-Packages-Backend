@@ -39,8 +39,8 @@ public class BinOutwardVO {
 	private LocalDate docDate;
 	@Column(name = "flow")
 	private String flow;
-	@Column(name = "kit")
-	private String kit;
+	@Column(name = "kitno")
+	private String kitNo;
 	@Column(name = "outwardkitqty")
 	private int outwardKitQty;
 	@Column(name = "createdby")

@@ -14,6 +14,7 @@ public class AssetTaggingDTO {
 	
 	private String docId;
 	private LocalDate docDate;
+	private String category;
 	private String assetCode;
 	private String asset;
 	private int seqFrom;

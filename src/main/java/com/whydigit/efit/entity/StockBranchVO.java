@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.whydigit.efit.dto.CreatedUpdatedDate;
 
 import lombok.AllArgsConstructor;
@@ -34,23 +35,34 @@ public class StockBranchVO {
 	@Column(name="active")
 	private boolean active;
 	
-	@Column(name="createdby", length = 50)
+	@Column(name="createdby")
 	private String createdBy;
 	
-	@Column(name="modifiedby", length = 50)
+	@Column(name="modifiedby")
 	private String modifiedBy;
 	
-	@Column(name="cancelremarks", length = 50)
+	@Column(name="cancelremarks")
 	private String cancelRemarks;
 	
-	@Column(name="branchcode", length = 10)
+	@Column(name="branchcode")
 	private String branchCode;
 	
-	@Column(name="branch", length = 50)
+	@Column(name="branch"  )
 	private String branch;
 	
 	@Column(name="orgid")
 	private Long orgId;
+	
+	@JsonGetter("active")
+    public String getActive() {
+        return active ? "Active" : "In-Active";
+    }
+
+    // Optionally, if you want to control serialization for 'cancel' field similarly
+    @JsonGetter("cancel")
+    public String getCancel() {
+        return cancel ? "T" : "F";
+    }
 	
 	
 	@Embedded

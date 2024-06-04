@@ -16,6 +16,7 @@ import javax.persistence.PrePersist;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.whydigit.efit.dto.CreatedUpdatedDate;
 
@@ -44,7 +45,7 @@ public class AssetTaggingVO {
 	@Column(name="active")
 	private boolean active;
 	
-	@Column(name="docid",length = 25)
+	@Column(name="docid")
 	private String docid;
 	
 	@Column(name="docdate")
@@ -53,25 +54,28 @@ public class AssetTaggingVO {
 	@Column(name="cancel")
 	private boolean cancel;
 	
-	@Column(name = "createdby", length = 25)
+	@Column(name = "createdby")
 	private String createdBy;
 
-	@Column(name = "modifiedby",length = 25)
+	@Column(name = "modifiedby")
 	private String modifiedBy;
 	
-	@Column(name = "cancelremarks",length = 25)
+	@Column(name = "cancelremarks")
 	private String cancelRemarks;
+	
+	@Column(name = "assetcategory")
+	private String category;
 
-	@Column(name = "assetcode",length = 25)
+	@Column(name = "assetcode")
 	private String assetCode;
 	
-	@Column(name = "asset",length = 25)
+	@Column(name = "asset")
 	private String asset;
 	
-	@Column(name = "seqfrom",length = 4)
+	@Column(name = "seqfrom")
 	private int seqFrom;
 	
-	@Column(name = "seqto",length = 4)
+	@Column(name = "seqto")
 	private int seqTo;
 	
 	public String finyr;
@@ -85,6 +89,17 @@ public class AssetTaggingVO {
 
 	@Embedded
 	private CreatedUpdatedDate commonDate=new CreatedUpdatedDate();
+	
+	@JsonGetter("active")
+    public String getActive() {
+        return active ? "Active" : "In-Active";
+    }
+
+    // Optionally, if you want to control serialization for 'cancel' field similarly
+    @JsonGetter("cancel")
+    public String getCancel() {
+        return cancel ? "T" : "F";
+    }
 	
 	
 	@PrePersist

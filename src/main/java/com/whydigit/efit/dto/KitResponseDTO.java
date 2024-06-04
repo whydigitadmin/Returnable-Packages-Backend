@@ -14,9 +14,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class KitResponseDTO {
-	private String kitCode;
+	private Long id;
+	private String docId;
+	private String kitNo;
+	private String kitDesc;
 	private long orgId;
 	private String partId;
+	private String active;
 	private int partQty;	
 	private boolean eflag;
 	private Map<String, List<KitAssetVO>> kitAssetCategory = new HashMap<>();

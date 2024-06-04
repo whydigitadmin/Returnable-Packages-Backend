@@ -1,22 +1,20 @@
 package com.whydigit.efit.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class KitAssetDTO {
+public class AssetCategoryDTO {
+	
 	private Long id;
+	private boolean active;
+	private Long orgId;
 	private String assetType;
-	private String assetCategory;
+	private String category;
 	private String categoryCode;
-	private String assetCodeId;
-	private String assetDesc;
-	private String belongsTo;
-    private String manufacturePartCode;
-	private int quantity;
+	private String modifiedBy;
+
 }

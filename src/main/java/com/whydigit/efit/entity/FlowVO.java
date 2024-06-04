@@ -1,4 +1,4 @@
-package com.whydigit.efit.entity;
+	package com.whydigit.efit.entity;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -14,6 +14,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.whydigit.efit.dto.CreatedUpdatedDate;
 
@@ -37,36 +38,56 @@ public class FlowVO {
 	private Long id;
 	@Column(name = "orgid")
 	private Long orgId;
-	@Column(name = "receiverid", length = 25)
+	@Column(name = "receiverid")
 	private Long receiverId;
-	@Column(name = "flow", length = 100)
+	@Column(name = "flow")
 	private String flowName;
 	@Column(name = "emitter")
 	private String emitter;
 	@Column(name = "emitterid")
 	private Long emitterId;
-	@Column(name = "receiver", length = 25)
+	@Column(name = "receiver")
 	private String receiver;
-	@Column(name = "orgin", length = 25)
+	@Column(name = "orgin")
 	private String orgin;
-	@Column(name = "destination", length = 25)
+	@Column(name = "destination")
 	private String destination;
 	private boolean active;
-	@Column(name = "whlocation", length = 25)
+	@Column(name = "whlocation")
 	private String warehouseLocation;
+	
 	@Column(name = "warehouseid")
 	private Long warehouseId;
+	
+	@Column(name = "retrievalwhlocation")
+	private String retrievalWarehouseLocation;
+	@Column(name = "retrievalwarehouseid")
+	private Long retrievalWarehouseId;
+	
 	private boolean cancel;
 	@Column(name = "docdate")
 	private LocalDate docDate;
-	@Column(name = "docid", length = 16)
+	@Column(name = "docid")
 	private String docId;
-	@Column(name = "createdby", length = 25)
+	@Column(name = "createdby")
 	private String createdBy;
-	@Column(name = "modifiedby", length = 25)
+	@Column(name = "modifiedby")
 	private String modifiedBy;
-	@Column(name = "cancelRemarks", length = 25)
+	@Column(name = "cancelRemarks")
 	private String cancelRemarks;
+	
+	private boolean eflag;
+	
+	@JsonGetter("active")
+    public String getActive() {
+        return active ? "Active" : "In-Active";
+    }
+
+    // Optionally, if you want to control serialization for 'cancel' field similarly
+    @JsonGetter("cancel")
+    public String getCancel() {
+        return cancel ? "T" : "F";
+    }
 
 	@JsonManagedReference
 	@OneToMany(mappedBy = "flowVO", cascade = CascadeType.ALL)
@@ -75,4 +96,6 @@ public class FlowVO {
 	@Embedded
 	@Builder.Default
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
+
+	
 }

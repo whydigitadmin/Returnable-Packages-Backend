@@ -31,6 +31,7 @@ import com.whydigit.efit.dto.Role;
 import com.whydigit.efit.dto.UserAddressDTO;
 import com.whydigit.efit.dto.UserResponseDTO;
 import com.whydigit.efit.entity.CustomersVO;
+import com.whydigit.efit.entity.FlowVO;
 import com.whydigit.efit.entity.OrganizationVO;
 import com.whydigit.efit.entity.TokenVO;
 import com.whydigit.efit.entity.UserAddressVO;
@@ -38,6 +39,7 @@ import com.whydigit.efit.entity.UserVO;
 import com.whydigit.efit.exception.ApplicationException;
 import com.whydigit.efit.repo.AccessRightsRepo;
 import com.whydigit.efit.repo.CustomersRepo;
+import com.whydigit.efit.repo.FlowRepo;
 import com.whydigit.efit.repo.OrganizationRepo;
 import com.whydigit.efit.repo.TokenRepo;
 import com.whydigit.efit.repo.UserActionRepo;
@@ -61,6 +63,9 @@ public class AuthServiceImpl implements AuthService {
 
 	@Autowired
 	TokenProvider tokenProvider;
+	
+	@Autowired
+	FlowRepo flowRepo;
 
 	@Autowired
 	TokenRepo tokenRepo;
@@ -175,15 +180,28 @@ public class AuthServiceImpl implements AuthService {
 		}
 		UserVO userVO = userRepo.findByUserName(loginRequest.getUserName());
 		if (ObjectUtils.isNotEmpty(userVO)) {
-			if (compareEncodedPasswordWithEncryptedPassword(loginRequest.getPassword(), userVO.getPassword())) {
-				updateUserLoginInformation(userVO);
-			} else {
-				throw new ApplicationContextException(UserConstants.ERRROR_MSG_PASSWORD_MISMATCH);
+			if(userVO.isActive())
+			{
+				if (compareEncodedPasswordWithEncryptedPassword(loginRequest.getPassword(), userVO.getPassword())) {
+					if(!userVO.isLoginStatus()) {
+						updateUserLoginInformation(userVO);
+					}
+					else {
+						throw new ApplicationContextException(UserConstants.ERRROR_MSG_LOGIN_STATUS);
+					}
+				
+				} else {
+					throw new ApplicationContextException(UserConstants.ERRROR_MSG_PASSWORD_MISMATCH);
+				}
+			}
+			else
+			{
+				throw new ApplicationContextException(UserConstants.ACCOUNT_INACTIVE_MESSAGE);
 			}
 		} else {
 			throw new ApplicationContextException(
 					UserConstants.ERRROR_MSG_USER_INFORMATION_NOT_FOUND_AND_ASKING_SIGNUP);
-		}
+		} 
 		UserResponseDTO userResponseDTO = mapUserVOToDTO(userVO);
 		TokenVO tokenVO = tokenProvider.createToken(userVO.getUserId(), loginRequest.getUserName());
 		userResponseDTO.setToken(tokenVO.getToken());
@@ -364,6 +382,8 @@ public class AuthServiceImpl implements AuthService {
 		userVO.setEmail(createUserFormDTO.getEmail());
 		userVO.setAccessRightsRoleId(createUserFormDTO.getAccessRightsRoleId());
 		userVO.setPNo(createUserFormDTO.getPNo());
+		userVO.setCreatedBy(createUserFormDTO.getCreatedBy());
+		userVO.setUpdatedBy(createUserFormDTO.getCreatedBy());
 		try {
 			userVO.setPassword(encoder.encode(CryptoUtils.getDecrypt(createUserFormDTO.getPassword())));
 		} catch (Exception e) {
@@ -379,6 +399,16 @@ public class AuthServiceImpl implements AuthService {
 		String flowIds = ObjectUtils.isNotEmpty(createUserFormDTO.getAccessFlowId()) ? Arrays
 				.stream(createUserFormDTO.getAccessFlowId()).map(String::valueOf).collect(Collectors.joining(","))
 				: StringUtils.EMPTY;
+		
+		if (ObjectUtils.isNotEmpty(createUserFormDTO.getAccessFlowId())) {
+	        List<Long> flowIdList = Arrays.stream(createUserFormDTO.getAccessFlowId())
+	                .map(Long::valueOf)
+	                .collect(Collectors.toList());
+
+	        List<FlowVO> flows = flowRepo.findAllById(flowIdList);
+	        flows.forEach(flow -> flow.setEflag(false));
+	        flowRepo.saveAll(flows);
+	    }
 		userVO.setAccessFlowId(flowIds);
 		userVO.setAccessaddId(addIds);
 		userVO.setAccessWarehouse(warehouseIds);
@@ -419,7 +449,9 @@ public class AuthServiceImpl implements AuthService {
 		userVO.setFirstName(createUserFormDTO.getFirstName());
 		userVO.setLastName(createUserFormDTO.getLastName());
 		userVO.setPNo(createUserFormDTO.getPNo());
+		userVO.setActive(createUserFormDTO.isActive());
 		userVO.setRole(createUserFormDTO.getRole());
+		userVO.setUpdatedBy(createUserFormDTO.getCreatedBy());
 		userVO.setAccessRightsRoleId(createUserFormDTO.getAccessRightsRoleId());
 		 
 	}

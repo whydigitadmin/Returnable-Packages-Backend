@@ -11,10 +11,19 @@ import com.whydigit.efit.entity.VendorVO;
 
 @Repository
 public interface VendorRepo extends JpaRepository<VendorVO, Long> {
+	@Query(value = "select a from VendorVO a Where a.orgId=?1 and a.active=true")
+	List<VendorVO> getAllActiveVenderByOrgId(Long orgId);
+	
 	@Query(value = "select a from VendorVO a Where a.orgId=?1")
 	List<VendorVO> getAllVenderByOrgId(Long orgId);
 
 	boolean existsByEntityLegalNameAndDisplyNameAndOrgId(String entityLegalName, String displyName, long orgId);
+
+	boolean existsByDisplyNameAndOrgId(String displyName, Long orgId);
+
+	boolean existsByEntityLegalNameAndOrgId(String entityLegalName, Long orgId);
+
+	
 
 	
 

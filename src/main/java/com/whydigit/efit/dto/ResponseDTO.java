@@ -61,4 +61,7 @@ public class ResponseDTO {
 		return errors;
 	}
 
+	private String message;
+    private Map<String, Object> data;
+
 }

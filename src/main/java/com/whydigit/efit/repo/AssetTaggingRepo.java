@@ -27,14 +27,14 @@ public interface AssetTaggingRepo extends JpaRepository<AssetTaggingVO, Long> {
 			+ "   FROM NumberSequence\r\n"
 			+ "   WHERE level < ?4\r\n"
 			+ " )\r\n"
-			+ " SELECT ?1 assetcode, ?2 asset,\r\n"
+			+ " SELECT ?1 assetcode, ?2 asset,?6 category,\r\n"
 			+ "   CASE \r\n"
-			+ "     WHEN CHAR_LENGTH(level) = 1 THEN CONCAT('AI',?5,?1, LPAD(level, 4, '0'))\r\n"
-			+ "     ELSE CONCAT('AI',?5,?1, LPAD(level, 4, '0'))\r\n"
+			+ "     WHEN CHAR_LENGTH(level) = 1 THEN CONCAT('AI',?5,?1,'-', LPAD(level, 4, '0'))\r\n"
+			+ "     ELSE CONCAT('AI',?5,?1,'-', LPAD(level, 4, '0'))\r\n"
 			+ "   END AS num\r\n"
 			+ " FROM NumberSequence\r\n"
 			+ " WHERE level BETWEEN ?3 AND ?4")
-	Set<Object[]> getTagCodeByAsset(String assetcode, String asset, int startno, int endno, int finyr);
+	Set<Object[]> getTagCodeByAsset(String assetcode, String asset, int startno, int endno, int finyr,String category);
 
 	@Query(nativeQuery = true, value = "select sequence_value from assettaggingdocidseq")
 	int findocid();
@@ -43,5 +43,14 @@ public interface AssetTaggingRepo extends JpaRepository<AssetTaggingVO, Long> {
 	void nextDocid();
 
 	List<AssetTaggingVO> findAllByOrgId(Long orgId);
+
+	@Query(nativeQuery = true, value = "SELECT \r\n"
+			+ "    COALESCE(\r\n"
+			+ "        (SELECT 1 FROM dual WHERE NOT EXISTS (SELECT * FROM taggingdetails WHERE assetcode = ?1)),\r\n"
+			+ "        (SELECT SUM(seqto) FROM tagging WHERE assetcode = ?1)\r\n"
+			+ "    ) AS a")
+	int getstno(String assetcode);
+
+	
 
 }

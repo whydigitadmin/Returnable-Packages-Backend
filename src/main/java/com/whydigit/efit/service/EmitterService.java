@@ -45,11 +45,15 @@ public interface EmitterService {
 	Optional<EmitterInwardVO> getEmitterInwardById(int id);
 
 	EmitterInwardVO createEmitterInward(EmitterInwardVO emitterInwardVO);
+	
+	List<Object[]> getEmitterDispatchByFlowId(Long orgId , Long flowId , Long emitterId);
 
 	void deleteEmitterInward(int id);
 
 	// emitter outward
-	List<EmitterOutwardVO> getAllEmitterOutward(Long orgId);
+	List<BinOutwardVO> getAllBinOutward(Long orgId);
+	
+	List<BinOutwardVO> getAllBinOutwardByDocId(String docId);
 
 	Optional<EmitterOutwardVO> getEmitterOutwardById(long id);
 

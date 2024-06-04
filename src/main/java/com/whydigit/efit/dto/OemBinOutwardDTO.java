@@ -19,6 +19,6 @@ public class OemBinOutwardDTO {
 	private int outwardKitQty;
 	private String createdBy;
 	private Long orgId;
-
+	private String outwardDocId;
 	private List<OemBinOutwardDetailsDTO> oemBinOutwardDetails;
 }

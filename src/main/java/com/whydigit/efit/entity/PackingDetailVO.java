@@ -11,6 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.MapsId;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -85,33 +86,42 @@ public class PackingDetailVO {
 	@Column(name="nesting",length =25 )
 	private String nesting;
 	
-	@Column(name="partimage")
-	private String partImg;
 	
-	@Column(name="existingimage")
-	private String existingImage;
 	
-	@Column(name="partdrwaing" )
-	private String pDrawing;
+//	@Column(name="partimage")
+//	private String partImg;
+//	
+//	@Column(name="existingimage")
+//	private String existingImage;
+//	
+//	@Column(name="partdrwaing" )
+//	private String pDrawing;
 	
-	@Column(name="approvedcomercial" )
-	private String comercial;
-	
-	@Column(name="approvedpackagedrawing" )
-	private String approvedDrawing;
+//	@Column(name="approvedcomercial" )
+//	private String comercial;
+//	
+//	@Column(name="approvedpackagedrawing" )
+//	private String approvedDrawing;
 
 	@Column(name="remarks")
 	private String remarks;
 	
 
-	@Transient
-	private List<PDAttachmentVO> partImage;
-	@Transient
-	private List<PDAttachmentVO> existingPackingImage;
-	@Transient
-	private List<PDAttachmentVO> partDrawing;
-	@Transient
-	private List<PDAttachmentVO> approvedCommercialContract;
+	@Lob
+	@Column(name ="partimage",columnDefinition ="LONGBLOB")
+	private byte[] partImage;
+	@Lob
+	@Column(name ="existingpackingimage",columnDefinition ="LONGBLOB")
+	private byte[] existingPackingImage;
+	@Lob
+	@Column(name ="partdrawing",columnDefinition ="LONGBLOB")
+	private byte[] partDrawing;
+	@Lob
+	@Column(name ="approvedcommercialcontract",columnDefinition ="LONGBLOB")
+	private byte[] approvedCommercialContract;
+	
+	@Column(name ="approvedcomercial",columnDefinition ="LONGBLOB")
+	private byte[] comercial;
 
 	@JsonBackReference
 	@OneToOne

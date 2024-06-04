@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 
 @Builder
 @Entity
-@Table(name = "oembinwarddetails")
+@Table(name = "oembininwarddetails")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
