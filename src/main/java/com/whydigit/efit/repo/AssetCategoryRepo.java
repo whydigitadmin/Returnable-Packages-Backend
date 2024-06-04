@@ -20,8 +20,7 @@ public interface AssetCategoryRepo extends JpaRepository<AssetCategoryVO, Long> 
 
 	List<AssetCategoryVO> findByOrgIdAndCategory(Long orgId, String assetCategory);
 
-	@Query(value = "select a from AssetCategoryVO a where a.active=true")
-	List<AssetCategoryVO> findAllActive(Specification<AssetCategoryVO> specification);
+	List<AssetCategoryVO> findAll(Specification<AssetCategoryVO> specification);
 
 	@Query("select a from AssetCategoryVO a where a.orgId=?1 and a.categoryCode=?2 ")
 	AssetCategoryVO findCategoryByCategoryCode(Long orgId, String categoryCode);

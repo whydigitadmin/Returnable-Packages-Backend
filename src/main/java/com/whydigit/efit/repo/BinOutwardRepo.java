@@ -24,8 +24,8 @@ public interface BinOutwardRepo extends JpaRepository<BinOutwardVO, Long> {
 	@Query(value = "select a from BinOutwardVO a where a.docId=?1")
 	BinOutwardVO findByDocId(String outwardDocId);
 
-	@Query(value = "select * from binoutward where orgid=?1", nativeQuery = true)
-	List<BinOutwardVO> getAllBinOutwardByOrgId(Long orgId);
+	@Query(value = "select * from binoutward where orgid=?1 and emitterid=?2 ", nativeQuery = true)
+	List<BinOutwardVO> getAllBinOutwardByOrgId(Long orgId,Long emitterId);
 
 	@Query(value = "select * from binoutward where docid=?1", nativeQuery = true)
 	List<BinOutwardVO> getAllBinOutwardByDocId(String docId);

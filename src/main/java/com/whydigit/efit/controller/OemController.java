@@ -140,6 +140,8 @@ public class OemController extends BaseController{
 			f1.put("outwardKitQty", f[1] != null ? Integer.parseInt(f[1].toString()):0);
 			f1.put("kitNo", f[2] != null ? f[2].toString() : "");
 			f1.put("docDate", f[3] != null ? f[3].toString() : "");
+			f1.put("partName", f[4] != null ? f[4].toString() : "");
+			f1.put("partNo", f[5] != null ? f[5].toString() : "");
 			flowD.add(f1);
 		}
 		return flowD;

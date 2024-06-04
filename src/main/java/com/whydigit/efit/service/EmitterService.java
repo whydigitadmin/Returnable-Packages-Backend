@@ -51,7 +51,7 @@ public interface EmitterService {
 	void deleteEmitterInward(int id);
 
 	// emitter outward
-	List<BinOutwardVO> getAllBinOutward(Long orgId);
+	List<BinOutwardVO> getAllBinOutward(Long orgId, Long emitterId);
 	
 	List<BinOutwardVO> getAllBinOutwardByDocId(String docId);
 
