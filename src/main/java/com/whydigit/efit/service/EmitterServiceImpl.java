@@ -493,11 +493,11 @@ public class EmitterServiceImpl implements EmitterService {
 	}
 
 	// emitter outward
-	public List<BinOutwardVO> getAllBinOutward(Long orgId) {
+	public List<BinOutwardVO> getAllBinOutward(Long orgId,Long emitterId) {
 		List<BinOutwardVO> binOutwardVO = new ArrayList<>();
 		if (ObjectUtils.isNotEmpty(orgId)) {
 			LOGGER.info("Successfully Received  EmitterOutward Information BY OrgId : {}", orgId);
-			binOutwardVO = binOutwardRepo.getAllBinOutwardByOrgId(orgId);
+			binOutwardVO = binOutwardRepo.getAllBinOutwardByOrgId(orgId,emitterId);
 		} else {
 			LOGGER.info("Successfully Received  EmitterOutward Information For All OrgId.");
 			binOutwardVO = binOutwardRepo.findAll();

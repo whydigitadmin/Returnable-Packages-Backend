@@ -467,7 +467,7 @@ public class EmitterController extends BaseController {
 
 //emitter  bin outward
 	@GetMapping("/getAllBinOutward")
-	public ResponseEntity<ResponseDTO> getAllBinOutward(@RequestParam(required = false) Long orgId) {
+	public ResponseEntity<ResponseDTO> getAllBinOutward(@RequestParam(required = false) Long orgId,@RequestParam Long emitterId) {
 		String methodName = "getAllBinOutward()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -475,7 +475,7 @@ public class EmitterController extends BaseController {
 		ResponseDTO responseDTO = null;
 		List<BinOutwardVO> binOutwardVO = new ArrayList<>();
 		try {
-			binOutwardVO = emitterService.getAllBinOutward(orgId);
+			binOutwardVO = emitterService.getAllBinOutward(orgId,emitterId);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);

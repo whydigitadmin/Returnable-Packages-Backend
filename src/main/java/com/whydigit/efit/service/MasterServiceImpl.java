@@ -180,6 +180,7 @@ public class MasterServiceImpl implements MasterService {
 	@Autowired
 	WarehouseRepository warehouseRepo;
 	
+	
 	@Autowired
 	FlowDetailRepo flowDetailRepo;
 	

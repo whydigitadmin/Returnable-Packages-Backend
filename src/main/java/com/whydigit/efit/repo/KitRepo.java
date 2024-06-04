@@ -40,7 +40,7 @@ public interface KitRepo extends JpaRepository<KitVO, Long> {
 
 	KitVO findAllByKitNo(String kitName);
 
-	@Query(nativeQuery = true, value = "SELECT kit, availkitqty FROM availablekitemitter WHERE orgid =?1 AND emitterid =?2 AND kit =?3 AND flowid =?4")
+	@Query(nativeQuery = true, value = "SELECT kitno, availkitqty FROM availablekitemitter WHERE orgid =?1 AND emitterid =?2 AND kitno =?3 AND flowid =?4")
 	List<Object[]> findByavaliableKitQtyByEmitter(Long orgId, Long emitterId, String kitId, Long flowId);
 
 	boolean existsByKitNoAndOrgId(String kitNo, long orgId);
