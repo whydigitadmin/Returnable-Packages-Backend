@@ -13,6 +13,7 @@ import com.whydigit.efit.dto.AssetDTO;
 import com.whydigit.efit.dto.AssetInwardDTO;
 import com.whydigit.efit.dto.AssetTaggingDTO;
 import com.whydigit.efit.dto.AssetTypeDTO;
+import com.whydigit.efit.dto.BinAllotmentDTO;
 import com.whydigit.efit.dto.BinInwardDTO;
 import com.whydigit.efit.dto.BranchDTO;
 import com.whydigit.efit.dto.CnoteDTO;
@@ -281,11 +282,12 @@ public interface MasterService {
 
 	// Bin Allotmentdetails
 
+	BinAllotmentNewVO createBinAllotment(BinAllotmentDTO binAllotmentDTO);
+
 	Set<Object[]> getAllotmentNoByEmitterIdAndOrgId(Long orgId, Long emitterId);
 
 	Set<Object[]> getAllotmentDetailsByAllotmentNoAndOrgId(Long orgId, String docid);
 
-	BinInwardVO updateCreateBinInward(BinInwardDTO binInwardDTO) throws ApplicationException;
 
 	Set<Object[]> getAlllBinInwardByEmitterAndOrgId(Long emitterid, Long orgId);
 
@@ -346,6 +348,7 @@ public interface MasterService {
 	void deleteBranch(Long id);
 
 	Set<Object[]> getEmitterAndReceiverByKitNo(String kitNo);
+
 
 	
 

@@ -52,6 +52,8 @@ import com.whydigit.efit.dto.AssetInwardDetailDTO;
 import com.whydigit.efit.dto.AssetTaggingDTO;
 import com.whydigit.efit.dto.AssetTaggingDetailsDTO;
 import com.whydigit.efit.dto.AssetTypeDTO;
+import com.whydigit.efit.dto.BinAllotmentDTO;
+import com.whydigit.efit.dto.BinAllotmentDetailsDTO;
 import com.whydigit.efit.dto.BinInwardDTO;
 import com.whydigit.efit.dto.BinInwardDetailsDTO;
 import com.whydigit.efit.dto.BranchDTO;
@@ -89,6 +91,7 @@ import com.whydigit.efit.entity.AssetTaggingVO;
 import com.whydigit.efit.entity.AssetTypeVO;
 import com.whydigit.efit.entity.AssetVO;
 import com.whydigit.efit.entity.BasicDetailVO;
+import com.whydigit.efit.entity.BinAllotmentDetailsVO;
 import com.whydigit.efit.entity.BinAllotmentNewVO;
 import com.whydigit.efit.entity.BinInwardDetailsVO;
 import com.whydigit.efit.entity.BinInwardVO;
@@ -2374,117 +2377,7 @@ public class MasterServiceImpl implements MasterService {
 		return binAllotmentNewRepo.getAllotmentDetailsByAllotmentNoAndOrgId(orgId, docid);
 	}
 
-	@Override
-	public BinInwardVO updateCreateBinInward(BinInwardDTO binInwardDTO) throws ApplicationException {
-		BinInwardVO binInwardVO = new BinInwardVO();
-		if (ObjectUtils.isNotEmpty(binInwardDTO.getBinInwardId())) {
-			binInwardVO = binInwardRepo.findById(binInwardDTO.getBinInwardId())
-					.orElseThrow(() -> new ApplicationException("Invalid BinInward details"));
-		}
-		List<BinInwardDetailsVO> binInwardDetailsVO = new ArrayList<>();
-		if (binInwardDTO.getBinInwardDetailsDTO() != null) {
-			for (BinInwardDetailsDTO binInwardDetailsDTO : binInwardDTO.getBinInwardDetailsDTO()) {
-				BinInwardDetailsVO binInwardDetails = new BinInwardDetailsVO();
-				binInwardDetails.setAllotQty(binInwardDetailsDTO.getAllotQty());
-				binInwardDetails.setAsset(binInwardDetailsDTO.getAsset());
-				binInwardDetails.setAssetCode(binInwardDetailsDTO.getAssetCode());
-				binInwardDetails.setRecQty(binInwardDetailsDTO.getRecQty());
-				binInwardDetails.setTagCode(binInwardDetailsDTO.getTagCode());
-				binInwardDetails.setBinInwardVO(binInwardVO);
-				binInwardDetails.setRfId(assetTaggingDetailsRepo.findRfIdByTagCode(binInwardDetailsDTO.getTagCode()));
-				binInwardDetailsVO.add(binInwardDetails);
-			}
-		}
-		binInwardVO.setBinInwardDetailsVO(binInwardDetailsVO);
-		getBinInwardVOFromBinInwardDTO(binInwardDTO, binInwardVO);
-
-		BinInwardVO savedBinInwardVO = binInwardRepo.save(binInwardVO);
-		List<BinInwardDetailsVO> savedBinInwardDetailsVO = savedBinInwardVO.getBinInwardDetailsVO();
-
-		if (savedBinInwardDetailsVO != null && !savedBinInwardDetailsVO.isEmpty()) {
-			for (BinInwardDetailsVO binInwardDetails : savedBinInwardDetailsVO) {
-
-				Long flow = issueRequestRepo.getFlowIdByrequestId(binInwardDTO.getReqNo());
-				String emitter = flowRepo.findEmiterbyFlowId(flow);
-				String orgin = flowRepo.findOrigionbyFlowId(flow);
-				AssetStockDetailsVO assetStockDetailsVO = new AssetStockDetailsVO();
-				assetStockDetailsVO.setStockRef(savedBinInwardVO.getAllotmentNo());
-				assetStockDetailsVO.setStockDate(savedBinInwardVO.getAllotDate());
-				assetStockDetailsVO.setSkuCode(binInwardDetails.getAssetCode());
-				assetStockDetailsVO.setSku(binInwardDetails.getAsset());
-				assetStockDetailsVO.setCategory(assetRepo.getCategoryByAssetCodeId(binInwardDetails.getAssetCode()));
-				assetStockDetailsVO.setSkuQty(binInwardDetails.getRecQty() * -1);
-				assetStockDetailsVO.setRfId(binInwardDetails.getRfId());
-				assetStockDetailsVO.setTagCode(binInwardDetails.getTagCode());
-				assetStockDetailsVO.setSCode(savedBinInwardVO.getScode()); // Assuming getScode() returns the correct
-				assetStockDetailsVO.setSourceId(binInwardDetails.getBinInwardDetailsId()); // value
-				assetStockDetailsVO.setOrgId(savedBinInwardVO.getOrgId());
-				assetStockDetailsVO.setScreen("Bin Inward");
-				assetStockDetailsVO.setPm("M");
-				assetStockDetailsVO.setStatus("M");
-				assetStockDetailsVO.setBinLocation("");
-				assetStockDetailsVO.setCancelRemarks("");
-				assetStockDetailsVO.setStockLocation("");
-				assetStockDetailsVO.setStockSource("");
-				assetStockDetailsVO.setFinyr(savedBinInwardVO.getFinYr());
-				assetStockDetailsVO.setStockBranch(emitter + "-" + orgin);
-				assetStockDetailsRepo.save(assetStockDetailsVO);
-			}
-
-			for (BinInwardDetailsVO binInwardDetails : savedBinInwardDetailsVO) {
-				Long flow = issueRequestRepo.getFlowIdByrequestId(savedBinInwardVO.getReqNo());
-				String emitter = flowRepo.findEmiterbyFlowId(flow);
-				String orgin = flowRepo.findOrigionbyFlowId(flow);
-				AssetStockDetailsVO assetStockDetailsVO = new AssetStockDetailsVO();
-				assetStockDetailsVO.setStockRef(savedBinInwardVO.getDocid());
-				assetStockDetailsVO.setStockDate(savedBinInwardVO.getDocDate());
-				assetStockDetailsVO.setSkuCode(binInwardDetails.getAssetCode());
-				assetStockDetailsVO.setCategory(assetRepo.getCategoryByAssetCodeId(binInwardDetails.getAssetCode()));
-				assetStockDetailsVO.setSku(binInwardDetails.getAsset());
-				assetStockDetailsVO.setSkuQty(binInwardDetails.getRecQty());
-				assetStockDetailsVO.setRfId(binInwardDetails.getRfId());
-				assetStockDetailsVO.setTagCode(binInwardDetails.getTagCode());
-				assetStockDetailsVO.setStockSource("");
-				assetStockDetailsVO.setSCode(savedBinInwardVO.getScode()); // Assuming getScode() returns the correct
-				assetStockDetailsVO.setSourceId(binInwardDetails.getBinInwardDetailsId()); // value
-				assetStockDetailsVO.setOrgId(savedBinInwardVO.getOrgId());
-				assetStockDetailsVO.setScreen("Bin Inward");
-				assetStockDetailsVO.setPm("P");
-				assetStockDetailsVO.setStatus("S");
-				assetStockDetailsVO.setBinLocation("");
-				assetStockDetailsVO.setCancelRemarks("");
-				assetStockDetailsVO.setStockLocation("");
-				assetStockDetailsVO.setStockSource("");
-				assetStockDetailsVO.setFinyr(savedBinInwardVO.getFinYr());
-				assetStockDetailsVO.setStockBranch(emitter + "-" + orgin);
-				assetStockDetailsRepo.save(assetStockDetailsVO);
-			}
-		}
-		return binInwardVO;
-	}
-
-	private void getBinInwardVOFromBinInwardDTO(BinInwardDTO binInwardDTO, BinInwardVO binInwardVO) {
-
-		int finyr = binInwardRepo.getFinyr();
-		String binInward = finyr + "BI" + binInwardRepo.finddocid();
-		binInwardVO.setDocid(binInward);
-		binInwardRepo.nextDocseq();
-		binInwardVO.setDocDate(binInwardDTO.getDocDate());
-		binInwardVO.setAllotDate(binInwardDTO.getAllotDate());
-		binInwardVO.setEmitterId(binInwardDTO.getEmitterId());
-		binInwardVO.setBinReqDate(binInwardDTO.getBinReqDate());
-		binInwardVO.setOrgId(binInwardDTO.getOrgId());
-		binInwardVO.setAllotmentNo(binInwardDTO.getAllotmentNo());
-		binInwardVO.setReqNo(binInwardDTO.getReqNo());
-		binInwardVO.setFlow(binInwardDTO.getFlow());
-		binInwardVO.setReqKitQty(binInwardDTO.getReqKitQty());
-		binInwardVO.setKitCode(binInwardDTO.getKitCode());
-		binInwardVO.setAllotedQty(binInwardDTO.getAllotedQty());
-		binInwardVO.setReturnQty(binInwardDTO.getReturnQty());
-		binInwardVO.setReturnRemarks(binInwardDTO.getReturnRemarks());
-
-	}
-
+	
 	@Override
 	public Set<Object[]> getAllotmentAssetDetailsByAllotmentNoAndOrgId(Long orgId, String docid) {
 
@@ -2827,5 +2720,115 @@ public class MasterServiceImpl implements MasterService {
 	public void deleteBranch(Long id) {
 		branchRepo.deleteById(id);
 	}
+
+	//BinAllotment
+	
+	@Override
+	public BinAllotmentNewVO createBinAllotment(BinAllotmentDTO binAllotmentDTO) {
+
+		boolean isBinReqNoExist = binAllotmentNewRepo.existsByBinReqNo(binAllotmentDTO.getBinReqNo());
+
+		if (isBinReqNoExist) {
+			throw new RuntimeException("ReqNo " + binAllotmentDTO.getBinReqNo() + " already exists.");
+		}
+
+		BinAllotmentNewVO binAllotmentNewVO = new BinAllotmentNewVO();
+		// Set Docid for Bin Allotment
+		int finyr = binAllotmentNewRepo.getFinyr();
+		String binallotment = finyr + "BA" + binAllotmentNewRepo.finddocid();
+		binAllotmentNewVO.setDocId(binallotment);
+		binAllotmentNewRepo.nextDocseq();
+
+		binAllotmentNewVO.setDocDate(binAllotmentDTO.getDocDate());
+		binAllotmentNewVO.setBinReqNo(binAllotmentDTO.getBinReqNo());
+		binAllotmentNewVO.setBinReqDate(binAllotmentDTO.getBinReqDate());
+		binAllotmentNewVO.setCreatedBy(binAllotmentDTO.getCreatedby());
+		binAllotmentNewVO.setModifiedBy(binAllotmentDTO.getCreatedby());
+		binAllotmentNewVO.setOrgId(binAllotmentDTO.getOrgId());
+		binAllotmentNewVO.setEmitterId(binAllotmentDTO.getEmitterId());
+		CustomersVO customer = customersRepo.findById(binAllotmentDTO.getEmitterId()).get();
+		binAllotmentNewVO.setEmitter(customer.getDisplayName());
+		binAllotmentNewVO.setPartName(binAllotmentDTO.getPartName());
+		binAllotmentNewVO.setPartCode(binAllotmentDTO.getPartCode());
+		binAllotmentNewVO.setStockBranch(binAllotmentDTO.getStockBranch());
+		binAllotmentNewVO.setFlowId(binAllotmentDTO.getFlowId());
+		binAllotmentNewVO.setFlow(binAllotmentDTO.getFlow());
+		binAllotmentNewVO.setKitCode(binAllotmentDTO.getKitCode());
+		binAllotmentNewVO.setReqKitQty(binAllotmentDTO.getReqKitQty());
+		binAllotmentNewVO.setAvlKitQty(binAllotmentDTO.getAvlKitQty());
+		binAllotmentNewVO.setAllotkKitQty(binAllotmentDTO.getAllotKitQty());
+
+		List<BinAllotmentDetailsVO> binAllotmentDetailsVO = new ArrayList<>();
+		if (binAllotmentDTO.getBinAllotmentDetailsDTO() != null) {
+			for (BinAllotmentDetailsDTO binAllotmentDetailsDTO : binAllotmentDTO.getBinAllotmentDetailsDTO()) {
+				BinAllotmentDetailsVO binAllotmentDetails = new BinAllotmentDetailsVO();
+				binAllotmentDetails.setRfId(binAllotmentDetailsDTO.getRfId());
+				binAllotmentDetails.setTagCode(binAllotmentDetailsDTO.getTagCode());
+				binAllotmentDetails.setAssetCode(binAllotmentDetailsDTO.getAssetCode());
+				binAllotmentDetails.setAsset(binAllotmentDetailsDTO.getAsset());
+				binAllotmentDetails.setQty(binAllotmentDetailsDTO.getQty());
+				binAllotmentDetails.setBinAllotmentNewVO(binAllotmentNewVO);
+				binAllotmentDetailsVO.add(binAllotmentDetails);
+			}
+		}
+		binAllotmentNewVO.setBinAllotmentDetailsVO(binAllotmentDetailsVO);
+		BinAllotmentNewVO allotmentNewVO = binAllotmentNewRepo.save(binAllotmentNewVO);
+		List<BinAllotmentDetailsVO> allotmentDetailsVO = allotmentNewVO.getBinAllotmentDetailsVO();
+		if (allotmentDetailsVO != null && !allotmentDetailsVO.isEmpty()) {
+			for (BinAllotmentDetailsVO allotmentDetailsVO2 : allotmentDetailsVO) {
+
+				AssetStockDetailsVO assetStockDetailsVO = new AssetStockDetailsVO();
+				assetStockDetailsVO.setStockRef(allotmentNewVO.getDocId());
+				assetStockDetailsVO.setStockDate(allotmentNewVO.getDocDate());
+				assetStockDetailsVO.setSkuCode(allotmentDetailsVO2.getAssetCode());
+				assetStockDetailsVO.setSku(allotmentDetailsVO2.getAsset());
+				assetStockDetailsVO.setSkuQty(-1);
+				assetStockDetailsVO.setOrgId(allotmentNewVO.getOrgId());
+				assetStockDetailsVO.setRfId(allotmentDetailsVO2.getRfId());
+				assetStockDetailsVO.setTagCode(allotmentDetailsVO2.getTagCode());
+				assetStockDetailsVO.setStockSource("");
+				assetStockDetailsVO.setCategory(assetRepo.getCategoryByAssetCodeId(allotmentDetailsVO2.getAssetCode()));
+				assetStockDetailsVO.setSCode(allotmentNewVO.getScode()); // Assuming getScode() returns the correct
+				assetStockDetailsVO.setSourceId(allotmentDetailsVO2.getId()); // value
+				assetStockDetailsVO.setScreen("Bin Allotment");
+				assetStockDetailsVO.setPm("M");
+				assetStockDetailsVO.setStatus("S");
+				assetStockDetailsVO.setFinyr(allotmentNewVO.getFinyr());
+				assetStockDetailsVO.setStockBranch(allotmentNewVO.getStockBranch());
+				assetStockDetailsRepo.save(assetStockDetailsVO);
+			}
+			for (BinAllotmentDetailsVO allotmentDetailsVO2 : allotmentDetailsVO) {
+
+				Long flow = issueRequestRepo.getFlowIdByrequestId(binAllotmentDTO.getBinReqNo());
+				String emitter = flowRepo.findEmiterbyFlowId(flow);
+				String orgin = flowRepo.findOrigionbyFlowId(flow);
+
+				AssetStockDetailsVO assetStockDetailsVO = new AssetStockDetailsVO();
+				assetStockDetailsVO.setStockRef(allotmentNewVO.getDocId());
+				assetStockDetailsVO.setStockDate(allotmentNewVO.getDocDate());
+				assetStockDetailsVO.setSkuCode(allotmentDetailsVO2.getAssetCode());
+				assetStockDetailsVO.setSku(allotmentDetailsVO2.getAsset());
+				assetStockDetailsVO.setSkuQty(1);
+				assetStockDetailsVO.setOrgId(allotmentNewVO.getOrgId());
+				assetStockDetailsVO.setRfId(allotmentDetailsVO2.getRfId());
+				assetStockDetailsVO.setTagCode(allotmentDetailsVO2.getTagCode());
+				assetStockDetailsVO.setStockSource("");
+				assetStockDetailsVO.setBinLocation("");
+				assetStockDetailsVO.setCancelRemarks("");
+				assetStockDetailsVO.setCategory(assetRepo.getCategoryByAssetCodeId(allotmentDetailsVO2.getAssetCode()));
+				assetStockDetailsVO.setStockLocation("");
+				assetStockDetailsVO.setSCode(allotmentNewVO.getScode()); // Assuming getScode() returns the correct
+				assetStockDetailsVO.setSourceId(allotmentDetailsVO2.getId()); // value
+				assetStockDetailsVO.setScreen("Bin Allotment");
+				assetStockDetailsVO.setPm("P");
+				assetStockDetailsVO.setStatus("M");
+				assetStockDetailsVO.setFinyr(allotmentNewVO.getFinyr());
+				assetStockDetailsVO.setStockBranch(emitter + "-" + orgin);
+				assetStockDetailsRepo.save(assetStockDetailsVO);
+			}
+		}
+		return binAllotmentNewVO;
+	}
+
 
 }

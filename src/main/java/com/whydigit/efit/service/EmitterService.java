@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.whydigit.efit.dto.BinAllotmentDTO;
+import com.whydigit.efit.dto.BinInwardDTO;
 import com.whydigit.efit.dto.BinOutwardDTO;
 import com.whydigit.efit.dto.EmitterAddressDTO;
 import com.whydigit.efit.dto.InwardDTO;
@@ -19,6 +20,7 @@ import com.whydigit.efit.dto.IssueRequestQtyApprovelDTO;
 import com.whydigit.efit.dto.OutwardKitDetailsDTO;
 import com.whydigit.efit.entity.AssetTaggingDetailsVO;
 import com.whydigit.efit.entity.BinAllotmentNewVO;
+import com.whydigit.efit.entity.BinInwardVO;
 import com.whydigit.efit.entity.BinOutwardVO;
 import com.whydigit.efit.entity.EmitterInwardVO;
 import com.whydigit.efit.entity.EmitterOutwardVO;
@@ -95,7 +97,6 @@ public interface EmitterService {
 //			LocalDate endDate, Long warehouseLoacationId);
 
 	// Bin Allotment
-	BinAllotmentNewVO createBinAllotment(BinAllotmentDTO allotmentDTO);
 
 	Set<Object[]> getReqDetailsByOrgId(Long orgId, String reqNo);
 
@@ -127,6 +128,9 @@ public interface EmitterService {
 
 	List<BinAllotmentNewVO> getCustomizedAllotmentDetailsByEmitter(String kitCode, String flow, Long emitterId,
 			LocalDate startAllotDate, LocalDate endAllotDate);
+
+
+	BinInwardVO updateCreateBinInward(BinInwardDTO binInwardDTO) throws ApplicationException;
 
 	
 
