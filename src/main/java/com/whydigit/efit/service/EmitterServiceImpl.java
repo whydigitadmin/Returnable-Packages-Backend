@@ -483,7 +483,7 @@ public class EmitterServiceImpl implements EmitterService {
 
 	@Override
 	public List<Object[]> getEmitterDispatchByFlowId(Long orgId, Long flowId, Long emitterId) {
-		return emitterOutwardRepo.findEmitterDispatchByFlowId(orgId, flowId, emitterId);
+		return binOutwardRepo.findEmitterDispatchByFlowId(orgId, flowId, emitterId);
 	}
 
 	@Override
