@@ -102,7 +102,7 @@ public class PartStudyServiceImpl implements PartStudyService {
 				.orElseThrow(() -> new ApplicationException("BasicDetail not found"));
 		PackingDetailVO packingDetailVO = basicDetailVO.getPackingDetailVO();
 		List<PDAttachmentVO> pdAttachmentVO = getPDAttachment(id);
-		setAttachmentToPackageDetailVO(packingDetailVO, pdAttachmentVO);
+	//	setAttachmentToPackageDetailVO(packingDetailVO, pdAttachmentVO);
 		basicDetailVO.setPackingDetailVO(packingDetailVO);
 		return basicDetailVO;
 	}
@@ -187,24 +187,24 @@ public class PartStudyServiceImpl implements PartStudyService {
 		PackingDetailVO packingDetailVO = packingDetailRepo.findById(id)
 				.orElseThrow(() -> new ApplicationException("PackingDetail not found."));
 		List<PDAttachmentVO> pdAttachmentVO = getPDAttachment(id);
-		setAttachmentToPackageDetailVO(packingDetailVO, pdAttachmentVO);
+	//	setAttachmentToPackageDetailVO(packingDetailVO, pdAttachmentVO);
 		return packingDetailVO;
 	}
 
-	private void setAttachmentToPackageDetailVO(PackingDetailVO packingDetailVO, List<PDAttachmentVO> pdAttachmentVO) {
-		packingDetailVO.setPartImage(
-				pdAttachmentVO.stream().filter(pa -> pa.getType().equalsIgnoreCase(PDAttachmentType.PART_IMAGE.name()))
-						.collect(Collectors.toList()));
-		packingDetailVO.setExistingPackingImage(pdAttachmentVO.stream()
-				.filter(pa -> pa.getType().equalsIgnoreCase(PDAttachmentType.EXISTING_PACKING_IMAGE.name()))
-				.collect(Collectors.toList()));
-		packingDetailVO.setPartDrawing(pdAttachmentVO.stream()
-				.filter(pa -> pa.getType().equalsIgnoreCase(PDAttachmentType.PART_DRAWING.name()))
-				.collect(Collectors.toList()));
-		packingDetailVO.setApprovedCommercialContract(pdAttachmentVO.stream()
-				.filter(pa -> pa.getType().equalsIgnoreCase(PDAttachmentType.APPROVED_COMMERCIAL_CONTRACT.name()))
-				.collect(Collectors.toList()));
-	}
+//	private void setAttachmentToPackageDetailVO(PackingDetailVO packingDetailVO, List<PDAttachmentVO> pdAttachmentVO) {
+//		packingDetailVO.setPartImage(
+//				pdAttachmentVO.stream().filter(pa -> pa.getType().equalsIgnoreCase(PDAttachmentType.PART_IMAGE.name()))
+//						.collect(Collectors.toList()));
+//		packingDetailVO.setExistingPackingImage(pdAttachmentVO.stream()
+//				.filter(pa -> pa.getType().equalsIgnoreCase(PDAttachmentType.EXISTING_PACKING_IMAGE.name()))
+//				.collect(Collectors.toList()));
+//		packingDetailVO.setPartDrawing(pdAttachmentVO.stream()
+//				.filter(pa -> pa.getType().equalsIgnoreCase(PDAttachmentType.PART_DRAWING.name()))
+//				.collect(Collectors.toList()));
+//		packingDetailVO.setApprovedCommercialContract(pdAttachmentVO.stream()
+//				.filter(pa -> pa.getType().equalsIgnoreCase(PDAttachmentType.APPROVED_COMMERCIAL_CONTRACT.name()))
+//				.collect(Collectors.toList()));
+//	}
 
 	@Override
 	public PackingDetailVO createPackingDetail(PackingDetailVO packingDetailVO) {
@@ -493,7 +493,7 @@ public class PartStudyServiceImpl implements PartStudyService {
 			System.out.println(filePath);
 			// Create CustomerVO and set uploadReceipt
 			PackingDetailVO vo = packingDetailRepo.findById(id).orElse(null);
-			vo.setPartImg(filePath.toString().replace("\\", "/"));
+		//	vo.setPartImg(filePath.toString().replace("\\", "/"));
 			packingDetailRepo.save(vo);
 			return filePath.toString();
 		} catch (IOException e) {
@@ -536,7 +536,7 @@ public class PartStudyServiceImpl implements PartStudyService {
 			System.out.println(filePath);
 			// Create CustomerVO and set uploadReceipt
 			PackingDetailVO vo = packingDetailRepo.findById(id).orElse(null);
-			vo.setPDrawing(filePath.toString().replace("\\", "/"));
+	//		vo.setPDrawing(filePath.toString().replace("\\", "/"));
 			packingDetailRepo.save(vo);
 			return filePath.toString();
 		} catch (IOException e) {
@@ -572,7 +572,7 @@ public class PartStudyServiceImpl implements PartStudyService {
 			System.out.println(filePath);
 			// Create CustomerVO and set uploadReceipt
 			PackingDetailVO vo = packingDetailRepo.findById(id).orElse(null);
-			vo.setExistingImage(filePath.toString().replace("\\", "/"));
+	//		vo.setExistingImage(filePath.toString().replace("\\", "/"));
 			packingDetailRepo.save(vo);
 			return filePath.toString();
 		} catch (IOException e) {
@@ -608,7 +608,7 @@ public class PartStudyServiceImpl implements PartStudyService {
 			System.out.println(filePath);
 			// Create CustomerVO and set uploadReceipt
 			PackingDetailVO vo = packingDetailRepo.findById(id).orElse(null);
-			vo.setComercial(filePath.toString().replace("\\", "/"));
+		//	vo.setComercial(filePath.toString().replace("\\", "/"));
 			packingDetailRepo.save(vo);
 			return filePath.toString();
 		} catch (IOException e) {
@@ -644,7 +644,7 @@ public class PartStudyServiceImpl implements PartStudyService {
 			System.out.println(filePath);
 			// Create CustomerVO and set uploadReceipt
 			PackingDetailVO vo = packingDetailRepo.findById(id).orElse(null);
-			vo.setApprovedDrawing(filePath.toString().replace("\\", "/"));
+		//	vo.setApprovedDrawing(filePath.toString().replace("\\", "/"));
 			packingDetailRepo.save(vo);
 			return filePath.toString();
 		} catch (IOException e) {
@@ -652,4 +652,64 @@ public class PartStudyServiceImpl implements PartStudyService {
 			return "Failed to upload file: " + e.getMessage();
 		}
 	}
+
+	@Override
+	public PackingDetailVO uploadPartImageInBloob(MultipartFile file, Long refPsId) throws IOException {
+		PackingDetailVO PackingDetailVO = packingDetailRepo.findById(refPsId).get();
+		PackingDetailVO.setPartImage(file.getBytes());
+		return packingDetailRepo.save(PackingDetailVO);
+	}
+
+	@Override
+	public PackingDetailVO uploadExistingPackingImageInBloob(MultipartFile file, Long refPsId) throws IOException {
+		PackingDetailVO PackingDetailVO = packingDetailRepo.findById(refPsId).get();
+		PackingDetailVO.setExistingPackingImage(file.getBytes());
+		return packingDetailRepo.save(PackingDetailVO);
+	}
+
+	@Override
+	public PackingDetailVO uploadpartdrawingInBloob(MultipartFile file, Long refPsId) throws IOException {
+		PackingDetailVO PackingDetailVO = packingDetailRepo.findById(refPsId).get();
+		PackingDetailVO.setPartDrawing(file.getBytes());
+		return packingDetailRepo.save(PackingDetailVO);
+	}
+
+	@Override
+	public PackingDetailVO uploadApprovedCommercialContractInBloob(MultipartFile file, Long refPsId)
+			throws IOException {
+		PackingDetailVO PackingDetailVO = packingDetailRepo.findById(refPsId).get();
+		PackingDetailVO.setApprovedCommercialContract(file.getBytes());
+		return packingDetailRepo.save(PackingDetailVO);
+	}
+
+	@Override
+	public PackingDetailVO uploadCommercialInBloob(MultipartFile file, Long refPsId) throws IOException {
+		PackingDetailVO PackingDetailVO = packingDetailRepo.findById(refPsId).get();
+		PackingDetailVO.setComercial(file.getBytes());
+		return packingDetailRepo.save(PackingDetailVO);
+	}
+
+	  @Override
+	    public PackingDetailVO uploadCommercialInBlob(MultipartFile file, Long refPsId) throws IOException {
+	        LOGGER.debug("Uploading commercial image for refPsId: {}", refPsId);
+	        PackingDetailVO packingDetailVO = packingDetailRepo.findById(refPsId).orElseThrow(() -> {
+	            LOGGER.error("PackingDetail not found for refPsId: {}", refPsId);
+	            return new RuntimeException("PackingDetail not found");
+	        });
+	        packingDetailVO.setComercial(file.getBytes());
+	        LOGGER.debug("Commercial image uploaded successfully for refPsId: {}", refPsId);
+	        return packingDetailRepo.save(packingDetailVO);
+	    }
+
+	    @Override
+	    public byte[] getCommercialImageById(Long id) {
+	        LOGGER.debug("Retrieving commercial image for id: {}", id);
+	        PackingDetailVO packingDetailVO = packingDetailRepo.findById(id).orElseThrow(() -> {
+	            LOGGER.error("PackingDetail not found for id: {}", id);
+	            return new RuntimeException("PackingDetail not found");
+	        });
+	        byte[] image = packingDetailVO.getComercial();
+	        LOGGER.debug("Commercial image retrieved successfully for id: {}", id);
+	        return image;
+	    }
 }

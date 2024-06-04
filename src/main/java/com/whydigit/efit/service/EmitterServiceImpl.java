@@ -483,7 +483,7 @@ public class EmitterServiceImpl implements EmitterService {
 
 	@Override
 	public List<Object[]> getEmitterDispatchByFlowId(Long orgId, Long flowId, Long emitterId) {
-		return emitterOutwardRepo.findEmitterDispatchByFlowId(orgId, flowId, emitterId);
+		return binOutwardRepo.findEmitterDispatchByFlowId(orgId, flowId, emitterId);
 	}
 
 	@Override
@@ -493,16 +493,16 @@ public class EmitterServiceImpl implements EmitterService {
 	}
 
 	// emitter outward
-	public List<EmitterOutwardVO> getAllEmitterOutward(Long orgId) {
-		List<EmitterOutwardVO> emitterOutwardVO = new ArrayList<>();
+	public List<BinOutwardVO> getAllBinOutward(Long orgId) {
+		List<BinOutwardVO> binOutwardVO = new ArrayList<>();
 		if (ObjectUtils.isNotEmpty(orgId)) {
 			LOGGER.info("Successfully Received  EmitterOutward Information BY OrgId : {}", orgId);
-			emitterOutwardVO = emitterOutwardRepo.getAllEmitterOutwardByOrgId(orgId);
+			binOutwardVO = binOutwardRepo.getAllBinOutwardByOrgId(orgId);
 		} else {
 			LOGGER.info("Successfully Received  EmitterOutward Information For All OrgId.");
-			emitterOutwardVO = emitterOutwardRepo.findAll();
+			binOutwardVO = binOutwardRepo.findAll();
 		}
-		return emitterOutwardVO;
+		return binOutwardVO;
 	}
 
 	@Override
@@ -1024,7 +1024,21 @@ public class EmitterServiceImpl implements EmitterService {
 				return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
 			}
 
-		});
-	}
+			});
+		}
+
+		@Override
+		public List<BinOutwardVO> getAllBinOutwardByDocId(String docId) {
+			List<BinOutwardVO> binOutwardVO = new ArrayList<>();
+			if (ObjectUtils.isNotEmpty(docId)) {
+				LOGGER.info("Successfully Received  EmitterOutward Information BY docId : {}", docId);
+				binOutwardVO = binOutwardRepo.getAllBinOutwardByDocId(docId);
+			} else {
+				LOGGER.info("Successfully Received  EmitterOutward Information For All docId.");
+				binOutwardVO = binOutwardRepo.findAll();
+			}
+			return binOutwardVO;
+		}
+
 
 }

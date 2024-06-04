@@ -1,5 +1,6 @@
 package com.whydigit.efit.service;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -79,5 +80,22 @@ public interface PartStudyService {
 	String uploadApprovedCommercial(Long id, MultipartFile file);
 	
 	String uploadApprovedTechnicalDrawing(Long id, MultipartFile file);
+	
+	//Image Upload Part study(Bloop Data)
+
+	PackingDetailVO uploadPartImageInBloob(MultipartFile file, Long refPsId) throws IOException;
+
+	PackingDetailVO uploadExistingPackingImageInBloob(MultipartFile file, Long refPsId) throws IOException;
+
+	PackingDetailVO uploadpartdrawingInBloob(MultipartFile file, Long refPsId) throws IOException;
+
+	PackingDetailVO uploadApprovedCommercialContractInBloob(MultipartFile file, Long refPsId) throws IOException;
+
+	PackingDetailVO uploadCommercialInBlob(MultipartFile file, Long refPsId) throws IOException;
+
+	byte[] getCommercialImageById(Long refPsId);
+
+	PackingDetailVO uploadCommercialInBloob(MultipartFile file, Long refPsId) throws IOException;
+
 
 }
