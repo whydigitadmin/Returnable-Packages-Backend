@@ -32,6 +32,7 @@ import com.whydigit.efit.common.UserConstants;
 import com.whydigit.efit.dto.BinAllotmentDTO;
 import com.whydigit.efit.dto.BinInwardDTO;
 import com.whydigit.efit.dto.BinOutwardDTO;
+import com.whydigit.efit.dto.DispatchDTO;
 import com.whydigit.efit.dto.EmitterAddressDTO;
 import com.whydigit.efit.dto.InwardDTO;
 import com.whydigit.efit.dto.IssueRequestDTO;
@@ -42,6 +43,7 @@ import com.whydigit.efit.entity.AssetTaggingDetailsVO;
 import com.whydigit.efit.entity.BinAllotmentNewVO;
 import com.whydigit.efit.entity.BinInwardVO;
 import com.whydigit.efit.entity.BinOutwardVO;
+import com.whydigit.efit.entity.DispatchVO;
 import com.whydigit.efit.entity.EmitterInwardVO;
 import com.whydigit.efit.entity.EmitterOutwardVO;
 import com.whydigit.efit.entity.InwardVO;
@@ -281,11 +283,12 @@ public class EmitterController extends BaseController {
 		List<Map<String, Object>> dispatch = new ArrayList<>();
 		for (Object[] ps : outward) {
 			Map<String, Object> part = new HashMap<>();
-			part.put("BinOutId", ps[0] != null ? ps[0].toString() : "");
-			part.put("Date", ps[1] != null ? ps[1].toString() : "");
-			part.put("Qty", ps[2] != null ? Integer.parseInt(ps[2].toString()) : 0);
-			part.put("Part", ps[3] != null ? ps[3].toString() : "");
-			part.put("Kit", ps[4] != null ? ps[4].toString() : "");
+			part.put("binOutId", ps[0] != null ? ps[0].toString() : "");
+			part.put("binOutDate", ps[1] != null ? ps[1].toString() : "");
+			part.put("qty", ps[2] != null ? Integer.parseInt(ps[2].toString()) : 0);
+			part.put("partNo", ps[3] != null ? ps[3].toString() : "");
+			part.put("kitNo", ps[4] != null ? ps[4].toString() : "");
+			part.put("partName", ps[5] != null ? ps[5].toString() : "");
 			dispatch.add(part);
 		}
 		return dispatch;
@@ -1122,6 +1125,29 @@ public class EmitterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 	
+	@PostMapping("/createDispatch")
+	public ResponseEntity<ResponseDTO> createDispatch(@RequestBody DispatchDTO  dispatchDTO) {
+		String methodName = "createDispatch()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		DispatchVO dipatchVO = null;
+		try {
+			dipatchVO = emitterService.createDispatch(dispatchDTO);
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Dispatch Saved successfully");
+			responseObjectsMap.put("dipatchVO", dipatchVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} catch (Exception e) {
+
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "Dispatch Save failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+
+	}
 	@PutMapping("/updateCreateBinInward")
 	public ResponseEntity<ResponseDTO> updateCreateBinInward(@RequestBody BinInwardDTO binInwardDTO) {
 		String methodName = "updateCreateBinInward()";

@@ -39,6 +39,8 @@ import com.whydigit.efit.dto.BinInwardDTO;
 import com.whydigit.efit.dto.BinInwardDetailsDTO;
 import com.whydigit.efit.dto.BinOutwardDTO;
 import com.whydigit.efit.dto.BinOutwardDetailsDTO;
+import com.whydigit.efit.dto.DispatchDTO;
+import com.whydigit.efit.dto.DispatchDetailsDTO;
 import com.whydigit.efit.dto.EmitterAddressDTO;
 import com.whydigit.efit.dto.InwardDTO;
 import com.whydigit.efit.dto.IssueItemDTO;
@@ -57,6 +59,8 @@ import com.whydigit.efit.entity.BinInwardVO;
 import com.whydigit.efit.entity.BinOutwardDetailsVO;
 import com.whydigit.efit.entity.BinOutwardVO;
 import com.whydigit.efit.entity.CustomersVO;
+import com.whydigit.efit.entity.DispatchDetailsVO;
+import com.whydigit.efit.entity.DispatchVO;
 import com.whydigit.efit.entity.EmitterInwardVO;
 import com.whydigit.efit.entity.EmitterOutwardVO;
 import com.whydigit.efit.entity.FlowDetailVO;
@@ -82,6 +86,8 @@ import com.whydigit.efit.repo.BinInwardRepo;
 import com.whydigit.efit.repo.BinOutwardDetailsRepo;
 import com.whydigit.efit.repo.BinOutwardRepo;
 import com.whydigit.efit.repo.CustomersRepo;
+import com.whydigit.efit.repo.DispatchDetailsRepository;
+import com.whydigit.efit.repo.DispatchRepository;
 import com.whydigit.efit.repo.DmapDetailsRepo;
 import com.whydigit.efit.repo.EmitterInwardRepo;
 import com.whydigit.efit.repo.EmitterOutwardRepo;
@@ -109,6 +115,12 @@ public class EmitterServiceImpl implements EmitterService {
 
 	@Autowired
 	AssetRepo assetRepo;
+	
+	@Autowired
+	DispatchRepository dispatchRepository;
+
+	@Autowired
+	DispatchDetailsRepository dispatchDetailsRepository;
 
 	@Autowired
 	EmitterInwardRepo emitterInwardRepo;
@@ -849,55 +861,55 @@ public class EmitterServiceImpl implements EmitterService {
 		binOutwardVO.setBinOutwardDetails(binOutwardDetailsVO1);
 
 		BinOutwardVO savedBinOutwardVO = binOutwardRepo.save(binOutwardVO);
-		List<BinOutwardDetailsVO> binOutwardDetailsVOLists = savedBinOutwardVO.getBinOutwardDetails();
-		if (binOutwardDetailsVOLists != null && !binOutwardDetailsVOLists.isEmpty())
-			for (BinOutwardDetailsVO binOutwardDetailsVO : binOutwardDetailsVOLists) {
-
-				AssetStockDetailsVO stockDetailsVO = new AssetStockDetailsVO();
-				stockDetailsVO.setStockRef(savedBinOutwardVO.getDocId());
-				stockDetailsVO.setStockBranch(savedBinOutwardVO.getEmitter() + "-" + savedBinOutwardVO.getOrgin());
-				stockDetailsVO.setStockDate(savedBinOutwardVO.getDocDate());
-				stockDetailsVO.setSku(binOutwardDetailsVO.getAsset());
-				stockDetailsVO.setSkuCode(binOutwardDetailsVO.getAssetCode());
-				stockDetailsVO.setSkuQty(binOutwardDetailsVO.getQty() * -1);
-				stockDetailsVO.setOrgId(savedBinOutwardVO.getOrgId());
-				stockDetailsVO.setCategory(assetRepo.getCategoryByAssetCodeId(binOutwardDetailsVO.getAssetCode()));
-				stockDetailsVO.setStatus("S");
-				stockDetailsVO.setScreen("Bin Outward");
-				stockDetailsVO.setSCode(savedBinOutwardVO.getScode());
-				stockDetailsVO.setPm("M");
-				stockDetailsVO.setStockSource("");
-				stockDetailsVO.setBinLocation("");
-				stockDetailsVO.setCancelRemarks("");
-				stockDetailsVO.setStockLocation("");
-				stockDetailsVO.setSourceId(binOutwardDetailsVO.getId());
-				stockDetailsVO.setFinyr(savedBinOutwardVO.getFinyr());
-				assetStockDetailsRepo.save(stockDetailsVO);
-			}
-
-		for (BinOutwardDetailsVO binOutwardDetailsVO : binOutwardDetailsVOLists) {
-
-			AssetStockDetailsVO stockDetailsVO = new AssetStockDetailsVO();
-			stockDetailsVO.setStockRef(savedBinOutwardVO.getDocId());
-			stockDetailsVO.setStockBranch(savedBinOutwardVO.getReceiver() + "-" + savedBinOutwardVO.getDestination());
-			stockDetailsVO.setStockDate(savedBinOutwardVO.getDocDate());
-			stockDetailsVO.setSku(binOutwardDetailsVO.getAsset());
-			stockDetailsVO.setSkuCode(binOutwardDetailsVO.getAssetCode());
-			stockDetailsVO.setSkuQty(binOutwardDetailsVO.getQty());
-			stockDetailsVO.setOrgId(savedBinOutwardVO.getOrgId());
-			stockDetailsVO.setCategory(assetRepo.getCategoryByAssetCodeId(binOutwardDetailsVO.getAssetCode()));
-			stockDetailsVO.setStatus("M");
-			stockDetailsVO.setScreen("Bin Outward");
-			stockDetailsVO.setSCode(savedBinOutwardVO.getScode());
-			stockDetailsVO.setPm("P");
-			stockDetailsVO.setStockSource("");
-			stockDetailsVO.setBinLocation("");
-			stockDetailsVO.setCancelRemarks("");
-			stockDetailsVO.setStockLocation("");
-			stockDetailsVO.setSourceId(binOutwardDetailsVO.getId());
-			stockDetailsVO.setFinyr(savedBinOutwardVO.getFinyr());
-			assetStockDetailsRepo.save(stockDetailsVO);
-		}
+//		List<BinOutwardDetailsVO> binOutwardDetailsVOLists = savedBinOutwardVO.getBinOutwardDetails();
+//		if (binOutwardDetailsVOLists != null && !binOutwardDetailsVOLists.isEmpty())
+//			for (BinOutwardDetailsVO binOutwardDetailsVO : binOutwardDetailsVOLists) {
+//
+//				AssetStockDetailsVO stockDetailsVO = new AssetStockDetailsVO();
+//				stockDetailsVO.setStockRef(savedBinOutwardVO.getDocId());
+//				stockDetailsVO.setStockBranch(savedBinOutwardVO.getEmitter() + "-" + savedBinOutwardVO.getOrgin());
+//				stockDetailsVO.setStockDate(savedBinOutwardVO.getDocDate());
+//				stockDetailsVO.setSku(binOutwardDetailsVO.getAsset());
+//				stockDetailsVO.setSkuCode(binOutwardDetailsVO.getAssetCode());
+//				stockDetailsVO.setSkuQty(binOutwardDetailsVO.getQty() * -1);
+//				stockDetailsVO.setOrgId(savedBinOutwardVO.getOrgId());
+//				stockDetailsVO.setCategory(assetRepo.getCategoryByAssetCodeId(binOutwardDetailsVO.getAssetCode()));
+//				stockDetailsVO.setStatus("S");
+//				stockDetailsVO.setScreen("Bin Outward");
+//				stockDetailsVO.setSCode(savedBinOutwardVO.getScode());
+//				stockDetailsVO.setPm("M");
+//				stockDetailsVO.setStockSource("");
+//				stockDetailsVO.setBinLocation("");
+//				stockDetailsVO.setCancelRemarks("");
+//				stockDetailsVO.setStockLocation("");
+//				stockDetailsVO.setSourceId(binOutwardDetailsVO.getId());
+//				stockDetailsVO.setFinyr(savedBinOutwardVO.getFinyr());
+//				assetStockDetailsRepo.save(stockDetailsVO);
+//			}
+//
+//		for (BinOutwardDetailsVO binOutwardDetailsVO : binOutwardDetailsVOLists) {
+//
+//			AssetStockDetailsVO stockDetailsVO = new AssetStockDetailsVO();
+//			stockDetailsVO.setStockRef(savedBinOutwardVO.getDocId());
+//			stockDetailsVO.setStockBranch(savedBinOutwardVO.getReceiver() + "-" + savedBinOutwardVO.getDestination());
+//			stockDetailsVO.setStockDate(savedBinOutwardVO.getDocDate());
+//			stockDetailsVO.setSku(binOutwardDetailsVO.getAsset());
+//			stockDetailsVO.setSkuCode(binOutwardDetailsVO.getAssetCode());
+//			stockDetailsVO.setSkuQty(binOutwardDetailsVO.getQty());
+//			stockDetailsVO.setOrgId(savedBinOutwardVO.getOrgId());
+//			stockDetailsVO.setCategory(assetRepo.getCategoryByAssetCodeId(binOutwardDetailsVO.getAssetCode()));
+//			stockDetailsVO.setStatus("M");
+//			stockDetailsVO.setScreen("Bin Outward");
+//			stockDetailsVO.setSCode(savedBinOutwardVO.getScode());
+//			stockDetailsVO.setPm("P");
+//			stockDetailsVO.setStockSource("");
+//			stockDetailsVO.setBinLocation("");
+//			stockDetailsVO.setCancelRemarks("");
+//			stockDetailsVO.setStockLocation("");
+//			stockDetailsVO.setSourceId(binOutwardDetailsVO.getId());
+//			stockDetailsVO.setFinyr(savedBinOutwardVO.getFinyr());
+//			assetStockDetailsRepo.save(stockDetailsVO);
+//		}
 		return binOutwardVO;
 	}
 
@@ -1057,6 +1069,92 @@ public class EmitterServiceImpl implements EmitterService {
 
 		}
 
+
+		@Override
+		public DispatchVO createDispatch(DispatchDTO dispatchDTO) {
+			
+			DispatchVO dispatchVO=new DispatchVO();
+			dispatchVO.setFlow(dispatchDTO.getFlow());
+	        dispatchVO.setInvoiceNo(dispatchDTO.getInvoiceNo());
+	        dispatchVO.setInvoiceDate(dispatchDTO.getInvoiceDate());
+	        dispatchVO.setDispatchRemarks(dispatchDTO.getDispatchRemarks());
+	        dispatchVO.setCreatedby(dispatchDTO.getCreatedby());
+	        dispatchVO.setModifiedby(dispatchDTO.getCreatedby());
+	        dispatchVO.setOrgId(dispatchDTO.getOrgId());
+	        dispatchVO.setEmitterId(dispatchDTO.getEmitterId());
+	        
+	        List<DispatchDetailsVO> dispatchDetailsVO= new ArrayList<>();
+	        if(dispatchDTO.getDispatchDetailsDTO()!=null)
+	        {
+	        	for(DispatchDetailsDTO dispatchDetailsDTO:dispatchDTO.getDispatchDetailsDTO())
+	        	{
+	        		DispatchDetailsVO detailsVO=new DispatchDetailsVO();
+	        		detailsVO.setBinOutDocid(dispatchDetailsDTO.getBinOutDocid());
+	        		detailsVO.setBinOutDocDate(dispatchDetailsDTO.getBinOutDocDate());
+	        		detailsVO.setKitNo(dispatchDetailsDTO.getKitNo());
+	        		detailsVO.setPartName(dispatchDetailsDTO.getPartName());
+	        		detailsVO.setPartNo(dispatchDetailsDTO.getPartNo());
+	        		detailsVO.setQty(dispatchDetailsDTO.getQty());
+	        		detailsVO.setDispatchVO(dispatchVO);
+	        		dispatchDetailsVO.add(detailsVO);
+	        		
+	        		  BinOutwardVO binOutwardVO=binOutwardRepo.findByDocId(dispatchDetailsDTO.getBinOutDocid());
+	        		  binOutwardVO.setInvoiceno(dispatchVO.getInvoiceNo());
+	        		  binOutwardRepo.save(binOutwardVO);
+	        		  List<BinOutwardDetailsVO> binOutwardDetailsVOLists = binOutwardVO.getBinOutwardDetails();
+	        			if (binOutwardDetailsVOLists != null && !binOutwardDetailsVOLists.isEmpty())
+	        				for (BinOutwardDetailsVO binOutwardDetailsVO : binOutwardDetailsVOLists) {
+
+	        					AssetStockDetailsVO stockDetailsVO = new AssetStockDetailsVO();
+	        					stockDetailsVO.setStockRef(dispatchVO.getDocId());
+	        					stockDetailsVO.setStockBranch(binOutwardVO.getEmitter() + "-" + binOutwardVO.getOrgin());
+	        					stockDetailsVO.setStockDate(dispatchVO.getDocDate());
+	        					stockDetailsVO.setSku(binOutwardDetailsVO.getAsset());
+	        					stockDetailsVO.setSkuCode(binOutwardDetailsVO.getAssetCode());
+	        					stockDetailsVO.setSkuQty(binOutwardDetailsVO.getQty() * -1);
+	        					stockDetailsVO.setOrgId(binOutwardVO.getOrgId());
+	        					stockDetailsVO.setCategory(assetRepo.getCategoryByAssetCodeId(binOutwardDetailsVO.getAssetCode()));
+	        					stockDetailsVO.setStatus("S");
+	        					stockDetailsVO.setScreen("Dispatch");
+	        					stockDetailsVO.setSCode(dispatchVO.getScode());
+	        					stockDetailsVO.setPm("M");
+	        					stockDetailsVO.setStockSource("");
+	        					stockDetailsVO.setBinLocation("");
+	        					stockDetailsVO.setCancelRemarks("");
+	        					stockDetailsVO.setStockLocation("");
+	        					stockDetailsVO.setSourceId(binOutwardDetailsVO.getId());
+	        					stockDetailsVO.setFinyr(binOutwardVO.getFinyr());
+	        					assetStockDetailsRepo.save(stockDetailsVO);
+	        				}
+
+	        			for (BinOutwardDetailsVO binOutwardDetailsVO : binOutwardDetailsVOLists) {
+
+	        				AssetStockDetailsVO stockDetailsVO = new AssetStockDetailsVO();
+	        				stockDetailsVO.setStockRef(dispatchVO.getDocId());
+	        				stockDetailsVO.setStockBranch(binOutwardVO.getReceiver() + "-" + binOutwardVO.getDestination());
+	        				stockDetailsVO.setStockDate(dispatchVO.getDocDate());
+	        				stockDetailsVO.setSku(binOutwardDetailsVO.getAsset());
+	        				stockDetailsVO.setSkuCode(binOutwardDetailsVO.getAssetCode());
+	        				stockDetailsVO.setSkuQty(binOutwardDetailsVO.getQty());
+	        				stockDetailsVO.setOrgId(binOutwardVO.getOrgId());
+	        				stockDetailsVO.setCategory(assetRepo.getCategoryByAssetCodeId(binOutwardDetailsVO.getAssetCode()));
+	        				stockDetailsVO.setStatus("M");
+	        				stockDetailsVO.setScreen("Dispatch");
+	        				stockDetailsVO.setSCode(dispatchVO.getScode());
+	        				stockDetailsVO.setPm("P");
+	        				stockDetailsVO.setStockSource("");
+	        				stockDetailsVO.setBinLocation("");
+	        				stockDetailsVO.setCancelRemarks("");
+	        				stockDetailsVO.setStockLocation("");
+	        				stockDetailsVO.setSourceId(binOutwardDetailsVO.getId());
+	        				stockDetailsVO.setFinyr(binOutwardVO.getFinyr());
+	        				assetStockDetailsRepo.save(stockDetailsVO);
+	        			}
+	        	}
+	        }
+	        dispatchVO.setDispatchDetailsVO(dispatchDetailsVO);
+			return dispatchRepository.save(dispatchVO);
+		}
 
 
 }

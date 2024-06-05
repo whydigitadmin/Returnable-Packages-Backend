@@ -22,27 +22,29 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "binoutward")
+@Table(name="dispatch")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class BinOutwardVO {
+public class DispatchVO {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "binoutwardgen")
-	@SequenceGenerator(name = "binoutwardgen", sequenceName = "binoutwardseq", initialValue = 1000000001, allocationSize = 1)
-	@Column(name = "binoutwardid")
+	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "dispatchgen")
+	@SequenceGenerator(name = "dispatchgen", sequenceName = "dispatchseq", initialValue = 1000000001, allocationSize = 1)
+	@Column(name = "dispatchid")
 	private Long id;
 	@Column(name = "docid")
 	private String docId;
 	@Column(name = "docdate")
-	private LocalDate docDate;
+	private LocalDate docDate=LocalDate.now();
 	@Column(name = "flow")
 	private String flow;
-	@Column(name = "kitno")
-	private String kitNo;
-	@Column(name = "outwardkitqty")
-	private int outwardKitQty;
+	@Column(name = "invoiceno")
+	private String invoiceNo;
+	@Column(name = "invoicedate")
+	private LocalDate invoiceDate;
+	@Column(name = "dispatchremarks")
+	private String dispatchRemarks;
 	@Column(name = "createdby")
 	private String createdby;
 	@Column(name = "modifiedby")
@@ -50,27 +52,20 @@ public class BinOutwardVO {
 	@Column(name = "cancelremarks")
 	private String cancelRemark;
 	@Column(name = "active")
-	private boolean active;
+	private boolean active=true;
 	@Column(name = "cancel")
-	private boolean cancel;
+	private boolean cancel=false;
 	@Column(name = "orgid")
 	private Long orgId;
 	@Column(name = "finyr")
 	private String finyr;
-	private String scode = "BNOUT";
+	private String scode = "DISPH";
 	@Column(name="emitterid")
-	private Long emitterId;
-	private String destination;
-	private String receiver;
-	private String orgin;
-	private String emitter;
-	
-	private String invoiceno;
-	
+	private Long emitterId;	
 
-	@OneToMany(mappedBy = "binOutwardVO", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "dispatchVO", cascade = CascadeType.ALL)
 	@JsonManagedReference
-	private List<BinOutwardDetailsVO> binOutwardDetails;
+	private List<DispatchDetailsVO> dispatchDetailsVO;
 
 	@PrePersist
 	private void setDefaultFinyr() {
