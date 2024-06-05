@@ -283,11 +283,12 @@ public class EmitterController extends BaseController {
 		List<Map<String, Object>> dispatch = new ArrayList<>();
 		for (Object[] ps : outward) {
 			Map<String, Object> part = new HashMap<>();
-			part.put("BinOutId", ps[0] != null ? ps[0].toString() : "");
-			part.put("Date", ps[1] != null ? ps[1].toString() : "");
-			part.put("Qty", ps[2] != null ? Integer.parseInt(ps[2].toString()) : 0);
-			part.put("Part", ps[3] != null ? ps[3].toString() : "");
-			part.put("Kit", ps[4] != null ? ps[4].toString() : "");
+			part.put("binOutId", ps[0] != null ? ps[0].toString() : "");
+			part.put("binOutDate", ps[1] != null ? ps[1].toString() : "");
+			part.put("qty", ps[2] != null ? Integer.parseInt(ps[2].toString()) : 0);
+			part.put("partNo", ps[3] != null ? ps[3].toString() : "");
+			part.put("kitNo", ps[4] != null ? ps[4].toString() : "");
+			part.put("partName", ps[5] != null ? ps[5].toString() : "");
 			dispatch.add(part);
 		}
 		return dispatch;
