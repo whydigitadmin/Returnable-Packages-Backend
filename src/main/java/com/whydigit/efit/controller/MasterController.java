@@ -36,6 +36,7 @@ import com.whydigit.efit.dto.AssetDTO;
 import com.whydigit.efit.dto.AssetInwardDTO;
 import com.whydigit.efit.dto.AssetTaggingDTO;
 import com.whydigit.efit.dto.AssetTypeDTO;
+import com.whydigit.efit.dto.BinAllotmentDTO;
 import com.whydigit.efit.dto.BinInwardDTO;
 import com.whydigit.efit.dto.BranchDTO;
 import com.whydigit.efit.dto.CnoteDTO;
@@ -2835,30 +2836,7 @@ public class MasterController extends BaseController {
 		return allotDetails;
 	}
 
-	@PutMapping("/updateCreateBinInward")
-	public ResponseEntity<ResponseDTO> updateCreateBinInward(@RequestBody BinInwardDTO binInwardDTO) {
-		String methodName = "updateCreateBinInward()";
-		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
-		String errorMsg = null;
-		Map<String, Object> responseObjectsMap = new HashMap<>();
-		ResponseDTO responseDTO = null;
-		try {
-			BinInwardVO updatedBinInwardVO = masterService.updateCreateBinInward(binInwardDTO);
-			if (updatedBinInwardVO != null) {
-				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "BinInward updated successfully");
-				responseObjectsMap.put("BinInwardVO", updatedBinInwardVO);
-				responseDTO = createServiceResponse(responseObjectsMap);
-			} else {
-			}
-		} catch (Exception e) {
-			errorMsg = e.getMessage();
-			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-			responseDTO = createServiceResponseError(responseObjectsMap, "BinInward update failed", errorMsg);
-		}
-		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
-		return ResponseEntity.ok().body(responseDTO);
-	}
-
+	
 	@GetMapping("/getAllotmentAssetDetailsByOrgIdAndDocid")
 	public ResponseEntity<ResponseDTO> getAllotmentAssetDetailsByOrgIdAndDocid(@RequestParam Long orgid,
 			@RequestParam String docid) {
@@ -3566,5 +3544,33 @@ public class MasterController extends BaseController {
 			LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 			return ResponseEntity.ok().body(responseDTO);
 		}
+		
+		//Bin Allotment
+		
+		@PostMapping("/binAllotment")
+		public ResponseEntity<ResponseDTO> createBinAllotment(@RequestBody BinAllotmentDTO binAllotmentDTO) {
+			String methodName = "createBinAllotment()";
+			LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+			String errorMsg = null;
+			Map<String, Object> responseObjectsMap = new HashMap<>();
+			ResponseDTO responseDTO = null;
+			BinAllotmentNewVO binAllotmentVO = new BinAllotmentNewVO();
+			try {
+				binAllotmentVO = masterService.createBinAllotment(binAllotmentDTO);
+			} catch (Exception e) {
+				errorMsg = e.getMessage();
+				LOGGER.error(CommonConstant.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			}
+			if (StringUtils.isBlank(errorMsg)) {
+				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Bin Allotment Created Successfully");
+				responseObjectsMap.put("binAllotmentVO", binAllotmentVO);
+				responseDTO = createServiceResponse(responseObjectsMap);
+			} else {
+				responseDTO = createServiceResponseError(responseObjectsMap, "Bin Allotment Failed", errorMsg);
+			}
+			LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+			return ResponseEntity.ok().body(responseDTO);
+		}
+
 
 }

@@ -30,6 +30,7 @@ import com.whydigit.efit.common.CommonConstant;
 import com.whydigit.efit.common.EmitterConstant;
 import com.whydigit.efit.common.UserConstants;
 import com.whydigit.efit.dto.BinAllotmentDTO;
+import com.whydigit.efit.dto.BinInwardDTO;
 import com.whydigit.efit.dto.BinOutwardDTO;
 import com.whydigit.efit.dto.DispatchDTO;
 import com.whydigit.efit.dto.EmitterAddressDTO;
@@ -40,6 +41,7 @@ import com.whydigit.efit.dto.OutwardKitDetailsDTO;
 import com.whydigit.efit.dto.ResponseDTO;
 import com.whydigit.efit.entity.AssetTaggingDetailsVO;
 import com.whydigit.efit.entity.BinAllotmentNewVO;
+import com.whydigit.efit.entity.BinInwardVO;
 import com.whydigit.efit.entity.BinOutwardVO;
 import com.whydigit.efit.entity.DispatchVO;
 import com.whydigit.efit.entity.EmitterInwardVO;
@@ -250,7 +252,7 @@ public class EmitterController extends BaseController {
 	}
 
 	@GetMapping("/getEmitterDispatchByFlowId")
-	public ResponseEntity<ResponseDTO> getEmitterDispatchByFlowId(@RequestParam Long orgid, @RequestParam Long flowId,
+	public ResponseEntity<ResponseDTO> getEmitterDispatchByFlowId(@RequestParam Long orgId, @RequestParam Long flowId,
 			@RequestParam Long emitterId) {
 		String methodName = "getEmitterDispatchByFlowId()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
@@ -259,7 +261,7 @@ public class EmitterController extends BaseController {
 		ResponseDTO responseDTO = null;
 		List<Object[]> outward = new ArrayList<>();
 		try {
-			outward = emitterService.getEmitterDispatchByFlowId(orgid, flowId, emitterId);
+			outward = emitterService.getEmitterDispatchByFlowId(orgId, flowId, emitterId);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
@@ -771,31 +773,7 @@ public class EmitterController extends BaseController {
 
 	// Bin Allotment
 
-	@PostMapping("/binAllotment")
-	public ResponseEntity<ResponseDTO> createBinAllotment(@RequestBody BinAllotmentDTO binAllotmentDTO) {
-		String methodName = "createBinAllotment()";
-		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
-		String errorMsg = null;
-		Map<String, Object> responseObjectsMap = new HashMap<>();
-		ResponseDTO responseDTO = null;
-		BinAllotmentNewVO binAllotmentVO = new BinAllotmentNewVO();
-		try {
-			binAllotmentVO = emitterService.createBinAllotment(binAllotmentDTO);
-		} catch (Exception e) {
-			errorMsg = e.getMessage();
-			LOGGER.error(CommonConstant.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-		}
-		if (StringUtils.isBlank(errorMsg)) {
-			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Bin Allotment Created Successfully");
-			responseObjectsMap.put("binAllotmentVO", binAllotmentVO);
-			responseDTO = createServiceResponse(responseObjectsMap);
-		} else {
-			responseDTO = createServiceResponseError(responseObjectsMap, "Bin Allotment Failed", errorMsg);
-		}
-		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
-		return ResponseEntity.ok().body(responseDTO);
-	}
-
+	
 	@GetMapping("/getDocIdByBinallotment")
 	public ResponseEntity<ResponseDTO> getDocIdByBinallotment() {
 		String methodName = "getDocIdByBinallotment()";
@@ -1169,4 +1147,28 @@ public class EmitterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 
 	}
+	@PutMapping("/updateCreateBinInward")
+	public ResponseEntity<ResponseDTO> updateCreateBinInward(@RequestBody BinInwardDTO binInwardDTO) {
+		String methodName = "updateCreateBinInward()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		try {
+			BinInwardVO updatedBinInwardVO = emitterService.updateCreateBinInward(binInwardDTO);
+			if (updatedBinInwardVO != null) {
+				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "BinInward updated successfully");
+				responseObjectsMap.put("BinInwardVO", updatedBinInwardVO);
+				responseDTO = createServiceResponse(responseObjectsMap);
+			} else {
+			}
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "BinInward update failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
 }
