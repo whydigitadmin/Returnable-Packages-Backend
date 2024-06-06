@@ -1156,5 +1156,17 @@ public class EmitterServiceImpl implements EmitterService {
 			return dispatchRepository.save(dispatchVO);
 		}
 
+		@Override
+		public List<DispatchVO> getAllDispatchVO(Long emitterId) {
+			
+			return dispatchRepository.findAllByEmitterId(emitterId);
+		}
+
+		@Override
+		public DispatchVO getDispatchById(Long id) {
+			
+			return dispatchRepository.findById(id).get();
+		}
+
 
 }
