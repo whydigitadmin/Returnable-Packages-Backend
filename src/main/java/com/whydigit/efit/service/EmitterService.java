@@ -133,9 +133,15 @@ public interface EmitterService {
 	
 	DispatchVO createDispatch(DispatchDTO dispatchDTO);
 	
+	List<DispatchVO>getAllDispatchVO(Long emitterId);
+	
+	DispatchVO getDispatchById(Long id);
+	
 
 
 	BinInwardVO updateCreateBinInward(BinInwardDTO binInwardDTO) throws ApplicationException;
+	
+	
 
 	
 
