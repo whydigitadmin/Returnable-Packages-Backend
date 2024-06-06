@@ -38,7 +38,8 @@ public interface BinAllotmentNewRepo extends JpaRepository<BinAllotmentNewVO, Lo
 			+ "    AND docid NOT IN (SELECT allotmentno FROM bininward)")
 	Set<Object[]> getAllotmentNoByEmitterIdAndOrgId(Long orgId, Long emitterId);
 
-	@Query(nativeQuery = true, value = "select a.docdate binallotdate,a.binreqno,a.binreqdate,b.flow,a.kitcode,a.allotkitqty,a.reqkitqty from binallotment a, issuerequest b where a.binreqno=b.docid and a.orgid=?1  and a.docid=?2")
+	@Query(nativeQuery = true, value = "select a.docdate binallotdate,a.binreqno,a.binreqdate,b.flow,a.kitcode,a.allotkitqty,a.reqkitqty,a.part,a.partcode from binallotment a, issuerequest b \r\n"
+			+ "where a.binreqno=b.docid and a.orgid=?1  and a.docid=?2")
 	Set<Object[]> getAllotmentDetailsByAllotmentNoAndOrgId(Long orgId, String docid);
 
 	@Query(nativeQuery = true, value = "select b.asset,b.assetcode,b.rfid,b.tagcode,b.skuqty from binallotment a , binallotment1 b where a.binallotmentid=b.binallotmentid and a.docid=?2 and a.orgid=?1")
