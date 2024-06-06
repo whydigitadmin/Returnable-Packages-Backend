@@ -2831,6 +2831,8 @@ public class MasterController extends BaseController {
 			part.put("kitCode", ps[4] != null ? ps[4].toString() : "");
 			part.put("allotKitQty", ps[5] != null ? Integer.parseInt(ps[5].toString()) : 0);
 			part.put("reqKitQty", ps[6] != null ? Integer.parseInt(ps[6].toString()) : 0);
+			part.put("part", ps[7] != null ? ps[7].toString() : "");
+			part.put("partCode", ps[8] != null ? ps[8].toString() : "");
 			allotDetails.add(part);
 		}
 		return allotDetails;
@@ -2920,6 +2922,9 @@ public class MasterController extends BaseController {
 			bininwards.put("kitCode", bininward[5] != null ? bininward[5].toString() : "");
 			bininwards.put("reqKitQty", bininward[6] != null ? Integer.parseInt(bininward[6].toString()) : 0);
 			bininwards.put("allotedQty", bininward[7] != null ?Integer.parseInt(bininward[7].toString()) : 0);
+			bininwards.put("part", bininward[8] != null ? bininward[8].toString() : "");
+			bininwards.put("partCode", bininward[9] != null ? bininward[9].toString() : "");
+			
 			binInwardVos.add(bininwards);
 		}
 		return binInwardVos;
