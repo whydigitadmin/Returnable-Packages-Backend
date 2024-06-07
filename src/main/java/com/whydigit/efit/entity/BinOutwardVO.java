@@ -64,6 +64,10 @@ public class BinOutwardVO {
 	private String receiver;
 	private String orgin;
 	private String emitter;
+	@Column()
+	private String partName;
+	
+	private String partCode;
 	
 	private String invoiceno;
 	

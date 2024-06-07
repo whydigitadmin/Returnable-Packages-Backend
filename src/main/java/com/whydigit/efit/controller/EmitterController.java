@@ -46,6 +46,7 @@ import com.whydigit.efit.entity.BinOutwardVO;
 import com.whydigit.efit.entity.DispatchVO;
 import com.whydigit.efit.entity.EmitterInwardVO;
 import com.whydigit.efit.entity.EmitterOutwardVO;
+import com.whydigit.efit.entity.FlowVO;
 import com.whydigit.efit.entity.InwardVO;
 import com.whydigit.efit.entity.IssueRequestVO;
 import com.whydigit.efit.entity.OutwardKitDetailsVO;
@@ -1224,6 +1225,44 @@ public class EmitterController extends BaseController {
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
+	}
+	
+	@GetMapping("/getEmitterOutwarList")
+	public ResponseEntity<ResponseDTO> getEmitterOutwarList(@RequestParam String kitNo,@RequestParam Long flowId) {
+		String methodName = "getReqDetailsByOrgId()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		Set<Object[]> partstudy = new HashSet<>();
+		try {
+			partstudy = emitterService.getEmitterOutwarList(kitNo,flowId);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			List<Map<String, Object>> binReqDetails = findEmitterListBypart(partstudy);
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Emitter Outward List found by ID");
+			responseObjectsMap.put("EmitterOutward", binReqDetails);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			errorMsg = " not found for ID: ";
+			responseDTO = createServiceResponseError(responseObjectsMap, "Emitter Outward List not found", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
+	private List<Map<String, Object>> findEmitterListBypart(Set<Object[]> partstudy) {
+		List<Map<String, Object>> binReqDetails = new ArrayList<>();
+		for (Object[] ps : partstudy) {
+			Map<String, Object> part = new HashMap<>();
+			part.put("partName", ps[0] != null ? ps[0].toString() : "");
+			part.put("partNo", ps[1] != null ? ps[1].toString() : "");
+			binReqDetails.add(part);
+		}
+		return binReqDetails;
 	}
 
 }
