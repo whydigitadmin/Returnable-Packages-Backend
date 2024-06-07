@@ -84,6 +84,11 @@ public class BinInwardVO {
 	private String returnRemarks;
 	@Column(name = "podfileuploadpath", length = 250)
 	private String podFileUploadPath;
+	@Column(name="partname")
+	private String partName;
+	@Column(name="partcode")
+	private String partCode;
+	
 	
 	
 	

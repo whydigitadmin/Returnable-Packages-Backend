@@ -27,4 +27,6 @@ public interface OemService {
 
 	List<OemBinInwardVO> getAllOemBinInward(Long orgId);
 
+	OemBinInwardVO getAllOemBinInwardByDocId(String docId);
+
 }

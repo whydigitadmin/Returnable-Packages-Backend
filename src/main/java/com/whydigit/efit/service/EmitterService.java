@@ -142,7 +142,7 @@ public interface EmitterService {
 
 	BinInwardVO updateCreateBinInward(BinInwardDTO binInwardDTO) throws ApplicationException;
 
-	Set<Object[]> getEmitterOutwarList(String kitId, Long flowId);
+	Set<Object[]> getEmitterOutwardList(String kitId, Long flowId);
 	
 	
 

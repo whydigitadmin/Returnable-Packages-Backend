@@ -23,9 +23,10 @@ public interface OemBinInwardRepo extends JpaRepository<OemBinInwardVO, Long> {
 	@Query(nativeQuery = true, value = "CALL next_oeminwarddocid()")
 	void nextseq();
 
-@Query(value = "select * from oembininward where orgid=?1",nativeQuery =true)	
+	@Query(value = "select * from oembininward where orgid=?1", nativeQuery = true)
 	List<OemBinInwardVO> findAllOemBinInwardByOrgIdAndUserId(Long orgId);
 
-
+	@Query(value = "select a from OemBinInwardVO a where a.docId=?1")
+	OemBinInwardVO findOemInwardByDocId(String docId);
 
 }

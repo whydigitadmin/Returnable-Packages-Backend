@@ -253,5 +253,11 @@ public class OemServiceImpl implements OemService {
 	}
 		return oemBinOutwardVO; 
 	}
+
+	@Override
+	public OemBinInwardVO getAllOemBinInwardByDocId(String docId) {
+		
+		return oemBinInwardRepo.findOemInwardByDocId(docId);
+	}
 	
 }

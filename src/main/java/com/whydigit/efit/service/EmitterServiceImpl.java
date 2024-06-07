@@ -1067,8 +1067,8 @@ public class EmitterServiceImpl implements EmitterService {
 			binInwardVO.setAllotedQty(binInwardDTO.getAllotedQty());
 			binInwardVO.setReturnQty(binInwardDTO.getReturnQty());
 			binInwardVO.setReturnRemarks(binInwardDTO.getReturnRemarks());
-//			binInwardVO.setPartCode(binInwardDTO.getPartCode());
-//			binInwardVO.setPartName(binInwardDTO.getPartName());
+			binInwardVO.setPartCode(binInwardDTO.getPartCode());
+			binInwardVO.setPartName(binInwardDTO.getPartName());
 			
 		}
 
@@ -1172,7 +1172,7 @@ public class EmitterServiceImpl implements EmitterService {
 		}
 
 		@Override
-		public Set<Object[]> getEmitterOutwarList(String kitId,Long flowId) {
+		public Set<Object[]> getEmitterOutwardList(String kitId,Long flowId) {
 			// TODO Auto-generated method stub
 			return flowRepo.findEmitterOutwarListByKitIdAndFlowId(kitId,flowId);
 		}

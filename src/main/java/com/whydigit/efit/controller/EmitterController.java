@@ -1227,16 +1227,16 @@ public class EmitterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 	
-	@GetMapping("/getEmitterOutwarList")
-	public ResponseEntity<ResponseDTO> getEmitterOutwarList(@RequestParam String kitNo,@RequestParam Long flowId) {
-		String methodName = "getReqDetailsByOrgId()";
+	@GetMapping("/getEmitterOutwardList")
+	public ResponseEntity<ResponseDTO> getEmitterOutwardList(@RequestParam String kitNo,@RequestParam Long flowId) {
+		String methodName = "getEmitterOutwardList()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
 		Set<Object[]> partstudy = new HashSet<>();
 		try {
-			partstudy = emitterService.getEmitterOutwarList(kitNo,flowId);
+			partstudy = emitterService.getEmitterOutwardList(kitNo,flowId);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
