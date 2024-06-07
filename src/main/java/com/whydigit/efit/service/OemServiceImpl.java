@@ -250,7 +250,7 @@ public class OemServiceImpl implements OemService {
 			assetStockDetailsRepo.save(stockDetailsVO);
 		}
 	
-	}
+	}   
 		return oemBinOutwardVO; 
 	}
 
@@ -258,6 +258,13 @@ public class OemServiceImpl implements OemService {
 	public OemBinInwardVO getAllOemBinInwardByDocId(String docId) {
 		
 		return oemBinInwardRepo.findOemInwardByDocId(docId);
+	}
+	
+	@Override
+	public String getDocIdByOemBinInward() {
+		String finyr = oemBinOutwardRepo.findFinyr();
+		String binoutward = finyr + "OBI" + oemBinInwardRepo.finddocid();
+		return binoutward;
 	}
 	
 }

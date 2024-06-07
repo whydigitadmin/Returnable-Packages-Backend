@@ -223,6 +223,31 @@ public class OemController extends BaseController{
 			return ResponseEntity.ok().body(responseDTO);
 		}
 	
+		@GetMapping("/getDocIdByOemBinInward")
+		public ResponseEntity<ResponseDTO> getDocIdByOemBinInward() {
+			String methodName = "getDocIdByOemBinInward()";
+			LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+			String errorMsg = null;
+			Map<String, Object> responseObjectsMap = new HashMap<>();  
+			ResponseDTO responseDTO = null;
+			String oemBinOutwardDocId = null;
+			try {
+				oemBinOutwardDocId = oemService.getDocIdByOemBinInward();
+			} catch (Exception e) {
+				errorMsg = e.getMessage();
+				LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			}
+			if (StringUtils.isEmpty(errorMsg)) {
+				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Oem Bin Inward DocId found success");
+				responseObjectsMap.put("oemBinOutwardDocId", oemBinOutwardDocId);
+				responseDTO = createServiceResponse(responseObjectsMap);
+			} else {
+				errorMsg = " not found for ID: ";
+				responseDTO = createServiceResponseError(responseObjectsMap, "Oem Bin Outward DocId not found", errorMsg);
+			}
+			LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+			return ResponseEntity.ok().body(responseDTO);
+		}
 }
 
 
