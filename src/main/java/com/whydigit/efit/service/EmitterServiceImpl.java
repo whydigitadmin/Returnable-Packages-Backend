@@ -843,6 +843,8 @@ public class EmitterServiceImpl implements EmitterService {
 		binOutwardVO.setDestination(binOutwardDTO.getDestination());
 		binOutwardVO.setOrgin(binOutwardDTO.getOrgin());
 		binOutwardVO.setReceiver(binOutwardDTO.getReceiver());
+		binOutwardVO.setPartCode(binOutwardDTO.getPartCode());
+		binOutwardVO.setPartName(binOutwardDTO.getPartName());
 		binOutwardVO.setKitNo(binOutwardDTO.getKitNo());
 		binOutwardVO.setOutwardKitQty(binOutwardDTO.getOutwardKitQty());
 
@@ -1065,8 +1067,8 @@ public class EmitterServiceImpl implements EmitterService {
 			binInwardVO.setAllotedQty(binInwardDTO.getAllotedQty());
 			binInwardVO.setReturnQty(binInwardDTO.getReturnQty());
 			binInwardVO.setReturnRemarks(binInwardDTO.getReturnRemarks());
-			binInwardVO.setPartCode(binInwardDTO.getPartCode());
-			binInwardVO.setPartName(binInwardDTO.getPartName());
+//			binInwardVO.setPartCode(binInwardDTO.getPartCode());
+//			binInwardVO.setPartName(binInwardDTO.getPartName());
 			
 		}
 
