@@ -26,6 +26,7 @@ import com.whydigit.efit.entity.BinOutwardVO;
 import com.whydigit.efit.entity.DispatchVO;
 import com.whydigit.efit.entity.EmitterInwardVO;
 import com.whydigit.efit.entity.EmitterOutwardVO;
+import com.whydigit.efit.entity.FlowVO;
 import com.whydigit.efit.entity.InwardVO;
 import com.whydigit.efit.entity.IssueRequestVO;
 import com.whydigit.efit.entity.OutwardKitDetailsVO;
@@ -140,6 +141,8 @@ public interface EmitterService {
 
 
 	BinInwardVO updateCreateBinInward(BinInwardDTO binInwardDTO) throws ApplicationException;
+
+	Set<Object[]> getEmitterOutwardList(String kitId, Long flowId);
 	
 	
 

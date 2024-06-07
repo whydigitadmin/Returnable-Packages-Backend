@@ -33,8 +33,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.whydigit.efit.common.EmitterConstant;
-import com.whydigit.efit.dto.BinAllotmentDTO;
-import com.whydigit.efit.dto.BinAllotmentDetailsDTO;
 import com.whydigit.efit.dto.BinInwardDTO;
 import com.whydigit.efit.dto.BinInwardDetailsDTO;
 import com.whydigit.efit.dto.BinOutwardDTO;
@@ -52,7 +50,6 @@ import com.whydigit.efit.dto.OutwardKitDetailsDTO;
 import com.whydigit.efit.dto.Role;
 import com.whydigit.efit.entity.AssetStockDetailsVO;
 import com.whydigit.efit.entity.AssetTaggingDetailsVO;
-import com.whydigit.efit.entity.BinAllotmentDetailsVO;
 import com.whydigit.efit.entity.BinAllotmentNewVO;
 import com.whydigit.efit.entity.BinInwardDetailsVO;
 import com.whydigit.efit.entity.BinInwardVO;
@@ -189,6 +186,8 @@ public class EmitterServiceImpl implements EmitterService {
 	
 	@Autowired
 	AssetTaggingDetailsRepo assetTaggingDetailsRepo;
+	
+	
 
 
 	@Override
@@ -844,6 +843,8 @@ public class EmitterServiceImpl implements EmitterService {
 		binOutwardVO.setDestination(binOutwardDTO.getDestination());
 		binOutwardVO.setOrgin(binOutwardDTO.getOrgin());
 		binOutwardVO.setReceiver(binOutwardDTO.getReceiver());
+		binOutwardVO.setPartCode(binOutwardDTO.getPartCode());
+		binOutwardVO.setPartName(binOutwardDTO.getPartName());
 		binOutwardVO.setKitNo(binOutwardDTO.getKitNo());
 		binOutwardVO.setOutwardKitQty(binOutwardDTO.getOutwardKitQty());
 
@@ -1066,7 +1067,9 @@ public class EmitterServiceImpl implements EmitterService {
 			binInwardVO.setAllotedQty(binInwardDTO.getAllotedQty());
 			binInwardVO.setReturnQty(binInwardDTO.getReturnQty());
 			binInwardVO.setReturnRemarks(binInwardDTO.getReturnRemarks());
-
+			binInwardVO.setPartCode(binInwardDTO.getPartCode());
+			binInwardVO.setPartName(binInwardDTO.getPartName());
+			
 		}
 
 
@@ -1166,6 +1169,12 @@ public class EmitterServiceImpl implements EmitterService {
 		public DispatchVO getDispatchById(Long id) {
 			
 			return dispatchRepository.findById(id).get();
+		}
+
+		@Override
+		public Set<Object[]> getEmitterOutwardList(String kitId,Long flowId) {
+			// TODO Auto-generated method stub
+			return flowRepo.findEmitterOutwarListByKitIdAndFlowId(kitId,flowId);
 		}
 
 

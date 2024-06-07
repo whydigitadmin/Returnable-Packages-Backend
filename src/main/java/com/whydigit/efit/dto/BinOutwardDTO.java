@@ -3,6 +3,8 @@ package com.whydigit.efit.dto;
 import java.time.LocalDate;
 import java.util.List;
 
+import javax.persistence.Column;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,6 +24,8 @@ public class BinOutwardDTO {
 	private String orgin;
 	private Long emitterId;
 	private String emitter;
+	private String partCode;
+	private String partName;
 
 	private List<BinOutwardDetailsDTO> binOutwardDetailsDTO;
 

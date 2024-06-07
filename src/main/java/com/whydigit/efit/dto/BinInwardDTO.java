@@ -44,6 +44,11 @@ public class BinInwardDTO {
 	private String returnRemarks;
 	
 	private String createdBy;
+	
+	private String partCode;
+	
+	private String partName;
+	
 
 	
 	private List<BinInwardDetailsDTO> binInwardDetailsDTO;
