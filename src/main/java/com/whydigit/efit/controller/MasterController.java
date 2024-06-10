@@ -100,7 +100,7 @@ public class MasterController extends BaseController {
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
 		List<AssetVO> assetVO = new ArrayList<>();
-		try {
+		try {      
 			assetVO = masterService.getAllAsset(orgId);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();

@@ -29,7 +29,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.whydigit.efit.common.CommonConstant;
 import com.whydigit.efit.common.EmitterConstant;
 import com.whydigit.efit.common.UserConstants;
-import com.whydigit.efit.dto.BinAllotmentDTO;
 import com.whydigit.efit.dto.BinInwardDTO;
 import com.whydigit.efit.dto.BinOutwardDTO;
 import com.whydigit.efit.dto.DispatchDTO;
@@ -46,7 +45,6 @@ import com.whydigit.efit.entity.BinOutwardVO;
 import com.whydigit.efit.entity.DispatchVO;
 import com.whydigit.efit.entity.EmitterInwardVO;
 import com.whydigit.efit.entity.EmitterOutwardVO;
-import com.whydigit.efit.entity.FlowVO;
 import com.whydigit.efit.entity.InwardVO;
 import com.whydigit.efit.entity.IssueRequestVO;
 import com.whydigit.efit.entity.OutwardKitDetailsVO;
@@ -93,7 +91,7 @@ public class EmitterController extends BaseController {
 			@RequestParam(required = false) Long orgId, @RequestParam(required = false) String warehouseLocation,
 			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
 			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
-			@RequestParam(required = false) Long warehouseLoacationId) {
+			@RequestParam(required = false) Long warehouseLoacationId,@RequestParam(required = false) Long flowId) {
 		String methodName = "getIssuseRequest()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -102,7 +100,7 @@ public class EmitterController extends BaseController {
 		List<IssueRequestVO> issueRequestVO = new ArrayList<>();
 		try {
 			issueRequestVO = emitterService.getIssueRequest(emitterId, warehouseLocation, orgId, startDate, endDate,
-					warehouseLoacationId);
+					warehouseLoacationId,flowId);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(CommonConstant.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
@@ -1264,5 +1262,97 @@ public class EmitterController extends BaseController {
 		}
 		return binReqDetails;
 	}
+	
+	@GetMapping("/getDocIdByDispatch")
+	public ResponseEntity<ResponseDTO> getDocIdByDispatch() {
+		String methodName = "getDocIdByDispatch()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		String binOutwardDocId = null;
+		try {
+			binOutwardDocId = emitterService.getDocIdByDispatch();
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Emitter Dispatch DocId found success");
+			responseObjectsMap.put("binOutwardDocId", binOutwardDocId);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			errorMsg = " not found for ID: ";
+			responseDTO = createServiceResponseError(responseObjectsMap, "Emitter Dispatch DocId not found", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+	@GetMapping("/getDocIdByFlowOnEmitterDispatchScreen")
+	public ResponseEntity<ResponseDTO> getDocIdByFlowOnEmitterDispatchScreen(@RequestParam (required =false)Long FlowId) {
+		String methodName = "getDocIdByFlowOnEmitterDispatchScreen()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		String binOutwardDocId = null;
+		try {
+			binOutwardDocId = emitterService.getDocIdByFlowOnEmitterDispatchScreen(FlowId);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Emitter Dispatch DocId found success");
+			responseObjectsMap.put("binOutwardDocId", binOutwardDocId);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			errorMsg = " not found for ID: ";
+			responseDTO = createServiceResponseError(responseObjectsMap, "Emitter Dispatch DocId not found", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+	
+	@GetMapping("/getBininwardListByDocId")
+	public ResponseEntity<ResponseDTO> getBininwardListByDocId(@RequestParam String DocId) {
+		String methodName = "getEmitterOutwardList()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		Set<Object[]> partstudy = new HashSet<>();
+		try {
+			partstudy = emitterService.getBininwardList(DocId);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			List<Map<String, Object>> binReqDetails = findEmitterListBypart(partstudy);
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Emitter Inward List List found by DocID");
+			responseObjectsMap.put("EmitterOutward", binReqDetails);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			errorMsg = " not found for ID: ";
+			responseDTO = createServiceResponseError(responseObjectsMap, "Emitter Inward List not found", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
 
+	private List<Map<String, Object>> getBininwardList(Set<Object[]> partstudy) {
+		List<Map<String, Object>> binReqDetails = new ArrayList<>();
+		for (Object[] ps : partstudy) {
+			Map<String, Object> part = new HashMap<>();
+			part.put("allotedId", ps[0] != null ? ps[0].toString() : "");
+			part.put("allotedDate", ps[1] != null ? ps[1].toString() : "");
+			part.put("partName", ps[2] != null ? ps[2].toString() : "");
+			part.put("partNo", ps[3] != null ? ps[3].toString() : "");
+			part.put("kitNo", ps[4] != null ? ps[4].toString() : "");
+			part.put("reqKitQty",ps[5] != null  ? Integer.parseInt(ps[5].toString()) : 0);
+			binReqDetails.add(part);
+		}
+		return binReqDetails;
+	}
 }

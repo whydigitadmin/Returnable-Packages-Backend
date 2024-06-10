@@ -69,9 +69,11 @@ public interface FlowRepo extends JpaRepository<FlowVO, Long> {
 	@Query(nativeQuery = true, value = "select a.emitter,a.receiver,a.flow from flow a,flow1 b where a.flowid=b.flow1id and b.kitno=?1 group by a.emitter,a.receiver,a.flow;")
 	Set<Object[]> findEmitterAndReceiverAndFlowByKitNo(String kitName);
 
-	@Query(value = "select b.partname, b.partno \r\n"
-			+ "from flow a  join flow1 b on a.flowid = b.flowid \r\n"
+	@Query(value = "select b.partname, b.partno \r\n" + "from flow a  join flow1 b on a.flowid = b.flowid \r\n"
 			+ "where a.emitterid = b.emitterid and b.kitno=?1 and a.flowid=?2", nativeQuery = true)
-	Set<Object[]> findEmitterOutwarListByKitIdAndFlowId(String kitId,Long flowId);
+	Set<Object[]> findEmitterOutwarListByKitIdAndFlowId(String kitId, Long flowId);
+
+	@Query(nativeQuery = true, value = "select a.docid from dispatch a where flowid=?1")
+	String getDocId(Long flowId);
 
 }

@@ -267,7 +267,7 @@ public class EmitterServiceImpl implements EmitterService {
 
 	@Override
 	public List<IssueRequestVO> getIssueRequest(Long emitterId, String warehouseLocation, Long orgId,
-			LocalDate startDate, LocalDate endDate, Long warehouseLocationId) {
+			LocalDate startDate, LocalDate endDate, Long warehouseLocationId,Long flowId) {
 
 		return issueRequestRepo.findAll(new Specification<IssueRequestVO>() {
 
@@ -294,6 +294,11 @@ public class EmitterServiceImpl implements EmitterService {
 					predicates.add(criteriaBuilder
 							.and(criteriaBuilder.equal(root.get("warehouseLocationId"), warehouseLocationId)));
 				}
+				if (ObjectUtils.isNotEmpty(flowId)) {
+					predicates.add(criteriaBuilder
+							.and(criteriaBuilder.equal(root.get("flowTo"), flowId)));
+				}
+				
 				return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
 			}
 		});
@@ -836,7 +841,9 @@ public class EmitterServiceImpl implements EmitterService {
 		binOutwardVO.setDocDate(binOutwardDTO.getDocDate());
 		binOutwardVO.setEmitter(binOutwardDTO.getEmitter());
 		binOutwardVO.setEmitterId(binOutwardDTO.getEmitterId());
-		binOutwardVO.setFlow(binOutwardDTO.getFlow());
+		binOutwardVO.setFlowId(binOutwardDTO.getFlowid());
+		FlowVO flowVO=flowRepo.findById(binOutwardDTO.getFlowid()).get();
+		binOutwardVO.setFlow(flowVO.getFlowName());
 		binOutwardVO.setOrgId(binOutwardDTO.getOrgId());
 		binOutwardVO.setCreatedby(binOutwardDTO.getCreatedBy());
 		binOutwardVO.setModifiedby(binOutwardDTO.getCreatedBy());
@@ -1076,8 +1083,17 @@ public class EmitterServiceImpl implements EmitterService {
 		@Override
 		public DispatchVO createDispatch(DispatchDTO dispatchDTO) {
 			
-			DispatchVO dispatchVO=new DispatchVO();
-			dispatchVO.setFlow(dispatchDTO.getFlow());
+			DispatchVO dispatchVO = new DispatchVO();
+			String finyr = dispatchRepository.findFinyr();
+			String binoutward = finyr + "EDI" + dispatchRepository.finddocid();
+			dispatchVO.setDocId(binoutward);
+			dispatchRepository.nextseq();  
+			
+//			DispatchVO dispatchVO=new DispatchVO();
+			
+			FlowVO flowVO=flowRepo.findById(dispatchDTO.getFlowId()).get();
+			dispatchVO.setFlowId(dispatchDTO.getFlowId());
+			dispatchVO.setFlow(flowVO.getFlowName());
 	        dispatchVO.setInvoiceNo(dispatchDTO.getInvoiceNo());
 	        dispatchVO.setInvoiceDate(dispatchDTO.getInvoiceDate());
 	        dispatchVO.setDispatchRemarks(dispatchDTO.getDispatchRemarks());
@@ -1177,5 +1193,24 @@ public class EmitterServiceImpl implements EmitterService {
 			return flowRepo.findEmitterOutwarListByKitIdAndFlowId(kitId,flowId);
 		}
 
+		@Override
+		public String getDocIdByDispatch() {
+			String finyr = dispatchRepository.findFinyr();
+			String binoutward = finyr + "EDI" + dispatchRepository.finddocid();
+			return binoutward;
+		}
+
+		@Override
+		public String getDocIdByFlowOnEmitterDispatchScreen(Long flowId) {
+			// TODO Auto-generated method stub
+			return flowRepo.getDocId(flowId);
+		}
+
+		@Override
+		public Set<Object[]> getBininwardList(String docId) {
+			// TODO Auto-generated method stub
+			return dispatchRepository.findEmitterInwardListByDocId(docId);
+		}
+		
 
 }

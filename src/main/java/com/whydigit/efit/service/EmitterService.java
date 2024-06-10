@@ -88,7 +88,7 @@ public interface EmitterService {
 	Map<String, Object> getAllMaxPartQtyPerKit(Long orgId, Long emitterId, Long flowId, String partNumber);
 
 	List<IssueRequestVO> getIssueRequest(Long emitterId, String warehouseLocation, Long orgId, LocalDate startDate,
-			LocalDate endDate, Long warehouseLoacationId);
+			LocalDate endDate, Long warehouseLoacationId,Long flowId);
 
 	List<OutwardView> getAllEmitterOutwardView(Long orgId, Long flowId);
 
@@ -143,6 +143,12 @@ public interface EmitterService {
 	BinInwardVO updateCreateBinInward(BinInwardDTO binInwardDTO) throws ApplicationException;
 
 	Set<Object[]> getEmitterOutwardList(String kitId, Long flowId);
+
+	String getDocIdByDispatch();
+
+	String getDocIdByFlowOnEmitterDispatchScreen(Long flowId);
+
+	Set<Object[]> getBininwardList(String docId);
 	
 	
 

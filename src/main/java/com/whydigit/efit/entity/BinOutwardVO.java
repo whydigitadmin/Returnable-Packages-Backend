@@ -37,6 +37,8 @@ public class BinOutwardVO {
 	private String docId;
 	@Column(name = "docdate")
 	private LocalDate docDate;
+	@Column(name = "flowid")
+	private Long flowId;
 	@Column(name = "flow")
 	private String flow;
 	@Column(name = "kitno")
