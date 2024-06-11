@@ -1211,6 +1211,19 @@ public class EmitterServiceImpl implements EmitterService {
 		public Set<Object[]> getDocIdByFlowOnEmitterDispatchScreen(Long flowId) {
 			return flowRepo.getDocId(flowId);
 		}
+
+		// Get Stock branch by user id
+		@Override
+		public Set<Object[]> getStockBranchByUserId(Long orgId,Long userId) {
+			
+			return userRepo.getStockBranchByOrgIdAndUserId(orgId,userId);
+		}
+
+		@Override
+		public Set<Object[]> getStockLedger(String startDate, String endDate, String stockBranch) {
+			
+			return assetStockDetailsRepo.getStockLedgerDetailsForEmitter(startDate,endDate,stockBranch);
+		}
 		
 
 }
