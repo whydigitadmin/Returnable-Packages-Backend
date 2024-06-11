@@ -10,8 +10,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OemBinInwardDetailsDTO {
-	
-	private String asset;
-	private String assetCode;
-	private int recievedQty;
+
+	private String outwardDocId;
+	private String outwardDocDate;
+	private String partName;
+	private String partNo;
+	private int allotedQty;
+	private String kitNo;
+	private int receivedKitQty;
 }

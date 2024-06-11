@@ -29,7 +29,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.whydigit.efit.common.CommonConstant;
 import com.whydigit.efit.common.EmitterConstant;
 import com.whydigit.efit.common.UserConstants;
-import com.whydigit.efit.dto.BinAllotmentDTO;
 import com.whydigit.efit.dto.BinInwardDTO;
 import com.whydigit.efit.dto.BinOutwardDTO;
 import com.whydigit.efit.dto.DispatchDTO;
@@ -46,7 +45,6 @@ import com.whydigit.efit.entity.BinOutwardVO;
 import com.whydigit.efit.entity.DispatchVO;
 import com.whydigit.efit.entity.EmitterInwardVO;
 import com.whydigit.efit.entity.EmitterOutwardVO;
-import com.whydigit.efit.entity.FlowVO;
 import com.whydigit.efit.entity.InwardVO;
 import com.whydigit.efit.entity.IssueRequestVO;
 import com.whydigit.efit.entity.OutwardKitDetailsVO;
@@ -93,7 +91,7 @@ public class EmitterController extends BaseController {
 			@RequestParam(required = false) Long orgId, @RequestParam(required = false) String warehouseLocation,
 			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
 			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
-			@RequestParam(required = false) Long warehouseLoacationId) {
+			@RequestParam(required = false) Long warehouseLoacationId, @RequestParam(required = false) Long flowId) {
 		String methodName = "getIssuseRequest()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -102,7 +100,7 @@ public class EmitterController extends BaseController {
 		List<IssueRequestVO> issueRequestVO = new ArrayList<>();
 		try {
 			issueRequestVO = emitterService.getIssueRequest(emitterId, warehouseLocation, orgId, startDate, endDate,
-					warehouseLoacationId);
+					warehouseLoacationId, flowId);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(CommonConstant.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
@@ -473,7 +471,8 @@ public class EmitterController extends BaseController {
 
 //emitter  bin outward
 	@GetMapping("/getAllBinOutward")
-	public ResponseEntity<ResponseDTO> getAllBinOutward(@RequestParam(required = false) Long orgId,@RequestParam Long emitterId) {
+	public ResponseEntity<ResponseDTO> getAllBinOutward(@RequestParam(required = false) Long orgId,
+			@RequestParam Long emitterId) {
 		String methodName = "getAllBinOutward()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -481,7 +480,7 @@ public class EmitterController extends BaseController {
 		ResponseDTO responseDTO = null;
 		List<BinOutwardVO> binOutwardVO = new ArrayList<>();
 		try {
-			binOutwardVO = emitterService.getAllBinOutward(orgId,emitterId);
+			binOutwardVO = emitterService.getAllBinOutward(orgId, emitterId);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
@@ -498,7 +497,7 @@ public class EmitterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 
 	}
-	
+
 	@GetMapping("/getAllBinOutwardByDocId")
 	public ResponseEntity<ResponseDTO> getAllBinOutwardByDocId(@RequestParam(required = false) String docId) {
 		String methodName = "getAllBinOutward()";
@@ -525,7 +524,6 @@ public class EmitterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 
 	}
-
 
 	@GetMapping("/emitterOutward/{id}")
 	public ResponseEntity<ResponseDTO> getEmitterOutwardById(@PathVariable int id) {
@@ -775,7 +773,6 @@ public class EmitterController extends BaseController {
 
 	// Bin Allotment
 
-	
 	@GetMapping("/getDocIdByBinallotment")
 	public ResponseEntity<ResponseDTO> getDocIdByBinallotment() {
 		String methodName = "getDocIdByBinallotment()";
@@ -1125,16 +1122,16 @@ public class EmitterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-	
+
 	@PostMapping("/createDispatch")
-	public ResponseEntity<ResponseDTO> createDispatch(@RequestBody DispatchDTO  dispatchDTO) {
+	public ResponseEntity<ResponseDTO> createDispatch(@RequestBody DispatchDTO dispatchDTO) {
 		String methodName = "createDispatch()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
 		DispatchVO dipatchVO = null;
-		try { 
+		try {
 			dipatchVO = emitterService.createDispatch(dispatchDTO);
 			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Dispatch Saved successfully");
 			responseObjectsMap.put("dipatchVO", dipatchVO);
@@ -1149,6 +1146,7 @@ public class EmitterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 
 	}
+
 	@PutMapping("/updateCreateBinInward")
 	public ResponseEntity<ResponseDTO> updateCreateBinInward(@RequestBody BinInwardDTO binInwardDTO) {
 		String methodName = "updateCreateBinInward()";
@@ -1172,10 +1170,9 @@ public class EmitterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-	
+
 	@GetMapping("/getAllDispatch")
-	public ResponseEntity<ResponseDTO> getAllDispatch(
-			@RequestParam Long emitterId) {
+	public ResponseEntity<ResponseDTO> getAllDispatch(@RequestParam Long emitterId) {
 		String methodName = "getAllDispatch()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -1187,29 +1184,27 @@ public class EmitterController extends BaseController {
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(CommonConstant.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-		} 
+		}
 		if (StringUtils.isBlank(errorMsg)) {
 			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Dispatch Details Get Successfully");
 			responseObjectsMap.put("dispatchVO", dispatchVO);
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} else {
-			responseDTO = createServiceResponseError(responseObjectsMap, "Dispatch Details Get Successfully",
-					errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "Dispatch Details Get Successfully", errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-	
+
 	@GetMapping("/getDispatchById")
-	public ResponseEntity<ResponseDTO> getDispatchById(
-			@RequestParam Long id) {
+	public ResponseEntity<ResponseDTO> getDispatchById(@RequestParam Long id) {
 		String methodName = "getDispatchById()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
 		DispatchVO dispatchVO = null;
-		try { 
+		try {
 			dispatchVO = emitterService.getDispatchById(id);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
@@ -1220,15 +1215,14 @@ public class EmitterController extends BaseController {
 			responseObjectsMap.put("dispatchVO", dispatchVO);
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} else {
-			responseDTO = createServiceResponseError(responseObjectsMap, "Dispatch Details Get Successfully",
-					errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "Dispatch Details Get Successfully", errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-	
+
 	@GetMapping("/getEmitterOutwardList")
-	public ResponseEntity<ResponseDTO> getEmitterOutwardList(@RequestParam String kitNo,@RequestParam Long flowId) {
+	public ResponseEntity<ResponseDTO> getEmitterOutwardList(@RequestParam String kitNo, @RequestParam Long flowId) {
 		String methodName = "getEmitterOutwardList()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -1236,7 +1230,7 @@ public class EmitterController extends BaseController {
 		ResponseDTO responseDTO = null;
 		Set<Object[]> partstudy = new HashSet<>();
 		try {
-			partstudy = emitterService.getEmitterOutwardList(kitNo,flowId);
+			partstudy = emitterService.getEmitterOutwardList(kitNo, flowId);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
@@ -1265,4 +1259,109 @@ public class EmitterController extends BaseController {
 		return binReqDetails;
 	}
 
+	@GetMapping("/getDocIdByDispatch")
+	public ResponseEntity<ResponseDTO> getDocIdByDispatch() {
+		String methodName = "getDocIdByDispatch()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		String binOutwardDocId = null;
+		try {
+			binOutwardDocId = emitterService.getDocIdByDispatch();
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Emitter Dispatch DocId found success");
+			responseObjectsMap.put("binOutwardDocId", binOutwardDocId);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			errorMsg = " not found for ID: ";
+			responseDTO = createServiceResponseError(responseObjectsMap, "Emitter Dispatch DocId not found", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
+	@GetMapping("/getDocIdByFlowOnEmitterDispatchScreen")
+	public ResponseEntity<ResponseDTO> getDocIdByFlowOnEmitterDispatchScreen(
+			@RequestParam(required = false) Long FlowId) {
+		String methodName = "getDocIdByFlowOnEmitterDispatchScreen()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		Set<Object[]> partstudy = new HashSet<>();
+		try {
+			partstudy = emitterService.getDocIdByFlowOnEmitterDispatchScreen(FlowId);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			List<Map<String, Object>> binReqDetails = getDocIdByFlow(partstudy);
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Dispatch DocId found successfully");
+			responseObjectsMap.put("EmitterOutward", binReqDetails);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			errorMsg = " not found for ID: ";
+			responseDTO = createServiceResponseError(responseObjectsMap, "Dispatch DocId  not found", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
+	private List<Map<String, Object>> getDocIdByFlow(Set<Object[]> partstudy) {
+		List<Map<String, Object>> binReqDetails = new ArrayList<>();
+		for (Object[] ps : partstudy) {
+			Map<String, Object> part = new HashMap<>();
+			part.put("DocId", ps[0] != null ? ps[0].toString() : "");
+			binReqDetails.add(part);
+		}
+		return binReqDetails;
+	}
+
+	@GetMapping("/getBininwardListByDocId")
+	public ResponseEntity<ResponseDTO> getBininwardListByDocId(@RequestParam String DocId) {
+		String methodName = "getEmitterOutwardList()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		Set<Object[]> partstudy = new HashSet<>();
+		try {
+			partstudy = emitterService.getBininwardList(DocId);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			List<Map<String, Object>> binReqDetails = findEmitterListBypart1(partstudy);
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Emitter Inward List List found Success");
+			responseObjectsMap.put("EmitterOutward", binReqDetails);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			errorMsg = " not found for ID: ";
+			responseDTO = createServiceResponseError(responseObjectsMap, "Emitter Inward List not found", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
+	private List<Map<String, Object>> findEmitterListBypart1(Set<Object[]> partstudy) {
+		List<Map<String, Object>> binReqDetails = new ArrayList<>();
+		for (Object[] ps : partstudy) {
+			Map<String, Object> part = new HashMap<>();
+			part.put("allotedId", ps[0] != null ? ps[0].toString() : "");
+			part.put("allotedDate", ps[1] != null ? ps[1].toString() : "");
+			part.put("partName", ps[2] != null ? ps[2].toString() : "");
+			part.put("partNo", ps[3] != null ? ps[3].toString() : "");
+			part.put("kitNo", ps[4] != null ? ps[4].toString() : "");
+			part.put("reqKitQty", ps[5] != null ? Integer.parseInt(ps[5].toString()) : 0);
+			binReqDetails.add(part);
+		}
+		return binReqDetails;
+	}
 }

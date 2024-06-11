@@ -39,18 +39,20 @@ public class OemBinInwardVO {
 	private String docId;
 	@Column(name = "docdate")
 	private LocalDate docDate;
-	@Column(name = "kitno")
-	private String kitNo;
-	@Column(name = "recievedkitqty")
-	private int recievedKitQty;
+
+	private String flow;
+	@Column(name = "flowid")
+	private Long flowId;
+	@Column(name = "dispatchdocid")
+	private String dispatchId;
+	@Column(name = "invoiceno")
+	private String invoiceNo;
+	@Column(name = "invoicedate")
+	private LocalDate invoiceDate;
 	@Column(name = "createdby")
 	private String createdby;
 	@Column(name = "modifiedby")
 	private String modifiedby;
-	@Column(name = "grnno")
-	private String grnNo;
-	@Column(name = "grndate")
-	private LocalDate grnDate;
 	@Column(name = "cancelremarks")
 	private String cancelRemark;
 	@Column(name = "active")
