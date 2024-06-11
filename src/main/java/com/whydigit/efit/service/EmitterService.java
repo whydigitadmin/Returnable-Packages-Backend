@@ -146,7 +146,7 @@ public interface EmitterService {
 
 	String getDocIdByDispatch();
 
-	String getDocIdByFlowOnEmitterDispatchScreen(Long flowId);
+	Set<Object[]> getDocIdByFlowOnEmitterDispatchScreen(Long flowId);
 
 	Set<Object[]> getBininwardList(String docId);
 	

@@ -74,6 +74,6 @@ public interface FlowRepo extends JpaRepository<FlowVO, Long> {
 	Set<Object[]> findEmitterOutwarListByKitIdAndFlowId(String kitId, Long flowId);
 
 	@Query(nativeQuery = true, value = "select a.docid from dispatch a where flowid=?1")
-	String getDocId(Long flowId);
+	Set<Object[]> getDocId(Long flowId);
 
 }

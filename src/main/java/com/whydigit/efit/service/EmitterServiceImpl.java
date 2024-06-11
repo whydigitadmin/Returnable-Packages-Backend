@@ -1200,16 +1200,16 @@ public class EmitterServiceImpl implements EmitterService {
 			return binoutward;
 		}
 
-		@Override
-		public String getDocIdByFlowOnEmitterDispatchScreen(Long flowId) {
-			// TODO Auto-generated method stub
-			return flowRepo.getDocId(flowId);
-		}
+		
 
 		@Override
 		public Set<Object[]> getBininwardList(String docId) {
-			// TODO Auto-generated method stub
 			return dispatchRepository.findEmitterInwardListByDocId(docId);
+		}
+
+		@Override
+		public Set<Object[]> getDocIdByFlowOnEmitterDispatchScreen(Long flowId) {
+			return flowRepo.getDocId(flowId);
 		}
 		
 
