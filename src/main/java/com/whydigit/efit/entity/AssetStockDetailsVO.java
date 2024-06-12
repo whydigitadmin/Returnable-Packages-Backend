@@ -2,6 +2,7 @@ package com.whydigit.efit.entity;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -9,6 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.PrePersist;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -82,5 +84,21 @@ public class AssetStockDetailsVO {
 
 	@Embedded
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
+	
+	@PrePersist
+	private void setDefaultFinyr() {
+		// Execute the logic to set the default value for finyr
+		String fyFull = calculateFinyr();
+		this.finyr = fyFull;
+	}
+
+	private String calculateFinyr() {
+		// Logic to calculate finyr based on the provided SQL query
+		String currentMonthDay = LocalDate.now().format(DateTimeFormatter.ofPattern("MMdd"));
+		String fyFull = (currentMonthDay.compareTo("0331") > 0)
+				? LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy"))
+				: LocalDate.now().minusYears(1).format(DateTimeFormatter.ofPattern("yyyy"));
+		return fyFull;
+	}
 
 }

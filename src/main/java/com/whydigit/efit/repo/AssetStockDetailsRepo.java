@@ -24,18 +24,18 @@ public interface AssetStockDetailsRepo extends JpaRepository<AssetStockDetailsVO
 	Set<Object[]> getAvailAssetDetailsByBranch(Long orgId, String stockBranch,String category);
 
 	@Query(nativeQuery = true,value = "select stockbranch,category,sku,skucode,sum(oqty)oqty,sum(rqty)rqty,abs(sum(dqty))dqty,sum(cqty)cqty from (\r\n"
-			+ "select 1 sno,stockbranch,category,sku,skucode,sum(skuqty)oqty,0 rqty,0 dqty,0 cqty from stockdetails where stockbranch=?3 and stockdate < ?1\r\n"
+			+ "select 1 sno,stockbranch,category,sku,skucode,sum(skuqty)oqty,0 rqty,0 dqty,0 cqty from stockdetails where stockbranch=?3 and status='S' and stockdate < ?1\r\n"
 			+ "group by stockbranch,sku,category,skucode\r\n"
 			+ "union\r\n"
-			+ "select 2 sno,stockbranch,category,sku,skucode,0 oqty,sum(skuqty) rqty,0 dqty,0 cqty from stockdetails where stockbranch=?3 and stockdate  between ?1\r\n"
+			+ "select 2 sno,stockbranch,category,sku,skucode,0 oqty,sum(skuqty) rqty,0 dqty,0 cqty from stockdetails where stockbranch=?3 and status='S' and stockdate  between ?1\r\n"
 			+ "and ?2 and skuqty > 0 \r\n"
 			+ "group by stockbranch,category,sku,skucode\r\n"
 			+ "union\r\n"
-			+ "select 3 sno,stockbranch,category,sku,skucode,0 oqty,0 rqty,sum(skuqty) dqty,0 cqty from stockdetails where stockbranch=?3 and stockdate  between ?1\r\n"
+			+ "select 3 sno,stockbranch,category,sku,skucode,0 oqty,0 rqty,sum(skuqty) dqty,0 cqty from stockdetails where stockbranch=?3 and status='S' and stockdate  between ?1\r\n"
 			+ "and ?2 and skuqty < 0 \r\n"
 			+ "group by stockbranch,category,sku,skucode\r\n"
 			+ "union\r\n"
-			+ "select 4 sno,stockbranch,category,sku,skucode,0 oqty,0 rqty,0 dqty,sum(skuqty) cqty from stockdetails where stockbranch=?3 and stockdate <= ?2\r\n"
+			+ "select 4 sno,stockbranch,category,sku,skucode,0 oqty,0 rqty,0 dqty,sum(skuqty) cqty from stockdetails where stockbranch=?3 and status='S' and stockdate <= ?2\r\n"
 			+ "group by stockbranch,category,sku,skucode) a\r\n"
 			+ "group by stockbranch,category,sku,skucode")
 	Set<Object[]> getStockLedgerDetailsForEmitter(String startDate, String endDate, String stockBranch);
