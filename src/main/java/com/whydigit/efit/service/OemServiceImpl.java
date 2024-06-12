@@ -1,7 +1,9 @@
 package com.whydigit.efit.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -29,6 +31,7 @@ import com.whydigit.efit.repo.OemBinInwardDetailsRepo;
 import com.whydigit.efit.repo.OemBinInwardRepo;
 import com.whydigit.efit.repo.OemBinOutwardDetailsRepo;
 import com.whydigit.efit.repo.OemBinOutwardRepo;
+import com.whydigit.efit.repo.UserRepo;
 
 @Service
 public class OemServiceImpl implements OemService {
@@ -51,6 +54,9 @@ public class OemServiceImpl implements OemService {
 
 	@Autowired
 	AssetRepo assetRepo;
+	
+	@Autowired
+	UserRepo userRepo;
 	
 	@Autowired
 	FlowRepo flowRepo;
@@ -269,6 +275,48 @@ public class OemServiceImpl implements OemService {
 		String finyr = oemBinOutwardRepo.findFinyr();
 		String binoutward = finyr + "OBI" + oemBinInwardRepo.finddocid();
 		return binoutward;
+	}
+	
+	
+	@Override
+	public List<Map<String, Object>> getOemStockBranchByUserId(Long orgId,Long userId) {
+		
+		Set<Object[]> stockbranch =userRepo.getOemStockBranchByOrgIdAndUserId(orgId,userId);
+		
+		return getOemStockbranch(stockbranch);
+	}
+
+	private List<Map<String, Object>> getOemStockbranch(Set<Object[]> stockbranch) {
+		List<Map<String, Object>> stockbr = new ArrayList<>();
+        for (Object[] ps : stockbranch) {
+            Map<String, Object> part = new HashMap<>();
+            part.put("stockBranch", ps[0] != null ? ps[0].toString() : "");
+            part.put("destination", ps[1] != null ? ps[1].toString() : "");
+            stockbr.add(part);
+        }
+        return stockbr;
+	}
+	
+	@Override
+	public List<Map<String, Object>> getOemStockDeatilsForOemOutward(String stockBranch) {
+		
+		Set<Object[]> stockDetails =assetStockDetailsRepo.getOemStockDetailsForOemBinOutward(stockBranch);
+		
+		return getOemStockDeatils(stockDetails);
+	}
+
+	private List<Map<String, Object>> getOemStockDeatils(Set<Object[]> stockDetails) {
+		List<Map<String, Object>> oemStockdetails = new ArrayList<>();
+        for (Object[] ps : stockDetails) {
+            Map<String, Object> part = new HashMap<>();
+            part.put("stockBranch", ps[0] != null ? ps[0].toString() : "");
+            part.put("category", ps[1] != null ? ps[1].toString() : "");
+            part.put("assetName", ps[2] != null ? ps[2].toString() : "");
+            part.put("assetCode", ps[3] != null ? ps[3].toString() : "");
+            part.put("availQty", ps[4] != null ? ps[4].toString() : "");
+            oemStockdetails.add(part);
+        }
+        return oemStockdetails;
 	}
 	
 }
