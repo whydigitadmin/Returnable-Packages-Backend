@@ -73,7 +73,7 @@ public interface FlowRepo extends JpaRepository<FlowVO, Long> {
 			+ "where a.emitterid = b.emitterid and b.kitno=?1 and a.flowid=?2", nativeQuery = true)
 	Set<Object[]> findEmitterOutwarListByKitIdAndFlowId(String kitId, Long flowId);
 
-	@Query(nativeQuery = true, value = "select a.docid from dispatch a where flowid=?1")
+	@Query(nativeQuery = true, value = "SELECT a.docid FROM dispatch a WHERE a.flowid = ?1 AND NOT EXISTS ( SELECT 1 FROM oembininward b WHERE b.dispatchdocid = a.docid)")
 	Set<Object[]> getDocId(Long flowId);
 
 }
