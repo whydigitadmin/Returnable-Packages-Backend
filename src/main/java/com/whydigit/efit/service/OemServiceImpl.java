@@ -276,7 +276,7 @@ public class OemServiceImpl implements OemService {
 
 	@Override
 	public String getDocIdByOemBinInward() {
-		String finyr = oemBinOutwardRepo.findFinyr();
+		String finyr = oemBinInwardRepo.findFinyr();
 		String binoutward = finyr + "OBI" + oemBinInwardRepo.finddocid();
 		return binoutward;
 	}
@@ -325,7 +325,7 @@ public class OemServiceImpl implements OemService {
 	@Override
 	public String getDocIdByOemBinOutward() {
 		String finyr = oemBinOutwardRepo.findFinyr();
-		String binoutward = finyr + "OBO" + oemBinInwardRepo.finddocid();
+		String binoutward = finyr + "OBO" + oemBinOutwardRepo.finddocid();
 		return binoutward;
 	}
 
