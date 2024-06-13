@@ -54,8 +54,6 @@ import com.whydigit.efit.dto.AssetTaggingDetailsDTO;
 import com.whydigit.efit.dto.AssetTypeDTO;
 import com.whydigit.efit.dto.BinAllotmentDTO;
 import com.whydigit.efit.dto.BinAllotmentDetailsDTO;
-import com.whydigit.efit.dto.BinInwardDTO;
-import com.whydigit.efit.dto.BinInwardDetailsDTO;
 import com.whydigit.efit.dto.BranchDTO;
 import com.whydigit.efit.dto.CnoteDTO;
 import com.whydigit.efit.dto.CustomerAttachmentType;
@@ -93,7 +91,6 @@ import com.whydigit.efit.entity.AssetVO;
 import com.whydigit.efit.entity.BasicDetailVO;
 import com.whydigit.efit.entity.BinAllotmentDetailsVO;
 import com.whydigit.efit.entity.BinAllotmentNewVO;
-import com.whydigit.efit.entity.BinInwardDetailsVO;
 import com.whydigit.efit.entity.BinInwardVO;
 import com.whydigit.efit.entity.BranchVO;
 import com.whydigit.efit.entity.CnoteVO;
@@ -197,6 +194,8 @@ public class MasterServiceImpl implements MasterService {
 
 	@Autowired
 	KitAssetRepo kitAssetRepo;
+	
+	
 
 	@Autowired
 	AssetTaggingRepo assetTaggingRepo;

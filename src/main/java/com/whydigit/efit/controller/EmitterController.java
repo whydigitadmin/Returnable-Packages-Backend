@@ -1364,4 +1364,86 @@ public class EmitterController extends BaseController {
 		}
 		return binReqDetails;
 	}
+	
+	@GetMapping("/getStockBranchByUserId")
+	public ResponseEntity<ResponseDTO> getStockBranchByUserId(@RequestParam Long orgId,@RequestParam Long userId) {
+		String methodName = "getStockBranchByUserId()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		Set<Object[]> stockbranch = new HashSet<>();
+		try {
+			stockbranch = emitterService.getStockBranchByUserId(orgId, userId);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			List<Map<String, Object>> stockbr = getStockbranch(stockbranch);
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Emitter StockBranch List found Success");
+			responseObjectsMap.put("branch", stockbr);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			errorMsg = " not found for ID: ";
+			responseDTO = createServiceResponseError(responseObjectsMap, "Emitter StockBranch List not found", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
+	private List<Map<String, Object>> getStockbranch(Set<Object[]> stockbranch) {
+		List<Map<String, Object>> stockbr = new ArrayList<>();
+		for (Object[] ps : stockbranch) {
+			Map<String, Object> part = new HashMap<>();
+			part.put("stockBranch", ps[0] != null ? ps[0].toString() : "");
+			part.put("orgin", ps[1] != null ? ps[1].toString() : "");
+			stockbr.add(part);
+		}
+		return stockbr;
+	}
+
+	@GetMapping("/getStockLedgerByEmitter")
+	public ResponseEntity<ResponseDTO> getStockLedgerByEmitter(@RequestParam String startDate,@RequestParam String endDate,@RequestParam String stockBranch) {
+		String methodName = "getStockLedgerByEmitter()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		Set<Object[]> stockLedger1 = new HashSet<>();
+		try {
+			stockLedger1 = emitterService.getStockLedger(startDate, endDate, stockBranch);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			List<Map<String, Object>> stockLedger = getStockLedger(stockLedger1);
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Stock Ledger found Success");
+			responseObjectsMap.put("stockLedger", stockLedger);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			errorMsg = " not found for ID: ";
+			responseDTO = createServiceResponseError(responseObjectsMap, "Stock Ledger not found", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
+	private List<Map<String, Object>> getStockLedger(Set<Object[]> stockLedger1) {
+		List<Map<String, Object>> stockLedger = new ArrayList<>();
+		for (Object[] ps : stockLedger1) {
+			Map<String, Object> part = new HashMap<>();
+			part.put("stockBranch", ps[0] != null ? ps[0].toString() : "");
+			part.put("category", ps[1] != null ? ps[1].toString() : "");
+			part.put("assetDesc", ps[2] != null ? ps[2].toString() : "");
+			part.put("assetCode", ps[3] != null ? ps[3].toString() : "");
+			part.put("openQty", ps[4] != null ? Integer.parseInt(ps[4].toString()) : 0);
+			part.put("rQty", ps[5] != null ? Integer.parseInt(ps[5].toString()) : 0);
+			part.put("dQty", ps[6] != null ? Integer.parseInt(ps[6].toString()) : 0);
+			part.put("closingQty", ps[7] != null ? Integer.parseInt(ps[7].toString()) : 0);
+			stockLedger.add(part);
+		}
+		return stockLedger;
+	}
 }
