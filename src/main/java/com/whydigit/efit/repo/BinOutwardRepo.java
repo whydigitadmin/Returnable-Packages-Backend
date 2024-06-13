@@ -18,7 +18,7 @@ public interface BinOutwardRepo extends JpaRepository<BinOutwardVO, Long> {
 	@Query(nativeQuery = true, value = "select sequence_value from binoutwarddocidseq")
 	String finddocid();
 
-	@Query(nativeQuery = true, value = "CALL next_binoutward_sequence_value()")
+	@Query(nativeQuery = true, value = "CALL next_binoutwarddocid_sequence_value()")
 	void nextseq();
 
 	@Query(value = "select a from BinOutwardVO a where a.docId=?1")

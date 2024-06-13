@@ -230,6 +230,87 @@ public class OemController extends BaseController{
 			String errorMsg = null;
 			Map<String, Object> responseObjectsMap = new HashMap<>();  
 			ResponseDTO responseDTO = null;
+			String oemBinInwardDocId = null;
+			try {
+				oemBinInwardDocId = oemService.getDocIdByOemBinInward();
+			} catch (Exception e) {
+				errorMsg = e.getMessage();
+				LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			}
+			if (StringUtils.isEmpty(errorMsg)) {
+				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Oem Bin Inward DocId found success");
+				responseObjectsMap.put("oemBinInwardDocId", oemBinInwardDocId);
+				responseDTO = createServiceResponse(responseObjectsMap);
+			} else {
+				errorMsg = " not found for ID: ";
+				responseDTO = createServiceResponseError(responseObjectsMap, "Oem BinInward DocId not found", errorMsg);
+			}
+			LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+			return ResponseEntity.ok().body(responseDTO);
+		}
+		
+
+		@GetMapping("/getOemStockBranchByUserId")
+		public ResponseEntity<ResponseDTO> getOemStockBranchByUserId(@RequestParam Long orgId,@RequestParam Long userId) {
+			String methodName = "getOemStockBranchByUserId()";
+			LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+			String errorMsg = null;
+			Map<String, Object> responseObjectsMap = new HashMap<>();
+			ResponseDTO responseDTO = null;
+			List<Map<String,Object>> stockbr = new ArrayList<>();
+			try {
+				stockbr = oemService.getOemStockBranchByUserId(orgId, userId);
+			} catch (Exception e) {
+				errorMsg = e.getMessage();
+				LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			}
+			if (StringUtils.isEmpty(errorMsg)) {
+				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Oem StockBranch List found Success");
+				responseObjectsMap.put("branch", stockbr);
+				responseDTO = createServiceResponse(responseObjectsMap);
+			} else {
+				errorMsg = " not found for ID: ";
+				responseDTO = createServiceResponseError(responseObjectsMap, "Oem StockBranch List not found", errorMsg);
+			}
+			LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+			return ResponseEntity.ok().body(responseDTO);
+		}
+		
+		@GetMapping("/getOemStockDetailsForBinOutward")
+		public ResponseEntity<ResponseDTO> getOemStockDetailsForBinOutward(@RequestParam String stockBranch) {
+			String methodName = "getOemStockDetailsForBinOutward()";
+			LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+			String errorMsg = null;
+			Map<String, Object> responseObjectsMap = new HashMap<>();
+			ResponseDTO responseDTO = null;
+			List<Map<String,Object>> stockDeatils = new ArrayList<>();
+			try {
+				stockDeatils = oemService.getOemStockDeatilsForOemOutward(stockBranch);
+			} catch (Exception e) {
+				errorMsg = e.getMessage();
+				LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			}
+			if (StringUtils.isEmpty(errorMsg)) {
+				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Oem Stock Details found Success");
+				responseObjectsMap.put("stockDetails", stockDeatils);
+				responseDTO = createServiceResponse(responseObjectsMap);
+			} else {
+				errorMsg = " not found for ID: ";
+				responseDTO = createServiceResponseError(responseObjectsMap, "Oem Stock Details not found", errorMsg);
+			}
+			LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+			return ResponseEntity.ok().body(responseDTO);
+		}
+		
+		
+		
+		@GetMapping("/getDocIdByOemBinOutward")
+		public ResponseEntity<ResponseDTO> getDocIdByOemBinOutward() {
+			String methodName = "getDocIdByOemBinOutward()";
+			LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+			String errorMsg = null;
+			Map<String, Object> responseObjectsMap = new HashMap<>();  
+			ResponseDTO responseDTO = null;
 			String oemBinOutwardDocId = null;
 			try {
 				oemBinOutwardDocId = oemService.getDocIdByOemBinInward();
@@ -238,7 +319,7 @@ public class OemController extends BaseController{
 				LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
 			}
 			if (StringUtils.isEmpty(errorMsg)) {
-				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Oem Bin Inward DocId found success");
+				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Oem Bin Outward DocId found success");
 				responseObjectsMap.put("oemBinOutwardDocId", oemBinOutwardDocId);
 				responseDTO = createServiceResponse(responseObjectsMap);
 			} else {

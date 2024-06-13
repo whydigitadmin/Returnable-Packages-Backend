@@ -13,12 +13,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OemBinOutwardDTO {
+
 	private Long id;
 	private LocalDate docDate;
-	private String kit;
-	private int outwardKitQty;
-	private String createdBy;
+	private String stockBranch;
+	private String createdby;
 	private Long orgId;
-	private String outwardDocId;
 	private List<OemBinOutwardDetailsDTO> oemBinOutwardDetails;
 }

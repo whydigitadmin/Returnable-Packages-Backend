@@ -39,10 +39,8 @@ public class OemBinOutwardVO {
 	private String docId;
 	@Column(name = "docdate")
 	private LocalDate docDate;
-	@Column(name = "kit")
-	private String kit;
-	@Column(name = "outwardkitqty")    
-	private int outwardKitQty;
+	@Column(name = "stockbranch")
+	private String stockBranch;
 	@Column(name = "createdby")
 	private String createdby;
 	@Column(name = "modifiedby")
@@ -60,11 +58,7 @@ public class OemBinOutwardVO {
 	@Builder.Default
 	private String scode = "BNIN";
 	@Builder.Default
-	private String pm = "M";
-	@Builder.Default
-	private String screen = "OEM BIN OUTWARD";
-	@Column(name = "sourceid")
-	private String sourceId;
+	private String screen = "Bin Outward";
 	@Column(name="outwarddocid")
 	private String outwardDocId;
 
