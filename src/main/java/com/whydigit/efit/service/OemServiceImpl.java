@@ -317,5 +317,12 @@ public class OemServiceImpl implements OemService {
         }
         return oemStockdetails;
 	}
+
+	@Override
+	public String getDocIdByOemBinOutward() {
+		String finyr = oemBinOutwardRepo.findFinyr();
+		String binoutward = finyr + "OBI" + oemBinInwardRepo.finddocid();
+		return binoutward;
+	}
 	
 }

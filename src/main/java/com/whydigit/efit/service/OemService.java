@@ -35,6 +35,8 @@ public interface OemService {
 	List<Map<String, Object>> getOemStockBranchByUserId(Long orgId, Long userId);
 	
 	List<Map<String, Object>> getOemStockDeatilsForOemOutward(String stockBranch);
+	
+	String getDocIdByOemBinOutward();
 
 
 }

@@ -230,20 +230,20 @@ public class OemController extends BaseController{
 			String errorMsg = null;
 			Map<String, Object> responseObjectsMap = new HashMap<>();  
 			ResponseDTO responseDTO = null;
-			String oemBinOutwardDocId = null;
+			String oemBinInwardDocId = null;
 			try {
-				oemBinOutwardDocId = oemService.getDocIdByOemBinInward();
+				oemBinInwardDocId = oemService.getDocIdByOemBinInward();
 			} catch (Exception e) {
 				errorMsg = e.getMessage();
 				LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
 			}
 			if (StringUtils.isEmpty(errorMsg)) {
 				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Oem Bin Inward DocId found success");
-				responseObjectsMap.put("oemBinOutwardDocId", oemBinOutwardDocId);
+				responseObjectsMap.put("oemBinInwardDocId", oemBinInwardDocId);
 				responseDTO = createServiceResponse(responseObjectsMap);
 			} else {
 				errorMsg = " not found for ID: ";
-				responseDTO = createServiceResponseError(responseObjectsMap, "Oem Bin Outward DocId not found", errorMsg);
+				responseDTO = createServiceResponseError(responseObjectsMap, "Oem BinInward DocId not found", errorMsg);
 			}
 			LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 			return ResponseEntity.ok().body(responseDTO);
@@ -297,6 +297,34 @@ public class OemController extends BaseController{
 			} else {
 				errorMsg = " not found for ID: ";
 				responseDTO = createServiceResponseError(responseObjectsMap, "Oem Stock Details not found", errorMsg);
+			}
+			LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+			return ResponseEntity.ok().body(responseDTO);
+		}
+		
+		
+		
+		@GetMapping("/getDocIdByOemBinOutward")
+		public ResponseEntity<ResponseDTO> getDocIdByOemBinOutward() {
+			String methodName = "getDocIdByOemBinOutward()";
+			LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+			String errorMsg = null;
+			Map<String, Object> responseObjectsMap = new HashMap<>();  
+			ResponseDTO responseDTO = null;
+			String oemBinOutwardDocId = null;
+			try {
+				oemBinOutwardDocId = oemService.getDocIdByOemBinInward();
+			} catch (Exception e) {
+				errorMsg = e.getMessage();
+				LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			}
+			if (StringUtils.isEmpty(errorMsg)) {
+				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Oem Bin Outward DocId found success");
+				responseObjectsMap.put("oemBinOutwardDocId", oemBinOutwardDocId);
+				responseDTO = createServiceResponse(responseObjectsMap);
+			} else {
+				errorMsg = " not found for ID: ";
+				responseDTO = createServiceResponseError(responseObjectsMap, "Oem Bin Outward DocId not found", errorMsg);
 			}
 			LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 			return ResponseEntity.ok().body(responseDTO);
