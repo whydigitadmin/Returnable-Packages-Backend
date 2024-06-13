@@ -182,7 +182,7 @@ public class OemServiceImpl implements OemService {
 
 		OemBinOutwardVO oemBinOutwardVO = new OemBinOutwardVO();
 		String finyr = oemBinOutwardRepo.findFinyr();
-		String binoutward = finyr + "OBI" + oemBinInwardRepo.finddocid();
+		String binoutward = finyr + "OBO" + oemBinInwardRepo.finddocid();
 		oemBinOutwardVO.setDocId(binoutward);
 		oemBinOutwardRepo.nextSeq();
 		oemBinOutwardVO.setDocDate(oemBinOutwardDTO.getDocDate());
@@ -325,7 +325,7 @@ public class OemServiceImpl implements OemService {
 	@Override
 	public String getDocIdByOemBinOutward() {
 		String finyr = oemBinOutwardRepo.findFinyr();
-		String binoutward = finyr + "OBI" + oemBinInwardRepo.finddocid();
+		String binoutward = finyr + "OBO" + oemBinInwardRepo.finddocid();
 		return binoutward;
 	}
 
