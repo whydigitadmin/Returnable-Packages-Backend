@@ -155,6 +155,10 @@ public interface EmitterService {
 	Set<Object[]> getStockBranchByUserId(Long orgId, Long userId);
 	
 	
+	// get Count of Bin Request and Bin Allotment
+	List<Map<String,Object>> getCountofBinRequestPendingAndCompleted(Long emitterId, Long orgId);
+	
+	
 
 	
 
