@@ -41,7 +41,7 @@ public class OemBinOutwardVO {
 	private LocalDate docDate;
 	@Column(name = "kit")
 	private String kit;
-	@Column(name = "outwardkitqty")
+	@Column(name = "outwardkitqty")    
 	private int outwardKitQty;
 	@Column(name = "createdby")
 	private String createdby;

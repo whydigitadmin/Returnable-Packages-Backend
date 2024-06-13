@@ -250,59 +250,6 @@ public class OemController extends BaseController{
 		}
 		
 		
-		@GetMapping("/getOemStockBranchByUserId")
-		public ResponseEntity<ResponseDTO> getOemStockBranchByUserId(@RequestParam Long orgId,@RequestParam Long userId) {
-			String methodName = "getOemStockBranchByUserId()";
-			LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
-			String errorMsg = null;
-			Map<String, Object> responseObjectsMap = new HashMap<>();
-			ResponseDTO responseDTO = null;
-			List<Map<String,Object>> stockbr = new ArrayList<>();
-			try {
-				stockbr = oemService.getOemStockBranchByUserId(orgId, userId);
-			} catch (Exception e) {
-				errorMsg = e.getMessage();
-				LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-			}
-			if (StringUtils.isEmpty(errorMsg)) {
-				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Oem StockBranch List found Success");
-				responseObjectsMap.put("branch", stockbr);
-				responseDTO = createServiceResponse(responseObjectsMap);
-			} else {
-				errorMsg = " not found for ID: ";
-				responseDTO = createServiceResponseError(responseObjectsMap, "Oem StockBranch List not found", errorMsg);
-			}
-			LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
-			return ResponseEntity.ok().body(responseDTO);
-		}
-		
-		@GetMapping("/getOemStockDetailsForBinOutward")
-		public ResponseEntity<ResponseDTO> getOemStockDetailsForBinOutward(@RequestParam String stockBranch) {
-			String methodName = "getOemStockDetailsForBinOutward()";
-			LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
-			String errorMsg = null;
-			Map<String, Object> responseObjectsMap = new HashMap<>();
-			ResponseDTO responseDTO = null;
-			List<Map<String,Object>> stockDeatils = new ArrayList<>();
-			try {
-				stockDeatils = oemService.getOemStockDeatilsForOemOutward(stockBranch);
-			} catch (Exception e) {
-				errorMsg = e.getMessage();
-				LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-			}
-			if (StringUtils.isEmpty(errorMsg)) {
-				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Oem Stock Details found Success");
-				responseObjectsMap.put("stockDetails", stockDeatils);
-				responseDTO = createServiceResponse(responseObjectsMap);
-			} else {
-				errorMsg = " not found for ID: ";
-				responseDTO = createServiceResponseError(responseObjectsMap, "Oem Stock Details not found", errorMsg);
-			}
-			LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
-			return ResponseEntity.ok().body(responseDTO);
-		}
-		
-		
 }
 
 

@@ -13,5 +13,7 @@ public class OemBinOutwardDetailsDTO {
 	
 	private String asset;
 	private String assetCode;
-	private int qty;
+	private int expQty;
+	private int outQty;
+
 }

@@ -1,7 +1,6 @@
 package com.whydigit.efit.service;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.springframework.stereotype.Service;
@@ -31,10 +30,6 @@ public interface OemService {
 	OemBinInwardVO getAllOemBinInwardByDocId(String docId);
 
 	String getDocIdByOemBinInward();
-
-	List<Map<String, Object>> getOemStockBranchByUserId(Long orgId, Long userId);
-	
-	List<Map<String, Object>> getOemStockDeatilsForOemOutward(String stockBranch);
 
 
 }

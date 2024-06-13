@@ -34,8 +34,10 @@ public class OemBinOutwardDetailsVO {
 	private String asset;
 	@Column(name = "assetcode")
 	private String assetCode;
-	@Column(name = "qty")
-	private int qty;
+	@Column(name = "expqty")
+	private int expQty;
+	@Column(name = "outqty")
+	private int outQty;
 
 	@ManyToOne
 	@JoinColumn(name = "oembinoutwardid")

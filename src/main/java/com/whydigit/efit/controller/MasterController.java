@@ -3576,6 +3576,44 @@ public class MasterController extends BaseController {
 			LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 			return ResponseEntity.ok().body(responseDTO);
 		}
+		
+		@GetMapping("/getBranchLocationByFlow")
+		public ResponseEntity<ResponseDTO> getBranchLocationByFlow(@RequestParam Long orgId,@RequestParam Long flowId) {
+			String methodName = "getBranchLocationByFlow()";
+			LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+			String errorMsg = null;
+			Map<String, Object> responseObjectsMap = new HashMap<>();
+			ResponseDTO responseDTO = null;
+			Set<Object[]> stock = new HashSet<>();
+			try {
+				stock = masterService.getBranchLocationByFlow(orgId, flowId);
+			} catch (Exception e) {
+				errorMsg = e.getMessage();
+				LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			}
+			if (StringUtils.isEmpty(errorMsg)) {
+				List<Map<String, Object>> availAssetDetails= getBranchCode(stock);
+				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Branch Location Founded");
+				responseObjectsMap.put("assetDetailsVO", availAssetDetails);
+				responseDTO = createServiceResponse(responseObjectsMap);
+			} else {
+				errorMsg = " not found for ID: ";
+				responseDTO = createServiceResponseError(responseObjectsMap, "Branch Location details not found", errorMsg);
+			}
+			LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+			return ResponseEntity.ok().body(responseDTO);
+		}
+
+		private List<Map<String, Object>> getBranchCode(Set<Object[]> stock) {
+			List<Map<String, Object>> availAssetDetails = new ArrayList<>();
+			for (Object[] ps : stock) {
+				Map<String, Object> part = new HashMap<>();
+				part.put("branchCode", ps[0] != null ? ps[0].toString() : "");
+				availAssetDetails.add(part);
+			}
+			return availAssetDetails;
+		}
+		
 
 
 }

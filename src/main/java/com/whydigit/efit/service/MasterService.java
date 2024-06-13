@@ -349,6 +349,8 @@ public interface MasterService {
 
 	Set<Object[]> getEmitterAndReceiverByKitNo(String kitNo);
 
+	Set<Object[]> getBranchLocationByFlow(Long orgId, Long flowId);
+
 
 	
 

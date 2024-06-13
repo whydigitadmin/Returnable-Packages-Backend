@@ -34,7 +34,6 @@ public class BinOutwardDetailsVO {
 	private String assetCode;
 	@Column(name = "qty")
 	private int qty;
-	
 
 	@ManyToOne
 	@JoinColumn(name = "binoutwardid")
