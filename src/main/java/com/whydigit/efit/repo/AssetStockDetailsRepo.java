@@ -40,6 +40,7 @@ public interface AssetStockDetailsRepo extends JpaRepository<AssetStockDetailsVO
 			+ "group by stockbranch,category,sku,skucode")
 	Set<Object[]> getStockLedgerDetailsForEmitter(String startDate, String endDate, String stockBranch);
 
+	
 	@Query(nativeQuery = true,value ="select stockbranch,category,sku,skucode,sum(skuqty) from stockdetails where status='S' and stockbranch=?1   group by stockbranch,category,sku,skucode")
 	Set<Object[]> getOemStockDetailsForOemBinOutward(String stockBranch);
 
