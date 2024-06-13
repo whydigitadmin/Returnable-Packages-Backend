@@ -18,6 +18,7 @@ public class OemBinInwardDTO {
 	private Long flowId;
 	private String dispatchId;
 	private String invoiceNo;
+	private Long orgId;
 	private String createdBy;
 	private LocalDate invoiceDate;
 	// private String updatedBy;

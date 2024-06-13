@@ -149,6 +149,10 @@ public interface EmitterService {
 	Set<Object[]> getDocIdByFlowOnEmitterDispatchScreen(Long flowId);
 
 	Set<Object[]> getBininwardList(String docId);
+
+	Set<Object[]> getStockLedger(String startDate, String endDate, String stockBranch);
+
+	Set<Object[]> getStockBranchByUserId(Long orgId, Long userId);
 	
 	
 

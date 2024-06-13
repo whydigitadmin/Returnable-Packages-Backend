@@ -1,7 +1,9 @@
 package com.whydigit.efit.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -13,8 +15,6 @@ import com.whydigit.efit.dto.OemBinInwardDTO;
 import com.whydigit.efit.dto.OemBinInwardDetailsDTO;
 import com.whydigit.efit.dto.OemBinOutwardDTO;
 import com.whydigit.efit.dto.OemBinOutwardDetailsDTO;
-import com.whydigit.efit.entity.AssetStockDetailsVO;
-import com.whydigit.efit.entity.BinOutwardVO;
 import com.whydigit.efit.entity.FlowVO;
 import com.whydigit.efit.entity.OemBinInwardDetailsVO;
 import com.whydigit.efit.entity.OemBinInwardVO;
@@ -28,6 +28,7 @@ import com.whydigit.efit.repo.OemBinInwardDetailsRepo;
 import com.whydigit.efit.repo.OemBinInwardRepo;
 import com.whydigit.efit.repo.OemBinOutwardDetailsRepo;
 import com.whydigit.efit.repo.OemBinOutwardRepo;
+import com.whydigit.efit.repo.UserRepo;
 
 @Service
 public class OemServiceImpl implements OemService {
@@ -56,6 +57,9 @@ public class OemServiceImpl implements OemService {
 
 	@Autowired
 	BinOutwardRepo binOutwardRepo;
+	
+	@Autowired
+	UserRepo userRepo;
 
 	@Override
 	public OemBinInwardVO createOemBinInward(OemBinInwardDTO oemBinInwardDTO) {
@@ -75,6 +79,7 @@ public class OemServiceImpl implements OemService {
 		oemBinInwardVO.setModifiedby(oemBinInwardDTO.getCreatedBy());
 		oemBinInwardVO.setDispatchId(oemBinInwardDTO.getDispatchId());
 		oemBinInwardVO.setInvoiceNo(oemBinInwardDTO.getInvoiceNo());
+		oemBinInwardVO.setOrgId(oemBinInwardDTO.getOrgId());
 		oemBinInwardVO.setCreatedby(oemBinInwardDTO.getCreatedBy());
 		oemBinInwardVO.setInvoiceDate(oemBinInwardDTO.getInvoiceDate());
 		oemBinInwardVO.setModifiedby(oemBinInwardDTO.getCreatedBy());
@@ -276,6 +281,14 @@ public class OemServiceImpl implements OemService {
 		return binoutward;
 	}
 
+	@Override
+	public List<Map<String, Object>> getOemStockBranchByUserId(Long orgId,Long userId) {
+
+		Set<Object[]> stockbranch =userRepo.getOemStockBranchByOrgIdAndUserId(orgId,userId);
+
+		return getOemStockbranch(stockbranch);
+	}
+
 	private List<Map<String, Object>> getOemStockbranch(Set<Object[]> stockbranch) {
 		List<Map<String, Object>> stockbr = new ArrayList<>();
         for (Object[] ps : stockbranch) {
@@ -315,4 +328,6 @@ public class OemServiceImpl implements OemService {
 		String binoutward = finyr + "OBI" + oemBinInwardRepo.finddocid();
 		return binoutward;
 	}
+
+	
 }
