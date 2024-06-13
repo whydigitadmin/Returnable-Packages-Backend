@@ -17,7 +17,7 @@ public interface OemBinInwardRepo extends JpaRepository<OemBinInwardVO, Long> {
 			+ ") AS finyr")
 	String findFinyr();
 
-	@Query(nativeQuery = true, value = "select sequence_value from oembininwarddocidseq")
+	@Query(nativeQuery = true, value = "select oeminwarddocid from oembinoutwarddocidseq")
 	int finddocid();
 
 	@Query(nativeQuery = true, value = "CALL next_oembininwarddocid_sequence_value()")

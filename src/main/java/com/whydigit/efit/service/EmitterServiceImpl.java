@@ -309,7 +309,7 @@ public class EmitterServiceImpl implements EmitterService {
 	public List<EmitterAddressDTO> getEmitterAddress(Long orgId) {
 		List<EmitterAddressDTO> emitterAddressList = new ArrayList<>();
 		List<Object[]> emitterAddress = userRepo.findByOrgIdAndRole(orgId, Role.ROLE_EMITTER.name());
-		for (Object[] ea : emitterAddress) {
+		for (Object[] ea : emitterAddress) {  
 			EmitterAddressDTO emitterAddressDTO = new EmitterAddressDTO();
 			emitterAddressDTO.setEmitterId(Long.valueOf(ea[0].toString()));
 			emitterAddressDTO.setAddressId(Long.valueOf(ea[1].toString()));
@@ -1210,19 +1210,6 @@ public class EmitterServiceImpl implements EmitterService {
 		@Override
 		public Set<Object[]> getDocIdByFlowOnEmitterDispatchScreen(Long flowId) {
 			return flowRepo.getDocId(flowId);
-		}
-
-		// Get Stock branch by user id
-		@Override
-		public Set<Object[]> getStockBranchByUserId(Long orgId,Long userId) {
-			
-			return userRepo.getStockBranchByOrgIdAndUserId(orgId,userId);
-		}
-
-		@Override
-		public Set<Object[]> getStockLedger(String startDate, String endDate, String stockBranch) {
-			
-			return assetStockDetailsRepo.getStockLedgerDetailsForEmitter(startDate,endDate,stockBranch);
 		}
 		
 

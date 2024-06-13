@@ -249,7 +249,7 @@ public class OemController extends BaseController{
 			return ResponseEntity.ok().body(responseDTO);
 		}
 		
-		
+
 		@GetMapping("/getOemStockBranchByUserId")
 		public ResponseEntity<ResponseDTO> getOemStockBranchByUserId(@RequestParam Long orgId,@RequestParam Long userId) {
 			String methodName = "getOemStockBranchByUserId()";

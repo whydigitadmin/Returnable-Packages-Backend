@@ -151,10 +151,6 @@ public interface EmitterService {
 	Set<Object[]> getBininwardList(String docId);
 	
 	
-	Set<Object[]>getStockBranchByUserId(Long orgId,Long userId);
-	
-	//Stock Ledger by Emitter
-	Set<Object[]>getStockLedger(String startDate, String endDate,String stockBranch);
 
 	
 

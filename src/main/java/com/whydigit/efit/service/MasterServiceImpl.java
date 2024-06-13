@@ -2831,5 +2831,11 @@ public class MasterServiceImpl implements MasterService {
 		return binAllotmentNewVO;
 	}
 
+	@Override
+	public Set<Object[]> getBranchLocationByFlow(Long orgId, Long flow) {
+		
+		return flowRepo.findByBranchcode(orgId,flow);
+	}
+
 
 }

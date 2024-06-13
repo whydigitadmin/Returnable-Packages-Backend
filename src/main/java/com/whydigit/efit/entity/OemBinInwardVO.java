@@ -63,10 +63,12 @@ public class OemBinInwardVO {
 	private Long orgId;
 	@Column(name = "finyr")
 	private String finyr;
-	@Builder.Default
+	@Builder.Default  
 	private String scode = "OEMBI";
 	@Builder.Default
 	private String screen = "Bin Inward";
+	@Column(name = "outwarddocid")
+	private String outwardDocId;
 	
 
 	@OneToMany(mappedBy = "oemBinInwardVO", cascade = CascadeType.ALL)
