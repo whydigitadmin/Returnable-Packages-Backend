@@ -313,7 +313,7 @@ public class OemController extends BaseController{
 			ResponseDTO responseDTO = null;
 			String oemBinOutwardDocId = null;
 			try {
-				oemBinOutwardDocId = oemService.getDocIdByOemBinInward();
+				oemBinOutwardDocId = oemService.getDocIdByOemBinOutward();
 			} catch (Exception e) {
 				errorMsg = e.getMessage();
 				LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);

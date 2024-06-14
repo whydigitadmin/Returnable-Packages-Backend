@@ -1214,4 +1214,29 @@ public class EmitterServiceImpl implements EmitterService {
 
 		return assetStockDetailsRepo.getStockLedgerDetailsForEmitter(startDate, endDate, stockBranch);
 	}
+
+	@Override
+	public List<Map<String,Object>> getCountofBinRequestPendingAndCompleted(Long emitterId, Long orgId) {
+		
+		Set<Object[]>getCountOfBinRequestStatus=issueRequestRepo.getBinRequestStatusCount(emitterId,orgId);
+		
+		return getCountOfBinRequestStatusDetails(getCountOfBinRequestStatus);
+	}
+
+	private List<Map<String, Object>> getCountOfBinRequestStatusDetails(Set<Object[]> getCountOfBinRequestStatus) {
+		List<Map<String, Object>> count = new ArrayList<>();
+        for (Object[] ps : getCountOfBinRequestStatus) {
+            Map<String, Object> part = new HashMap<>();
+            part.put("status", ps[0] != null ? ps[0].toString() : "");
+            part.put("emitterId", ps[1] != null ? ps[1].toString() : "");
+            part.put("emitter", ps[2] != null ? ps[2].toString() : "");
+            part.put("binReqNo", ps[3] != null ? ps[3].toString() : "");
+            part.put("binReqDate", ps[4] != null ? ps[4].toString() : "");
+            part.put("flow", ps[5] != null ? ps[5].toString() : "");
+            part.put("kitNo", ps[6] != null ? ps[6].toString() : "");
+            part.put("reqKitQty", ps[7] != null ? Integer.parseInt(ps[7].toString()) : 0);
+            count.add(part);
+        }
+        return count;
+	}
 }
