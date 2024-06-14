@@ -51,4 +51,6 @@ public class OemBinInwardDetailsVO {
 	@JoinColumn(name = "oembininwardid")
 	@JsonBackReference
 	private OemBinInwardVO oemBinInwardVO;
+
+
 }

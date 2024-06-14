@@ -411,6 +411,32 @@ public class OemController extends BaseController{
 
 		}
 		
+		@GetMapping("/getEmptyAssetDetailsForGathering")
+		public ResponseEntity<ResponseDTO> getEmptyAssetDetailsForGathering(@RequestParam(required = true) String stockBranch,@RequestParam(required = true) Long orgId) {
+			String methodName = "getEmptyAssetDetailsForGathering()";
+			LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+			String errorMsg = null;
+			Map<String, Object> responseObjectsMap = new HashMap<>();
+			ResponseDTO responseDTO = null;
+			List<Map<String,Object>> oemEmptyDetails = new ArrayList<>();
+			try {
+				oemEmptyDetails = oemService.getOemEmptyDeatilsForEmptyGathering(stockBranch, orgId);
+			} catch (Exception e) {
+				errorMsg = e.getMessage();
+				LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			}
+			if (StringUtils.isBlank(errorMsg)) {
+				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Oem Empty Details information get successfully");
+				responseObjectsMap.put("oemEmptyDetails", oemEmptyDetails);
+				responseDTO = createServiceResponse(responseObjectsMap);
+			} else {
+				responseDTO = createServiceResponseError(responseObjectsMap, "Oem Empty Details  information receive failed", errorMsg);
+			}
+			LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+			return ResponseEntity.ok().body(responseDTO);
+
+		}
+		
 }
 
 
