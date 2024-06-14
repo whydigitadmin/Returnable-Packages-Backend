@@ -19,9 +19,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.whydigit.efit.common.CommonConstant;
 import com.whydigit.efit.common.UserConstants;
+import com.whydigit.efit.dto.GatheringEmptyDTO;
 import com.whydigit.efit.dto.OemBinInwardDTO;
 import com.whydigit.efit.dto.OemBinOutwardDTO;
 import com.whydigit.efit.dto.ResponseDTO;
+import com.whydigit.efit.entity.GatheringEmptyVO;
 import com.whydigit.efit.entity.OemBinInwardVO;
 import com.whydigit.efit.entity.OemBinOutwardVO;
 import com.whydigit.efit.service.OemService;
@@ -330,6 +332,84 @@ public class OemController extends BaseController{
 			return ResponseEntity.ok().body(responseDTO);
 		}
 		
+		//Gathering Empty
+		
+		@PostMapping("/createGatheringEmpty")
+		public ResponseEntity<ResponseDTO> createGatheringEmpty(@RequestBody GatheringEmptyDTO gatheringEmptyDTO) {
+			String methodName = "createGatheringEmpty()";
+			LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+			String errorMsg = null;
+			Map<String, Object> responseObjectsMap = new HashMap<>();
+			ResponseDTO responseDTO = null;
+			GatheringEmptyVO gatheringEmptyVO = new GatheringEmptyVO();
+			try {
+				gatheringEmptyVO = oemService.createGatheringEmpty(gatheringEmptyDTO);
+			} catch (Exception e) {
+				errorMsg = e.getMessage();
+				LOGGER.error(CommonConstant.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			}
+			if (StringUtils.isBlank(errorMsg)) {
+				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Gathering Empty Created Successfully");
+				responseObjectsMap.put("gatheringEmptyVO", gatheringEmptyVO);
+				responseDTO = createServiceResponse(responseObjectsMap);
+			} else {
+				responseDTO = createServiceResponseError(responseObjectsMap, "Gathering Empty Creation Failed", errorMsg);
+			}
+			LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+			return ResponseEntity.ok().body(responseDTO);
+		}
+		
+		@GetMapping("/getAllGathering")
+		public ResponseEntity<ResponseDTO> getAllGathering(@RequestParam(required = false) Long orgId) {
+			String methodName = "getAllGathering()";
+			LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+			String errorMsg = null;
+			Map<String, Object> responseObjectsMap = new HashMap<>();
+			ResponseDTO responseDTO = null;
+			List<GatheringEmptyVO> gatheringEmptyVOs = new ArrayList<>();
+			try {
+				gatheringEmptyVOs = oemService.getAllGathering(orgId);
+			} catch (Exception e) {
+				errorMsg = e.getMessage();
+				LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			}
+			if (StringUtils.isBlank(errorMsg)) {
+				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Gathering Empty information get successfully");
+				responseObjectsMap.put("gatheringEmptyVOs", gatheringEmptyVOs);
+				responseDTO = createServiceResponse(responseObjectsMap);
+			} else {
+				responseDTO = createServiceResponseError(responseObjectsMap, "Gathering Empty information receive failed", errorMsg);
+			}
+			LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+			return ResponseEntity.ok().body(responseDTO);
+
+		}
+		
+		@GetMapping("/getAllOemBinOutward")
+		public ResponseEntity<ResponseDTO> getAllOemBinOutward(@RequestParam(required = true) Long orgId) {
+			String methodName = "getAllOemBinOutward()";
+			LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+			String errorMsg = null;
+			Map<String, Object> responseObjectsMap = new HashMap<>();
+			ResponseDTO responseDTO = null;
+			List<OemBinOutwardVO> oemBinOutwardVO = new ArrayList<>();
+			try {
+				oemBinOutwardVO = oemService.getAllOemBinOutward(orgId);
+			} catch (Exception e) {
+				errorMsg = e.getMessage();
+				LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			}
+			if (StringUtils.isBlank(errorMsg)) {
+				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Oem BinOutward information get successfully");
+				responseObjectsMap.put("oemBinOutwardVO", oemBinOutwardVO);
+				responseDTO = createServiceResponse(responseObjectsMap);
+			} else {
+				responseDTO = createServiceResponseError(responseObjectsMap, "Oem BinOutward  information receive failed", errorMsg);
+			}
+			LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+			return ResponseEntity.ok().body(responseDTO);
+
+		}
 		
 }
 

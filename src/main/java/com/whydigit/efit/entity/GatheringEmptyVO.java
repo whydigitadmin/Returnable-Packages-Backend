@@ -20,61 +20,53 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.whydigit.efit.dto.CreatedUpdatedDate;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Builder
 @Entity
-@Table(name = "oembinoutward")
+@Table(name="gatheringempty")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class OemBinOutwardVO {
-
+public class GatheringEmptyVO {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "oembinoutwardgen")
-	@SequenceGenerator(name = "oembinoutwardgen", sequenceName = "oembinoutwardseq", initialValue = 1000000001, allocationSize = 1)
-	@Column(name = "oembinoutwardid")
+	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "gatheringgen")
+	@SequenceGenerator(name = "gatheringgen", sequenceName = "gatheringseq", initialValue = 1000000001, allocationSize = 1)
+	@Column(name = "gatheringemptyid")
 	private Long id;
 	@Column(name = "docid")
 	private String docId;
 	@Column(name = "docdate")
-	private LocalDate docDate;
-	@Column(name = "stockbranch")
-	private String stockBranch;
+	private LocalDate docDate=LocalDate.now();
+	@Column(name = "flow")
+	private String flow;
 	@Column(name = "createdby")
-	private String createdby;
+	private String createdBy;
 	@Column(name = "modifiedby")
 	private String modifiedby;
 	@Column(name = "cancelremarks")
 	private String cancelRemark;
 	@Column(name = "active")
-	private boolean active;
+	private boolean active=true;
 	@Column(name = "cancel")
 	private boolean cancel;
 	@Column(name = "orgid")
 	private Long orgId;
 	@Column(name = "finyr")
-	private String finYr;
-//	@Column(name = "emitterid")
-//	private Long emitterId;
-	@Builder.Default
-	private String scode = "BNIN";
-	@Builder.Default
-	private String screen = "Bin Outward";
-	@Column(name="outwarddocid")
-	private String outwardDocId;
+	private String finyr;
+	private String scode = "GEMTY";
+	private String screen="Gathering Empty";
+	
 
-	@OneToMany(mappedBy = "oemBinOutwardVO", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "gatheringEmptyVO",cascade = CascadeType.ALL)
 	@JsonManagedReference
-	private List<OemBinOutwardDetailsVO> oemBinOutwardDetails;
+	private List<GathereingEmptyDetailsVO> gathereingEmptyDetailsVO;
 
 	@PrePersist
 	private void setDefaultFinyr() {
 		// Execute the logic to set the default value for finyr
 		String fyFull = calculateFinyr();
-		this.finYr = fyFull;
+		this.finyr = fyFull;
 	}
 
 	private String calculateFinyr() {
@@ -85,6 +77,8 @@ public class OemBinOutwardVO {
 				: LocalDate.now().minusYears(1).format(DateTimeFormatter.ofPattern("yyyy"));
 		return fyFull;
 	}
+	
 	@Embedded
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
 }
+

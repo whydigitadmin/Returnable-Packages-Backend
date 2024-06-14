@@ -6,16 +6,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.whydigit.efit.dto.GathereingEmptyDetailsDTO;
+import com.whydigit.efit.dto.GatheringEmptyDTO;
 import com.whydigit.efit.dto.OemBinInwardDTO;
 import com.whydigit.efit.dto.OemBinInwardDetailsDTO;
 import com.whydigit.efit.dto.OemBinOutwardDTO;
 import com.whydigit.efit.dto.OemBinOutwardDetailsDTO;
 import com.whydigit.efit.entity.FlowVO;
+import com.whydigit.efit.entity.GathereingEmptyDetailsVO;
+import com.whydigit.efit.entity.GatheringEmptyVO;
+import com.whydigit.efit.entity.ManufacturerVO;
 import com.whydigit.efit.entity.OemBinInwardDetailsVO;
 import com.whydigit.efit.entity.OemBinInwardVO;
 import com.whydigit.efit.entity.OemBinOutwardDetailsVO;
@@ -24,6 +30,7 @@ import com.whydigit.efit.repo.AssetRepo;
 import com.whydigit.efit.repo.AssetStockDetailsRepo;
 import com.whydigit.efit.repo.BinOutwardRepo;
 import com.whydigit.efit.repo.FlowRepo;
+import com.whydigit.efit.repo.GatheringEmptyRepo;
 import com.whydigit.efit.repo.OemBinInwardDetailsRepo;
 import com.whydigit.efit.repo.OemBinInwardRepo;
 import com.whydigit.efit.repo.OemBinOutwardDetailsRepo;
@@ -60,6 +67,9 @@ public class OemServiceImpl implements OemService {
 	
 	@Autowired
 	UserRepo userRepo;
+	
+	@Autowired
+	GatheringEmptyRepo gatheringEmptyRepo;
 
 	@Override
 	public OemBinInwardVO createOemBinInward(OemBinInwardDTO oemBinInwardDTO) {
@@ -191,6 +201,7 @@ public class OemServiceImpl implements OemService {
 		oemBinOutwardVO.setModifiedby(oemBinOutwardDTO.getCreatedby());
 		oemBinOutwardVO.setModifiedby(oemBinOutwardDTO.getCreatedby());
 		oemBinOutwardVO.setOrgId(oemBinOutwardDTO.getOrgId());
+		//oemBinOutwardVO.setEmitterId(oemBinOutwardDTO.getEmitterId());
 		oemBinOutwardVO.setStockBranch(oemBinOutwardDTO.getStockBranch());
 
 		List<OemBinOutwardDetailsVO> oemBinOutwardDetailsVOs = new ArrayList<>();
@@ -328,6 +339,65 @@ public class OemServiceImpl implements OemService {
 		String binoutward = finyr + "OBO" + oemBinOutwardRepo.finddocid();
 		return binoutward;
 	}
+
+	@Override
+	public GatheringEmptyVO createGatheringEmpty(GatheringEmptyDTO gatheringEmptyDTO) {
+		GatheringEmptyVO gatheringEmptyVO = new GatheringEmptyVO();
+		String finyr = gatheringEmptyRepo.findFinyr();
+		String binoutward = finyr + "GEMT" + gatheringEmptyRepo.finddocid();
+		gatheringEmptyVO.setDocId(binoutward);
+		gatheringEmptyRepo.nextseq();
+
+		
+		gatheringEmptyVO.setDocId(gatheringEmptyDTO.getDocId());
+		gatheringEmptyVO.setOrgId(gatheringEmptyDTO.getOrgId());
+		gatheringEmptyVO.setFlow(gatheringEmptyDTO.getFlow());
+		gatheringEmptyVO.setCreatedBy(gatheringEmptyDTO.getCreatedBy());
+		gatheringEmptyVO.setModifiedby(gatheringEmptyDTO.getCreatedBy());
+
+		List<GathereingEmptyDetailsVO> gathereingEmptyDetailsVO = new ArrayList<>();
+		if (gatheringEmptyDTO.getGathereingEmptyDetailsDTO() != null) {
+			for (GathereingEmptyDetailsDTO gathereingEmptyDetailsDTO : gatheringEmptyDTO.getGathereingEmptyDetailsDTO()) {
+				GathereingEmptyDetailsVO gathereingEmptyDetailsVOs = new GathereingEmptyDetailsVO();
+				gathereingEmptyDetailsVOs.setAssetType(gathereingEmptyDetailsDTO.getAssetType());
+				gathereingEmptyDetailsVOs.setAssetCode(gathereingEmptyDetailsDTO.getAssetCode());
+				gathereingEmptyDetailsVOs.setExpQty(gathereingEmptyDetailsDTO.getExpQty());
+				gathereingEmptyDetailsVOs.setEmptyQty(gathereingEmptyDetailsDTO.getExpQty());
+
+				gathereingEmptyDetailsVOs.setGatheringEmptyVO(gatheringEmptyVO);
+				gathereingEmptyDetailsVO.add(gathereingEmptyDetailsVOs);
+			}
+		}
+		gatheringEmptyVO.setGathereingEmptyDetailsVO(gathereingEmptyDetailsVO);
+		return gatheringEmptyRepo.save(gatheringEmptyVO); 
+		
+	}
+	
+	@Override
+	public List<GatheringEmptyVO> getAllGathering(Long orgId) {
+		List<GatheringEmptyVO> gatheringEmptyVO = new ArrayList<>();
+		if (ObjectUtils.isNotEmpty(orgId)) {
+			LOGGER.info("Successfully Received  GatheringEmpty BY OrgId : {}", orgId);
+			gatheringEmptyVO = gatheringEmptyRepo.getAllGatheringEmptyByOrgId(orgId);
+		} else {
+			LOGGER.info("Successfully Received  GatheringEmpty For All OrgId.");
+			gatheringEmptyVO = gatheringEmptyRepo.findAll();
+		}
+		return gatheringEmptyVO;
+	}
+
+	@Override
+	public List<OemBinOutwardVO> getAllOemBinOutward(Long orgId) {
+		List<OemBinOutwardVO> oemBinOutwardVOs=new ArrayList<OemBinOutwardVO>();
+		if (ObjectUtils.isNotEmpty(orgId)) {
+			LOGGER.info("Successfully Received  OemBinOutward BY OrgId : {}", orgId);
+			oemBinOutwardVOs = oemBinOutwardRepo.getAllOemBinOutwardByOrgId(orgId);
+		}else {
+			LOGGER.info("Successfully Received  OemBinOutward For All.");
+			oemBinOutwardVOs = oemBinOutwardRepo.findAll();
+		}
+		return oemBinOutwardVOs;
+		}
 
 	
 }

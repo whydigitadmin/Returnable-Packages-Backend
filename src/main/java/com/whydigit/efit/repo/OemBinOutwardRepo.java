@@ -1,5 +1,7 @@
 package com.whydigit.efit.repo;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
@@ -20,5 +22,8 @@ public interface OemBinOutwardRepo extends JpaRepository<OemBinOutwardVO, Long> 
 
 	@Query(nativeQuery = true, value = "CALL next_oembinoutwarddocid_sequence_value()")
 	void nextSeq();
+
+	@Query(nativeQuery =true,value = "select * from oembinoutward where orgid=?1")
+	List<OemBinOutwardVO> getAllOemBinOutwardByOrgId(Long orgId);
 
 }

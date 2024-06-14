@@ -6,8 +6,10 @@ import java.util.Set;
 
 import org.springframework.stereotype.Service;
 
+import com.whydigit.efit.dto.GatheringEmptyDTO;
 import com.whydigit.efit.dto.OemBinInwardDTO;
 import com.whydigit.efit.dto.OemBinOutwardDTO;
+import com.whydigit.efit.entity.GatheringEmptyVO;
 import com.whydigit.efit.entity.OemBinInwardVO;
 import com.whydigit.efit.entity.OemBinOutwardVO;
 
@@ -35,6 +37,12 @@ public interface OemService {
 	List<Map<String, Object>> getOemStockDeatilsForOemOutward(String stockBranch);
 	
 	String getDocIdByOemBinOutward();
+
+	GatheringEmptyVO createGatheringEmpty(GatheringEmptyDTO gatheringEmptyDTO);
+
+	List<GatheringEmptyVO> getAllGathering(Long orgId);
+
+	List<OemBinOutwardVO> getAllOemBinOutward(Long orgId);
 
 
 }
