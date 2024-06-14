@@ -43,6 +43,8 @@ public interface OemService {
 	List<GatheringEmptyVO> getAllGathering(Long orgId);
 
 	List<OemBinOutwardVO> getAllOemBinOutward(Long orgId);
+	
+	List<Map<String, Object>> getOemEmptyDeatilsForEmptyGathering(String stockBranch,Long orgId);
 
 
 }

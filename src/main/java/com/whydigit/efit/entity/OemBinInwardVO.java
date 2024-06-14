@@ -39,7 +39,6 @@ public class OemBinInwardVO {
 	private String docId;
 	@Column(name = "docdate")
 	private LocalDate docDate;
-
 	private String flow;
 	@Column(name = "flowid")
 	private Long flowId;
@@ -67,8 +66,9 @@ public class OemBinInwardVO {
 	private String scode = "OEMBI";
 	@Builder.Default
 	private String screen = "Bin Inward";
-	@Column(name = "outwarddocid")
-	private String outwardDocId;
+	
+	@Column(name = "emitterid")
+	private Long emitterId;
 	
 
 	@OneToMany(mappedBy = "oemBinInwardVO", cascade = CascadeType.ALL)

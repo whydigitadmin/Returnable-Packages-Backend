@@ -57,10 +57,10 @@ public class OemBinOutwardVO {
 	private Long orgId;
 	@Column(name = "finyr")
 	private String finYr;
-//	@Column(name = "emitterid")
-//	private Long emitterId;
+	@Column(name = "emitterid")
+	private Long emitterId;
 	@Builder.Default
-	private String scode = "BNIN";
+	private String scode = "OEMBO";
 	@Builder.Default
 	private String screen = "Bin Outward";
 	@Column(name="outwarddocid")
