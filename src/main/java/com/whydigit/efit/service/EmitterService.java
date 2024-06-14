@@ -157,6 +157,8 @@ public interface EmitterService {
 	
 	// get Count of Bin Request and Bin Allotment
 	List<Map<String,Object>> getCountofBinRequestPendingAndCompleted(Long emitterId, Long orgId);
+
+	List<Map<String, Object>> getBinInwardStatus(Long emitterId, Long orgId);
 	
 	
 

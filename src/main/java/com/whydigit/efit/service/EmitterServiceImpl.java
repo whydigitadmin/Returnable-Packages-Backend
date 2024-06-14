@@ -1239,4 +1239,31 @@ public class EmitterServiceImpl implements EmitterService {
         }
         return count;
 	}
+
+	@Override
+	public List<Map<String, Object>> getBinInwardStatus(Long emitterId, Long orgId) {
+		
+	Set<Object[]>getBinInwardStatus=issueRequestRepo.getBinInward(emitterId,orgId);
+		
+		return getBinInwardDetails(getBinInwardStatus);
+	}
+
+	private List<Map<String, Object>> getBinInwardDetails(Set<Object[]> getBinInward) {
+		List<Map<String, Object>> status = new ArrayList<>();
+        for (Object[] ps : getBinInward) {
+            Map<String, Object> values = new HashMap<>();
+            values.put("allotNo", ps[0] != null ? ps[0].toString() : "");
+            values.put("allotDate", ps[1] != null ? ps[1].toString() : "");
+            values.put("binReqNo", ps[2] != null ? ps[2].toString() : "");
+            values.put("binReqDate", ps[3] != null ? ps[3].toString() : "");
+            values.put("flow", ps[4] != null ? ps[4].toString() : "");
+            values.put("partNo", ps[5] != null ? ps[5].toString() : "");
+            values.put("partName", ps[6] != null ? ps[6].toString() : "");
+            values.put("kitNo", ps[7] != null ? ps[7].toString() : "");
+            values.put("allotkitQty", ps[8] != null ? Integer.parseInt(ps[8].toString()) : 0);
+            values.put("status", ps[9] != null ? ps[9].toString() : "");
+            status.add(values);
+        }
+        return status;
+	}
 }

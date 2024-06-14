@@ -68,4 +68,13 @@ public interface IssueRequestRepo
 			+ "group by status,a.emitterid,a.emitter,a.docid,a.docdate,a.flow,b.kitcode,b.kitqty")
 	Set<Object[]> getBinRequestStatusCount(Long emitterId, Long orgId);
 	
+	@Query(value = "select a.docid,a.docdate,a.binreqno,a.binreqdate, a.flow,c.partno ,c.partname,a.kitcode,a.allotkitqty,'Completed'status from binallotment a, bininward b, flow1 c\r\n"
+			+ " where a.docid in (select allotmentno from bininward) and a.emitterid=?1 and c.emitterid=?1 and a.kitcode=c.kitno and  a.orgid=?2\r\n"
+			+ " group by a.docid,a.docdate,a.flow,a.kitcode,a.allotkitqty,c.partno ,c.partname,a.binreqno,a.binreqdate \r\n"
+			+ "union\r\n"
+			+ "select a.docid,a.docdate,a.binreqno,a.binreqdate, a.flow,c.partno ,c.partname,a.kitcode,a.allotkitqty,'Pending'status from binallotment a, bininward b, flow1 c\r\n"
+			+ " where a.docid not in (select allotmentno from bininward) and a.emitterid=?1 and c.emitterid=?1 and a.kitcode=c.kitno and a.orgid=?2\r\n"
+			+ " group by a.docid,a.docdate,a.flow,a.kitcode,a.allotkitqty,c.partno ,c.partname,a.binreqno,a.binreqdate", nativeQuery = true)
+	Set<Object[]> getBinInward(Long emitterId, Long orgId);
+	
 }

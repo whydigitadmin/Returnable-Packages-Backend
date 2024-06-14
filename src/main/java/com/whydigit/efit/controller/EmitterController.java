@@ -1473,4 +1473,31 @@ public class EmitterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
+	
+	@GetMapping("/getBinInwardStatus")
+	public ResponseEntity<ResponseDTO> getBinInwardStatus(@RequestParam Long emitterId,@RequestParam Long orgId) {
+		String methodName = "getBinInwardStatus()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<Map<String,Object>> binInwardStatus = new ArrayList<>();
+		try {
+			binInwardStatus = emitterService.getBinInwardStatus(emitterId, orgId);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Bin Inward Data Get Success");
+			responseObjectsMap.put("binInwardStatus", binInwardStatus);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			errorMsg = " not found for ID: ";
+			responseDTO = createServiceResponseError(responseObjectsMap, "Bin Inward Data not found", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+	
 }
