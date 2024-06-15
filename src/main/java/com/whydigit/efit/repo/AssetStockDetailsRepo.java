@@ -43,7 +43,7 @@ public interface AssetStockDetailsRepo extends JpaRepository<AssetStockDetailsVO
 	@Query(nativeQuery = true,value ="select stockbranch,category,sku,skucode,sum(skuqty) from stockdetails where status='S' and stockbranch=?1   group by stockbranch,category,sku,skucode")
 	Set<Object[]> getOemStockDetailsForOemBinOutward(String stockBranch);
 
-	@Query(nativeQuery = true,value ="select stockbranch,category,sku,skucode,sum(skuqty) from stockdetails where status='E' and stockbranch=?1 and orgid=?2   group by stockbranch,category,sku,skucode")
+	@Query(nativeQuery = true,value ="select stockbranch,category,sku,skucode,sum(skuqty) from stockdetails where status='S' and stockbranch=?1 and orgid=?2   group by stockbranch,category,sku,skucode")
 	Set<Object[]> getOemEmptyStockDetailsForGathering(String stockBranch,Long orgId);
 
 }
