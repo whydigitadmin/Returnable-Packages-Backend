@@ -200,7 +200,7 @@ public class OemServiceImpl implements OemService {
 		List<OemBinOutwardDetailsVO> oemBinOutwardDetailsVOs = new ArrayList<>();
 		if (oemBinOutwardDTO.getOemBinOutwardDetails() != null) {
 			for (OemBinOutwardDetailsDTO oemBinOutwardDetailsDTO : oemBinOutwardDTO.getOemBinOutwardDetails()) {
-				OemBinOutwardDetailsVO oemBinOutwardDetailsVO = new OemBinOutwardDetailsVO();
+				OemBinOutwardDetailsVO oemBinOutwardDetailsVO = new OemBinOutwardDetailsVO()   ;
 				oemBinOutwardDetailsVO.setCategory(oemBinOutwardDetailsDTO.getCategory());
 				oemBinOutwardDetailsVO.setAsset(oemBinOutwardDetailsDTO.getAsset());
 				oemBinOutwardDetailsVO.setAssetCode(oemBinOutwardDetailsDTO.getAssetCode());

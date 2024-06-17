@@ -28,10 +28,16 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -170,23 +176,26 @@ public class MasterServiceImpl implements MasterService {
 
 	public static final Logger LOGGER = LoggerFactory.getLogger(MasterServiceImpl.class);
 
+	private static final String STRING = null;
+
+	private static final String NUMERIC = null;
+
 	@Autowired
 	AssetRepo assetRepo;
 	@Autowired
 	AssetCategoryRepo assetCategoryRepo;
 	@Autowired
 	CustomersRepo customersRepo;
-	
+
 	@Autowired
 	WarehouseRepository warehouseRepo;
-	
-	
+
 	@Autowired
 	FlowDetailRepo flowDetailRepo;
-	
+
 	@Autowired
 	BasicDetailRepo basicDetailRepo;
-	
+
 	@Autowired
 	FlowRepo flowRepo;
 	@Autowired
@@ -194,8 +203,6 @@ public class MasterServiceImpl implements MasterService {
 
 	@Autowired
 	KitAssetRepo kitAssetRepo;
-	
-	
 
 	@Autowired
 	AssetTaggingRepo assetTaggingRepo;
@@ -209,10 +216,10 @@ public class MasterServiceImpl implements MasterService {
 	AssetTypeRepo assetTypeRepo;
 	@Autowired
 	UnitRepo unitRepo;
-	
+
 	@Autowired
 	BranchRepo branchRepo;
-	
+
 	@Autowired
 	VendorAddressRepo vendorAddressRepo;
 	@Autowired
@@ -313,14 +320,14 @@ public class MasterServiceImpl implements MasterService {
 		}
 		return assetVO;
 	}
-	
+
 	@Override
 	public List<AssetVO> getAllActiveAsset(Long orgId) {
 		List<AssetVO> assetVO = new ArrayList<>();
 		if (ObjectUtils.isNotEmpty(orgId)) {
 			LOGGER.info("Successfully Received  AssetInformation BY OrgId : {}", orgId);
 			assetVO = assetRepo.getAllActiveAssetByOrgId(orgId);
-		} 
+		}
 		return assetVO;
 	}
 
@@ -431,7 +438,7 @@ public class MasterServiceImpl implements MasterService {
 		existingAsset.setCancelremarks(assetDTO.getCancelRemarks());
 		existingAsset.setPoNo(assetDTO.getPoNo());
 		existingAsset.setActive(assetDTO.isActive());
-		existingAsset.setModifiedby(assetDTO.getModifiedBy());		
+		existingAsset.setModifiedby(assetDTO.getModifiedBy());
 		return assetRepo.save(existingAsset);
 	}
 
@@ -588,20 +595,19 @@ public class MasterServiceImpl implements MasterService {
 		if (ObjectUtils.isNotEmpty(orgId)) {
 			LOGGER.info("Successfully Received  CustomerInformation BY OrgId : {}", orgId);
 			customersVO = customersRepo.getAllActiveCustomersByOrgId(orgId);
-		} 
+		}
 		return customersVO;
 	}
-	
+
 	@Override
 	public List<CustomersVO> getAllCustomers(Long orgId) {
 		List<CustomersVO> customersVO = new ArrayList<>();
 		if (ObjectUtils.isNotEmpty(orgId)) {
 			LOGGER.info("Successfully Received  CustomerInformation BY OrgId : {}", orgId);
 			customersVO = customersRepo.getAllCustomersByOrgId(orgId);
-		} 
+		}
 		return customersVO;
 	}
-	
 
 	@Override
 	public CustomersVO getCustomersById(Long id) throws ApplicationException {
@@ -824,10 +830,10 @@ public class MasterServiceImpl implements MasterService {
 		} else if (ObjectUtils.isNotEmpty(orgId) && (ObjectUtils.isNotEmpty(emitterId))) {
 			LOGGER.info("Successfully Received Flow BY EmitterId : {} orgId : {}", emitterId, orgId);
 			flowVO = flowRepo.findByOrgIdAndEmitterId(orgId, emitterId);
-		} 
+		}
 		return flowVO;
 	}
-	
+
 	@Override
 	public List<FlowVO> getAllActiveFlow(Long orgId, Long emitterId) {
 		List<FlowVO> flowVO = new ArrayList<>();
@@ -840,7 +846,7 @@ public class MasterServiceImpl implements MasterService {
 		} else if (ObjectUtils.isNotEmpty(orgId) && (ObjectUtils.isNotEmpty(emitterId))) {
 			LOGGER.info("Successfully Received Flow BY EmitterId : {} orgId : {}", emitterId, orgId);
 			flowVO = flowRepo.findActiveByOrgIdAndEmitterId(orgId, emitterId);
-		} 
+		}
 		return flowVO;
 	}
 
@@ -852,12 +858,13 @@ public class MasterServiceImpl implements MasterService {
 	@Override
 	public FlowVO createFlow(FlowDTO flowDTO) throws ApplicationException {
 
-		FlowVO flowVO = createFlowVOByFlowDTO(flowDTO);		
+		FlowVO flowVO = createFlowVOByFlowDTO(flowDTO);
 		flowVO.setCreatedBy(flowDTO.getCreatedBy());
 		flowVO.setModifiedBy(flowDTO.getCreatedBy());
 		flowVO.setEmitter(flowRepo.findEmiterbyId(flowVO.getEmitterId()));
 		flowVO.setWarehouseLocation(flowRepo.getWarehouseLocationByLocationId(flowDTO.getWarehouseId()));
-		flowVO.setRetrievalWarehouseLocation(flowRepo.getWarehouseLocationByLocationId(flowDTO.getRetrievalWarehouseId()));
+		flowVO.setRetrievalWarehouseLocation(
+				flowRepo.getWarehouseLocationByLocationId(flowDTO.getRetrievalWarehouseId()));
 		flowVO.setReceiver(flowRepo.getReceiverByReceiverId(flowDTO.getReceiverId()));
 
 		return flowRepo.save(flowVO);
@@ -865,29 +872,34 @@ public class MasterServiceImpl implements MasterService {
 
 	private FlowVO createFlowVOByFlowDTO(FlowDTO flowDTO) throws ApplicationException {
 		if (flowRepo.existsByFlowNameAndOrgId(flowDTO.getFlowName(), flowDTO.getOrgId())) {
-		    throw new ApplicationException("Flow Name Already exists.");
+			throw new ApplicationException("Flow Name Already exists.");
 		}
 		WarehouseVO warehouseVO = warehouseRepo.findById(flowDTO.getWarehouseId())
-		        .orElseThrow(() -> new ApplicationException("Warehouse not found"));
-		    warehouseVO.setEflag(true);
-		    warehouseRepo.save(warehouseVO);
-		    
-		    WarehouseVO warehouseVO1 = warehouseRepo.findById(flowDTO.getRetrievalWarehouseId())
-			        .orElseThrow(() -> new ApplicationException("Warehouse not found"));
-			    warehouseVO1.setEflag(true);
-			    warehouseRepo.save(warehouseVO1);
-		    
+				.orElseThrow(() -> new ApplicationException("Warehouse not found"));
+		warehouseVO.setEflag(true);
+		warehouseRepo.save(warehouseVO);
+
+		WarehouseVO warehouseVO1 = warehouseRepo.findById(flowDTO.getRetrievalWarehouseId())
+				.orElseThrow(() -> new ApplicationException("Warehouse not found"));
+		warehouseVO1.setEflag(true);
+		warehouseRepo.save(warehouseVO1);
+
 		List<FlowDetailVO> flowDetailVOList = new ArrayList<>();
-		FlowVO flowVO =  FlowVO.builder().active(flowDTO.isActive()).orgin(flowDTO.getOrgin()).retrievalWarehouseId(flowDTO.getRetrievalWarehouseId())
-				.retrievalWarehouseLocation(flowDTO.getRetrievalWarehouseLocation()).warehouseLocation(flowDTO.getWarehouseLocation()).flowName(flowDTO.getFlowName())
-				.receiverId(flowDTO.getReceiverId()).emitterId(flowDTO.getEmitterId()).emitter(flowDTO.getEmitter()).createdBy(flowDTO.getCreatedBy())
-				.destination(flowDTO.getDestination()).orgId(flowDTO.getOrgId()).warehouseId(flowDTO.getWarehouseId()).modifiedBy(flowDTO.getCreatedBy()).flowDetailVO(flowDetailVOList).build();
-		
+		FlowVO flowVO = FlowVO.builder().active(flowDTO.isActive()).orgin(flowDTO.getOrgin())
+				.retrievalWarehouseId(flowDTO.getRetrievalWarehouseId())
+				.retrievalWarehouseLocation(flowDTO.getRetrievalWarehouseLocation())
+				.warehouseLocation(flowDTO.getWarehouseLocation()).flowName(flowDTO.getFlowName())
+				.receiverId(flowDTO.getReceiverId()).emitterId(flowDTO.getEmitterId()).emitter(flowDTO.getEmitter())
+				.createdBy(flowDTO.getCreatedBy()).destination(flowDTO.getDestination()).orgId(flowDTO.getOrgId())
+				.warehouseId(flowDTO.getWarehouseId()).modifiedBy(flowDTO.getCreatedBy()).flowDetailVO(flowDetailVOList)
+				.build();
+
 		flowDetailVOList = flowDTO.getFlowDetailDTO().stream().map(fdDTO -> {
 			KitVO kitVO = kitRepo.findAllByKitNoAndOrgId(fdDTO.getKitNo(), fdDTO.getOrgId());
 			kitVO.setEflag(true);
 			kitRepo.save(kitVO);
-			BasicDetailVO basicDetailVO= basicDetailRepo.findByPartNumberAndOrgId(fdDTO.getPartNumber(),fdDTO.getOrgId());
+			BasicDetailVO basicDetailVO = basicDetailRepo.findByPartNumberAndOrgId(fdDTO.getPartNumber(),
+					fdDTO.getOrgId());
 			basicDetailVO.setEflag(true);
 			basicDetailRepo.save(basicDetailVO);
 			return FlowDetailVO.builder().active(fdDTO.isActive()).cycleTime(fdDTO.getCycleTime())
@@ -914,74 +926,74 @@ public class MasterServiceImpl implements MasterService {
 		// Update or add new address details
 		List<FlowDetailVO> flowDetailVOList = new ArrayList<>();
 		if (flowDTO.getFlowDetailDTO() != null) {
-		    for (FlowDetailDTO flowDetailDTO : flowDTO.getFlowDetailDTO()) {
-		        if (flowDetailDTO.getId() != 0) {
-		            FlowDetailVO flowDetailVO1 = flowDetailRepo.findById(flowDetailDTO.getId()).orElseThrow(
-		                    () -> new ApplicationException("Flow details not found for ID: " + flowDetailDTO.getId()));
-		            flowDetailVO1.setActive(flowDetailDTO.isActive());
-		            flowDetailVO1.setCycleTime(flowDetailDTO.getCycleTime());
-		            flowDetailVO1.setEmitterId(flowDTO.getEmitterId());
-		            flowDetailVO1.setOrgId(flowDetailDTO.getOrgId());
-		            flowDetailVO1.setPartName(flowDetailDTO.getPartName());
-		            flowDetailVO1.setKitDesc(flowDetailDTO.getKitDesc());
-		            flowDetailVO1.setKitNo(flowDetailDTO.getKitNo());
-		            flowDetailVO1.setPartNumber(flowDetailDTO.getPartNumber());
-		            flowDetailVO1.setPartQty(kitRepo.findPartqty(flowDetailDTO.getKitNo()));
-		            flowDetailVO1.setEmitter(flowRepo.findEmiterbyId(flowDTO.getEmitterId()));
-		            flowDetailVO1.setFlowVO(flowVO);
-		            flowDetailVOList.add(flowDetailVO1);
-		        } else {
-		            FlowDetailVO flowDetailVO1 = new FlowDetailVO();
-		            flowDetailVO1.setActive(flowDetailDTO.isActive());
-		            flowDetailVO1.setCycleTime(flowDetailDTO.getCycleTime());
-		            flowDetailVO1.setEmitterId(flowDTO.getEmitterId());
-		            flowDetailVO1.setOrgId(flowDetailDTO.getOrgId());
-		            flowDetailVO1.setPartName(flowDetailDTO.getPartName());
-		            flowDetailVO1.setKitDesc(flowDetailDTO.getKitDesc());
-		            flowDetailVO1.setKitNo(flowDetailDTO.getKitNo());
-		            flowDetailVO1.setPartNumber(flowDetailDTO.getPartNumber());
-		            flowDetailVO1.setPartQty(kitRepo.findPartqty(flowDetailDTO.getKitNo()));
-		            flowDetailVO1.setEmitter(flowRepo.findEmiterbyId(flowDTO.getEmitterId()));
-		            flowDetailVO1.setFlowVO(flowVO);
-		            flowDetailVOList.add(flowDetailVO1);
-		        }
-		    }
+			for (FlowDetailDTO flowDetailDTO : flowDTO.getFlowDetailDTO()) {
+				if (flowDetailDTO.getId() != 0) {
+					FlowDetailVO flowDetailVO1 = flowDetailRepo.findById(flowDetailDTO.getId()).orElseThrow(
+							() -> new ApplicationException("Flow details not found for ID: " + flowDetailDTO.getId()));
+					flowDetailVO1.setActive(flowDetailDTO.isActive());
+					flowDetailVO1.setCycleTime(flowDetailDTO.getCycleTime());
+					flowDetailVO1.setEmitterId(flowDTO.getEmitterId());
+					flowDetailVO1.setOrgId(flowDetailDTO.getOrgId());
+					flowDetailVO1.setPartName(flowDetailDTO.getPartName());
+					flowDetailVO1.setKitDesc(flowDetailDTO.getKitDesc());
+					flowDetailVO1.setKitNo(flowDetailDTO.getKitNo());
+					flowDetailVO1.setPartNumber(flowDetailDTO.getPartNumber());
+					flowDetailVO1.setPartQty(kitRepo.findPartqty(flowDetailDTO.getKitNo()));
+					flowDetailVO1.setEmitter(flowRepo.findEmiterbyId(flowDTO.getEmitterId()));
+					flowDetailVO1.setFlowVO(flowVO);
+					flowDetailVOList.add(flowDetailVO1);
+				} else {
+					FlowDetailVO flowDetailVO1 = new FlowDetailVO();
+					flowDetailVO1.setActive(flowDetailDTO.isActive());
+					flowDetailVO1.setCycleTime(flowDetailDTO.getCycleTime());
+					flowDetailVO1.setEmitterId(flowDTO.getEmitterId());
+					flowDetailVO1.setOrgId(flowDetailDTO.getOrgId());
+					flowDetailVO1.setPartName(flowDetailDTO.getPartName());
+					flowDetailVO1.setKitDesc(flowDetailDTO.getKitDesc());
+					flowDetailVO1.setKitNo(flowDetailDTO.getKitNo());
+					flowDetailVO1.setPartNumber(flowDetailDTO.getPartNumber());
+					flowDetailVO1.setPartQty(kitRepo.findPartqty(flowDetailDTO.getKitNo()));
+					flowDetailVO1.setEmitter(flowRepo.findEmiterbyId(flowDTO.getEmitterId()));
+					flowDetailVO1.setFlowVO(flowVO);
+					flowDetailVOList.add(flowDetailVO1);
+				}
+			}
 		}
 		flowVO.setFlowDetailVO(flowDetailVOList);
 		return flowRepo.save(flowVO);
 	}
-	private void getFlowVOFromFlowDTO(FlowDTO flowDTO, FlowVO flowVO)
-			throws ApplicationException {
+
+	private void getFlowVOFromFlowDTO(FlowDTO flowDTO, FlowVO flowVO) throws ApplicationException {
 		FlowVO existingFlow = flowRepo.findById(flowDTO.getId())
-	            .orElseThrow(() -> new ApplicationException("Flow with ID " + flowDTO.getId() + " not found"));
+				.orElseThrow(() -> new ApplicationException("Flow with ID " + flowDTO.getId() + " not found"));
 
-	    if (!existingFlow.getFlowName().equals(flowDTO.getFlowName())) {
-	        // Check if there's already an entry with the same Flow Name and orgId
-	        if (flowRepo.existsByFlowNameAndOrgId(flowDTO.getFlowName(), existingFlow.getOrgId())) {
-	            throw new ApplicationException("Flow Name Already exists");
-	        }
-	        // Update Flow Name if there's no duplicate
-	        flowVO.setFlowName(flowDTO.getFlowName());
-	    }
+		if (!existingFlow.getFlowName().equals(flowDTO.getFlowName())) {
+			// Check if there's already an entry with the same Flow Name and orgId
+			if (flowRepo.existsByFlowNameAndOrgId(flowDTO.getFlowName(), existingFlow.getOrgId())) {
+				throw new ApplicationException("Flow Name Already exists");
+			}
+			// Update Flow Name if there's no duplicate
+			flowVO.setFlowName(flowDTO.getFlowName());
+		}
 
-	    // Update other fields
-	    flowVO.setActive(flowDTO.isActive());
-	    flowVO.setOrgin(flowDTO.getOrgin());
-	    flowVO.setRetrievalWarehouseId(flowDTO.getRetrievalWarehouseId());
-	    flowVO.setWarehouseLocation(flowDTO.getWarehouseLocation());
-	    flowVO.setReceiverId(flowDTO.getReceiverId());
-	    flowVO.setEmitterId(flowDTO.getEmitterId());
-	    flowVO.setModifiedBy(flowDTO.getCreatedBy());  
-	    flowVO.setEmitter(flowRepo.findEmiterbyId(flowDTO.getEmitterId()));
-	    flowVO.setDestination(flowDTO.getDestination());
-	    flowVO.setOrgId(flowDTO.getOrgId());
-	    flowVO.setWarehouseId(flowDTO.getWarehouseId());
-	    flowVO.setWarehouseLocation(flowRepo.getWarehouseLocationByLocationId(flowDTO.getWarehouseId()));
-		flowVO.setRetrievalWarehouseLocation(flowRepo.getWarehouseLocationByLocationId(flowDTO.getRetrievalWarehouseId()));
+		// Update other fields
+		flowVO.setActive(flowDTO.isActive());
+		flowVO.setOrgin(flowDTO.getOrgin());
+		flowVO.setRetrievalWarehouseId(flowDTO.getRetrievalWarehouseId());
+		flowVO.setWarehouseLocation(flowDTO.getWarehouseLocation());
+		flowVO.setReceiverId(flowDTO.getReceiverId());
+		flowVO.setEmitterId(flowDTO.getEmitterId());
+		flowVO.setModifiedBy(flowDTO.getCreatedBy());
+		flowVO.setEmitter(flowRepo.findEmiterbyId(flowDTO.getEmitterId()));
+		flowVO.setDestination(flowDTO.getDestination());
+		flowVO.setOrgId(flowDTO.getOrgId());
+		flowVO.setWarehouseId(flowDTO.getWarehouseId());
+		flowVO.setWarehouseLocation(flowRepo.getWarehouseLocationByLocationId(flowDTO.getWarehouseId()));
+		flowVO.setRetrievalWarehouseLocation(
+				flowRepo.getWarehouseLocationByLocationId(flowDTO.getRetrievalWarehouseId()));
 		flowVO.setReceiver(flowRepo.getReceiverByReceiverId(flowDTO.getReceiverId()));
-	   
-	}
 
+	}
 
 	@Override
 	public void deleteFlow(long id) {
@@ -1216,7 +1228,7 @@ public class MasterServiceImpl implements MasterService {
 		}).collect(Collectors.toList());
 		return kitResponseDTO;
 	}
-	
+
 	@Override
 	public List<KitResponseDTO> getActiveAllKit(Long orgId) {
 		List<KitResponseDTO> kitResponseDTO = new ArrayList<>();
@@ -1255,7 +1267,7 @@ public class MasterServiceImpl implements MasterService {
 	public Optional<KitVO> getKitByKitCode(String kitName) {
 		return kitRepo.findByKitNo(kitName);
 	}
-	
+
 	@Override
 	public Set<Object[]> getEmitterAndReceiverByKitNo(String kitNo) {
 		return flowRepo.findEmitterAndReceiverAndFlowByKitNo(kitNo);
@@ -1267,18 +1279,19 @@ public class MasterServiceImpl implements MasterService {
 		int finyr = kitRepo.getFinyr();
 		String kit = finyr + "KT" + kitRepo.finddocid();
 		List<KitAssetVO> kitAssetVO = new ArrayList<>();
-		KitVO kitVO = KitVO.builder().kitDesc(kitDTO.getKitDesc()).kitNo(kitDTO.getKitNo()).docId(kit).active(kitDTO.isActive())
-				.createdBy(kitDTO.getCreatedBy()).modifiedBy(kitDTO.getCreatedBy()).orgId(kitDTO.getOrgId()).active(kitDTO.isActive())
-				.partQty(kitDTO.getPartQuantity()).kitAssetVO(kitAssetVO).build();
+		KitVO kitVO = KitVO.builder().kitDesc(kitDTO.getKitDesc()).kitNo(kitDTO.getKitNo()).docId(kit)
+				.active(kitDTO.isActive()).createdBy(kitDTO.getCreatedBy()).modifiedBy(kitDTO.getCreatedBy())
+				.orgId(kitDTO.getOrgId()).active(kitDTO.isActive()).partQty(kitDTO.getPartQuantity())
+				.kitAssetVO(kitAssetVO).build();
 		for (KitAssetDTO kitAsset : kitDTO.getKitAssetDTO()) {
 			AssetVO assetVO = assetRepo.findByAssetCodeIdAndOrgId(kitAsset.getAssetCodeId(), kitDTO.getOrgId());
 			assetVO.setEflag(true);
 			assetRepo.save(assetVO);
 			;
-			kitAssetVO.add(
-					KitAssetVO.builder().assetType(kitAsset.getAssetType()).belongsTo(kitAsset.getBelongsTo()).manufacturePartCode(kitAsset.getManufacturePartCode()).assetCategory(kitAsset.getAssetCategory())
-							.categoryCode(kitAsset.getCategoryCode()).assetCodeId(kitAsset.getAssetCodeId())
-							.assetName(kitAsset.getAssetDesc()).quantity(kitAsset.getQuantity()).kitVO(kitVO).build());
+			kitAssetVO.add(KitAssetVO.builder().assetType(kitAsset.getAssetType()).belongsTo(kitAsset.getBelongsTo())
+					.manufacturePartCode(kitAsset.getManufacturePartCode()).assetCategory(kitAsset.getAssetCategory())
+					.categoryCode(kitAsset.getCategoryCode()).assetCodeId(kitAsset.getAssetCodeId())
+					.assetName(kitAsset.getAssetDesc()).quantity(kitAsset.getQuantity()).kitVO(kitVO).build());
 		}
 		kitRepo.updatesequence();
 
@@ -1450,17 +1463,17 @@ public class MasterServiceImpl implements MasterService {
 		if (ObjectUtils.isNotEmpty(orgId)) {
 			LOGGER.info("Successfully Received Vendor Information BY OrgId : {}", orgId);
 			vendorVO = vendorRepo.getAllVenderByOrgId(orgId);
-		} 
+		}
 		return vendorVO;
 	}
-	
+
 	@Override
 	public List<VendorVO> getAllActiveVendor(Long orgId) {
 		List<VendorVO> vendorVO = new ArrayList<>();
 		if (ObjectUtils.isNotEmpty(orgId)) {
 			LOGGER.info("Successfully Received Vendor Information BY OrgId : {}", orgId);
 			vendorVO = vendorRepo.getAllActiveVenderByOrgId(orgId);
-		} 
+		}
 		return vendorVO;
 	}
 
@@ -1474,117 +1487,119 @@ public class MasterServiceImpl implements MasterService {
 	@Override
 	public VendorVO updateCreateVendor(VendorDTO vendorDTO) throws ApplicationException {
 
-	    VendorVO vendorVO = new VendorVO();
-	    Long vendorId = vendorDTO.getId();
+		VendorVO vendorVO = new VendorVO();
+		Long vendorId = vendorDTO.getId();
 
-	    if (vendorId != null) {
-	        vendorVO = vendorRepo.findById(vendorId)
-	                .orElseThrow(() -> new ApplicationException("Invalid Vendor details"));
-	    }
+		if (vendorId != null) {
+			vendorVO = vendorRepo.findById(vendorId)
+					.orElseThrow(() -> new ApplicationException("Invalid Vendor details"));
+		}
 
-	    // Update vendor details
-	    getVendorVOFromVendorDTO(vendorDTO, vendorVO);
+		// Update vendor details
+		getVendorVOFromVendorDTO(vendorDTO, vendorVO);
 
-	    // Update or create bank details
-	    List<VendorBankDetailsVO> vendorBankDetailsVO = new ArrayList<>();
-	    if (vendorDTO.getVendorBankDetailsDTO() != null) {
-	        for (VendorBankDetailsDTO vendorbankDetailsDTO : vendorDTO.getVendorBankDetailsDTO()) {
-	            VendorBankDetailsVO bankDetailsVO;
-	            if (vendorbankDetailsDTO.getId() != null && vendorbankDetailsDTO.getId() != 0) {
-	                bankDetailsVO = vendorBankDetailsRepo.findById(vendorbankDetailsDTO.getId()).orElse(new VendorBankDetailsVO());
-	            } else {
-	                bankDetailsVO = new VendorBankDetailsVO();
-	            }
-	            bankDetailsVO.setAccountNo(vendorbankDetailsDTO.getAccountNo());
-	            bankDetailsVO.setBank(vendorbankDetailsDTO.getBank());
-	            bankDetailsVO.setBranch(vendorbankDetailsDTO.getBranch());
-	            bankDetailsVO.setAccountName(vendorbankDetailsDTO.getAccountName());
-	            bankDetailsVO.setIfscCode(vendorbankDetailsDTO.getIfscCode());
-	            bankDetailsVO.setVendorVO(vendorVO);
-	            vendorBankDetailsVO.add(bankDetailsVO);
-	        }
-	    }
-	    vendorVO.setVendorBankDetailsVO(vendorBankDetailsVO);
+		// Update or create bank details
+		List<VendorBankDetailsVO> vendorBankDetailsVO = new ArrayList<>();
+		if (vendorDTO.getVendorBankDetailsDTO() != null) {
+			for (VendorBankDetailsDTO vendorbankDetailsDTO : vendorDTO.getVendorBankDetailsDTO()) {
+				VendorBankDetailsVO bankDetailsVO;
+				if (vendorbankDetailsDTO.getId() != null && vendorbankDetailsDTO.getId() != 0) {
+					bankDetailsVO = vendorBankDetailsRepo.findById(vendorbankDetailsDTO.getId())
+							.orElse(new VendorBankDetailsVO());
+				} else {
+					bankDetailsVO = new VendorBankDetailsVO();
+				}
+				bankDetailsVO.setAccountNo(vendorbankDetailsDTO.getAccountNo());
+				bankDetailsVO.setBank(vendorbankDetailsDTO.getBank());
+				bankDetailsVO.setBranch(vendorbankDetailsDTO.getBranch());
+				bankDetailsVO.setAccountName(vendorbankDetailsDTO.getAccountName());
+				bankDetailsVO.setIfscCode(vendorbankDetailsDTO.getIfscCode());
+				bankDetailsVO.setVendorVO(vendorVO);
+				vendorBankDetailsVO.add(bankDetailsVO);
+			}
+		}
+		vendorVO.setVendorBankDetailsVO(vendorBankDetailsVO);
 
-	    // Update or create address details
-	    List<VendorAddressVO> vendorAddressVO = new ArrayList<>();
-	    if (vendorDTO.getVendorAddressDTO() != null) {
-	        for (VendorAddressDTO vendorAddressDTO : vendorDTO.getVendorAddressDTO()) {
-	            VendorAddressVO vendorAddress;
-	            if (vendorAddressDTO.getId() != null && vendorAddressDTO.getId() != 0) {
-	                vendorAddress = vendorAddressRepo.findById(vendorAddressDTO.getId()).orElse(new VendorAddressVO());
-	            } else {
-	                vendorAddress = new VendorAddressVO();
-	            }
-	            vendorAddress.setGstNumber(vendorAddressDTO.getGstNumber());
-	            vendorAddress.setStreet1(vendorAddressDTO.getStreet1());
-	            vendorAddress.setStreet2(vendorAddressDTO.getStreet2());
-	            vendorAddress.setCity(vendorAddressDTO.getCity());
-	            vendorAddress.setPinCode(vendorAddressDTO.getPinCode());
-	            vendorAddress.setContactName(vendorAddressDTO.getContactName());
-	            vendorAddress.setPhoneNumber(vendorAddressDTO.getPhoneNumber());
-	            vendorAddress.setDesignation(vendorAddressDTO.getDesignation());
-	            vendorAddress.setEmail(vendorAddressDTO.getEmail());
-	            vendorAddress.setGstRegistrationStatus(vendorAddressDTO.getGstRegistrationStatus());
-	            vendorAddress.setState(vendorAddressDTO.getState());
-	            vendorAddress.setVendorVO(vendorVO);
-	            vendorAddress.setCountry(vendorAddressDTO.getCountry());
-	            vendorAddressVO.add(vendorAddress);
-	        }
-	    }
-	    vendorVO.setVendorAddressVO(vendorAddressVO);
+		// Update or create address details
+		List<VendorAddressVO> vendorAddressVO = new ArrayList<>();
+		if (vendorDTO.getVendorAddressDTO() != null) {
+			for (VendorAddressDTO vendorAddressDTO : vendorDTO.getVendorAddressDTO()) {
+				VendorAddressVO vendorAddress;
+				if (vendorAddressDTO.getId() != null && vendorAddressDTO.getId() != 0) {
+					vendorAddress = vendorAddressRepo.findById(vendorAddressDTO.getId()).orElse(new VendorAddressVO());
+				} else {
+					vendorAddress = new VendorAddressVO();
+				}
+				vendorAddress.setGstNumber(vendorAddressDTO.getGstNumber());
+				vendorAddress.setStreet1(vendorAddressDTO.getStreet1());
+				vendorAddress.setStreet2(vendorAddressDTO.getStreet2());
+				vendorAddress.setCity(vendorAddressDTO.getCity());
+				vendorAddress.setPinCode(vendorAddressDTO.getPinCode());
+				vendorAddress.setContactName(vendorAddressDTO.getContactName());
+				vendorAddress.setPhoneNumber(vendorAddressDTO.getPhoneNumber());
+				vendorAddress.setDesignation(vendorAddressDTO.getDesignation());
+				vendorAddress.setEmail(vendorAddressDTO.getEmail());
+				vendorAddress.setGstRegistrationStatus(vendorAddressDTO.getGstRegistrationStatus());
+				vendorAddress.setState(vendorAddressDTO.getState());
+				vendorAddress.setVendorVO(vendorVO);
+				vendorAddress.setCountry(vendorAddressDTO.getCountry());
+				vendorAddressVO.add(vendorAddress);
+			}
+		}
+		vendorVO.setVendorAddressVO(vendorAddressVO);
 
-	    return vendorRepo.save(vendorVO);
+		return vendorRepo.save(vendorVO);
 	}
 
 	private void getVendorVOFromVendorDTO(VendorDTO vendorDTO, VendorVO vendorVO) throws ApplicationException {
 
-	    Long vendorId = vendorDTO.getId();
+		Long vendorId = vendorDTO.getId();
 
-	    if (vendorId != null && vendorId != 0) {
-	        VendorVO existingVendor = vendorRepo.findById(vendorId)
-	                .orElseThrow(() -> new ApplicationException("Vendor with ID " + vendorId + " not found"));
+		if (vendorId != null && vendorId != 0) {
+			VendorVO existingVendor = vendorRepo.findById(vendorId)
+					.orElseThrow(() -> new ApplicationException("Vendor with ID " + vendorId + " not found"));
 
-	        if (!existingVendor.getEntityLegalName().equals(vendorDTO.getEntityLegalName())) {
-	            // Check if there's already an entry with the same Entity Legal Name and orgId
-	            if (vendorRepo.existsByEntityLegalNameAndOrgId(vendorDTO.getEntityLegalName(), existingVendor.getOrgId())) {
-	                throw new ApplicationException("Entity Legal Name already exists");
-	            }
-	            // Update Entity Legal Name if there's no duplicate
-	            vendorVO.setEntityLegalName(vendorDTO.getEntityLegalName());
-	        }
+			if (!existingVendor.getEntityLegalName().equals(vendorDTO.getEntityLegalName())) {
+				// Check if there's already an entry with the same Entity Legal Name and orgId
+				if (vendorRepo.existsByEntityLegalNameAndOrgId(vendorDTO.getEntityLegalName(),
+						existingVendor.getOrgId())) {
+					throw new ApplicationException("Entity Legal Name already exists");
+				}
+				// Update Entity Legal Name if there's no duplicate
+				vendorVO.setEntityLegalName(vendorDTO.getEntityLegalName());
+			}
 
-	        if (!existingVendor.getDisplyName().equals(vendorDTO.getDisplyName())) {
-	            // Check if there's already an entry with the same Display Name and orgId
-	            if (vendorRepo.existsByDisplyNameAndOrgId(vendorDTO.getDisplyName(), existingVendor.getOrgId())) {
-	                throw new ApplicationException("Display Name already exists");
-	            }
-	            // Update Display Name if there's no duplicate
-	            vendorVO.setDisplyName(vendorDTO.getDisplyName());
-	        }
+			if (!existingVendor.getDisplyName().equals(vendorDTO.getDisplyName())) {
+				// Check if there's already an entry with the same Display Name and orgId
+				if (vendorRepo.existsByDisplyNameAndOrgId(vendorDTO.getDisplyName(), existingVendor.getOrgId())) {
+					throw new ApplicationException("Display Name already exists");
+				}
+				// Update Display Name if there's no duplicate
+				vendorVO.setDisplyName(vendorDTO.getDisplyName());
+			}
 
-	        vendorVO.setOrgId(vendorDTO.getOrgId());
-	        vendorVO.setVenderType(vendorDTO.getVenderType());
-	        vendorVO.setPhoneNumber(vendorDTO.getPhoneNumber());
-	        vendorVO.setEmail(vendorDTO.getEmail());
-	        vendorVO.setVenderActivePortal(vendorDTO.isVenderActivePortal());
-	        vendorVO.setActive(vendorDTO.isActive());
-	    } else {
-	        if (vendorRepo.existsByEntityLegalNameAndOrgId(vendorDTO.getEntityLegalName(), vendorDTO.getOrgId())) {
-	            throw new ApplicationException("Entity Legal Name already exists");
-	        }
-	        if (vendorRepo.existsByDisplyNameAndOrgId(vendorDTO.getDisplyName(), vendorDTO.getOrgId())) {
-	            throw new ApplicationException("Display Name already exists");
-	        }
-	        vendorVO.setOrgId(vendorDTO.getOrgId());
-	        vendorVO.setVenderType(vendorDTO.getVenderType());
-	        vendorVO.setDisplyName(vendorDTO.getDisplyName());
-	        vendorVO.setPhoneNumber(vendorDTO.getPhoneNumber());
-	        vendorVO.setEntityLegalName(vendorDTO.getEntityLegalName());
-	        vendorVO.setEmail(vendorDTO.getEmail());
-	        vendorVO.setVenderActivePortal(vendorDTO.isActive());
-	        vendorVO.setActive(vendorDTO.isActive());
-	    }
+			vendorVO.setOrgId(vendorDTO.getOrgId());
+			vendorVO.setVenderType(vendorDTO.getVenderType());
+			vendorVO.setPhoneNumber(vendorDTO.getPhoneNumber());
+			vendorVO.setEmail(vendorDTO.getEmail());
+			vendorVO.setVenderActivePortal(vendorDTO.isVenderActivePortal());
+			vendorVO.setActive(vendorDTO.isActive());
+		} else {
+			if (vendorRepo.existsByEntityLegalNameAndOrgId(vendorDTO.getEntityLegalName(), vendorDTO.getOrgId())) {
+				throw new ApplicationException("Entity Legal Name already exists");
+			}
+			if (vendorRepo.existsByDisplyNameAndOrgId(vendorDTO.getDisplyName(), vendorDTO.getOrgId())) {
+				throw new ApplicationException("Display Name already exists");
+			}
+			vendorVO.setOrgId(vendorDTO.getOrgId());
+			vendorVO.setVenderType(vendorDTO.getVenderType());
+			vendorVO.setDisplyName(vendorDTO.getDisplyName());
+			vendorVO.setPhoneNumber(vendorDTO.getPhoneNumber());
+			vendorVO.setEntityLegalName(vendorDTO.getEntityLegalName());
+			vendorVO.setEmail(vendorDTO.getEmail());
+			vendorVO.setVenderActivePortal(vendorDTO.isActive());
+			vendorVO.setActive(vendorDTO.isActive());
+		}
 	}
 
 	@Override
@@ -1843,14 +1858,14 @@ public class MasterServiceImpl implements MasterService {
 	// Stock branch
 	@Override
 	public StockBranchVO createStockBranch(StockBranchDTO stockBranchDTO) throws ApplicationException {
-		
-		if(stockBranchRepo.existsByBranchAndOrgId(stockBranchDTO.getBranch(),stockBranchDTO.getOrgId())) {
+
+		if (stockBranchRepo.existsByBranchAndOrgId(stockBranchDTO.getBranch(), stockBranchDTO.getOrgId())) {
 			throw new ApplicationException("Branch Already Exist");
 		}
-		if(stockBranchRepo.existsBybranchCodeAndOrgId(stockBranchDTO.getBranchCode(),stockBranchDTO.getOrgId())) {
+		if (stockBranchRepo.existsBybranchCodeAndOrgId(stockBranchDTO.getBranchCode(), stockBranchDTO.getOrgId())) {
 			throw new ApplicationException("Branch Code Already Exist");
 		}
-		
+
 		StockBranchVO stockBranchVO = new StockBranchVO();
 		stockBranchVO.setBranch(stockBranchDTO.getBranch());
 		stockBranchVO.setBranchCode(stockBranchDTO.getBranchCode());
@@ -1865,16 +1880,18 @@ public class MasterServiceImpl implements MasterService {
 	@Override
 	public StockBranchVO updateStockBranch(StockBranchDTO stockBranchDTO) throws ApplicationException {
 
-		if(stockBranchDTO.getId()!=0) {
+		if (stockBranchDTO.getId() != 0) {
 			StockBranchVO existingStockBranch = stockBranchRepo.findById(stockBranchDTO.getId()).get();
-			if(!existingStockBranch.getBranch().equals(stockBranchDTO.getBranch())){
-				if(stockBranchRepo.existsByBranchAndOrgId(stockBranchDTO.getBranch(),existingStockBranch.getOrgId())) {
+			if (!existingStockBranch.getBranch().equals(stockBranchDTO.getBranch())) {
+				if (stockBranchRepo.existsByBranchAndOrgId(stockBranchDTO.getBranch(),
+						existingStockBranch.getOrgId())) {
 					throw new ApplicationException("Branch Already Exist");
 				}
 				existingStockBranch.setBranch(stockBranchDTO.getBranch());
 			}
-			if(!existingStockBranch.getBranchCode().equals(stockBranchDTO.getBranchCode())){
-				if(stockBranchRepo.existsBybranchCodeAndOrgId(stockBranchDTO.getBranchCode(),stockBranchDTO.getOrgId())) {
+			if (!existingStockBranch.getBranchCode().equals(stockBranchDTO.getBranchCode())) {
+				if (stockBranchRepo.existsBybranchCodeAndOrgId(stockBranchDTO.getBranchCode(),
+						stockBranchDTO.getOrgId())) {
 					throw new ApplicationException("Branch Code Already Exist");
 				}
 				existingStockBranch.setBranchCode(stockBranchDTO.getBranchCode());
@@ -1893,8 +1910,7 @@ public class MasterServiceImpl implements MasterService {
 		return stockBranchRepo.findByOrgId(orgId);
 
 	}
-	
-	
+
 	@Override
 	public List<StockBranchVO> getAllActiveStockBranchByOrgId(Long orgId) {
 
@@ -1950,7 +1966,7 @@ public class MasterServiceImpl implements MasterService {
 				assetTaggingDetails.setCategory(taggingDetailsDTO.getCategory());
 				assetTaggingDetails.setTaggingVO(assetTaggingVO);
 				assetTaggingDetailsVO.add(assetTaggingDetails);
-				
+
 			}
 		}
 		assetTaggingVO.setTaggingDetails(assetTaggingDetailsVO);
@@ -1966,7 +1982,7 @@ public class MasterServiceImpl implements MasterService {
 				assetStockDetailsVO.setSkuCode(assetTaggingDetails.getAssetCode());
 				assetStockDetailsVO.setSku(assetTaggingDetails.getAsset());
 				assetStockDetailsVO.setSkuQty(1);
-				assetStockDetailsVO.setCategory(assetTaggingDetails.getCategory());		
+				assetStockDetailsVO.setCategory(assetTaggingDetails.getCategory());
 				assetStockDetailsVO.setOrgId(savedAssetTaggingVO.getOrgId());
 				assetStockDetailsVO.setRfId(assetTaggingDetails.getRfId());
 				assetStockDetailsVO.setTagCode(assetTaggingDetails.getTagCode());
@@ -1992,23 +2008,21 @@ public class MasterServiceImpl implements MasterService {
 	}
 
 	@Override
-	public Set<Object[]> getTagCodeByAsset(String assetcode, String asset,int endno,String category) {
+	public Set<Object[]> getTagCodeByAsset(String assetcode, String asset, int endno, String category) {
 
 		int finyr = assetTaggingRepo.getFinyr();
-		int start=assetTaggingRepo.getstno(assetcode);
-		int st=0;
-		int end=0;
-		if(start!=1) {
-			 st=start+1;
-			 end=start+endno;
+		int start = assetTaggingRepo.getstno(assetcode);
+		int st = 0;
+		int end = 0;
+		if (start != 1) {
+			st = start + 1;
+			end = start + endno;
+		} else {
+			st = start;
+			end = endno;
 		}
-		else
-		{
-			st=start;
-			end=endno;
-		}
-		
-		return assetTaggingRepo.getTagCodeByAsset(assetcode, asset, st, end, finyr,category);
+
+		return assetTaggingRepo.getTagCodeByAsset(assetcode, asset, st, end, finyr, category);
 	}
 
 	@Override
@@ -2377,7 +2391,6 @@ public class MasterServiceImpl implements MasterService {
 		return binAllotmentNewRepo.getAllotmentDetailsByAllotmentNoAndOrgId(orgId, docid);
 	}
 
-	
 	@Override
 	public Set<Object[]> getAllotmentAssetDetailsByAllotmentNoAndOrgId(Long orgId, String docid) {
 
@@ -2613,30 +2626,30 @@ public class MasterServiceImpl implements MasterService {
 
 		return kitRepo.findByavaliableKitQtyByEmitter(orgId, emitterId, kitId, flowId);
 	}
-	
-	@Override
-	public Set<Object[]> getAssetDetailsByAssetForAssetInward(Long orgId, String stockBranch, String assetCode,int qty) {
 
-		return assetStockDetailsRepo.getAssetDetailsByAssetForAssetInward(orgId, stockBranch, assetCode,qty);
-	}
-	
 	@Override
-	public Set<Object[]> getAvailAssetDetailsByBranch(Long orgId, String stockBranch,String category) {
-		return assetStockDetailsRepo.getAvailAssetDetailsByBranch(orgId, stockBranch,category);
+	public Set<Object[]> getAssetDetailsByAssetForAssetInward(Long orgId, String stockBranch, String assetCode,
+			int qty) {
+
+		return assetStockDetailsRepo.getAssetDetailsByAssetForAssetInward(orgId, stockBranch, assetCode, qty);
+	}
+
+	@Override
+	public Set<Object[]> getAvailAssetDetailsByBranch(Long orgId, String stockBranch, String category) {
+		return assetStockDetailsRepo.getAvailAssetDetailsByBranch(orgId, stockBranch, category);
 	}
 
 	@Override
 	public AssetTaggingVO getTaggingById(Long id) {
 		return assetTaggingRepo.findById(id).get();
 	}
-	
-	
-	@Override	
+
+	@Override
 	public List<BranchVO> getAllBranch(Long orgId) {
 		return branchRepo.findAllBranchByOrgId(orgId);
 	}
-	
-	@Override	
+
+	@Override
 	public List<BranchVO> getAllActiveBranch(Long orgId) {
 		return branchRepo.findAllActiveBranch(orgId);
 	}
@@ -2649,80 +2662,81 @@ public class MasterServiceImpl implements MasterService {
 	@Override
 	public BranchVO createUpdateBranch(BranchDTO branchDTO) throws ApplicationException {
 		BranchVO branchVO = new BranchVO();
-		    if (branchDTO.getId() !=0 ) {
-		    	branchVO = branchRepo.findById(branchDTO.getId())
-		                .orElseThrow(() -> new ApplicationException("Invalid Branch details"));
-		    }
-		    getBranchVOFromBranchDTO(branchDTO, branchVO);
-		    
-			return branchRepo.save(branchVO);
+		if (branchDTO.getId() != 0) {
+			branchVO = branchRepo.findById(branchDTO.getId())
+					.orElseThrow(() -> new ApplicationException("Invalid Branch details"));
+		}
+		getBranchVOFromBranchDTO(branchDTO, branchVO);
+
+		return branchRepo.save(branchVO);
 	}
 
 	private void getBranchVOFromBranchDTO(BranchDTO branchDTO, BranchVO branchVO) throws ApplicationException {
 		if (branchDTO.getId() != 0) {
-		    BranchVO existingBranch = branchRepo.findById(branchDTO.getId())
-		            .orElseThrow(() -> new ApplicationException("Branch with ID " + branchDTO.getId() + " not found"));
+			BranchVO existingBranch = branchRepo.findById(branchDTO.getId())
+					.orElseThrow(() -> new ApplicationException("Branch with ID " + branchDTO.getId() + " not found"));
 
-		    if (!existingBranch.getBranchName().equals(branchDTO.getBranchName())) {
-		        if (branchRepo.existsByBranchNameAndOrgId(branchDTO.getBranchName(), existingBranch.getOrgId())) {
-		            throw new ApplicationException("Branch Name already exists");
-		        }
-		        existingBranch.setBranchName(branchDTO.getBranchName());
-		    }
+			if (!existingBranch.getBranchName().equals(branchDTO.getBranchName())) {
+				if (branchRepo.existsByBranchNameAndOrgId(branchDTO.getBranchName(), existingBranch.getOrgId())) {
+					throw new ApplicationException("Branch Name already exists");
+				}
+				existingBranch.setBranchName(branchDTO.getBranchName());
+			}
 
-		    if (!existingBranch.getBranchCode().equals(branchDTO.getBranchCode())) {
-		        if (branchRepo.existsByBranchCodeAndOrgId(branchDTO.getBranchCode(), existingBranch.getOrgId())) {
-		            throw new ApplicationException("Branch Code already exists");
-		        }
-		        existingBranch.setBranchCode(branchDTO.getBranchCode());
-		    }
+			if (!existingBranch.getBranchCode().equals(branchDTO.getBranchCode())) {
+				if (branchRepo.existsByBranchCodeAndOrgId(branchDTO.getBranchCode(), existingBranch.getOrgId())) {
+					throw new ApplicationException("Branch Code already exists");
+				}
+				existingBranch.setBranchCode(branchDTO.getBranchCode());
+			}
 
-		    existingBranch.setAddress1(branchDTO.getAddress1());
-		    existingBranch.setAddress2(branchDTO.getAddress2());
-		    existingBranch.setCity(branchDTO.getCity());
-		    existingBranch.setState(branchDTO.getState());
-		    existingBranch.setCountry(branchDTO.getCountry());
-		    existingBranch.setPinCode(branchDTO.getPinCode());
-		    existingBranch.setPhone(branchDTO.getPhone());
-		    existingBranch.setModifiedBy(branchDTO.getCreatedBy());
-		    existingBranch.setGST(branchDTO.getGST());
-		    existingBranch.setActive(branchDTO.isActive());
-		    existingBranch.setPan(branchDTO.getPan());
-		    existingBranch.setOrgId(branchDTO.getOrgId());
-		    existingBranch.setCurrency(branchDTO.getCurrency());
+			existingBranch.setAddress1(branchDTO.getAddress1());
+			existingBranch.setAddress2(branchDTO.getAddress2());
+			existingBranch.setCity(branchDTO.getCity());
+			existingBranch.setState(branchDTO.getState());
+			existingBranch.setCountry(branchDTO.getCountry());
+			existingBranch.setPinCode(branchDTO.getPinCode());
+			existingBranch.setPhone(branchDTO.getPhone());
+			existingBranch.setModifiedBy(branchDTO.getCreatedBy());
+			existingBranch.setGST(branchDTO.getGST());
+			existingBranch.setActive(branchDTO.isActive());
+			existingBranch.setPan(branchDTO.getPan());
+			existingBranch.setOrgId(branchDTO.getOrgId());
+			existingBranch.setCurrency(branchDTO.getCurrency());
 		} else {
-		    if (branchRepo.existsByBranchNameAndOrgId(branchDTO.getBranchName(), branchDTO.getOrgId())) {
-		        throw new ApplicationException("Branch Name already exists");
-		    }
-		    if (branchRepo.existsByBranchCodeAndOrgId(branchDTO.getBranchCode(), branchDTO.getOrgId())) {
-		        throw new ApplicationException("Branch Code already exists");
-		    }
-		    branchVO.setBranchName(branchDTO.getBranchName());
-		    branchVO.setBranchCode(branchDTO.getBranchCode());
-		    branchVO.setAddress1(branchDTO.getAddress1());
-		    branchVO.setAddress2(branchDTO.getAddress2());
-		    branchVO.setCity(branchDTO.getCity());
-		    branchVO.setCreatedBy(branchDTO.getCreatedBy());
-		    branchVO.setModifiedBy(branchDTO.getCreatedBy());
-		    branchVO.setActive(branchDTO.isActive());
-		    branchVO.setState(branchDTO.getState());
-		    branchVO.setCountry(branchDTO.getCountry());
-		    branchVO.setPinCode(branchDTO.getPinCode());
-		    branchVO.setPhone(branchDTO.getPhone());
-		    branchVO.setGST(branchDTO.getGST());
-		    branchVO.setPan(branchDTO.getPan());
-		    branchVO.setOrgId(branchDTO.getOrgId());
-		    branchVO.setCurrency(branchDTO.getCurrency());
+			if (branchRepo.existsByBranchNameAndOrgId(branchDTO.getBranchName(), branchDTO.getOrgId())) {
+				throw new ApplicationException("Branch Name already exists");
+			}
+			if (branchRepo.existsByBranchCodeAndOrgId(branchDTO.getBranchCode(), branchDTO.getOrgId())) {
+				throw new ApplicationException("Branch Code already exists");
+			}
+			branchVO.setBranchName(branchDTO.getBranchName());
+			branchVO.setBranchCode(branchDTO.getBranchCode());
+			branchVO.setAddress1(branchDTO.getAddress1());
+			branchVO.setAddress2(branchDTO.getAddress2());
+			branchVO.setCity(branchDTO.getCity());
+			branchVO.setCreatedBy(branchDTO.getCreatedBy());
+			branchVO.setModifiedBy(branchDTO.getCreatedBy());
+			branchVO.setActive(branchDTO.isActive());
+			branchVO.setState(branchDTO.getState());
+			branchVO.setCountry(branchDTO.getCountry());
+			branchVO.setPinCode(branchDTO.getPinCode());
+			branchVO.setPhone(branchDTO.getPhone());
+			branchVO.setGST(branchDTO.getGST());
+			branchVO.setPan(branchDTO.getPan());
+			branchVO.setOrgId(branchDTO.getOrgId());
+			branchVO.setCurrency(branchDTO.getCurrency());
 		}
-	    
+
 	}
+
 	@Override
 	public void deleteBranch(Long id) {
 		branchRepo.deleteById(id);
 	}
 
-	//BinAllotment
-	
+	// BinAllotment
+
 	@Override
 	public BinAllotmentNewVO createBinAllotment(BinAllotmentDTO binAllotmentDTO) {
 
@@ -2832,9 +2846,115 @@ public class MasterServiceImpl implements MasterService {
 
 	@Override
 	public Set<Object[]> getBranchLocationByFlow(Long orgId, Long flow) {
-		
-		return flowRepo.findByBranchcode(orgId,flow);
+
+		return flowRepo.findByBranchcode(orgId, flow);
+	}
+
+	
+	
+
+	
+
+	    private int totalRows = 0; // Initialize totalRows
+
+	    private int successfulUploads = 0; // Initialize successfulUploads
+
+	    @Override
+	    @Transactional
+	    public void ExcelUploadForAssetCategory(MultipartFile[] files, CustomerAttachmentType type, Long orgId) throws ApplicationException {
+	        List<AssetCategoryVO> assetCategoryVOsToSave = new ArrayList<>();
+	        totalRows = 0; // Reset totalRows for each execution
+	        successfulUploads = 0; // Reset successfulUploads for each execution
+
+	        try {
+	            // Process each uploaded file
+	            for (MultipartFile file : files) {
+	                Workbook workbook = WorkbookFactory.create(file.getInputStream());
+	                Sheet sheet = workbook.getSheetAt(0); // Assuming only one sheet
+	                
+	                List<String> errorMessages = new ArrayList<>();
+	                
+	                // Check all rows for validity first
+	                for (Row row : sheet) {
+	                    if (row.getRowNum() == 0) {
+	                        continue; // Skip header row
+	                    }
+	                    
+	                    totalRows++; // Increment totalRows
+	                    
+	                    String assetType = row.getCell(0).getStringCellValue();
+	                    String category = row.getCell(1).getStringCellValue();
+	                    String categoryCode = row.getCell(2).getStringCellValue();
+	                    
+	                    // Validate each row
+	                    try {
+	                        if (assetCategoryRepo.existsByCategoryAndOrgId(category, orgId)) {
+	                            errorMessages.add("Category " + category + " Already exists for this Organization. Row: " + (row.getRowNum() + 1));
+	                        }
+	                        if (assetCategoryRepo.existsByCategoryCodeAndOrgId(categoryCode, orgId)) {
+	                            errorMessages.add("Category Code " + categoryCode + " Already exists for this Organization. Row: " + (row.getRowNum() + 1));
+	                        }
+	                        AssetTypeVO assetTypeVO = assetTypeRepo.findByOrgIdAndAssetType(orgId, assetType);
+	                        if (assetTypeVO == null) {
+	                            errorMessages.add("Asset Type " + assetType + " not found for orgId: " + orgId + " and assetType: " + assetType + ". Row: " + (row.getRowNum() + 1));
+	                        }
+	                    } catch (Exception e) {
+	                        errorMessages.add("Error processing row " + (row.getRowNum() + 1) + ": " + e.getMessage());
+	                    }
+	                }
+	                
+	                // If there are errors, throw ApplicationException and do not save any rows
+	                if (!errorMessages.isEmpty()) {
+	                    throw new ApplicationException("Excel upload validation failed. Errors: " + String.join(", ", errorMessages));
+	                }
+	                
+	                // No errors found, now save all rows
+	                for (Row row : sheet) {
+	                    if (row.getRowNum() == 0) {
+	                        continue; // Skip header row
+	                    }
+	                    
+	                    String assetType = row.getCell(0).getStringCellValue();
+	                    String category = row.getCell(1).getStringCellValue();
+	                    String categoryCode = row.getCell(2).getStringCellValue();
+	                    
+	                    // Create AssetCategoryVO and add to list for batch saving
+	                    AssetCategoryVO assetCategoryVO = new AssetCategoryVO();
+	                    assetCategoryVO.setOrgId(orgId);
+	                    assetCategoryVO.setActive(true);
+	                    assetCategoryVO.setAssetType(assetType);
+	                    assetCategoryVO.setCategory(category);
+	                    assetCategoryVO.setCategoryCode(categoryCode);
+	                    assetCategoryVOsToSave.add(assetCategoryVO);
+	                    successfulUploads++; // Increment successfulUploads
+	                }
+	            }
+	            
+	            // Batch save all AssetCategoryVOs
+	            assetCategoryRepo.saveAll(assetCategoryVOsToSave);
+	            
+	        } catch (IOException e) {
+	            // Handle IO exceptions
+	            e.printStackTrace(); // Replace with proper error handling
+	            throw new ApplicationException("Failed to process Excel files: " + e.getMessage());
+	        }
+	    }
+
+	    // Method to retrieve total rows processed
+	    public int getTotalRows() {
+	        return totalRows;
+	    }
+
+	    // Method to retrieve successful uploads count
+	    public int getSuccessfulUploads() {
+	        return successfulUploads;
+	    }
 	}
 
 
-}
+	
+
+
+
+
+

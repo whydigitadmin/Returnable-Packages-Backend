@@ -37,7 +37,6 @@ import com.whydigit.efit.dto.AssetInwardDTO;
 import com.whydigit.efit.dto.AssetTaggingDTO;
 import com.whydigit.efit.dto.AssetTypeDTO;
 import com.whydigit.efit.dto.BinAllotmentDTO;
-import com.whydigit.efit.dto.BinInwardDTO;
 import com.whydigit.efit.dto.BranchDTO;
 import com.whydigit.efit.dto.CnoteDTO;
 import com.whydigit.efit.dto.CustomerAttachmentType;
@@ -3614,6 +3613,42 @@ public class MasterController extends BaseController {
 			return availAssetDetails;
 		}
 		
+		@PostMapping("/ExcelUploadForAssetCategory")
+		public ResponseEntity<ResponseDTO> handleExcelUpload(@RequestParam MultipartFile[] files,
+		                                                     CustomerAttachmentType type,
+		                                                     @RequestParam(required = false) Long orgId) {
+		    String methodName = "ExcelUploadForAssetCategory()";
+		    LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		    String errorMsg = null;
+		    Map<String, Object> responseObjectsMap = new HashMap<>();
+		    ResponseDTO responseDTO = null;
+		    int totalRows = 0;
+		    int successfulUploads = 0;
 
+		    try {
+		        // Call service method to process Excel upload
+		        masterService.ExcelUploadForAssetCategory(files, type, orgId);
+		        
+		        // Retrieve the counts after processing
+		        totalRows = masterService.getTotalRows(); // Get total rows processed
+		        successfulUploads = masterService.getSuccessfulUploads(); // Get successful uploads count
+
+		        // Construct success response
+		        responseObjectsMap.put("statusFlag", "Ok");
+		        responseObjectsMap.put("status", true);
+		        responseObjectsMap.put("totalRows", totalRows);
+		        responseObjectsMap.put("successfulUploads", successfulUploads);
+		        responseObjectsMap.put("paramObjectsMap", Map.of("message", "Excel Upload For AssetCategory successful"));
+		        responseDTO = createServiceResponse(responseObjectsMap);
+		        
+		    }  catch (Exception e) {
+		errorMsg = e.getMessage();
+		LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		responseDTO = createServiceResponseError(responseObjectsMap,
+		"Excel Upload For AssetCategory failed. Please try again.", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+		}
 
 }
