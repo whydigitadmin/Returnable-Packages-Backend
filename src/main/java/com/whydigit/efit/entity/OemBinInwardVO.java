@@ -48,10 +48,6 @@ public class OemBinInwardVO {
 	private String invoiceNo;
 	@Column(name = "invoicedate")
 	private LocalDate invoiceDate;
-	@Column(name = "oeminwardno")
-	private String oemInwardNo;
-	@Column(name = "oeminwarddate")
-	private LocalDate oemInwardDate;
 	@Column(name = "createdby")
 	private String createdby;
 	@Column(name = "modifiedby")

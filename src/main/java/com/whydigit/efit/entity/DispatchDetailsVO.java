@@ -46,10 +46,6 @@ public class DispatchDetailsVO {
 	private String kitNo;
 	@Column(name = "qty")
 	private int qty;
-	@Column(name = "oeminwardno")
-	private String oemInwardNo;
-	@Column(name = "oeminwarddate")
-	private LocalDate oemInwardDate;
 	
 	@ManyToOne
 	@JoinColumn(name = "dispatchid")

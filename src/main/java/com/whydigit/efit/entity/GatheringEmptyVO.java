@@ -38,8 +38,8 @@ public class GatheringEmptyVO {
 	private String docId;
 	@Column(name = "docdate")
 	private LocalDate docDate=LocalDate.now();
-	@Column(name = "stockBranch")
-	private String stockBranch;
+	@Column(name = "flow")
+	private String flow;
 	@Column(name = "createdby")
 	private String createdBy;
 	@Column(name = "modifiedby")
