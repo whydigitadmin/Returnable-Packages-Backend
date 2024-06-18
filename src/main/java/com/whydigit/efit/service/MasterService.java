@@ -358,7 +358,14 @@ public interface MasterService {
 	int getSuccessfulUploads();
 
 
-	
+	void ExcelUploadForAssetCategory(MultipartFile[] files, CustomerAttachmentType type,Long orgId) throws ApplicationException;
+
+	int getTotalRows();
+
+	int getSuccessfulUploads();
+
+	//void handleExcelUploadForUsers(MultipartFile[] files, CustomerAttachmentType type, Long orgId) throws ApplicationException;
+  
 
 	
 

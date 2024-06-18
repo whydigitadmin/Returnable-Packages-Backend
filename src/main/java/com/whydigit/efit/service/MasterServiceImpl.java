@@ -33,7 +33,10 @@ import javax.validation.Valid;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
+
 import org.apache.poi.ss.usermodel.Cell;
+
+
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -122,6 +125,7 @@ import com.whydigit.efit.entity.ServiceVO;
 import com.whydigit.efit.entity.StockBranchVO;
 import com.whydigit.efit.entity.TermsAndConditionsVO;
 import com.whydigit.efit.entity.UnitVO;
+import com.whydigit.efit.entity.UserVO;
 import com.whydigit.efit.entity.VendorAddressVO;
 import com.whydigit.efit.entity.VendorBankDetailsVO;
 import com.whydigit.efit.entity.VendorVO;
@@ -170,6 +174,7 @@ import com.whydigit.efit.repo.VendorBankDetailsRepo;
 import com.whydigit.efit.repo.VendorRepo;
 import com.whydigit.efit.repo.WarehouseRepository;
 import com.whydigit.efit.util.CommonUtils;
+
 
 @Service
 public class MasterServiceImpl implements MasterService {
@@ -305,6 +310,7 @@ public class MasterServiceImpl implements MasterService {
 
 	@Autowired
 	private ProofOfDeliveryRepo proofOfDeliveryRepo;
+	
 
 	private final String uploadDir = "D:\\Justin"; // Specify the upload directory
 
@@ -2855,106 +2861,213 @@ public class MasterServiceImpl implements MasterService {
 
 	
 
-	    private int totalRows = 0; // Initialize totalRows
+	private int totalRows = 0; // Initialize totalRows
 
-	    private int successfulUploads = 0; // Initialize successfulUploads
+	private int successfulUploads = 0; // Initialize successfulUploads
 
-	    @Override
-	    @Transactional
-	    public void ExcelUploadForAssetCategory(MultipartFile[] files, CustomerAttachmentType type, Long orgId) throws ApplicationException {
-	        List<AssetCategoryVO> assetCategoryVOsToSave = new ArrayList<>();
-	        totalRows = 0; // Reset totalRows for each execution
-	        successfulUploads = 0; // Reset successfulUploads for each execution
+	@Override
+	@Transactional
+	public void ExcelUploadForAssetCategory(MultipartFile[] files, CustomerAttachmentType type, Long orgId)
+			throws ApplicationException {
+		List<AssetCategoryVO> assetCategoryVOsToSave = new ArrayList<>();
+		totalRows = 0; // Reset totalRows for each execution
+		successfulUploads = 0; // Reset successfulUploads for each execution
 
-	        try {
-	            // Process each uploaded file
-	            for (MultipartFile file : files) {
-	                Workbook workbook = WorkbookFactory.create(file.getInputStream());
-	                Sheet sheet = workbook.getSheetAt(0); // Assuming only one sheet
-	                
-	                List<String> errorMessages = new ArrayList<>();
-	                
-	                // Check all rows for validity first
-	                for (Row row : sheet) {
-	                    if (row.getRowNum() == 0) {
-	                        continue; // Skip header row
-	                    }
-	                    
-	                    totalRows++; // Increment totalRows
-	                    
-	                    String assetType = row.getCell(0).getStringCellValue();
-	                    String category = row.getCell(1).getStringCellValue();
-	                    String categoryCode = row.getCell(2).getStringCellValue();
-	                    
-	                    // Validate each row
-	                    try {
-	                        if (assetCategoryRepo.existsByCategoryAndOrgId(category, orgId)) {
-	                            errorMessages.add("Category " + category + " Already exists for this Organization. Row: " + (row.getRowNum() + 1));
-	                        }
-	                        if (assetCategoryRepo.existsByCategoryCodeAndOrgId(categoryCode, orgId)) {
-	                            errorMessages.add("Category Code " + categoryCode + " Already exists for this Organization. Row: " + (row.getRowNum() + 1));
-	                        }
-	                        AssetTypeVO assetTypeVO = assetTypeRepo.findByOrgIdAndAssetType(orgId, assetType);
-	                        if (assetTypeVO == null) {
-	                            errorMessages.add("Asset Type " + assetType + " not found for orgId: " + orgId + " and assetType: " + assetType + ". Row: " + (row.getRowNum() + 1));
-	                        }
-	                    } catch (Exception e) {
-	                        errorMessages.add("Error processing row " + (row.getRowNum() + 1) + ": " + e.getMessage());
-	                    }
-	                }
-	                
-	                // If there are errors, throw ApplicationException and do not save any rows
-	                if (!errorMessages.isEmpty()) {
-	                    throw new ApplicationException("Excel upload validation failed. Errors: " + String.join(", ", errorMessages));
-	                }
-	                
-	                // No errors found, now save all rows
-	                for (Row row : sheet) {
-	                    if (row.getRowNum() == 0) {
-	                        continue; // Skip header row
-	                    }
-	                    
-	                    String assetType = row.getCell(0).getStringCellValue();
-	                    String category = row.getCell(1).getStringCellValue();
-	                    String categoryCode = row.getCell(2).getStringCellValue();
-	                    
-	                    // Create AssetCategoryVO and add to list for batch saving
-	                    AssetCategoryVO assetCategoryVO = new AssetCategoryVO();
-	                    assetCategoryVO.setOrgId(orgId);
-	                    assetCategoryVO.setActive(true);
-	                    assetCategoryVO.setAssetType(assetType);
-	                    assetCategoryVO.setCategory(category);
-	                    assetCategoryVO.setCategoryCode(categoryCode);
-	                    assetCategoryVOsToSave.add(assetCategoryVO);
-	                    successfulUploads++; // Increment successfulUploads
-	                }
-	            }
-	            
-	            // Batch save all AssetCategoryVOs
-	            assetCategoryRepo.saveAll(assetCategoryVOsToSave);
-	            
-	        } catch (IOException e) {
-	            // Handle IO exceptions
-	            e.printStackTrace(); // Replace with proper error handling
-	            throw new ApplicationException("Failed to process Excel files: " + e.getMessage());
-	        }
-	    }
+		try {
+			// Process each uploaded file
+			for (MultipartFile file : files) {
+				Workbook workbook = WorkbookFactory.create(file.getInputStream());
+				Sheet sheet = workbook.getSheetAt(0); // Assuming only one sheet
 
-	    // Method to retrieve total rows processed
-	    public int getTotalRows() {
-	        return totalRows;
-	    }
+				List<String> errorMessages = new ArrayList<>();
 
-	    // Method to retrieve successful uploads count
-	    public int getSuccessfulUploads() {
-	        return successfulUploads;
-	    }
+				// Check all rows for validity first
+				for (Row row : sheet) {
+					if (row.getRowNum() == 0) {
+						continue; // Skip header row
+					}
+
+					totalRows++; // Increment totalRows
+
+					String assetType = row.getCell(0).getStringCellValue();
+					String category = row.getCell(1).getStringCellValue();
+					String categoryCode = row.getCell(2).getStringCellValue();
+
+					// Validate each row
+					try {
+						if (assetCategoryRepo.existsByCategoryAndOrgId(category, orgId)) {
+							errorMessages.add("Category " + category + " Already exists for this Organization. Row: "
+									+ (row.getRowNum() + 1));
+						}
+						if (assetCategoryRepo.existsByCategoryCodeAndOrgId(categoryCode, orgId)) {
+							errorMessages.add("Category Code " + categoryCode
+									+ " Already exists for this Organization. Row: " + (row.getRowNum() + 1));
+						}
+						AssetTypeVO assetTypeVO = assetTypeRepo.findByOrgIdAndAssetType(orgId, assetType);
+						if (assetTypeVO == null) {
+							errorMessages.add("Asset Type " + assetType + " not found for orgId: " + orgId
+									+ " and assetType: " + assetType + ". Row: " + (row.getRowNum() + 1));
+						}
+					} catch (Exception e) {
+						errorMessages.add("Error processing row " + (row.getRowNum() + 1) + ": " + e.getMessage());
+					}
+				}
+
+				// If there are errors, throw ApplicationException and do not save any rows
+				if (!errorMessages.isEmpty()) {
+					throw new ApplicationException(
+							"Excel upload validation failed. Errors: " + String.join(", ", errorMessages));
+				}
+
+				// No errors found, now save all rows
+				for (Row row : sheet) {
+					if (row.getRowNum() == 0) {
+						continue; // Skip header row
+					}
+
+					String assetType = row.getCell(0).getStringCellValue();
+					String category = row.getCell(1).getStringCellValue();
+					String categoryCode = row.getCell(2).getStringCellValue();
+
+					// Create AssetCategoryVO and add to list for batch saving
+					AssetCategoryVO assetCategoryVO = new AssetCategoryVO();
+					assetCategoryVO.setOrgId(orgId);
+					assetCategoryVO.setActive(true);
+					assetCategoryVO.setAssetType(assetType);
+					assetCategoryVO.setCategory(category);
+					assetCategoryVO.setCategoryCode(categoryCode);
+					assetCategoryVOsToSave.add(assetCategoryVO);
+					successfulUploads++; // Increment successfulUploads
+				}
+			}
+
+			// Batch save all AssetCategoryVOs
+			assetCategoryRepo.saveAll(assetCategoryVOsToSave);
+
+		} catch (IOException e) {
+			// Handle IO exceptions
+			e.printStackTrace(); // Replace with proper error handling
+			throw new ApplicationException("Failed to process Excel files: " + e.getMessage());
+		}
 	}
 
+	// Method to retrieve total rows processed
+	public int getTotalRows() {
+		return totalRows;
+	}
+
+	// Method to retrieve successful uploads count
+	public int getSuccessfulUploads() {
+		return successfulUploads;
+	}
 
 	
-
-
+//		private int totalRows1 = 0; // Initialize totalRows
+//
+//		private int successfulUploads1 = 0; // Initialize successfulUploads
+//
+//		@Override
+//		@Transactional
+//		public void handleExcelUploadForUsers(MultipartFile[] files, CustomerAttachmentType type, Long orgId) throws ApplicationException {
+//			List<UserVO> userVOs = new ArrayList<>();
+//			totalRows = 0; // Reset totalRows for each execution
+//			successfulUploads = 0; // Reset successfulUploads for each execution
+//
+//			try {
+//				// Process each uploaded file
+//				for (MultipartFile file : files) {
+//					Workbook workbook = WorkbookFactory.create(file.getInputStream());
+//					Sheet sheet = workbook.getSheetAt(0); // Assuming only one sheet
+//
+//					List<String> errorMessages = new ArrayList<>();
+//
+//					// Check all rows for validity first
+//					for (Row row : sheet) {
+//						if (row.getRowNum() == 0) {
+//							continue; // Skip header row
+//						}
+//
+//						totalRows++; // Increment totalRows
+//
+//						String Name = row.getCell(0).getStringCellValue();
+//						String Email = row.getCell(1).getStringCellValue();
+//						String Password = row.getCell(2).getStringCellValue();
+//						String Address = row.getCell(3).getStringCellValue();
+//						String Country = row.getCell(4).getStringCellValue();
+//						String State = row.getCell(5).getStringCellValue();
+//						String City = row.getCell(6).getStringCellValue();
+//						String Pincode = row.getCell(7).getStringCellValue();
+//						String PhoneNo = row.getCell(8).getStringCellValue();
+//						String warehouse = row.getCell(9).getStringCellValue();
+//						
+//
+//						// Validate each row
+//						try {
+//							if (userRepo.existsByNameAndOrgId(Name, orgId)) {
+//								errorMessages.add("userName " + Name + " Already exists for this UserName. Row: "
+//										+ (row.getRowNum() + 1));
+//							}
+//							if (userRepo.existsByEmailAndOrgId(Email, orgId)) {
+//								errorMessages.add("Email  " + Email
+//										+ " Already exists for this Email. Row: " + (row.getRowNum() + 1));
+//							}
+////							AssetTypeVO assetTypeVO = assetTypeRepo.findByOrgIdAndAssetType(orgId, assetType);
+////							if (assetTypeVO == null) {
+////								errorMessages.add("Asset Type " + assetType + " not found for orgId: " + orgId
+////										+ " and assetType: " + assetType + ". Row: " + (row.getRowNum() + 1));
+////							}
+//						} catch (Exception e) {
+//							errorMessages.add("Error processing row " + (row.getRowNum() + 1) + ": " + e.getMessage());
+//						}
+//					}
+//
+//					// If there are errors, throw ApplicationException and do not save any rows
+//					if (!errorMessages.isEmpty()) {
+//						throw new ApplicationException(
+//								"Excel upload validation failed. Errors: " + String.join(", ", errorMessages));
+//					}
+//
+//					// No errors found, now save all rows
+//					for (Row row : sheet) {
+//						if (row.getRowNum() == 0) {
+//							continue; // Skip header row
+//						}
+//
+//						String assetType = row.getCell(0).getStringCellValue();
+//						String category = row.getCell(1).getStringCellValue();
+//						String categoryCode = row.getCell(2).getStringCellValue();
+//
+//						// Create AssetCategoryVO and add to list for batch saving
+//						UserVO userVO = new UserVO();
+//						userVO.setUserName(orgId);
+//						userVO.setEmail(true);
+//						userVO.setPassword(assetType);
+//						userVO.set(category);
+//						userVO.setCategoryCode(categoryCode);
+//						userVOs.add(userVO);
+//						successfulUploads++; // Increment successfulUploads
+//					}
+//				}
+//
+//				// Batch save all AssetCategoryVOs
+//				assetCategoryRepo.saveAll(userVOs);
+//
+//			} catch (IOException e) {
+//				// Handle IO exceptions
+//				e.printStackTrace(); // Replace with proper error handling
+//				throw new ApplicationException("Failed to process Excel files: " + e.getMessage());
+//			}
+//		}
+//
+//		// Method to retrieve total rows processed
+//		public int getTotalRows1() {
+//			return totalRows;
+//		}
+//
+//		// Method to retrieve successful uploads count
+//		public int getSuccessfulUploads1() {
+//			return successfulUploads;
+//		}
 
 
 
