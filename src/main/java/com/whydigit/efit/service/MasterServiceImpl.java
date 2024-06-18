@@ -2623,8 +2623,10 @@ public class MasterServiceImpl implements MasterService {
 
 	@Override
 	public List<Object[]> getAvailableKitQtyByEmitter(Long orgId, Long emitterId, String kitId, Long flowId) {
-
-		return kitRepo.findByavaliableKitQtyByEmitter(orgId, emitterId, kitId, flowId);
+		
+		FlowVO flowVO=flowRepo.findById(flowId).get();
+		String stockbranch=flowVO.getEmitter()+"-"+flowVO.getOrgin();
+		return kitRepo.findByAvailableKitQtyByEmitter(orgId,stockbranch,kitId);
 	}
 
 	@Override

@@ -22,7 +22,11 @@ public class OemBinInwardDTO {
 	private String createdBy;
 	private LocalDate invoiceDate;
 	private Long emitterId;
+	private String oemInwardNo;
+	private LocalDate oemInwardDate;
 	// private String updatedBy;
 
 	private List<OemBinInwardDetailsDTO> oemBinInwardDetails;
+
+	
 }

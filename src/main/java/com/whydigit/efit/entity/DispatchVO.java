@@ -64,6 +64,11 @@ public class DispatchVO {
 	private String scode = "DISPH";
 	@Column(name="emitterid")
 	private Long emitterId;	
+	
+	@Column(name = "oeminwardno")
+	private String oemInwardNo;
+	@Column(name = "oeminwarddate")
+	private LocalDate oemInwardDate;
 
 	@OneToMany(mappedBy = "dispatchVO", cascade = CascadeType.ALL)
 	@JsonManagedReference
