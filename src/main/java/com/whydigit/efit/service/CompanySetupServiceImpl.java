@@ -6,10 +6,8 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.whydigit.efit.entity.BranchVO;
 import com.whydigit.efit.entity.CompanySetVO;
 import com.whydigit.efit.entity.CompanySetupVO;
-import com.whydigit.efit.repo.BranchRepo;
 import com.whydigit.efit.repo.CompanySetRepo;
 import com.whydigit.efit.repo.CompanySetupRepo;
 
@@ -20,13 +18,11 @@ public class CompanySetupServiceImpl implements CompanySetupService {
 	@Autowired
 	private CompanySetupRepo companySetupRepo;
 	
-	@Autowired
-	private BranchRepo branchRepo;
+	
 	
 	@Autowired
 	private CompanySetRepo companySetRepo;
 
-	@Override
 	
 	public List<CompanySetupVO> getAllcompanies() {
 		return companySetupRepo.findAll();
@@ -56,34 +52,7 @@ public class CompanySetupServiceImpl implements CompanySetupService {
 		companySetupRepo.deleteById(id);
 	}
 	
-	@Override	
-	public List<BranchVO> getAllBranch() {
-		return branchRepo.findAll();
-	}
-
-	@Override
-	public Optional<BranchVO> getBranchById(int id) {
-		return branchRepo.findById(id);
-	}
-
-	@Override
-	public BranchVO createBranch(BranchVO branchVO) {
-		return branchRepo.save(branchVO);
-	}
-
-	@Override
-	public Optional<BranchVO> updateBranch(BranchVO branchVO) {
-		if (branchRepo.existsById(branchVO.getId())) {
-			return Optional.of(branchRepo.save(branchVO));
-		} else {
-			return Optional.empty();
-		}
-	}
-
-	@Override
-	public void deleteBranch(int id) {
-		branchRepo.deleteById(id);
-	}
+	
 	
 	@Override	
 	public List<CompanySetVO> getAllCompanySet() {
@@ -113,6 +82,8 @@ public class CompanySetupServiceImpl implements CompanySetupService {
 	public void deleteCompanySet(int id) {
 		companySetRepo.deleteById(id);
 	}
+
+	
 
 
 }
