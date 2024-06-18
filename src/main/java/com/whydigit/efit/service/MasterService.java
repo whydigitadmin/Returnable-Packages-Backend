@@ -351,6 +351,12 @@ public interface MasterService {
 
 	Set<Object[]> getBranchLocationByFlow(Long orgId, Long flowId);
 
+	void ExcelUploadForAssetCategory(MultipartFile[] files, CustomerAttachmentType type,Long orgId) throws ApplicationException;
+
+	int getTotalRows();
+
+	int getSuccessfulUploads();
+
 
 	void ExcelUploadForAssetCategory(MultipartFile[] files, CustomerAttachmentType type,Long orgId) throws ApplicationException;
 

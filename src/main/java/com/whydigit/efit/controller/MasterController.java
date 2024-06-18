@@ -3613,6 +3613,7 @@ public class MasterController extends BaseController {
 			return availAssetDetails;
 		}
 		
+
 		
 		//File Upload For Asset Category
 		
@@ -3645,6 +3646,7 @@ public class MasterController extends BaseController {
 		        responseDTO = createServiceResponse(responseObjectsMap);
 		        
 		    }  catch (Exception e) {
+
 		errorMsg = e.getMessage();
 		LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
 		responseDTO = createServiceResponseError(responseObjectsMap,
@@ -3653,6 +3655,8 @@ public class MasterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 		}
+
+
 		
     //File Upload For User Deatils
 
@@ -3693,4 +3697,5 @@ public class MasterController extends BaseController {
 //		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 //		return ResponseEntity.ok().body(responseDTO);
 //		}
+
 }
