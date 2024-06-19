@@ -30,19 +30,19 @@ public class VendorBankDetailsVO {
 	@Column(name="vendor3")
 	private Long id;
 	
-	@Column(name="bank",length = 25)
+	@Column(name="bank")
 	private String bank;
 	
-	@Column(name="accountname",length = 25)
+	@Column(name="accountname")
 	private String accountName;
 	
-	@Column(name="ifsccode",length = 25)
+	@Column(name="ifsccode")
 	private String ifscCode;
 	
-	@Column(name="accountno",length = 25)
+	@Column(name="accountno")
 	private String accountNo;
 	
-	@Column(name="branch",length = 25)
+	@Column(name="branch")
 	private String branch;
 	
 	@ManyToOne
