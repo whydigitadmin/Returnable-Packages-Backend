@@ -772,7 +772,7 @@ public class PartStudyController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 	
-	@PostMapping("/uploadCommercialInBloob")
+	@PostMapping("/uploadTechnicalDrawingInBloob")
 	public ResponseEntity<ResponseDTO> uploadCommercialInBloob(@RequestParam("file") MultipartFile file,
 			@RequestParam Long refPsId) {
 		String methodName = "uploadCommercialInBloob()";

@@ -59,31 +59,31 @@ public class PackingDetailVO {
 	@Column(name="unit",length =25)
 	private String partUnit;
 	
-	@Column(name="existingpart",length =25)
+	@Column(name="existingpart")
 	private String existingPart;
 	
-	@Column(name="cpc",length = 25)
+	@Column(name="cpc")
 	private String currentPackingChallenges;
 	
-	@Column(name="ppp",length =25)
+	@Column(name="ppp")
 	private String partsPerPackaging;
 	
-	@Column(name="senstive",length =25)
+	@Column(name="senstive")
 	private String partSensitive;
 	
-	@Column(name="partgreasy",length =25 )
+	@Column(name="partgreasy" )
 	private String partGreasy;
 	
-	@Column(name="orientation",length =25)
+	@Column(name="orientation")
 	private String partOrientation;
 	
-	@Column(name="mpsu",length = 25)
+	@Column(name="mpsu")
 	private String multiPartInSingleUnit;
 	
-	@Column(name="stacking",length =25)
+	@Column(name="stacking")
 	private String stacking;
 	
-	@Column(name="nesting",length =25 )
+	@Column(name="nesting")
 	private String nesting;
 	
 	
@@ -120,7 +120,7 @@ public class PackingDetailVO {
 	@Column(name ="approvedcommercialcontract",columnDefinition ="LONGBLOB")
 	private byte[] approvedCommercialContract;
 	
-	@Column(name ="approvedcomercial",columnDefinition ="LONGBLOB")
+	@Column(name ="technicaldrawing",columnDefinition ="LONGBLOB")
 	private byte[] comercial;
 
 	@JsonBackReference
