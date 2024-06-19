@@ -24,4 +24,10 @@ public class PackingDetailDTO {
 	private String stacking;
 	private String nesting;
 	private String remarks;
+	private byte[] partImage;
+	private byte[] existingPackingImage;
+	private byte[] partDrawing;
+	private byte[] approvedCommercialContract;
+	private byte[] comercial;
+
 }

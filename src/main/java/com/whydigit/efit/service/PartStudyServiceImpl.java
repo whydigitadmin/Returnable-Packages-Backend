@@ -233,11 +233,11 @@ public class PartStudyServiceImpl implements PartStudyService {
 		packingDetailVO.setLength(packingDetailDTO.getLength());
 		packingDetailVO.setBreath(packingDetailDTO.getBreath());
 		packingDetailVO.setHeight(packingDetailDTO.getHeight());
-		packingDetailVO.setApprovedCommercialContract(null);
-		packingDetailVO.setComercial(null);
-		packingDetailVO.setPartDrawing(null);
-		packingDetailVO.setPartImage(null);
-		packingDetailVO.setExistingPackingImage(null);
+		packingDetailVO.setApprovedCommercialContract(packingDetailDTO.getApprovedCommercialContract());
+		packingDetailVO.setComercial(packingDetailDTO.getComercial());
+		packingDetailVO.setPartDrawing(packingDetailDTO.getPartDrawing());
+		packingDetailVO.setPartImage(packingDetailDTO.getPartImage());
+		packingDetailVO.setExistingPackingImage(packingDetailDTO.getExistingPackingImage());
 		
 		
 		
