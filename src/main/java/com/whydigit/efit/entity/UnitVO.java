@@ -26,7 +26,7 @@ public class UnitVO {
 	private Long id;
 	private long orgId;
 	private String unit;
-	private boolean active;
+	private boolean active=true;
 	//private String action;
 	private String createdBy;
 	private String updatedBy;
