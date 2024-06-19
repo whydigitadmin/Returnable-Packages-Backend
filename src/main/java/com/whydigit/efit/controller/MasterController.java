@@ -3619,9 +3619,7 @@ public class MasterController extends BaseController {
 		//File Upload For Asset Category
 		
 		@PostMapping("/ExcelUploadForAssetCategory")
-		public ResponseEntity<ResponseDTO> handleExcelUpload(@RequestParam MultipartFile[] files,
-		                                                     CustomerAttachmentType type,
-		                                                     @RequestParam(required = false) Long orgId) {
+		public ResponseEntity<ResponseDTO> handleExcelUpload(@RequestParam MultipartFile[] files,CustomerAttachmentType type,@RequestParam(required = false) Long orgId) {
 		    String methodName = "ExcelUploadForAssetCategory()";
 		    LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		    String errorMsg = null;
@@ -3637,7 +3635,6 @@ public class MasterController extends BaseController {
 		        // Retrieve the counts after processing
 		        totalRows = masterService.getTotalRows(); // Get total rows processed
 		        successfulUploads = masterService.getSuccessfulUploads(); // Get successful uploads count
-
 		        // Construct success response
 		        responseObjectsMap.put("statusFlag", "Ok");
 		        responseObjectsMap.put("status", true);
