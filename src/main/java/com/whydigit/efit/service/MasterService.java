@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.web.multipart.MultipartFile;
 
 import com.whydigit.efit.dto.AssetCategoryDTO;
@@ -357,12 +359,18 @@ public interface MasterService {
 
 	int getSuccessfulUploads();
 
+	void ExcelUploadForUnit(MultipartFile[] files, CustomerAttachmentType type, Long orgId) throws ApplicationException;
 
-	void ExcelUploadForAssetCategory(MultipartFile[] files, CustomerAttachmentType type,Long orgId) throws ApplicationException;
 
-	int getTotalRows();
+	void ExcelUploadForStockBranch(MultipartFile[] files, CustomerAttachmentType type, Long orgId,
+			HttpServletRequest request) throws ApplicationException;
 
-	int getSuccessfulUploads();
+
+//	void ExcelUploadForAssetCategory(MultipartFile[] files, CustomerAttachmentType type,Long orgId) throws ApplicationException;
+//
+//	int getTotalRows();
+//
+//	int getSuccessfulUploads();
 
 	//void handleExcelUploadForUsers(MultipartFile[] files, CustomerAttachmentType type, Long orgId) throws ApplicationException;
   

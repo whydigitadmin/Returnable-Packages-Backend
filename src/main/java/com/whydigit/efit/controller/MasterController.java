@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
@@ -3698,4 +3699,88 @@ public class MasterController extends BaseController {
 //		return ResponseEntity.ok().body(responseDTO);
 //		}
 
+		//Unit
+		
+		@PostMapping("/ExcelUploadForUnit")
+		public ResponseEntity<ResponseDTO> handleExcelUploadForUnit(@RequestParam MultipartFile[] files,
+		                                                     CustomerAttachmentType type,
+		                                                     @RequestParam(required = false) Long orgId) {
+		    String methodName = "ExcelUploadForUnit()";
+		    LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		    String errorMsg = null;
+		    Map<String, Object> responseObjectsMap = new HashMap<>();
+		    ResponseDTO responseDTO = null;
+		    int totalRows = 0;
+		    int successfulUploads = 0;
+
+		    try {
+		        // Call service method to process Excel upload
+		        masterService.ExcelUploadForUnit(files, type, orgId);
+		        
+		        // Retrieve the counts after processing
+		        totalRows = masterService.getTotalRows(); // Get total rows processed
+		        successfulUploads = masterService.getSuccessfulUploads(); // Get successful uploads count
+
+		        // Construct success response
+		        responseObjectsMap.put("statusFlag", "Ok");
+		        responseObjectsMap.put("status", true);
+		        responseObjectsMap.put("totalRows", totalRows);
+		        responseObjectsMap.put("successfulUploads", successfulUploads);
+		        responseObjectsMap.put("paramObjectsMap", Map.of("message", "Excel Upload For Unit successful"));
+		        responseDTO = createServiceResponse(responseObjectsMap);
+		        
+		    }  catch (Exception e) {
+
+		errorMsg = e.getMessage();
+		LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		responseDTO = createServiceResponseError(responseObjectsMap,
+		"Excel Upload For Unit failed. Please try again.", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+		}
+
+// StockBranch
+
+		
+		@PostMapping("/ExcelUploadForStockBranch")
+		public ResponseEntity<ResponseDTO> handleExcelUploadStockBranch(@RequestParam MultipartFile[] files,
+		                                                     CustomerAttachmentType type,
+		                                                     @RequestParam(required = false) Long orgId,HttpServletRequest request) {
+		    String methodName = "ExcelUploadForStockBranch()";
+		    LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		    String errorMsg = null;
+		    Map<String, Object> responseObjectsMap = new HashMap<>();
+		    ResponseDTO responseDTO = null;
+		    int totalRows = 0;
+		    int successfulUploads = 0;
+
+		    try {
+		        // Call service method to process Excel upload
+		        masterService.ExcelUploadForStockBranch(files, type, orgId,request);
+		        
+		        // Retrieve the counts after processing
+		        totalRows = masterService.getTotalRows(); // Get total rows processed
+		        successfulUploads = masterService.getSuccessfulUploads(); // Get successful uploads count
+
+		        // Construct success response
+		        responseObjectsMap.put("statusFlag", "Ok");
+		        responseObjectsMap.put("status", true);
+		        responseObjectsMap.put("totalRows", totalRows);
+		        responseObjectsMap.put("successfulUploads", successfulUploads);
+		        responseObjectsMap.put("paramObjectsMap", Map.of("message", "Excel Upload For StockBranch successful"));
+		        responseDTO = createServiceResponse(responseObjectsMap);
+		        
+		    }  catch (Exception e) {
+
+		errorMsg = e.getMessage();
+		LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		responseDTO = createServiceResponseError(responseObjectsMap,
+		"Excel Upload For StockBranch failed. Please try again.", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+		}
+
+		
 }
