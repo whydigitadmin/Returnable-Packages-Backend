@@ -217,13 +217,13 @@ public class PartStudyServiceImpl implements PartStudyService {
 		packingDetailVO = packingDetailRepo.findById(packingDetailDTO.getRefPsId())
 				.orElseThrow(() -> new ApplicationException("Invalid packing details"));
 		getPackingDetailVOFromPackingDetailDTO(packingDetailDTO, packingDetailVO);
-//		Set part study attachments path
-//		packingDetailVO.setPartImage(null);
-//		packingDetailVO.setExistingPackingImage(null);
-//		packingDetailVO.setPartDrawing(null);
-//		packingDetailVO.setApprovedCommercialContract(null);
-//		ApprovedPackageDrawingVO approvedPackageDrawingVO = new ApprovedPackageDrawingVO();
-//		packingDetailVO.getApprovedPackageDrawingVO().add(null);
+		packingDetailVO.setApprovedCommercialContract(packingDetailDTO.getApprovedCommercialContract());
+		packingDetailVO.setComercial(packingDetailDTO.getComercial());
+		packingDetailVO.setPartDrawing(packingDetailDTO.getPartDrawing());
+		packingDetailVO.setPartImage(packingDetailDTO.getPartImage());
+		packingDetailVO.setExistingPackingImage(packingDetailDTO.getExistingPackingImage());
+		ApprovedPackageDrawingVO approvedPackageDrawingVO = new ApprovedPackageDrawingVO();
+		packingDetailVO.getApprovedPackageDrawingVO().add(null);
 		return packingDetailRepo.save(packingDetailVO);
 	}
 
