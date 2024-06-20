@@ -1,16 +1,16 @@
 package com.whydigit.efit.controller;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -46,7 +46,7 @@ public class PartStudyController extends BaseController {
 	public static final Logger LOGGER = LoggerFactory.getLogger(BasicMasterController.class);
 
 	@Autowired
-	private PartStudyService partStudyService;
+	PartStudyService partStudyService;
 	
 	Map<String, Object> responseObjectsMap = new HashMap<>();
 	
@@ -798,56 +798,64 @@ public class PartStudyController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 	
-	
-
-//	    @PostMapping("/uploadCommercialInBlob")
-//	    public ResponseEntity<ResponseDTO> uploadCommercialInBlob(@RequestParam("file") MultipartFile file,
-//	                                                              @RequestParam Long refPsId) {
-//	        String methodName = "uploadCommercialInBlob()";
-//	        LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
-//	        String errorMsg = null;
-//	        Map<String, Object> responseObjectsMap = new HashMap<>();
-//	        ResponseDTO responseDTO = null;
-//	        PackingDetailVO packingDetailVO = null;
-//	        try {
-//	            packingDetailVO = partStudyService.uploadCommercialInBlob(file, refPsId);
-//	        } catch (Exception e) {
-//	            errorMsg = e.getMessage();
-//	            LOGGER.error("Unable To Upload Commercial", methodName, errorMsg);
-//	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(createServiceResponseError(responseObjectsMap, "Commercial Upload Failed", errorMsg));
-//	        }
-//	        if (StringUtils.isBlank(errorMsg)) {
-//	            String imageUrl = String.format("/api/partStudy/commercialImage/%d", refPsId);
-//	            responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Commercial Successfully Upload");
-//	            responseObjectsMap.put("imageUrl", imageUrl);
-//	            responseDTO = createServiceResponse(responseObjectsMap);
-//	        } else {
-//	            responseDTO = createServiceResponseError(responseObjectsMap, "Commercial Upload Failed", errorMsg);
-//	        }
-//	        LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
-//	        return ResponseEntity.ok().body(responseDTO);
-//	    }
+//	@PostMapping("/uploadPartImageInBloob")
+//    public CompletableFuture<ResponseEntity<ResponseDTO>> uploadPartImageInBlob(@RequestParam("file") MultipartFile file, @RequestParam Long refPsId) {
+//        return handleUpload(file, refPsId, "uploadPartImageInBloob()", partStudyService::uploadPartImageInBloob, "PartImage");
+//    }
 //
-//	    @GetMapping("/commercialImage/{id}")
-//	    public ResponseEntity<byte[]> getCommercialImage(@PathVariable Long id) {
-//	        String methodName = "getCommercialImage()";
-//	        LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
-//	        byte[] image = null;
-//	        try {
-//	            image = partStudyService.getCommercialImageById(id);
-//	        } catch (Exception e) {
-//	            LOGGER.error("Unable to retrieve image for id: " + id, e);
-//	            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-//	        }
-//	        if (image == null) {
-//	            LOGGER.error("Image not found for id: " + id);
-//	            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-//	        }
-//	        return ResponseEntity.ok()
-//	                .contentType(MediaType.IMAGE_JPEG)
-//	                .body(image);
-//	    }
+//    @PostMapping("/uploadExistingPackingImageInBloob")
+//    public CompletableFuture<ResponseEntity<ResponseDTO>> uploadExistingPackingImageInBlob(@RequestParam("file") MultipartFile file, @RequestParam Long refPsId) {
+//        return handleUpload(file, refPsId, "uploadExistingPackingImageInBloob()", partStudyService::uploadExistingPackingImageInBloob, "ExistingPackingImage");
+//    }
+//
+//    @PostMapping("/uploadpartdrawingInBloob")
+//    public CompletableFuture<ResponseEntity<ResponseDTO>> uploadPartDrawingInBlob(@RequestParam("file") MultipartFile file, @RequestParam Long refPsId) {
+//        return handleUpload(file, refPsId, "uploadpartdrawingInBloob()", partStudyService::uploadpartdrawingInBloob, "PartDrawing");
+//    }
+//
+//    @PostMapping("/uploadApprovedCommercialContractInBloob")
+//    public CompletableFuture<ResponseEntity<ResponseDTO>> uploadApprovedCommercialContractInBlob(@RequestParam("file") MultipartFile file, @RequestParam Long refPsId) {
+//        return handleUpload(file, refPsId, "uploadApprovedCommercialContractInBloob()", partStudyService::uploadApprovedCommercialContractInBloob, "ApprovedCommercialContract");
+//    }
+//
+//    @PostMapping("/uploadTechnicalDrawingInBloob")
+//    public CompletableFuture<ResponseEntity<ResponseDTO>> uploadCommercialInBlob(@RequestParam("file") MultipartFile file, @RequestParam Long refPsId) {
+//        return handleUpload(file, refPsId, "uploadTechnicalDrawingInBloob()", partStudyService::uploadCommercialInBloob, "Commercial");
+//    }
+//
+//    private CompletableFuture<ResponseEntity<ResponseDTO>> handleUpload(MultipartFile file, Long refPsId, String methodName, UploadFunction uploadFunction, String uploadType) {
+//        LOGGER.debug("Starting method: {}", methodName);
+//       
+//        Map<String, Object> responseObjectsMap = new HashMap<>();
+//        return CompletableFuture.supplyAsync(() -> {
+//            PackingDetailVO packingDetailVO = null;
+//            ResponseDTO responseDTO = null;
+//            String errorMsg = null;
+//            try {
+//                packingDetailVO = uploadFunction.upload(file, refPsId);
+//            } catch (Exception e) {
+//                errorMsg = e.getMessage();
+//                LOGGER.error("Unable to upload {}: {}", uploadType, errorMsg);
+//            }
+//
+//            if (errorMsg == null) {
+//                responseObjectsMap.put("message", uploadType + " successfully uploaded");
+//                responseObjectsMap.put("packingDetailVO", packingDetailVO);
+//                responseDTO = createServiceResponse(responseObjectsMap);
+//            } else {
+//                responseDTO = createServiceResponseError(responseObjectsMap, uploadType + " upload failed", errorMsg);
+//            }
+//
+//            LOGGER.debug("Ending method: {}", methodName);
+//            return ResponseEntity.ok().body(responseDTO);
+//        });
+//    }
+//
+//    @FunctionalInterface
+//    private interface UploadFunction {
+//        PackingDetailVO upload(MultipartFile file, Long refPsId) throws IOException;
+//    }
 	
 	
-	}
+}
 

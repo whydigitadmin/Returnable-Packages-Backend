@@ -27,14 +27,18 @@ public class GathereingEmptyDetailsVO {
 	@SequenceGenerator(name = "gatheringdetailsgen", sequenceName = "gatheringdetailsseq", initialValue = 1000000001, allocationSize = 1)
 	@Column(name = "gatheringdetailsid")
 	private Long id;
-	@Column(name = "assettype")
-	private String assetType;
+	@Column(name = "assetname")
+	private String assetName;
 	@Column(name = "assetcode")
 	private String assetCode;
-	@Column(name = "expqty")
-	private int expQty;
-	@Column(name = "emptyqty")
-	private int emptyQty;
+	@Column(name = "assettype")
+	private String AssetType;
+	@Column(name = "category")
+	private String category;
+	@Column(name = "availqty")
+	private int availqty;
+	@Column(name = "outqty")
+	private int EmptyQty;
 	
 	@ManyToOne
 	@JsonBackReference

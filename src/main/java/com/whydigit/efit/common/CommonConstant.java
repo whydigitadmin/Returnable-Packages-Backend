@@ -23,6 +23,7 @@ public class CommonConstant {
 	public static final String ERROR_MSG_METHOD_NAME = "MethodName : {} Error : {}";
     public static final String UNDERSCORE = "_";
     public static final String FORWARD_SLASH = "/";
+	public static final String EXCEPTION_OCCURRED = "Exception occurred in method: {}";
 
 
 }

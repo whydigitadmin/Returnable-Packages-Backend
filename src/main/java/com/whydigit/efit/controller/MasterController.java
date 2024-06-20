@@ -3640,15 +3640,20 @@ public class MasterController extends BaseController {
 		        responseObjectsMap.put("status", true);
 		        responseObjectsMap.put("totalRows", totalRows);
 		        responseObjectsMap.put("successfulUploads", successfulUploads);
-		        responseObjectsMap.put("paramObjectsMap", Map.of("message", "Excel Upload For AssetCategory successful"));
+		        Map<String, Object> paramObjectsMap = new HashMap<>();
+		        paramObjectsMap.put("message", "Excel Upload For AssetCategory successful");
+		        responseObjectsMap.put("paramObjectsMap", paramObjectsMap);
 		        responseDTO = createServiceResponse(responseObjectsMap);
 		        
 		    }  catch (Exception e) {
 
-		errorMsg = e.getMessage();
-		LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-		responseDTO = createServiceResponseError(responseObjectsMap,
-		"Excel Upload For AssetCategory failed. Please try again.", errorMsg);
+		    	errorMsg = e.getMessage();
+		        LOGGER.error(CommonConstant.EXCEPTION_OCCURRED, methodName, e);
+		        responseObjectsMap.put("statusFlag", "Error");
+		        responseObjectsMap.put("status", false);
+		        responseObjectsMap.put("errorMessage", errorMsg);
+
+		        responseDTO = createServiceResponseError(responseObjectsMap,"Excel Upload For AssetCategory Failed",errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);

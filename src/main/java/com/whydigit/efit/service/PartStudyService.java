@@ -96,6 +96,7 @@ public interface PartStudyService {
 	//byte[] getCommercialImageById(Long refPsId);
 
 	PackingDetailVO uploadCommercialInBloob(MultipartFile file, Long refPsId) throws IOException;
-
+	
+	 	
 
 }
