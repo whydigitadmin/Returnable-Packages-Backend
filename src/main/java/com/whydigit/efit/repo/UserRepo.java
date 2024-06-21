@@ -44,7 +44,7 @@ public interface UserRepo extends JpaRepository<UserVO, Long> {
 			+ "WHERE FIND_IN_SET(a.flowid, b.access_flow_id) > 0 and b.user_id=?2 and b.org_id=?1 group by CONCAT(a.emitter, '-', a.orgin),a.orgin") 
 	Set<Object[]> getStockBranchByOrgIdAndUserId(Long orgId,Long userId);
 
-	@Query(nativeQuery = true,value="SELECT CONCAT(a.receiver, '-', a.destination) stockbranch,a.destination destination FROM flow a, users b WHERE FIND_IN_SET(a.flowid, b.access_flow_id) > 0 and b.user_id=31 and b.org_id=1 group by CONCAT(a.receiver, '-', a.destination),a.destination")
+	@Query(nativeQuery = true,value="SELECT CONCAT(a.receiver, '-', a.destination) stockbranch,a.destination destination FROM flow a, users b WHERE FIND_IN_SET(a.flowid, b.access_flow_id) > 0 and b.user_id=?2 and b.org_id=?1 group by CONCAT(a.receiver, '-', a.destination),a.destination")
 	Set<Object[]> getOemStockBranchByOrgIdAndUserId(Long orgId, Long userId);
 
 //	boolean existsByNameAndOrgId(String name, Long orgId);

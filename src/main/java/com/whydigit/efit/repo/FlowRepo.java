@@ -21,9 +21,15 @@ public interface FlowRepo extends JpaRepository<FlowVO, Long> {
 
 	@Query(value = "select a from FlowVO a Where a.emitterId=?1 and a.active=true")
 	List<FlowVO> findActiveByEmitterId(Long emitterId);
+	
+	@Query(value = "select a from FlowVO a Where a.receiverId=?1 and a.active=true")
+	List<FlowVO> findActiveByReceiverId(Long receiverId);
 
 	@Query(value = "select a from FlowVO a Where a.orgId=?1 and a.emitterId=?2 and a.active=true")
 	List<FlowVO> findActiveByOrgIdAndEmitterId(Long orgId, Long emitterId);
+	
+	@Query(value = "select a from FlowVO a Where a.orgId=?1 and a.receiverId=?2 and a.active=true")
+	List<FlowVO> findActiveByOrgIdAndReceiverId(Long orgId, Long receiverId);
 
 	@Query(value = "select a from FlowVO a Where a.id=?1  and a.active=true")
 	List<FlowVO> findById(String flowId);
@@ -69,7 +75,7 @@ public interface FlowRepo extends JpaRepository<FlowVO, Long> {
 	@Query(nativeQuery = true, value = "select a.emitter,a.receiver,a.flow from flow a,flow1 b where a.flowid=b.flow1id and b.kitno=?1 group by a.emitter,a.receiver,a.flow;")
 	Set<Object[]> findEmitterAndReceiverAndFlowByKitNo(String kitName);
 
-	@Query(value = "select b.partname, b.partno \r\n" + "from flow a  join flow1 b on a.flowid = b.flowid \r\n"
+	@Query(value = "select b.partname, b.partno,b.partqty \r\n" + "from flow a  join flow1 b on a.flowid = b.flowid \r\n"
 			+ "where a.emitterid = b.emitterid and b.kitno=?1 and a.flowid=?2", nativeQuery = true)
 	Set<Object[]> findEmitterOutwarListByKitIdAndFlowId(String kitId, Long flowId);
 

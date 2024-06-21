@@ -1254,6 +1254,7 @@ public class EmitterController extends BaseController {
 			Map<String, Object> part = new HashMap<>();
 			part.put("partName", ps[0] != null ? ps[0].toString() : "");
 			part.put("partNo", ps[1] != null ? ps[1].toString() : "");
+			part.put("partQty", ps[2] != null ? Integer.parseInt(ps[2].toString()) : 0);
 			binReqDetails.add(part);
 		}
 		return binReqDetails;

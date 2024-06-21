@@ -706,6 +706,32 @@ public class MasterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 	
+	@GetMapping("/activeReceiverflow")
+	public ResponseEntity<ResponseDTO> getAllReceiverActiveflow(@RequestParam(required = false) Long orgId,
+			@RequestParam(required = false) Long receiverId) {
+		String methodName = "getAllReceiverActiveflow()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<FlowVO> flowVO = new ArrayList<>();
+		try {
+			flowVO = masterService.getAllReceiverActiveFlow(orgId, receiverId);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Flow information get successfully");
+			responseObjectsMap.put("flowVO", flowVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "Flow information receive failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+	
 	@GetMapping("/flow")
 	public ResponseEntity<ResponseDTO> getAllflow(@RequestParam(required = false) Long orgId,
 			@RequestParam(required = false) Long emitterId) {
@@ -3337,7 +3363,7 @@ public class MasterController extends BaseController {
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
-		List<Object[]> stock = new ArrayList<>();
+		List<Map<String, Object>> stock = new ArrayList<>();
 		try {
 			stock = masterService.getAvailableKitQtyByEmitter(orgId,emitterId,kitId,flowId);
 		} catch (Exception e) {
@@ -3345,9 +3371,8 @@ public class MasterController extends BaseController {
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
 		}
 		if (StringUtils.isEmpty(errorMsg)) {
-			List<Map<String, Object>> avlKitQty= getAvailableKitQty(stock);
 			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Available Kit Qty found by ID");
-			responseObjectsMap.put("avlKitQty", avlKitQty);
+			responseObjectsMap.put("avlKitQty", stock);
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} else {
 			errorMsg = " not found for ID: ";
@@ -3355,17 +3380,6 @@ public class MasterController extends BaseController {
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
-	}
-
-	private List<Map<String, Object>> getAvailableKitQty(List<Object[]> stock) {
-		List<Map<String, Object>> avlKitQty = new ArrayList<>();
-		for (Object[] ps : stock) {
-			Map<String, Object> part = new HashMap<>();
-			part.put("kitCode", ps[0] != null ? ps[0].toString() : "");
-			part.put("kitAvailQty", ps[1] != null ? Integer.parseInt(ps[1].toString()) : 0);
-			avlKitQty.add(part);
-		}
-		return avlKitQty;
 	}
 	
 	@GetMapping("/getAssetDetailsForAssetInward")

@@ -339,7 +339,6 @@ public class OemServiceImpl implements OemService {
 		String binoutward = finyr + "GEMT" + gatheringEmptyRepo.finddocid();
 		gatheringEmptyVO.setDocId(binoutward);
 		gatheringEmptyRepo.nextseq();
-
 		
 		gatheringEmptyVO.setDocId(gatheringEmptyDTO.getDocId());
 		gatheringEmptyVO.setOrgId(gatheringEmptyDTO.getOrgId());

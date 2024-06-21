@@ -851,6 +851,22 @@ public class MasterServiceImpl implements MasterService {
 		}
 		return flowVO;
 	}
+	
+	@Override
+	public List<FlowVO> getAllReceiverActiveFlow(Long orgId, Long receiverId) {
+		List<FlowVO> flowVO = new ArrayList<>();
+		if (ObjectUtils.isNotEmpty(orgId) && (ObjectUtils.isEmpty(receiverId))) {
+			LOGGER.info("Successfully Received Flow BY OrgId : {}", orgId);
+			flowVO = flowRepo.getActiveAllFlow(orgId);
+		} else if (ObjectUtils.isEmpty(orgId) && (ObjectUtils.isNotEmpty(receiverId))) {
+			LOGGER.info("Successfully Received Flow BY ReceiverId : {}", receiverId);
+			flowVO = flowRepo.findActiveByReceiverId(receiverId);
+		} else if (ObjectUtils.isNotEmpty(orgId) && (ObjectUtils.isNotEmpty(receiverId))) {
+			LOGGER.info("Successfully Received Flow BY ReceiverId : {} orgId : {}", receiverId, orgId);
+			flowVO = flowRepo.findActiveByOrgIdAndReceiverId(orgId, receiverId);
+		}
+		return flowVO;
+	}
 
 	@Override
 	public Optional<FlowVO> getFlowById(long id) {
@@ -2624,11 +2640,24 @@ public class MasterServiceImpl implements MasterService {
 	}
 
 	@Override
-	public List<Object[]> getAvailableKitQtyByEmitter(Long orgId, Long emitterId, String kitId, Long flowId) {
+	public List<Map<String, Object>> getAvailableKitQtyByEmitter(Long orgId, Long emitterId, String kitId, Long flowId) {
+		
+		Set<Object[]> emitterAvailKitQty= kitRepo.findByAvailableKitQtyByEmitter(orgId,emitterId,kitId,flowId);
+		
+		return getAvaikitDetails(emitterAvailKitQty);
+	}
 
-		FlowVO flowVO=flowRepo.findById(flowId).get();
-		String stockbranch=flowVO.getEmitter()+"-"+flowVO.getOrgin();
-		return kitRepo.findByAvailableKitQtyByEmitter(orgId,stockbranch,kitId);
+
+	
+	private List<Map<String, Object>> getAvaikitDetails(Set<Object[]> emitterAvailKitQty) {
+		List<Map<String, Object>> avlKitQty = new ArrayList<>();
+		for (Object[] ps : emitterAvailKitQty) {
+			Map<String, Object> part = new HashMap<>();
+			part.put("kitCode", ps[0] != null ? ps[0].toString() : "");
+			part.put("kitAvailQty", ps[1] != null ? Integer.parseInt(ps[1].toString()) : 0);
+			avlKitQty.add(part);
+		}
+		return avlKitQty;
 	}
 
 	@Override

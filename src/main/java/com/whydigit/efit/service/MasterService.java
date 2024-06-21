@@ -116,6 +116,8 @@ public interface MasterService {
 	List<FlowVO> getAllFlow(Long orgId, Long emitterId);
 	
 	List<FlowVO> getAllActiveFlow(Long orgId, Long emitterId);
+	
+	List<FlowVO> getAllReceiverActiveFlow(Long orgId, Long receiverId);
 
 	Set<Object[]> getKitDetailsByEmitter(Long emitterId, Long orgId);
 	
@@ -332,7 +334,7 @@ public interface MasterService {
 
 	List<FlowVO> getFlowByKitCode(String kitcode);
 
-	List<Object[]> getAvailableKitQtyByEmitter(Long orgId, Long emitterId, String kitId, Long flowId);
+	List<Map<String, Object>> getAvailableKitQtyByEmitter(Long orgId, Long emitterId, String kitId, Long flowId);
 
 	Set<Object[]> getAssetDetailsByAssetForAssetInward(Long orgId, String stockBranch, String sku,int qty);
 
