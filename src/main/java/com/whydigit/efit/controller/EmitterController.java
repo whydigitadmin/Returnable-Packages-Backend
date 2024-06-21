@@ -1254,6 +1254,7 @@ public class EmitterController extends BaseController {
 			Map<String, Object> part = new HashMap<>();
 			part.put("partName", ps[0] != null ? ps[0].toString() : "");
 			part.put("partNo", ps[1] != null ? ps[1].toString() : "");
+			part.put("partQty", ps[2] != null ? Integer.parseInt(ps[2].toString()) : 0);
 			binReqDetails.add(part);
 		}
 		return binReqDetails;
@@ -1317,7 +1318,8 @@ public class EmitterController extends BaseController {
 		List<Map<String, Object>> binReqDetails = new ArrayList<>();
 		for (Object[] ps : partstudy) {
 			Map<String, Object> part = new HashMap<>();
-			part.put("DocId", ps[0] != null ? ps[0].toString() : "");
+			part.put("invoiceNo", ps[0] != null ? ps[0].toString() : "");
+			part.put("DocId", ps[1] != null ? ps[1].toString() : "");
 			binReqDetails.add(part);
 		}
 		return binReqDetails;

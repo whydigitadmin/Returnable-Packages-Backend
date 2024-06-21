@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class GatheringEmptyDTO {
 	private String docId;
 	private Long orgId;
-	private String flow;
+	private String stockBranch;
 	private String createdBy;
 	private String modifiedBy;
 	private List<GathereingEmptyDetailsDTO> gathereingEmptyDetailsDTO;

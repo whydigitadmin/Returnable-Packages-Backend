@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.web.multipart.MultipartFile;
 
 import com.whydigit.efit.dto.AssetCategoryDTO;
@@ -114,6 +116,8 @@ public interface MasterService {
 	List<FlowVO> getAllFlow(Long orgId, Long emitterId);
 	
 	List<FlowVO> getAllActiveFlow(Long orgId, Long emitterId);
+	
+	List<FlowVO> getAllReceiverActiveFlow(Long orgId, Long receiverId);
 
 	Set<Object[]> getKitDetailsByEmitter(Long emitterId, Long orgId);
 	
@@ -330,7 +334,7 @@ public interface MasterService {
 
 	List<FlowVO> getFlowByKitCode(String kitcode);
 
-	List<Object[]> getAvailableKitQtyByEmitter(Long orgId, Long emitterId, String kitId, Long flowId);
+	List<Map<String, Object>> getAvailableKitQtyByEmitter(Long orgId, Long emitterId, String kitId, Long flowId);
 
 	Set<Object[]> getAssetDetailsByAssetForAssetInward(Long orgId, String stockBranch, String sku,int qty);
 
@@ -357,8 +361,21 @@ public interface MasterService {
 
 	int getSuccessfulUploads();
 
+	void ExcelUploadForUnit(MultipartFile[] files, CustomerAttachmentType type, Long orgId) throws ApplicationException;
 
-	
+
+	void ExcelUploadForStockBranch(MultipartFile[] files, CustomerAttachmentType type, Long orgId,
+			HttpServletRequest request) throws ApplicationException;
+
+
+//	void ExcelUploadForAssetCategory(MultipartFile[] files, CustomerAttachmentType type,Long orgId) throws ApplicationException;
+//
+//	int getTotalRows();
+//
+//	int getSuccessfulUploads();
+
+	//void handleExcelUploadForUsers(MultipartFile[] files, CustomerAttachmentType type, Long orgId) throws ApplicationException;
+  
 
 	
 

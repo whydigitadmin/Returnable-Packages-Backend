@@ -217,13 +217,13 @@ public class PartStudyServiceImpl implements PartStudyService {
 		packingDetailVO = packingDetailRepo.findById(packingDetailDTO.getRefPsId())
 				.orElseThrow(() -> new ApplicationException("Invalid packing details"));
 		getPackingDetailVOFromPackingDetailDTO(packingDetailDTO, packingDetailVO);
-//		Set part study attachments path
-		packingDetailVO.setPartImage(null);
-		packingDetailVO.setExistingPackingImage(null);
-		packingDetailVO.setPartDrawing(null);
-		packingDetailVO.setApprovedCommercialContract(null);
-//		ApprovedPackageDrawingVO approvedPackageDrawingVO = new ApprovedPackageDrawingVO();
-//		packingDetailVO.getApprovedPackageDrawingVO().add(null);
+		packingDetailVO.setApprovedCommercialContract(packingDetailDTO.getApprovedCommercialContract());
+		packingDetailVO.setComercial(packingDetailDTO.getComercial());
+		packingDetailVO.setPartDrawing(packingDetailDTO.getPartDrawing());
+		packingDetailVO.setPartImage(packingDetailDTO.getPartImage());
+		packingDetailVO.setExistingPackingImage(packingDetailDTO.getExistingPackingImage());
+		ApprovedPackageDrawingVO approvedPackageDrawingVO = new ApprovedPackageDrawingVO();
+		packingDetailVO.getApprovedPackageDrawingVO().add(null);
 		return packingDetailRepo.save(packingDetailVO);
 	}
 
@@ -233,6 +233,14 @@ public class PartStudyServiceImpl implements PartStudyService {
 		packingDetailVO.setLength(packingDetailDTO.getLength());
 		packingDetailVO.setBreath(packingDetailDTO.getBreath());
 		packingDetailVO.setHeight(packingDetailDTO.getHeight());
+		packingDetailVO.setApprovedCommercialContract(packingDetailDTO.getApprovedCommercialContract());
+		packingDetailVO.setComercial(packingDetailDTO.getComercial());
+		packingDetailVO.setPartDrawing(packingDetailDTO.getPartDrawing());
+		packingDetailVO.setPartImage(packingDetailDTO.getPartImage());
+		packingDetailVO.setExistingPackingImage(packingDetailDTO.getExistingPackingImage());
+		
+		
+		
 		packingDetailVO.setPartUnit(packingDetailDTO.getPartUnit());
 		packingDetailVO.setExistingPart(packingDetailDTO.getExistingPart());
 		packingDetailVO.setCurrentPackingChallenges(packingDetailDTO.getCurrentPackingChallenges());
@@ -688,28 +696,30 @@ public class PartStudyServiceImpl implements PartStudyService {
 		PackingDetailVO.setComercial(file.getBytes());
 		return packingDetailRepo.save(PackingDetailVO);
 	}
+//
+//	  @Override
+//	    public PackingDetailVO uploadCommercialInBlob(MultipartFile file, Long refPsId) throws IOException {
+//	        LOGGER.debug("Uploading commercial image for refPsId: {}", refPsId);
+//	        PackingDetailVO packingDetailVO = packingDetailRepo.findById(refPsId).orElseThrow(() -> {
+//	            LOGGER.error("PackingDetail not found for refPsId: {}", refPsId);
+//	            return new RuntimeException("PackingDetail not found");
+//	        });
+//	        packingDetailVO.setComercial(file.getBytes());
+//	        LOGGER.debug("Commercial image uploaded successfully for refPsId: {}", refPsId);
+//	        return packingDetailRepo.save(packingDetailVO);
+//	    }
 
-	  @Override
-	    public PackingDetailVO uploadCommercialInBlob(MultipartFile file, Long refPsId) throws IOException {
-	        LOGGER.debug("Uploading commercial image for refPsId: {}", refPsId);
-	        PackingDetailVO packingDetailVO = packingDetailRepo.findById(refPsId).orElseThrow(() -> {
-	            LOGGER.error("PackingDetail not found for refPsId: {}", refPsId);
-	            return new RuntimeException("PackingDetail not found");
-	        });
-	        packingDetailVO.setComercial(file.getBytes());
-	        LOGGER.debug("Commercial image uploaded successfully for refPsId: {}", refPsId);
-	        return packingDetailRepo.save(packingDetailVO);
-	    }
+	
 
-	    @Override
-	    public byte[] getCommercialImageById(Long id) {
-	        LOGGER.debug("Retrieving commercial image for id: {}", id);
-	        PackingDetailVO packingDetailVO = packingDetailRepo.findById(id).orElseThrow(() -> {
-	            LOGGER.error("PackingDetail not found for id: {}", id);
-	            return new RuntimeException("PackingDetail not found");
-	        });
-	        byte[] image = packingDetailVO.getComercial();
-	        LOGGER.debug("Commercial image retrieved successfully for id: {}", id);
-	        return image;
-	    }
+//	    @Override
+//	    public byte[] getCommercialImageById(Long id) {
+//	        LOGGER.debug("Retrieving commercial image for id: {}", id);
+//	        PackingDetailVO packingDetailVO = packingDetailRepo.findById(id).orElseThrow(() -> {
+//	            LOGGER.error("PackingDetail not found for id: {}", id);
+//	            return new RuntimeException("PackingDetail not found");
+//	        });
+//	        byte[] image = packingDetailVO.getComercial();
+//	        LOGGER.debug("Commercial image retrieved successfully for id: {}", id);
+//	        return image;
+//	    }
 }

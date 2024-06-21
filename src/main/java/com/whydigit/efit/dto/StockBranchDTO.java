@@ -13,7 +13,6 @@ public class StockBranchDTO {
 	private String branch;
 	private String branchCode;
 	private Long orgId;
-	private boolean active;
 	private String createdby;
 
 }

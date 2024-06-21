@@ -33,7 +33,7 @@ public class StockBranchVO {
 	private boolean cancel;
 	
 	@Column(name="active")
-	private boolean active;
+	private boolean active=true;
 	
 	@Column(name="createdby")
 	private String createdBy;

@@ -8,7 +8,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class GathereingEmptyDetailsDTO {
 	private String assetType;
+	private String assetName;
 	private String assetCode;
-	private int expQty;
-	private int emptyQty;
+	private String category;
+	private int availqty;
+	private int EmptyQty;
 }

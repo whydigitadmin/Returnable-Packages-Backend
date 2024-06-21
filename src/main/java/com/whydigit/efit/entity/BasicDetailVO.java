@@ -45,25 +45,25 @@ public class BasicDetailVO {
 //	private Long receiverId;
 //	@Column(name = "reciverdisplayname")
 //	private String receiverDisplayName;
-	@Column(name = "part", length = 50)
+	@Column(name = "part")
 	private String partName;
-	@Column(name = "code", length = 25)
+	@Column(name = "code")
 	private String partNumber;
-	@Column(name = "weight", precision = 4, scale = 2)
+	@Column(name = "weight")
 	private Float weight;
-	@Column(name = "weightunit", length = 25)
+	@Column(name = "weightunit")
 	private String weightUnit;
-	@Column(name = "partvol", length = 16)
+	@Column(name = "partvol")
 	private int partVolume;
-	@Column(name = "maxvol", length = 15)
+	@Column(name = "maxvol")
 	private int highestVolume;
-	@Column(name = "minvol", length = 15)
+	@Column(name = "minvol")
 	private int lowestVolume;
-	@Column(name = "createdby", length = 25)
+	@Column(name = "createdby")
 	private String createdBy;
-	@Column(name = "modifiedby", length = 25)
+	@Column(name = "modifiedby")
 	private String modifiedBy;
-	@Column(name = "docid", length = 30)
+	@Column(name = "docid")
 	private String docid;
 	private boolean cancel;
 	private boolean active;

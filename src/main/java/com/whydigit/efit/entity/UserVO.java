@@ -48,6 +48,8 @@ public class UserVO {
 	private String accessWarehouse;
 	private String accessFlowId;
 	private Long pNo;
+	@Column(name="receiverid")
+	private Long receiverId;
 	private boolean isActive;
 	private String lastLogin;
 	private String createdBy;	

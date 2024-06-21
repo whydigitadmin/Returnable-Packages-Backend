@@ -28,5 +28,8 @@ public interface DispatchRepository extends JpaRepository<DispatchVO, Long> {
 	@Query(nativeQuery = true, value = " select a.binoutwarddocid,a.binoutdocdate,a.partname,a.partno,a.kitno,a.qty from \r\n"
 			+ "              dispatchdetails a inner join dispatch b on a.dispatchid=b.dispatchid where b.docid=?1")
 	Set<Object[]> findEmitterInwardListByDocId(String docId);
+	
+	@Query("select a from DispatchVO a where a.invoiceNo=?1 and a.orgId=?2")
+	DispatchVO findByInvoiceNoAndOrgId(String invoiceNo,Long OrgId);
 
 }
