@@ -103,6 +103,8 @@ public class OemServiceImpl implements OemService {
 		dispatchRepository.save(dispatchVO);
 		oemBinInwardVO.setOrgId(oemBinInwardDTO.getOrgId());
 		oemBinInwardVO.setCreatedby(oemBinInwardDTO.getCreatedBy());
+		oemBinInwardVO.setOemInwardNo(oemBinInwardDTO.getOemInwardNo());
+		oemBinInwardVO.setOemInwardDate(oemBinInwardDTO.getOemInwardDate());
 		oemBinInwardVO.setInvoiceDate(oemBinInwardDTO.getInvoiceDate());
 		oemBinInwardVO.setModifiedby(oemBinInwardDTO.getCreatedBy());
 		oemBinInwardVO.setEmitterId(oemBinInwardDTO.getEmitterId());
@@ -133,9 +135,9 @@ public class OemServiceImpl implements OemService {
 						stockDetailsVO.setSkuQty(binOutwardDetailsVO.getQty() * -1);
 						stockDetailsVO.setOrgId(binOutwardVO.getOrgId());
 						stockDetailsVO.setCategory(assetRepo.getCategoryByAssetCodeId(binOutwardDetailsVO.getAssetCode()));
-						stockDetailsVO.setStatus("E");
+						stockDetailsVO.setStatus("M");
 						stockDetailsVO.setScreen("Dispatch");
-						stockDetailsVO.setSCode(oemBinInwardVO.getScode());
+						stockDetailsVO.setSCode(dispatchVO.getScode());
 						stockDetailsVO.setPm("M");
 						stockDetailsVO.setStockSource("");
 						stockDetailsVO.setBinLocation("");
@@ -256,7 +258,7 @@ public class OemServiceImpl implements OemService {
 			stockDetailsVO.setSkuQty(oembinOutwardDetailsVO.getOutQty());
 			stockDetailsVO.setOrgId(savedOemBinOutwardVO.getOrgId());
 			stockDetailsVO.setCategory(assetRepo.getCategoryByAssetCodeId(oembinOutwardDetailsVO.getAssetCode()));
-			stockDetailsVO.setStatus("M");
+			stockDetailsVO.setStatus("T");
 			stockDetailsVO.setScreen(savedOemBinOutwardVO.getScreen());
 			stockDetailsVO.setSCode(savedOemBinOutwardVO.getScode());
 			stockDetailsVO.setPm("P");
