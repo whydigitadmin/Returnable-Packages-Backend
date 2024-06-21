@@ -445,16 +445,16 @@ public class OemController extends BaseController{
 			String errorMsg = null;
 			Map<String, Object> responseObjectsMap = new HashMap<>();  
 			ResponseDTO responseDTO = null;
-			String oemBinOutwardDocId = null;
+			String gatheringdocid = null;
 			try {
-				oemBinOutwardDocId = oemService.getDocIdByGatheringEmpty();
+				gatheringdocid = oemService.getDocIdByGatheringEmpty();
 			} catch (Exception e) {
 				errorMsg = e.getMessage();
 				LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
 			}
 			if (StringUtils.isEmpty(errorMsg)) {
 				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "gathering Empty DocId found success");
-				responseObjectsMap.put("oemBinOutwardDocId", oemBinOutwardDocId);
+				responseObjectsMap.put("gatheringDocId", gatheringdocid);
 				responseDTO = createServiceResponse(responseObjectsMap);
 			} else {
 				errorMsg = " not found for ID: ";

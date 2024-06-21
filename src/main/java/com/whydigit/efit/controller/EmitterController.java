@@ -1294,7 +1294,7 @@ public class EmitterController extends BaseController {
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
-		Set<Object[]> partstudy = new HashSet<>();
+		List<Map<String,Object>> partstudy = new ArrayList<>();
 		try {
 			partstudy = emitterService.getDocIdByFlowOnEmitterDispatchScreen(FlowId);
 		} catch (Exception e) {
@@ -1302,9 +1302,8 @@ public class EmitterController extends BaseController {
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
 		}
 		if (StringUtils.isEmpty(errorMsg)) {
-			List<Map<String, Object>> binReqDetails = getDocIdByFlow(partstudy);
 			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Dispatch DocId found successfully");
-			responseObjectsMap.put("EmitterOutward", binReqDetails);
+			responseObjectsMap.put("EmitterOutward", partstudy);
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} else {
 			errorMsg = " not found for ID: ";
@@ -1314,16 +1313,6 @@ public class EmitterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
-	private List<Map<String, Object>> getDocIdByFlow(Set<Object[]> partstudy) {
-		List<Map<String, Object>> binReqDetails = new ArrayList<>();
-		for (Object[] ps : partstudy) {
-			Map<String, Object> part = new HashMap<>();
-			part.put("invoiceNo", ps[0] != null ? ps[0].toString() : "");
-			part.put("DocId", ps[1] != null ? ps[1].toString() : "");
-			binReqDetails.add(part);
-		}
-		return binReqDetails;
-	}
 
 	@GetMapping("/getBininwardListByDocId")
 	public ResponseEntity<ResponseDTO> getBininwardListByDocId(@RequestParam String DocId) {
