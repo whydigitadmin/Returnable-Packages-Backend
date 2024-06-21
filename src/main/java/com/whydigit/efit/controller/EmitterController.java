@@ -1296,7 +1296,7 @@ public class EmitterController extends BaseController {
 		ResponseDTO responseDTO = null;
 		List<Map<String,Object>> partstudy = new ArrayList<>();
 		try {
-			partstudy = emitterService.getDocIdByFlowOnEmitterDispatchScreen(FlowId);
+			partstudy = emitterService.getDocIdByFlowOnEmitterDispatchScreen(FlowId); 
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
