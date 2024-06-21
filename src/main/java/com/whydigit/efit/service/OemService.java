@@ -39,6 +39,8 @@ public interface OemService {
 	String getDocIdByOemBinOutward();
 
 	GatheringEmptyVO createGatheringEmpty(GatheringEmptyDTO gatheringEmptyDTO);
+	
+	String getDocIdByGatheringEmpty();
 
 	List<GatheringEmptyVO> getAllGathering(Long orgId);
 

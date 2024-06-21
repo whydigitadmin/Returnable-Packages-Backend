@@ -457,5 +457,12 @@ public class OemServiceImpl implements OemService {
         return oemEmptyStockdetails;
 	}
 
+	@Override
+	public String getDocIdByGatheringEmpty() {
+		String finyr = gatheringEmptyRepo.findFinyr();
+		String docid = finyr + "GEMT" + gatheringEmptyRepo.finddocid();
+		return docid;
+	}
+
 	
 }
