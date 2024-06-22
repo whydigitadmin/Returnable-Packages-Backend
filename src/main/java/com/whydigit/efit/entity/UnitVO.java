@@ -1,5 +1,6 @@
 package com.whydigit.efit.entity;
 
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -24,6 +25,7 @@ public class UnitVO {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+	@Column(name="orgid")
 	private long orgId;
 	private String unit;
 	private boolean active=true;

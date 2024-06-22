@@ -3718,9 +3718,7 @@ public class MasterController extends BaseController {
 		//Unit
 		
 		@PostMapping("/ExcelUploadForUnit")
-		public ResponseEntity<ResponseDTO> handleExcelUploadForUnit(@RequestParam MultipartFile[] files,
-		                                                     CustomerAttachmentType type,
-		                                                     @RequestParam(required = false) Long orgId) {
+		public ResponseEntity<ResponseDTO> ExcelUploadForUnit(@RequestParam MultipartFile[] files,CustomerAttachmentType type,@RequestParam(required = false) Long orgId) {
 		    String methodName = "ExcelUploadForUnit()";
 		    LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		    String errorMsg = null;
@@ -3736,33 +3734,36 @@ public class MasterController extends BaseController {
 		        // Retrieve the counts after processing
 		        totalRows = masterService.getTotalRows(); // Get total rows processed
 		        successfulUploads = masterService.getSuccessfulUploads(); // Get successful uploads count
-
 		        // Construct success response
 		        responseObjectsMap.put("statusFlag", "Ok");
 		        responseObjectsMap.put("status", true);
 		        responseObjectsMap.put("totalRows", totalRows);
 		        responseObjectsMap.put("successfulUploads", successfulUploads);
-		        responseObjectsMap.put("paramObjectsMap", Map.of("message", "Excel Upload For Unit successful"));
+		        Map<String, Object> paramObjectsMap = new HashMap<>();
+		        paramObjectsMap.put("message", "Excel Upload For Unit successful");
+		        responseObjectsMap.put("paramObjectsMap", paramObjectsMap);
 		        responseDTO = createServiceResponse(responseObjectsMap);
 		        
 		    }  catch (Exception e) {
 
-		errorMsg = e.getMessage();
-		LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-		responseDTO = createServiceResponseError(responseObjectsMap,
-		"Excel Upload For Unit failed. Please try again.", errorMsg);
+		    	errorMsg = e.getMessage();
+		        LOGGER.error(CommonConstant.EXCEPTION_OCCURRED, methodName, e);
+		        responseObjectsMap.put("statusFlag", "Error");
+		        responseObjectsMap.put("status", false);
+		        responseObjectsMap.put("errorMessage", errorMsg);
+
+		        responseDTO = createServiceResponseError(responseObjectsMap,"Excel Upload For Unit Failed",errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 		}
 
+
 // StockBranch
 
 		
 		@PostMapping("/ExcelUploadForStockBranch")
-		public ResponseEntity<ResponseDTO> handleExcelUploadStockBranch(@RequestParam MultipartFile[] files,
-		                                                     CustomerAttachmentType type,
-		                                                     @RequestParam(required = false) Long orgId,HttpServletRequest request) {
+		public ResponseEntity<ResponseDTO> ExcelUploadForStockBranch(@RequestParam MultipartFile[] files,CustomerAttachmentType type,@RequestParam(required = false) Long orgId) {
 		    String methodName = "ExcelUploadForStockBranch()";
 		    LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		    String errorMsg = null;
@@ -3773,30 +3774,59 @@ public class MasterController extends BaseController {
 
 		    try {
 		        // Call service method to process Excel upload
-		        masterService.ExcelUploadForStockBranch(files, type, orgId,request);
+		        masterService.ExcelUploadForStockBranch(files, type, orgId);
 		        
 		        // Retrieve the counts after processing
 		        totalRows = masterService.getTotalRows(); // Get total rows processed
 		        successfulUploads = masterService.getSuccessfulUploads(); // Get successful uploads count
-
 		        // Construct success response
 		        responseObjectsMap.put("statusFlag", "Ok");
 		        responseObjectsMap.put("status", true);
 		        responseObjectsMap.put("totalRows", totalRows);
 		        responseObjectsMap.put("successfulUploads", successfulUploads);
-		        responseObjectsMap.put("paramObjectsMap", Map.of("message", "Excel Upload For StockBranch successful"));
+		        Map<String, Object> paramObjectsMap = new HashMap<>();
+		        paramObjectsMap.put("message", "Excel Upload For Stock Branch successful");
+		        responseObjectsMap.put("paramObjectsMap", paramObjectsMap);
 		        responseDTO = createServiceResponse(responseObjectsMap);
 		        
 		    }  catch (Exception e) {
 
-		errorMsg = e.getMessage();
-		LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-		responseDTO = createServiceResponseError(responseObjectsMap,
-		"Excel Upload For StockBranch failed. Please try again.", errorMsg);
+		    	errorMsg = e.getMessage();
+		        LOGGER.error(CommonConstant.EXCEPTION_OCCURRED, methodName, e);
+		        responseObjectsMap.put("statusFlag", "Error");
+		        responseObjectsMap.put("status", false);
+		        responseObjectsMap.put("errorMessage", errorMsg);
+
+		        responseDTO = createServiceResponseError(responseObjectsMap,"Excel Upload For Stock Branch Failed",errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 		}
 
-		
+		@GetMapping("/getPartNoAndPartName")
+		public ResponseEntity<ResponseDTO> getPartNoAndPartName(@RequestParam(required = true) Long flowId,@RequestParam(required = true) String kitNo,
+				@RequestParam(required = true) Long emitterId) {
+			String methodName = "getPartNoAndPartName()";
+			LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+			String errorMsg = null;
+			Map<String, Object> responseObjectsMap = new HashMap<>();
+			ResponseDTO responseDTO = null;
+			List<Map<String,Object>> oemEmptyDetails = new ArrayList<>();
+			try {
+				oemEmptyDetails = masterService.getPartNoAndPartName(flowId, kitNo,emitterId);
+			} catch (Exception e) {
+				errorMsg = e.getMessage();
+				LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			}
+			if (StringUtils.isBlank(errorMsg)) {
+				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "PartNo And PartName information get successfully");
+				responseObjectsMap.put("partNoAndPartName", oemEmptyDetails);
+				responseDTO = createServiceResponse(responseObjectsMap);
+			} else {
+				responseDTO = createServiceResponseError(responseObjectsMap, "PartNo And PartName  information receive failed", errorMsg);
+			}
+			LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+			return ResponseEntity.ok().body(responseDTO);
+
+		}
 }

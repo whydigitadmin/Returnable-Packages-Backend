@@ -34,7 +34,7 @@ public class WarehouseServiceImpl implements WarehouseService {
 	@Override
 	public List<WarehouseVO> getAllActiveWarehouse(Long orgId) {
 
-		return warehouseRepo.findAllActiveWarehouse(orgId);
+		return warehouseRepo.findAllActiveWarehouse(orgId);	 
 	}
 
 	@Override
