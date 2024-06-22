@@ -21,7 +21,7 @@ public class FlowDetailDTO {
 	private String partName;
 	private String cycleTime;
 //	private String subReceiver;
-	private boolean active;
+	//private boolean active;
 	// private String fixedRentalCharge;
 	// private String dhr;
 	// private String issueCharge;

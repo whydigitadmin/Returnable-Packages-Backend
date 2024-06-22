@@ -364,8 +364,10 @@ public interface MasterService {
 	void ExcelUploadForUnit(MultipartFile[] files, CustomerAttachmentType type, Long orgId) throws ApplicationException;
 
 
-	void ExcelUploadForStockBranch(MultipartFile[] files, CustomerAttachmentType type, Long orgId,
-			HttpServletRequest request) throws ApplicationException;
+	void ExcelUploadForStockBranch(MultipartFile[] files, CustomerAttachmentType type, Long orgId) throws ApplicationException;
+
+	List<Map<String, Object>> getPartNoAndPartName(Long flowId, String kitNo, Long emitterId);
+
 
 
 //	void ExcelUploadForAssetCategory(MultipartFile[] files, CustomerAttachmentType type,Long orgId) throws ApplicationException;
