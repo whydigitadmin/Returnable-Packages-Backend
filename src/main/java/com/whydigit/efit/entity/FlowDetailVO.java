@@ -52,6 +52,8 @@ public class FlowDetailVO {
 	private String partName;
 	@Column(name="cycletime")
 	private String cycleTime;
+	
+	private boolean active;
 
 	
 	@JsonBackReference
