@@ -26,6 +26,7 @@ public class CreateUserFormDTO {
 	private Long pNo;
 	private String createdBy;
 	private boolean isActive;
+	private boolean viewFlag;
 
 	@NotBlank(message = "Email is required")
 	@Size(max = 30)
