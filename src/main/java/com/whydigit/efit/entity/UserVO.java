@@ -58,6 +58,9 @@ public class UserVO {
 	@Enumerated(EnumType.STRING)
 	private Role role;
 	private long accessRightsRoleId;
+	
+	private boolean viewFlag;
+	
 	@ManyToOne
 	@JoinColumn(name = "orgId")
 	private OrganizationVO organizationVO;

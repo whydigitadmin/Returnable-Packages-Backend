@@ -379,6 +379,7 @@ public class AuthServiceImpl implements AuthService {
 		userVO.setFirstName(createUserFormDTO.getFirstName());
 		userVO.setLastName(createUserFormDTO.getLastName());
 		userVO.setUserName(createUserFormDTO.getUserName());
+		userVO.setViewFlag(createUserFormDTO.isViewFlag());
 		userVO.setEmail(createUserFormDTO.getEmail());
 		userVO.setAccessRightsRoleId(createUserFormDTO.getAccessRightsRoleId());
 		userVO.setPNo(createUserFormDTO.getPNo());
@@ -449,6 +450,7 @@ public class AuthServiceImpl implements AuthService {
 		userVO.setAccessWarehouse(warehouseIds);
 		userVO.setFirstName(createUserFormDTO.getFirstName());
 		userVO.setLastName(createUserFormDTO.getLastName());
+		userVO.setViewFlag(createUserFormDTO.isViewFlag());
 		userVO.setPNo(createUserFormDTO.getPNo());
 		userVO.setActive(createUserFormDTO.isActive());
 		userVO.setRole(createUserFormDTO.getRole());
