@@ -235,7 +235,7 @@ public class OemServiceImpl implements OemService {
 				stockDetailsVO.setSkuQty(oembinOutwardDetailsVO.getOutQty() * -1);
 				stockDetailsVO.setOrgId(savedOemBinOutwardVO.getOrgId());
 				stockDetailsVO.setCategory(assetRepo.getCategoryByAssetCodeId(oembinOutwardDetailsVO.getAssetCode()));
-				stockDetailsVO.setStatus("S");
+				stockDetailsVO.setStatus("E");
 				stockDetailsVO.setScreen(savedOemBinOutwardVO.getScreen());
 				stockDetailsVO.setSCode(savedOemBinOutwardVO.getScode());
 				stockDetailsVO.setPm("M");
@@ -251,7 +251,7 @@ public class OemServiceImpl implements OemService {
 		for (OemBinOutwardDetailsVO oembinOutwardDetailsVO : oembinOutwardDetailsVOLists) {
 			AssetStockDetailsVO stockDetailsVO = new AssetStockDetailsVO();
 			stockDetailsVO.setStockRef(savedOemBinOutwardVO.getDocId());
-			stockDetailsVO.setStockBranch("Transit");
+			stockDetailsVO.setStockBranch(savedOemBinOutwardVO.getStockBranch());
 			stockDetailsVO.setStockDate(savedOemBinOutwardVO.getDocDate());
 			stockDetailsVO.setSku(oembinOutwardDetailsVO.getAsset());
 			stockDetailsVO.setSkuCode(oembinOutwardDetailsVO.getAssetCode());
