@@ -82,7 +82,7 @@ public interface FlowRepo extends JpaRepository<FlowVO, Long> {
 	@Query(nativeQuery = true, value = "SELECT a.invoiceno,a.docid,a.invoicedate FROM dispatch a WHERE a.flowid = ?1 AND NOT EXISTS ( SELECT 1 FROM oembininward b WHERE b.invoiceno = a.invoiceno)")
 	Set<Object[]> getDocId(Long flowId);
 
-	@Query(value = "select a.branchcode from stockbranch a, warehouse b,flow c where a.branchcode=b.stockbranch and b.whlocation=c.whlocation and c.flowid=?2 and a.orgid=?1 group by a.branchcode;", nativeQuery = true)
+	@Query(value = "select b.whlocation from  warehouse b,flow c where  b.whlocation=c.whlocation and c.flowid=?2 and b.orgid=?1 group by b.whlocation", nativeQuery = true)
 	Set<Object[]> findByBranchcode(Long orgId, Long flowId);
 
 }

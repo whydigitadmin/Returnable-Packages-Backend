@@ -258,7 +258,7 @@ public class OemServiceImpl implements OemService {
 			stockDetailsVO.setSkuQty(oembinOutwardDetailsVO.getOutQty());
 			stockDetailsVO.setOrgId(savedOemBinOutwardVO.getOrgId());
 			stockDetailsVO.setCategory(assetRepo.getCategoryByAssetCodeId(oembinOutwardDetailsVO.getAssetCode()));
-			stockDetailsVO.setStatus("T");
+			stockDetailsVO.setStatus("R");
 			stockDetailsVO.setScreen(savedOemBinOutwardVO.getScreen());
 			stockDetailsVO.setSCode(savedOemBinOutwardVO.getScode());
 			stockDetailsVO.setPm("P");
