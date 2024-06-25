@@ -18,14 +18,17 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.whydigit.efit.common.CommonConstant;
 import com.whydigit.efit.common.UserConstants;
+import com.whydigit.efit.dto.CustomerAttachmentType;
 import com.whydigit.efit.dto.ResponseDTO;
 import com.whydigit.efit.dto.WarehouseDTO;
 import com.whydigit.efit.entity.WarehouseVO;
@@ -257,5 +260,50 @@ public class WarehouseController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
+	
+	// File Upload For Warehouse
+	
+	@PostMapping("/ExcelUploadForWarehouse")
+	public ResponseEntity<ResponseDTO> ExcelUploadForWarehouse(@RequestParam MultipartFile[] files,CustomerAttachmentType type,@RequestParam(required = false) Long orgId,
+			@RequestParam(required = false) String createdBy) {
+	    String methodName = "ExcelUploadForWarehouse()";
+	    LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+	    String errorMsg = null;
+	    Map<String, Object> responseObjectsMap = new HashMap<>();
+	    ResponseDTO responseDTO = null;
+	    int totalRows = 0;
+	    int successfulUploads = 0;
+
+	    try {
+	        // Call service method to process Excel upload
+	        warehouseService.ExcelUploadForWarehouse(files, type, orgId,createdBy);
+	        
+	        // Retrieve the counts after processing
+	        totalRows = warehouseService.getTotalRows(); // Get total rows processed
+	        successfulUploads = warehouseService.getSuccessfulUploads(); // Get successful uploads count
+	        // Construct success response
+	        responseObjectsMap.put("statusFlag", "Ok");
+	        responseObjectsMap.put("status", true);
+	        responseObjectsMap.put("totalRows", totalRows);
+	        responseObjectsMap.put("successfulUploads", successfulUploads);
+	        Map<String, Object> paramObjectsMap = new HashMap<>();
+	        paramObjectsMap.put("message", "Excel Upload For  City successful");
+	        responseObjectsMap.put("paramObjectsMap", paramObjectsMap);
+	        responseDTO = createServiceResponse(responseObjectsMap);
+	        
+	    }  catch (Exception e) {
+
+	    	errorMsg = e.getMessage();
+	        LOGGER.error(CommonConstant.EXCEPTION_OCCURRED, methodName, e);
+	        responseObjectsMap.put("statusFlag", "Error");
+	        responseObjectsMap.put("status", false);
+	        responseObjectsMap.put("errorMessage", errorMsg);
+
+	        responseDTO = createServiceResponseError(responseObjectsMap,"Excel Upload For City Failed",errorMsg);
+	}
+	LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+	return ResponseEntity.ok().body(responseDTO);
+	}
+
 
 }

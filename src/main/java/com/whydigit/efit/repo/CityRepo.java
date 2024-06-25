@@ -33,5 +33,14 @@ public interface CityRepo extends JpaRepository<CityVO, Long> {
 	boolean existsByCityNameAndCountryAndStateAndOrgIdAndCityidNot(String cityName, String country, String state,
 			Long orgId, Long cityid);
 
+	boolean existsByCityNameAndCityCodeAndStateAndCountryAndOrgId(String city, String code, String state,
+			String country, Long orgId);
+
+	boolean existsByCityNameAndCountryAndOrgId(String city, String country, Long orgId);
+
+	boolean existsByStateAndCountryAndOrgId(String state, String country, Long orgId);
+
+	boolean existsByCityCodeAndCountryAndOrgId(String code, String country, Long orgId);
+
 
 }

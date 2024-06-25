@@ -19,9 +19,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.whydigit.efit.common.CommonConstant;
 import com.whydigit.efit.common.UserConstants;
+import com.whydigit.efit.dto.CustomerAttachmentType;
 import com.whydigit.efit.dto.ResponseDTO;
 import com.whydigit.efit.entity.CityVO;
 import com.whydigit.efit.entity.CountryVO;
@@ -831,4 +833,182 @@ public class BasicMasterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
+	
+	// File Upload For Branch
+	
+	@PostMapping("/ExcelUploadForBranch")
+	public ResponseEntity<ResponseDTO> ExcelUploadForBranch(@RequestParam MultipartFile[] files,CustomerAttachmentType type,@RequestParam(required = false) Long orgId,
+			@RequestParam(required = false) String createdBy) {
+	    String methodName = "ExcelUploadForBranch()";
+	    LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+	    String errorMsg = null;
+	    Map<String, Object> responseObjectsMap = new HashMap<>();
+	    ResponseDTO responseDTO = null;
+	    int totalRows = 0;
+	    int successfulUploads = 0;
+
+	    try {
+	        // Call service method to process Excel upload
+	        basicMasterService.ExcelUploadForBranch(files, type, orgId,createdBy);
+	        
+	        // Retrieve the counts after processing
+	        totalRows = basicMasterService.getTotalRows(); // Get total rows processed
+	        successfulUploads = basicMasterService.getSuccessfulUploads(); // Get successful uploads count
+	        // Construct success response
+	        responseObjectsMap.put("statusFlag", "Ok");
+	        responseObjectsMap.put("status", true);
+	        responseObjectsMap.put("totalRows", totalRows);
+	        responseObjectsMap.put("successfulUploads", successfulUploads);
+	        Map<String, Object> paramObjectsMap = new HashMap<>();
+	        paramObjectsMap.put("message", "Excel Upload For  Branch successful");
+	        responseObjectsMap.put("paramObjectsMap", paramObjectsMap);
+	        responseDTO = createServiceResponse(responseObjectsMap);
+	        
+	    }  catch (Exception e) {
+
+	    	errorMsg = e.getMessage();
+	        LOGGER.error(CommonConstant.EXCEPTION_OCCURRED, methodName, e);
+	        responseObjectsMap.put("statusFlag", "Error");
+	        responseObjectsMap.put("status", false);
+	        responseObjectsMap.put("errorMessage", errorMsg);
+
+	        responseDTO = createServiceResponseError(responseObjectsMap,"Excel Upload For Branch Failed",errorMsg);
+	}
+	LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+	return ResponseEntity.ok().body(responseDTO);
+	}
+	
+	// File Upload For Country
+	
+		@PostMapping("/ExcelUploadForCountry")
+		public ResponseEntity<ResponseDTO> ExcelUploadForCountry(@RequestParam MultipartFile[] files,CustomerAttachmentType type,@RequestParam(required = false) Long orgId,
+				@RequestParam(required = false) String createdBy) {
+		    String methodName = "ExcelUploadForCountry()";
+		    LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		    String errorMsg = null;
+		    Map<String, Object> responseObjectsMap = new HashMap<>();
+		    ResponseDTO responseDTO = null;
+		    int totalRows = 0;
+		    int successfulUploads = 0;
+
+		    try {
+		        // Call service method to process Excel upload
+		        basicMasterService.ExcelUploadForCountry(files, type, orgId,createdBy);
+		        
+		        // Retrieve the counts after processing
+		        totalRows = basicMasterService.getTotalRows(); // Get total rows processed
+		        successfulUploads = basicMasterService.getSuccessfulUploads(); // Get successful uploads count
+		        // Construct success response
+		        responseObjectsMap.put("statusFlag", "Ok");
+		        responseObjectsMap.put("status", true);
+		        responseObjectsMap.put("totalRows", totalRows);
+		        responseObjectsMap.put("successfulUploads", successfulUploads);
+		        Map<String, Object> paramObjectsMap = new HashMap<>();
+		        paramObjectsMap.put("message", "Excel Upload For  Country successful");
+		        responseObjectsMap.put("paramObjectsMap", paramObjectsMap);
+		        responseDTO = createServiceResponse(responseObjectsMap);
+		        
+		    }  catch (Exception e) {
+
+		    	errorMsg = e.getMessage();
+		        LOGGER.error(CommonConstant.EXCEPTION_OCCURRED, methodName, e);
+		        responseObjectsMap.put("statusFlag", "Error");
+		        responseObjectsMap.put("status", false);
+		        responseObjectsMap.put("errorMessage", errorMsg);
+
+		        responseDTO = createServiceResponseError(responseObjectsMap,"Excel Upload For Country Failed",errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+		}
+	
+		// File Upload For STATE
+		
+			@PostMapping("/ExcelUploadForState")
+			public ResponseEntity<ResponseDTO> ExcelUploadForState(@RequestParam MultipartFile[] files,CustomerAttachmentType type,@RequestParam(required = false) Long orgId,
+					@RequestParam(required = false) String createdBy) {
+			    String methodName = "ExcelUploadForState()";
+			    LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+			    String errorMsg = null;
+			    Map<String, Object> responseObjectsMap = new HashMap<>();
+			    ResponseDTO responseDTO = null;
+			    int totalRows = 0;
+			    int successfulUploads = 0;
+
+			    try {
+			        // Call service method to process Excel upload
+			        basicMasterService.ExcelUploadForState(files, type, orgId,createdBy);
+			        
+			        // Retrieve the counts after processing
+			        totalRows = basicMasterService.getTotalRows(); // Get total rows processed
+			        successfulUploads = basicMasterService.getSuccessfulUploads(); // Get successful uploads count
+			        // Construct success response
+			        responseObjectsMap.put("statusFlag", "Ok");
+			        responseObjectsMap.put("status", true);
+			        responseObjectsMap.put("totalRows", totalRows);
+			        responseObjectsMap.put("successfulUploads", successfulUploads);
+			        Map<String, Object> paramObjectsMap = new HashMap<>();
+			        paramObjectsMap.put("message", "Excel Upload For  State successful");
+			        responseObjectsMap.put("paramObjectsMap", paramObjectsMap);
+			        responseDTO = createServiceResponse(responseObjectsMap);
+			        
+			    }  catch (Exception e) {
+
+			    	errorMsg = e.getMessage();
+			        LOGGER.error(CommonConstant.EXCEPTION_OCCURRED, methodName, e);
+			        responseObjectsMap.put("statusFlag", "Error");
+			        responseObjectsMap.put("status", false);
+			        responseObjectsMap.put("errorMessage", errorMsg);
+
+			        responseDTO = createServiceResponseError(responseObjectsMap,"Excel Upload For State Failed",errorMsg);
+			}
+			LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+			return ResponseEntity.ok().body(responseDTO);
+			}
+			
+			// File Upload For STATE
+			
+				@PostMapping("/ExcelUploadForCity")
+				public ResponseEntity<ResponseDTO> ExcelUploadForCity(@RequestParam MultipartFile[] files,CustomerAttachmentType type,@RequestParam(required = false) Long orgId,
+						@RequestParam(required = false) String createdBy) {
+				    String methodName = "ExcelUploadForCity()";
+				    LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+				    String errorMsg = null;
+				    Map<String, Object> responseObjectsMap = new HashMap<>();
+				    ResponseDTO responseDTO = null;
+				    int totalRows = 0;
+				    int successfulUploads = 0;
+
+				    try {
+				        // Call service method to process Excel upload
+				        basicMasterService.ExcelUploadForCity(files, type, orgId,createdBy);
+				        
+				        // Retrieve the counts after processing
+				        totalRows = basicMasterService.getTotalRows(); // Get total rows processed
+				        successfulUploads = basicMasterService.getSuccessfulUploads(); // Get successful uploads count
+				        // Construct success response
+				        responseObjectsMap.put("statusFlag", "Ok");
+				        responseObjectsMap.put("status", true);
+				        responseObjectsMap.put("totalRows", totalRows);
+				        responseObjectsMap.put("successfulUploads", successfulUploads);
+				        Map<String, Object> paramObjectsMap = new HashMap<>();
+				        paramObjectsMap.put("message", "Excel Upload For  City successful");
+				        responseObjectsMap.put("paramObjectsMap", paramObjectsMap);
+				        responseDTO = createServiceResponse(responseObjectsMap);
+				        
+				    }  catch (Exception e) {
+
+				    	errorMsg = e.getMessage();
+				        LOGGER.error(CommonConstant.EXCEPTION_OCCURRED, methodName, e);
+				        responseObjectsMap.put("statusFlag", "Error");
+				        responseObjectsMap.put("status", false);
+				        responseObjectsMap.put("errorMessage", errorMsg);
+
+				        responseDTO = createServiceResponseError(responseObjectsMap,"Excel Upload For City Failed",errorMsg);
+				}
+				LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+				return ResponseEntity.ok().body(responseDTO);
+				}
+			
+		
 }

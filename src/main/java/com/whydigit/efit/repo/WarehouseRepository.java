@@ -26,4 +26,8 @@ List<WarehouseVO> findAllActiveWarehouse(Long orgId);
 @Query(value = "select a.whlocation,a.kitcode,a.avalqty from availablekit1 a where whlocation=?1 and kitcode=?2",nativeQuery = true)
 Set<Object[]> getAvalkitqtyByWarehouse(String warehouse, String kitName);
 
+boolean existsByWarehouseLocationAndCodeAndOrgId(String location, String code, Long orgId);
+
+boolean existsByCodeAndOrgId(String code, Long orgId);
+
 }
