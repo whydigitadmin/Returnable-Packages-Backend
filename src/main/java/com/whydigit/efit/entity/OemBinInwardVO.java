@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -16,6 +17,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.whydigit.efit.dto.CreatedUpdatedDate;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -72,8 +74,8 @@ public class OemBinInwardVO {
 	private String screen = "Bin Inward";
 	
 	
-	@Column(name = "emitterid")
-	private Long emitterId;
+	@Column(name = "receiverid")
+	private Long receiverid;
 	
 
 	@OneToMany(mappedBy = "oemBinInwardVO", cascade = CascadeType.ALL)
@@ -95,4 +97,7 @@ public class OemBinInwardVO {
 				: LocalDate.now().minusYears(1).format(DateTimeFormatter.ofPattern("yyyy"));
 		return fyFull;
 	}
+	
+	@Embedded
+	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
 }

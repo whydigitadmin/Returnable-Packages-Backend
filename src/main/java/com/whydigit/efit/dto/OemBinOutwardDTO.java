@@ -19,6 +19,6 @@ public class OemBinOutwardDTO {
 	private String stockBranch;
 	private String createdby;
 	private Long orgId;
-	private Long emitterId;
+	private Long receiverId;
 	private List<OemBinOutwardDetailsDTO> oemBinOutwardDetails;
 }

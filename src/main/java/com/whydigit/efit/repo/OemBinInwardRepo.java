@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import com.whydigit.efit.entity.BinInwardDetailsVO;
 import com.whydigit.efit.entity.OemBinInwardDetailsVO;
 import com.whydigit.efit.entity.OemBinInwardVO;
+import com.whydigit.efit.entity.OemBinOutwardVO;
 
 public interface OemBinInwardRepo extends JpaRepository<OemBinInwardVO, Long> {
 
@@ -28,6 +29,8 @@ public interface OemBinInwardRepo extends JpaRepository<OemBinInwardVO, Long> {
 
 	@Query(value = "select a from OemBinInwardVO a where a.docId=?1")
 	OemBinInwardVO findOemInwardByDocId(String docId);
+
+	
 	
 
 }

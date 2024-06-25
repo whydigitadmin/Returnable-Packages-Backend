@@ -24,52 +24,53 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name="gatheringempty")
-@Data
+@Table(name="retreival")
 @NoArgsConstructor
 @AllArgsConstructor
-public class GatheringEmptyVO {
+@Data
+public class RetreivalVO {
+	
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "gatheringgen")
-	@SequenceGenerator(name = "gatheringgen", sequenceName = "gatheringseq", initialValue = 1000000001, allocationSize = 1)
-	@Column(name = "gatheringemptyid")
+	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "retreivalgen")
+	@SequenceGenerator(name = "retreivalgen", sequenceName = "retreivalseq", initialValue = 1000000001, allocationSize = 1)
+	@Column(name = "retreivalid")
 	private Long id;
 	@Column(name = "docid")
 	private String docId;
 	@Column(name = "docdate")
-	private LocalDate docDate=LocalDate.now();
-	@Column(name = "stockBranch")
-	private String stockBranch;
+	private LocalDate docDate;
+	@Column(name = "fromstockbranch")
+	private String fromStockBranch;
+	@Column(name = "tostockbranch")
+	private String toStockBranch;
 	@Column(name = "createdby")
-	private String createdBy;
+	private String createdby;
 	@Column(name = "modifiedby")
 	private String modifiedby;
 	@Column(name = "cancelremarks")
 	private String cancelRemark;
 	@Column(name = "active")
-	private boolean active=true;
+	private boolean active;
 	@Column(name = "cancel")
 	private boolean cancel;
 	@Column(name = "orgid")
 	private Long orgId;
 	@Column(name = "finyr")
-	private String finyr;
-	private String scode = "GEMTY";
-	private String screen="Gathering Empty";
-	
-	@Column(name="receiverid")
+	private String finYr;
+	@Column(name = "receiverid")
 	private Long receiverId;
-	
+	private String scode = "RETRE";
+	private String screen = "Retreival";
 
-	@OneToMany(mappedBy = "gatheringEmptyVO",cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "retreivalVO", cascade = CascadeType.ALL)
 	@JsonManagedReference
-	private List<GathereingEmptyDetailsVO> gathereingEmptyDetailsVO;
+	private List<RetreivalDetailsVO> retreivalDetailsVO;
 
 	@PrePersist
 	private void setDefaultFinyr() {
 		// Execute the logic to set the default value for finyr
 		String fyFull = calculateFinyr();
-		this.finyr = fyFull;
+		this.finYr = fyFull;
 	}
 
 	private String calculateFinyr() {
@@ -84,4 +85,3 @@ public class GatheringEmptyVO {
 	@Embedded
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
 }
-

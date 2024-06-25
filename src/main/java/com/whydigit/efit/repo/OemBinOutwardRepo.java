@@ -1,6 +1,7 @@
 package com.whydigit.efit.repo;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -25,5 +26,12 @@ public interface OemBinOutwardRepo extends JpaRepository<OemBinOutwardVO, Long> 
 
 	@Query(nativeQuery =true,value = "select * from oembinoutward where orgid=?1")
 	List<OemBinOutwardVO> getAllOemBinOutwardByOrgId(Long orgId);
+
+	@Query(nativeQuery = true,value="select docid,docdate,stockbranch from oembinoutward where emitterid=?2 and retreival='Pending' and orgid=?1 and stockbranch=?3\r\n"
+			+ "group by docid,docdate,stockbranch")
+	Set<Object[]> getOemOutwardStockDetailsForRetreival(Long orgId, Long receiverId, String stockBranch);
+	
+	@Query("select a from OemBinOutwardVO a where a.docId=?1 ")
+	OemBinOutwardVO findByDocId(String outwardDocId);
 
 }
