@@ -356,6 +356,7 @@ public class OemServiceImpl implements OemService {
 
 		gatheringEmptyVO.setDocId(gatheringEmptyDTO.getDocId());
 		gatheringEmptyVO.setOrgId(gatheringEmptyDTO.getOrgId());
+		gatheringEmptyVO.setReceiverId(gatheringEmptyDTO.getReceiverId());
 		gatheringEmptyVO.setStockBranch(gatheringEmptyDTO.getStockBranch());
 		gatheringEmptyVO.setCreatedBy(gatheringEmptyDTO.getCreatedBy());
 		gatheringEmptyVO.setModifiedby(gatheringEmptyDTO.getCreatedBy());

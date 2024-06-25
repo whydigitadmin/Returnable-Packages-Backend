@@ -1003,7 +1003,7 @@ public class EmitterServiceImpl implements EmitterService {
 				assetStockDetailsVO.setSCode(savedBinInwardVO.getScode()); // Assuming getScode() returns the correct
 				assetStockDetailsVO.setSourceId(binInwardDetails.getBinInwardDetailsId()); // value
 				assetStockDetailsVO.setOrgId(savedBinInwardVO.getOrgId());
-				assetStockDetailsVO.setScreen("Bin Inward");
+				assetStockDetailsVO.setScreen("Bin Allotment");
 				assetStockDetailsVO.setPm("M");
 				assetStockDetailsVO.setStatus("M");
 				assetStockDetailsVO.setBinLocation("");

@@ -200,8 +200,6 @@ public class OemController extends BaseController{
 	}
 	
 	//OEM BIN OUTWARD
-	
-	//OEM Bin Inward
 		@PostMapping("/oemBinOutward")
 		public ResponseEntity<ResponseDTO> createOemBinOutward(@RequestBody OemBinOutwardDTO binOutwardDTO) {
 			String methodName = "createOemBinOutward()";
@@ -218,7 +216,7 @@ public class OemController extends BaseController{
 			}
 			if (StringUtils.isBlank(errorMsg)) {
 				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Oem Bin Outward Created Successfully");
-				responseObjectsMap.put("binOutwardDTO", binOutwardDTO);
+				responseObjectsMap.put("oemBinOutwardVO", oemBinOutwardVO);
 				responseDTO = createServiceResponse(responseObjectsMap);
 			} else {
 				responseDTO = createServiceResponseError(responseObjectsMap, "Oem Bin Outward Failed", errorMsg);
