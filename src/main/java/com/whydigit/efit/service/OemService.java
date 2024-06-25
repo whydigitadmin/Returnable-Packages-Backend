@@ -9,9 +9,11 @@ import org.springframework.stereotype.Service;
 import com.whydigit.efit.dto.GatheringEmptyDTO;
 import com.whydigit.efit.dto.OemBinInwardDTO;
 import com.whydigit.efit.dto.OemBinOutwardDTO;
+import com.whydigit.efit.dto.RetreivalDTO;
 import com.whydigit.efit.entity.GatheringEmptyVO;
 import com.whydigit.efit.entity.OemBinInwardVO;
 import com.whydigit.efit.entity.OemBinOutwardVO;
+import com.whydigit.efit.entity.RetreivalVO;
 
 @Service
 public interface OemService {
@@ -48,5 +50,14 @@ public interface OemService {
 	
 	List<Map<String, Object>> getOemEmptyDeatilsForEmptyGathering(String stockBranch,Long orgId);
 
+	
+	// Oem Outward Stock details for Retreival
+	List<Map<String, Object>> getOemOutwardDeatilsForRetreival(Long orgId, Long receiverId, String stockBranch);
+	
+	
+	
+	RetreivalVO CreateRetreival(RetreivalDTO retreivalDTO);
+
+	String getDocIdByRetreival();
 
 }

@@ -23,9 +23,11 @@ import com.whydigit.efit.dto.GatheringEmptyDTO;
 import com.whydigit.efit.dto.OemBinInwardDTO;
 import com.whydigit.efit.dto.OemBinOutwardDTO;
 import com.whydigit.efit.dto.ResponseDTO;
+import com.whydigit.efit.dto.RetreivalDTO;
 import com.whydigit.efit.entity.GatheringEmptyVO;
 import com.whydigit.efit.entity.OemBinInwardVO;
 import com.whydigit.efit.entity.OemBinOutwardVO;
+import com.whydigit.efit.entity.RetreivalVO;
 import com.whydigit.efit.service.OemService;
 
 @RestController
@@ -198,8 +200,6 @@ public class OemController extends BaseController{
 	}
 	
 	//OEM BIN OUTWARD
-	
-	//OEM Bin Inward
 		@PostMapping("/oemBinOutward")
 		public ResponseEntity<ResponseDTO> createOemBinOutward(@RequestBody OemBinOutwardDTO binOutwardDTO) {
 			String methodName = "createOemBinOutward()";
@@ -216,7 +216,7 @@ public class OemController extends BaseController{
 			}
 			if (StringUtils.isBlank(errorMsg)) {
 				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Oem Bin Outward Created Successfully");
-				responseObjectsMap.put("binOutwardDTO", binOutwardDTO);
+				responseObjectsMap.put("oemBinOutwardVO", oemBinOutwardVO);
 				responseDTO = createServiceResponse(responseObjectsMap);
 			} else {
 				responseDTO = createServiceResponseError(responseObjectsMap, "Oem Bin Outward Failed", errorMsg);
@@ -459,6 +459,85 @@ public class OemController extends BaseController{
 			} else {
 				errorMsg = " not found for ID: ";
 				responseDTO = createServiceResponseError(responseObjectsMap, "gathering Empty DocId not found", errorMsg);
+			}
+			LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+			return ResponseEntity.ok().body(responseDTO);
+		}
+		
+		
+		// Oem  Outwarddetails for Retreival
+		@GetMapping("/getOemOutwardDetailsForRetreival")
+		public ResponseEntity<ResponseDTO> getOemOutwardDetailsForRettreival(@RequestParam(required = true) Long orgId,@RequestParam(required = true) Long receiverId,@RequestParam(required = true) String stockBranch) {
+			String methodName = "getOemOutwardDetailsForRetreival()";
+			LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+			String errorMsg = null;
+			Map<String, Object> responseObjectsMap = new HashMap<>();
+			ResponseDTO responseDTO = null;
+			List<Map<String,Object>> oemOutwardDetails = new ArrayList<>();
+			try {
+				oemOutwardDetails = oemService.getOemOutwardDeatilsForRetreival(orgId, receiverId, stockBranch);
+			} catch (Exception e) {
+				errorMsg = e.getMessage();
+				LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			}
+			if (StringUtils.isBlank(errorMsg)) {
+				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Oem Outward Details information get successfully");
+				responseObjectsMap.put("oemOutwardDetails", oemOutwardDetails);
+				responseDTO = createServiceResponse(responseObjectsMap);
+			} else {
+				responseDTO = createServiceResponseError(responseObjectsMap, "Oem Outward Details  information receive failed", errorMsg);
+			}
+			LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+			return ResponseEntity.ok().body(responseDTO);
+
+		}
+		
+		@GetMapping("/getDocIdByRetreival")
+		public ResponseEntity<ResponseDTO> getDocIdByRetreival() {
+			String methodName = "getDocIdByRetreival()";
+			LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+			String errorMsg = null;
+			Map<String, Object> responseObjectsMap = new HashMap<>();  
+			ResponseDTO responseDTO = null;
+			String retreivalDocid = null;
+			try {
+				retreivalDocid = oemService.getDocIdByRetreival();
+			} catch (Exception e) {
+				errorMsg = e.getMessage();
+				LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			}
+			if (StringUtils.isEmpty(errorMsg)) {
+				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Retreival DocId found success");
+				responseObjectsMap.put("retreivalDocid", retreivalDocid);
+				responseDTO = createServiceResponse(responseObjectsMap);
+			} else {
+				errorMsg = " not found for ID: ";
+				responseDTO = createServiceResponseError(responseObjectsMap, "Retreival DocId not found", errorMsg);
+			}
+			LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+			return ResponseEntity.ok().body(responseDTO);
+		}
+		
+		@PostMapping("/createRetreival")
+		public ResponseEntity<ResponseDTO> createRetreival(@RequestBody RetreivalDTO retreivalDTO) {
+			String methodName = "createRetreival()";
+			LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+			String errorMsg = null;
+			Map<String, Object> responseObjectsMap = new HashMap<>();
+			ResponseDTO responseDTO = null;
+			RetreivalVO retreivalVO = new RetreivalVO();
+			try {
+				retreivalVO = oemService.CreateRetreival(retreivalDTO);
+			} catch (Exception e) {
+				errorMsg = e.getMessage();
+				LOGGER.error(CommonConstant.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			}
+			if (StringUtils.isBlank(errorMsg)) {
+				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Retreival Created Successfully");
+				responseObjectsMap.put("retreivalVO", retreivalVO);
+				responseDTO = createServiceResponse(responseObjectsMap);
+			} else {
+				responseDTO = createServiceResponseError(responseObjectsMap, "Retreival Creation Failed", errorMsg);
 			}
 			LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 			return ResponseEntity.ok().body(responseDTO);

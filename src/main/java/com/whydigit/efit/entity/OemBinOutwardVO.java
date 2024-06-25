@@ -57,14 +57,14 @@ public class OemBinOutwardVO {
 	private Long orgId;
 	@Column(name = "finyr")
 	private String finYr;
-	@Column(name = "emitterid")
-	private Long emitterId;
+	@Column(name = "receiverid")
+	private Long receiverId;
 	@Builder.Default
 	private String scode = "OEMBO";
 	@Builder.Default
 	private String screen = "Bin Outward";
-	@Column(name="outwarddocid")
-	private String outwardDocId;
+	
+	private String retreival;
 
 	@OneToMany(mappedBy = "oemBinOutwardVO", cascade = CascadeType.ALL)
 	@JsonManagedReference

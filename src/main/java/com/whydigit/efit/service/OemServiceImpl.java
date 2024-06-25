@@ -18,6 +18,8 @@ import com.whydigit.efit.dto.OemBinInwardDTO;
 import com.whydigit.efit.dto.OemBinInwardDetailsDTO;
 import com.whydigit.efit.dto.OemBinOutwardDTO;
 import com.whydigit.efit.dto.OemBinOutwardDetailsDTO;
+import com.whydigit.efit.dto.RetreivalDTO;
+import com.whydigit.efit.dto.RetreivalDetailsDTO;
 import com.whydigit.efit.entity.AssetStockDetailsVO;
 import com.whydigit.efit.entity.BinOutwardDetailsVO;
 import com.whydigit.efit.entity.BinOutwardVO;
@@ -29,6 +31,8 @@ import com.whydigit.efit.entity.OemBinInwardDetailsVO;
 import com.whydigit.efit.entity.OemBinInwardVO;
 import com.whydigit.efit.entity.OemBinOutwardDetailsVO;
 import com.whydigit.efit.entity.OemBinOutwardVO;
+import com.whydigit.efit.entity.RetreivalDetailsVO;
+import com.whydigit.efit.entity.RetreivalVO;
 import com.whydigit.efit.repo.AssetRepo;
 import com.whydigit.efit.repo.AssetStockDetailsRepo;
 import com.whydigit.efit.repo.BinOutwardRepo;
@@ -39,6 +43,7 @@ import com.whydigit.efit.repo.OemBinInwardDetailsRepo;
 import com.whydigit.efit.repo.OemBinInwardRepo;
 import com.whydigit.efit.repo.OemBinOutwardDetailsRepo;
 import com.whydigit.efit.repo.OemBinOutwardRepo;
+import com.whydigit.efit.repo.RetreivalRepo;
 import com.whydigit.efit.repo.UserRepo;
 
 @Service
@@ -52,11 +57,14 @@ public class OemServiceImpl implements OemService {
 	OemBinInwardRepo oemBinInwardRepo;
 
 	@Autowired
+	RetreivalRepo retreivalRepo;
+
+	@Autowired
 	OemBinInwardDetailsRepo oemBinInwardDetailsRepo;
 
 	@Autowired
 	OemBinOutwardRepo oemBinOutwardRepo;
-	
+
 	@Autowired
 	DispatchRepository dispatchRepository;
 
@@ -71,10 +79,10 @@ public class OemServiceImpl implements OemService {
 
 	@Autowired
 	BinOutwardRepo binOutwardRepo;
-	
+
 	@Autowired
 	UserRepo userRepo;
-	
+
 	@Autowired
 	GatheringEmptyRepo gatheringEmptyRepo;
 
@@ -92,12 +100,13 @@ public class OemServiceImpl implements OemService {
 		oemBinInwardVO.setFlowId(oemBinInwardDTO.getFlowId());
 		FlowVO flowVO = flowRepo.findById(oemBinInwardDTO.getFlowId()).get();
 		oemBinInwardVO.setFlow(flowVO.getFlowName());
-		
+
 		oemBinInwardVO.setCreatedby(oemBinInwardDTO.getCreatedBy());
 		oemBinInwardVO.setModifiedby(oemBinInwardDTO.getCreatedBy());
 		oemBinInwardVO.setDispatchId(oemBinInwardDTO.getDispatchId());
 		oemBinInwardVO.setInvoiceNo(oemBinInwardDTO.getInvoiceNo());
-		DispatchVO dispatchVO=dispatchRepository.findByInvoiceNoAndOrgId(oemBinInwardDTO.getInvoiceNo(),oemBinInwardDTO.getOrgId());
+		DispatchVO dispatchVO = dispatchRepository.findByInvoiceNoAndOrgId(oemBinInwardDTO.getInvoiceNo(),
+				oemBinInwardDTO.getOrgId());
 		dispatchVO.setOemInwardNo(oemBinInwardDTO.getOemInwardNo());
 		dispatchVO.setOemInwardDate(oemBinInwardDTO.getOemInwardDate());
 		dispatchRepository.save(dispatchVO);
@@ -107,7 +116,7 @@ public class OemServiceImpl implements OemService {
 		oemBinInwardVO.setOemInwardDate(oemBinInwardDTO.getOemInwardDate());
 		oemBinInwardVO.setInvoiceDate(oemBinInwardDTO.getInvoiceDate());
 		oemBinInwardVO.setModifiedby(oemBinInwardDTO.getCreatedBy());
-		oemBinInwardVO.setEmitterId(oemBinInwardDTO.getEmitterId());
+		oemBinInwardVO.setReceiverid(oemBinInwardDTO.getReceiverId());
 		List<OemBinInwardDetailsVO> oemBinInwardDetailsVOs = new ArrayList<>();
 		if (oemBinInwardDTO.getOemBinInwardDetails() != null) {
 			for (OemBinInwardDetailsDTO oemBinInwardDetailsDTO : oemBinInwardDTO.getOemBinInwardDetails()) {
@@ -121,7 +130,7 @@ public class OemServiceImpl implements OemService {
 				oemBinInwardDetailsVO.setReceivedKitQty(oemBinInwardDetailsDTO.getReceivedKitQty());
 				oemBinInwardDetailsVO.setOemBinInwardVO(oemBinInwardVO);
 				oemBinInwardDetailsVOs.add(oemBinInwardDetailsVO);
-				
+
 				BinOutwardVO binOutwardVO = binOutwardRepo.findByDocId(oemBinInwardDetailsDTO.getOutwardDocId());
 				List<BinOutwardDetailsVO> binOutwardDetailsVOLists = binOutwardVO.getBinOutwardDetails();
 				if (binOutwardDetailsVOLists != null && !binOutwardDetailsVOLists.isEmpty())
@@ -134,7 +143,8 @@ public class OemServiceImpl implements OemService {
 						stockDetailsVO.setSkuCode(binOutwardDetailsVO.getAssetCode());
 						stockDetailsVO.setSkuQty(binOutwardDetailsVO.getQty() * -1);
 						stockDetailsVO.setOrgId(binOutwardVO.getOrgId());
-						stockDetailsVO.setCategory(assetRepo.getCategoryByAssetCodeId(binOutwardDetailsVO.getAssetCode()));
+						stockDetailsVO
+								.setCategory(assetRepo.getCategoryByAssetCodeId(binOutwardDetailsVO.getAssetCode()));
 						stockDetailsVO.setStatus("M");
 						stockDetailsVO.setScreen("Dispatch");
 						stockDetailsVO.setSCode(dispatchVO.getScode());
@@ -205,13 +215,14 @@ public class OemServiceImpl implements OemService {
 		oemBinOutwardVO.setModifiedby(oemBinOutwardDTO.getCreatedby());
 		oemBinOutwardVO.setModifiedby(oemBinOutwardDTO.getCreatedby());
 		oemBinOutwardVO.setOrgId(oemBinOutwardDTO.getOrgId());
-		oemBinOutwardVO.setEmitterId(oemBinOutwardDTO.getEmitterId());
+		oemBinOutwardVO.setReceiverId(oemBinOutwardDTO.getReceiverId());
 		oemBinOutwardVO.setStockBranch(oemBinOutwardDTO.getStockBranch());
+		oemBinOutwardVO.setRetreival("Pending");
 
 		List<OemBinOutwardDetailsVO> oemBinOutwardDetailsVOs = new ArrayList<>();
 		if (oemBinOutwardDTO.getOemBinOutwardDetails() != null) {
 			for (OemBinOutwardDetailsDTO oemBinOutwardDetailsDTO : oemBinOutwardDTO.getOemBinOutwardDetails()) {
-				OemBinOutwardDetailsVO oemBinOutwardDetailsVO = new OemBinOutwardDetailsVO()   ;
+				OemBinOutwardDetailsVO oemBinOutwardDetailsVO = new OemBinOutwardDetailsVO();
 				oemBinOutwardDetailsVO.setCategory(oemBinOutwardDetailsDTO.getCategory());
 				oemBinOutwardDetailsVO.setAsset(oemBinOutwardDetailsDTO.getAsset());
 				oemBinOutwardDetailsVO.setAssetCode(oemBinOutwardDetailsDTO.getAssetCode());
@@ -219,6 +230,7 @@ public class OemServiceImpl implements OemService {
 				oemBinOutwardDetailsVO.setOutQty(oemBinOutwardDetailsDTO.getOutQty());
 				oemBinOutwardDetailsVO.setOemBinOutwardVO(oemBinOutwardVO);
 				oemBinOutwardDetailsVOs.add(oemBinOutwardDetailsVO);
+
 			}
 		}
 		oemBinOutwardVO.setOemBinOutwardDetails(oemBinOutwardDetailsVOs);
@@ -270,7 +282,7 @@ public class OemServiceImpl implements OemService {
 			stockDetailsVO.setFinyr(savedOemBinOutwardVO.getFinYr());
 			assetStockDetailsRepo.save(stockDetailsVO);
 		}
-		return savedOemBinOutwardVO; 
+		return savedOemBinOutwardVO;
 	}
 
 	@Override
@@ -287,44 +299,44 @@ public class OemServiceImpl implements OemService {
 	}
 
 	@Override
-	public List<Map<String, Object>> getOemStockBranchByUserId(Long orgId,Long userId) {
+	public List<Map<String, Object>> getOemStockBranchByUserId(Long orgId, Long userId) {
 
-		Set<Object[]> stockbranch =userRepo.getOemStockBranchByOrgIdAndUserId(orgId,userId);
+		Set<Object[]> stockbranch = userRepo.getOemStockBranchByOrgIdAndUserId(orgId, userId);
 
 		return getOemStockbranch(stockbranch);
 	}
 
 	private List<Map<String, Object>> getOemStockbranch(Set<Object[]> stockbranch) {
 		List<Map<String, Object>> stockbr = new ArrayList<>();
-        for (Object[] ps : stockbranch) {
-            Map<String, Object> part = new HashMap<>();
-            part.put("stockBranch", ps[0] != null ? ps[0].toString() : "");
-            part.put("destination", ps[1] != null ? ps[1].toString() : "");
-            stockbr.add(part);
-        }
-        return stockbr;
+		for (Object[] ps : stockbranch) {
+			Map<String, Object> part = new HashMap<>();
+			part.put("stockBranch", ps[0] != null ? ps[0].toString() : "");
+			part.put("destination", ps[1] != null ? ps[1].toString() : "");
+			stockbr.add(part);
+		}
+		return stockbr;
 	}
-	
+
 	@Override
 	public List<Map<String, Object>> getOemStockDeatilsForOemOutward(String stockBranch) {
-		
-		Set<Object[]> stockDetails =assetStockDetailsRepo.getOemStockDetailsForOemBinOutward(stockBranch);
-		
+
+		Set<Object[]> stockDetails = assetStockDetailsRepo.getOemStockDetailsForOemBinOutward(stockBranch);
+
 		return getOemStockDeatils(stockDetails);
 	}
 
 	private List<Map<String, Object>> getOemStockDeatils(Set<Object[]> stockDetails) {
 		List<Map<String, Object>> oemStockdetails = new ArrayList<>();
-        for (Object[] ps : stockDetails) {
-            Map<String, Object> part = new HashMap<>();
-            part.put("stockBranch", ps[0] != null ? ps[0].toString() : "");
-            part.put("category", ps[1] != null ? ps[1].toString() : "");
-            part.put("assetName", ps[2] != null ? ps[2].toString() : "");
-            part.put("assetCode", ps[3] != null ? ps[3].toString() : "");
-            part.put("availQty", ps[4] != null ? ps[4].toString() : "");
-            oemStockdetails.add(part);
-        }
-        return oemStockdetails;
+		for (Object[] ps : stockDetails) {
+			Map<String, Object> part = new HashMap<>();
+			part.put("stockBranch", ps[0] != null ? ps[0].toString() : "");
+			part.put("category", ps[1] != null ? ps[1].toString() : "");
+			part.put("assetName", ps[2] != null ? ps[2].toString() : "");
+			part.put("assetCode", ps[3] != null ? ps[3].toString() : "");
+			part.put("availQty", ps[4] != null ? ps[4].toString() : "");
+			oemStockdetails.add(part);
+		}
+		return oemStockdetails;
 	}
 
 	@Override
@@ -341,16 +353,18 @@ public class OemServiceImpl implements OemService {
 		String binoutward = finyr + "GEMT" + gatheringEmptyRepo.finddocid();
 		gatheringEmptyVO.setDocId(binoutward);
 		gatheringEmptyRepo.nextseq();
-		
+
 		gatheringEmptyVO.setDocId(gatheringEmptyDTO.getDocId());
 		gatheringEmptyVO.setOrgId(gatheringEmptyDTO.getOrgId());
+		gatheringEmptyVO.setReceiverId(gatheringEmptyDTO.getReceiverId());
 		gatheringEmptyVO.setStockBranch(gatheringEmptyDTO.getStockBranch());
 		gatheringEmptyVO.setCreatedBy(gatheringEmptyDTO.getCreatedBy());
 		gatheringEmptyVO.setModifiedby(gatheringEmptyDTO.getCreatedBy());
 
 		List<GathereingEmptyDetailsVO> gathereingEmptyDetailsVO = new ArrayList<>();
 		if (gatheringEmptyDTO.getGathereingEmptyDetailsDTO() != null) {
-			for (GathereingEmptyDetailsDTO gathereingEmptyDetailsDTO : gatheringEmptyDTO.getGathereingEmptyDetailsDTO()) {
+			for (GathereingEmptyDetailsDTO gathereingEmptyDetailsDTO : gatheringEmptyDTO
+					.getGathereingEmptyDetailsDTO()) {
 				GathereingEmptyDetailsVO gathereingEmptyDetailsVOs = new GathereingEmptyDetailsVO();
 				gathereingEmptyDetailsVOs.setAssetName(gathereingEmptyDetailsDTO.getAssetName());
 				gathereingEmptyDetailsVOs.setAssetCode(gathereingEmptyDetailsDTO.getAssetCode());
@@ -361,9 +375,9 @@ public class OemServiceImpl implements OemService {
 			}
 		}
 		gatheringEmptyVO.setGathereingEmptyDetailsVO(gathereingEmptyDetailsVO);
-		 
+
 		GatheringEmptyVO emptyVO = gatheringEmptyRepo.save(gatheringEmptyVO);
-		 
+
 		List<GathereingEmptyDetailsVO> gathereingEmptyDetailsVOs = emptyVO.getGathereingEmptyDetailsVO();
 		if (gathereingEmptyDetailsVOs != null && !gathereingEmptyDetailsVOs.isEmpty())
 			for (GathereingEmptyDetailsVO emptydetails : gathereingEmptyDetailsVOs) {
@@ -411,52 +425,52 @@ public class OemServiceImpl implements OemService {
 			stockDetailsVO.setFinyr(emptyVO.getFinyr());
 			assetStockDetailsRepo.save(stockDetailsVO);
 		}
-		 return  emptyVO;
-		
+		return emptyVO;
+
 	}
-	
+
 	@Override
 	public List<GatheringEmptyVO> getAllGathering(Long orgId) {
 		List<GatheringEmptyVO> gatheringEmptyVO = new ArrayList<>();
 		if (ObjectUtils.isNotEmpty(orgId)) {
 			LOGGER.info("Successfully Received  GatheringEmpty BY OrgId : {}", orgId);
 			gatheringEmptyVO = gatheringEmptyRepo.getAllGatheringEmptyByOrgId(orgId);
-		} 
+		}
 		return gatheringEmptyVO;
 	}
 
 	@Override
 	public List<OemBinOutwardVO> getAllOemBinOutward(Long orgId) {
-		List<OemBinOutwardVO> oemBinOutwardVOs=new ArrayList<OemBinOutwardVO>();
+		List<OemBinOutwardVO> oemBinOutwardVOs = new ArrayList<OemBinOutwardVO>();
 		if (ObjectUtils.isNotEmpty(orgId)) {
 			LOGGER.info("Successfully Received  OemBinOutward BY OrgId : {}", orgId);
 			oemBinOutwardVOs = oemBinOutwardRepo.getAllOemBinOutwardByOrgId(orgId);
-		}else {
+		} else {
 			LOGGER.info("Successfully Received  OemBinOutward For All.");
 			oemBinOutwardVOs = oemBinOutwardRepo.findAll();
 		}
 		return oemBinOutwardVOs;
-		}
+	}
 
 	@Override
-	public List<Map<String, Object>> getOemEmptyDeatilsForEmptyGathering(String stockBranch,Long orgId) {
-		
-		Set<Object[]> EmptystockDetails =assetStockDetailsRepo.getOemEmptyStockDetailsForGathering(stockBranch,orgId);
+	public List<Map<String, Object>> getOemEmptyDeatilsForEmptyGathering(String stockBranch, Long orgId) {
+
+		Set<Object[]> EmptystockDetails = assetStockDetailsRepo.getOemEmptyStockDetailsForGathering(stockBranch, orgId);
 		return emptyGatheringDetails(EmptystockDetails);
 	}
 
 	private List<Map<String, Object>> emptyGatheringDetails(Set<Object[]> emptystockDetails) {
 		List<Map<String, Object>> oemEmptyStockdetails = new ArrayList<>();
-        for (Object[] ps : emptystockDetails) {
-            Map<String, Object> part = new HashMap<>();
-            part.put("stockBranch", ps[0] != null ? ps[0].toString() : "");
-            part.put("category", ps[1] != null ? ps[1].toString() : "");
-            part.put("assetName", ps[2] != null ? ps[2].toString() : "");
-            part.put("assetCode", ps[3] != null ? ps[3].toString() : "");
-            part.put("availQty", ps[4] != null ? ps[4].toString() : "");
-            oemEmptyStockdetails.add(part);
-        }
-        return oemEmptyStockdetails;
+		for (Object[] ps : emptystockDetails) {
+			Map<String, Object> part = new HashMap<>();
+			part.put("stockBranch", ps[0] != null ? ps[0].toString() : "");
+			part.put("category", ps[1] != null ? ps[1].toString() : "");
+			part.put("assetName", ps[2] != null ? ps[2].toString() : "");
+			part.put("assetCode", ps[3] != null ? ps[3].toString() : "");
+			part.put("availQty", ps[4] != null ? ps[4].toString() : "");
+			oemEmptyStockdetails.add(part);
+		}
+		return oemEmptyStockdetails;
 	}
 
 	@Override
@@ -466,5 +480,115 @@ public class OemServiceImpl implements OemService {
 		return docid;
 	}
 
-	
+	// for Retreival
+	@Override
+	public List<Map<String, Object>> getOemOutwardDeatilsForRetreival(Long orgId, Long receiverId, String stockBranch) {
+
+		Set<Object[]> oemOutwardstockDetails = oemBinOutwardRepo.getOemOutwardStockDetailsForRetreival(orgId,
+				receiverId, stockBranch);
+		return oemOutwardDetails(oemOutwardstockDetails);
+	}
+
+	private List<Map<String, Object>> oemOutwardDetails(Set<Object[]> oemOutwardstockDetails) {
+		List<Map<String, Object>> oemOutwardStockdetails = new ArrayList<>();
+		for (Object[] ps : oemOutwardstockDetails) {
+			Map<String, Object> part = new HashMap<>();
+			part.put("outwardDocId", ps[0] != null ? ps[0].toString() : "");
+			part.put("outwardDocDate", ps[1] != null ? ps[1].toString() : "");
+			part.put("StockBranch", ps[2] != null ? ps[2].toString() : "");
+			oemOutwardStockdetails.add(part);
+		}
+		return oemOutwardStockdetails;
+	}
+
+	@Override
+	public RetreivalVO CreateRetreival(RetreivalDTO retreivalDTO) {
+		RetreivalVO retreivalVO=new RetreivalVO();
+
+		String finyr = retreivalRepo.findFinyr();
+		String retreivalDocid = finyr + "RM" + retreivalRepo.finddocid();
+		retreivalVO.setDocId(retreivalDocid);
+		retreivalRepo.nextSeq();
+		
+		retreivalVO.setDocDate(retreivalDTO.getDocDate());
+		retreivalVO.setFromStockBranch(retreivalDTO.getFromStockBranch());
+		retreivalVO.setToStockBranch(retreivalDTO.getToStockBranch());
+		retreivalVO.setOrgId(retreivalDTO.getOrgId());
+		retreivalVO.setCreatedby(retreivalDTO.getCreatedby());
+		retreivalVO.setModifiedby(retreivalDTO.getCreatedby());
+		retreivalVO.setReceiverId(retreivalDTO.getReceiverId());
+		List<RetreivalDetailsVO>retreivalDetailsVO=new ArrayList<>();
+		if (retreivalDTO.getRetreivalDetailsDTO() != null) {
+			for (RetreivalDetailsDTO retreivalDetailsDTO : retreivalDTO.getRetreivalDetailsDTO()) 
+			{
+				RetreivalDetailsVO retreivalDetails = new RetreivalDetailsVO();
+				retreivalDetails.setOutwardDocId(retreivalDetailsDTO.getOutwardDocId());
+				retreivalDetails.setOutwardDocDate(retreivalDetailsDTO.getOutwardDocDate());
+				retreivalDetails.setOutwardStockBranch(retreivalDetailsDTO.getStockbranch());
+				retreivalDetailsVO.add(retreivalDetails);
+				
+				OemBinOutwardVO savedOemBinOutwardVO= oemBinOutwardRepo.findByDocId(retreivalDetailsDTO.getOutwardDocId());
+				savedOemBinOutwardVO.setRetreival("Done");
+				oemBinOutwardRepo.save(savedOemBinOutwardVO);
+				
+				List<OemBinOutwardDetailsVO> oembinOutwardDetailsVOLists = savedOemBinOutwardVO.getOemBinOutwardDetails();
+				if (oembinOutwardDetailsVOLists != null && !oembinOutwardDetailsVOLists.isEmpty())
+					for (OemBinOutwardDetailsVO oembinOutwardDetailsVO : oembinOutwardDetailsVOLists) {
+						AssetStockDetailsVO stockDetailsVO = new AssetStockDetailsVO();
+						stockDetailsVO.setStockRef(savedOemBinOutwardVO.getDocId());
+						stockDetailsVO.setStockBranch(retreivalDTO.getFromStockBranch());
+						stockDetailsVO.setStockDate(savedOemBinOutwardVO.getDocDate());
+						stockDetailsVO.setSku(oembinOutwardDetailsVO.getAsset());
+						stockDetailsVO.setSkuCode(oembinOutwardDetailsVO.getAssetCode());
+						stockDetailsVO.setSkuQty(oembinOutwardDetailsVO.getOutQty() * -1);
+						stockDetailsVO.setOrgId(savedOemBinOutwardVO.getOrgId());
+						stockDetailsVO.setCategory(assetRepo.getCategoryByAssetCodeId(oembinOutwardDetailsVO.getAssetCode()));
+						stockDetailsVO.setStatus("R");
+						stockDetailsVO.setScreen(savedOemBinOutwardVO.getScreen());
+						stockDetailsVO.setSCode(savedOemBinOutwardVO.getScode());
+						stockDetailsVO.setPm("M");
+						stockDetailsVO.setStockSource("");
+						stockDetailsVO.setBinLocation("");
+						stockDetailsVO.setCancelRemarks("");
+						stockDetailsVO.setStockLocation("");
+						stockDetailsVO.setSourceId(oembinOutwardDetailsVO.getId());
+						stockDetailsVO.setFinyr(savedOemBinOutwardVO.getFinYr());
+						assetStockDetailsRepo.save(stockDetailsVO);
+					}
+
+				for (OemBinOutwardDetailsVO oembinOutwardDetailsVO : oembinOutwardDetailsVOLists) {
+					AssetStockDetailsVO stockDetailsVO = new AssetStockDetailsVO();
+					stockDetailsVO.setStockRef(retreivalDocid);
+					stockDetailsVO.setStockBranch(retreivalDTO.getFromStockBranch());
+					stockDetailsVO.setStockDate(retreivalDTO.getDocDate());
+					stockDetailsVO.setSku(oembinOutwardDetailsVO.getAsset());
+					stockDetailsVO.setSkuCode(oembinOutwardDetailsVO.getAssetCode());
+					stockDetailsVO.setSkuQty(oembinOutwardDetailsVO.getOutQty());
+					stockDetailsVO.setOrgId(retreivalDTO.getOrgId());
+					stockDetailsVO.setCategory(assetRepo.getCategoryByAssetCodeId(oembinOutwardDetailsVO.getAssetCode()));
+					stockDetailsVO.setStatus("P");
+					stockDetailsVO.setScreen("Retreival");
+					stockDetailsVO.setSCode("RETRE");
+					stockDetailsVO.setPm("P");
+					stockDetailsVO.setStockSource("");
+					stockDetailsVO.setBinLocation("");
+					stockDetailsVO.setCancelRemarks("");
+					stockDetailsVO.setStockLocation("");
+					stockDetailsVO.setSourceId(oembinOutwardDetailsVO.getId());
+					stockDetailsVO.setFinyr(savedOemBinOutwardVO.getFinYr());
+					assetStockDetailsRepo.save(stockDetailsVO);
+				}
+			}
+		}
+		retreivalVO.setRetreivalDetailsVO(retreivalDetailsVO);
+		
+	return retreivalRepo.save(retreivalVO);
+	}
+
+	@Override
+	public String getDocIdByRetreival() {
+		String finyr = retreivalRepo.findFinyr();
+		String retreivalDocid = finyr + "RM" + retreivalRepo.finddocid();
+		return retreivalDocid;
+	}
 }

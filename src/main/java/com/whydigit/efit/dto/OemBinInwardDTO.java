@@ -21,7 +21,7 @@ public class OemBinInwardDTO {
 	private Long orgId;
 	private String createdBy;
 	private LocalDate invoiceDate;
-	private Long emitterId;
+	private Long receiverId;
 	private String oemInwardNo;
 	private LocalDate oemInwardDate;
 	// private String updatedBy;
