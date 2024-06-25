@@ -47,7 +47,7 @@ public interface AssetStockDetailsRepo extends JpaRepository<AssetStockDetailsVO
 	Set<Object[]> getOemEmptyStockDetailsForGathering(String stockBranch,Long orgId);
 
 	
-	@Query(nativeQuery = true,value="select a.partno,a.partname from KITPART a where flowid=?1 and kitno=?2 and emitterid=?3")
+	@Query(nativeQuery = true,value="select a.partno,a.partname,a.kitno,a.partqty from KITPART a where flowid=?1 and kitno=?2 and emitterid=?3")
 	Set<Object[]> getPartNameAndPartNoDetails(Long flowId, String kitNo, Long emitterId);
 
 }

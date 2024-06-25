@@ -3829,4 +3829,45 @@ public class MasterController extends BaseController {
 			return ResponseEntity.ok().body(responseDTO);
 
 		}
+		
+		@GetMapping("/getAvalkitqtyByWarehouse")
+		public ResponseEntity<ResponseDTO> getAvalkitqtyByWarehouse(@RequestParam String warehouse,
+				@RequestParam String kitName) {
+			String methodName = "getAvalkitqtyByBranch()";
+			LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+			String errorMsg = null;
+			Map<String, Object> responseObjectsMap = new HashMap<>();
+			ResponseDTO responseDTO = null;
+			Set<Object[]> avalKit = new HashSet<>();
+			try {
+				avalKit = masterService.getAvalkitqtyByWarehouse(warehouse, kitName);
+			} catch (Exception e) {
+				errorMsg = e.getMessage();
+				LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			}
+			if (StringUtils.isBlank(errorMsg)) {
+				List<Map<String, Object>> kit = getKitDetailsByWhLocation(avalKit);
+				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Available Kit Qty Information get successfully");
+				responseObjectsMap.put("Avalkit", kit);
+				responseDTO = createServiceResponse(responseObjectsMap);
+			} else {
+				responseDTO = createServiceResponseError(responseObjectsMap,
+						"Available Kit Qty Information information receive failed", errorMsg);
+			}
+			LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+			return ResponseEntity.ok().body(responseDTO);
+
+		}
+
+		private List<Map<String, Object>> getKitDetailsByWhLocation(Set<Object[]> avalKit) {
+			List<Map<String, Object>> kit = new ArrayList<>();
+			for (Object[] w : avalKit) {
+				Map<String, Object> kitd = new HashMap<>();
+				kitd.put("warehouse", w[0] != null ? w[0].toString() : "");
+				kitd.put("kitCode", w[1] != null ? w[1].toString() : "");
+				kitd.put("avlQty", w[2] != null ? Integer.parseInt(w[2].toString()) : 0);
+				kit.add(kitd);
+			}
+			return kit;
+		}
 }

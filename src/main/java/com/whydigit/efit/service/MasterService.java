@@ -368,6 +368,9 @@ public interface MasterService {
 
 	List<Map<String, Object>> getPartNoAndPartName(Long flowId, String kitNo, Long emitterId);
 
+	Set<Object[]> getAvalkitqtyByWarehouse(String warehouse, String kitName);
+
+
 
 
 //	void ExcelUploadForAssetCategory(MultipartFile[] files, CustomerAttachmentType type,Long orgId) throws ApplicationException;
