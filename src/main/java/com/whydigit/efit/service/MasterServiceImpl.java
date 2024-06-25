@@ -2642,7 +2642,8 @@ public class MasterServiceImpl implements MasterService {
 	@Override
 	public List<Map<String, Object>> getAvailableKitQtyByEmitter(Long orgId, Long emitterId, String kitId, Long flowId) {
 		
-		Set<Object[]> emitterAvailKitQty= kitRepo.findByAvailableKitQtyByEmitter(orgId,emitterId,kitId,flowId);
+		FlowVO flowVO= flowRepo.findById(flowId).get();
+		Set<Object[]> emitterAvailKitQty= kitRepo.findByAvailableKitQtyByEmitter(orgId,emitterId,kitId,flowVO.getFlowName());
 		
 		return getAvaikitDetails(emitterAvailKitQty);
 	}
