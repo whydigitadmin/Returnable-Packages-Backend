@@ -4,7 +4,9 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.whydigit.efit.dto.CustomerAttachmentType;
 import com.whydigit.efit.entity.CityVO;
 import com.whydigit.efit.entity.CountryVO;
 import com.whydigit.efit.entity.CurrencyMasterVO;
@@ -100,6 +102,23 @@ public interface BasicMasterService {
 	Optional<CurrencyMasterVO> updateCurrencyMaster(CurrencyMasterVO currencyMasterVO);
 
 	void deleteCurrencyMaster(int id);
+
+	int getTotalRows();
+
+	int getSuccessfulUploads();
+
+
+	void ExcelUploadForBranch(MultipartFile[] files, CustomerAttachmentType type, Long orgId, String CreatedBy)
+			throws ApplicationException;
+
+	void ExcelUploadForCountry(MultipartFile[] files, CustomerAttachmentType type, Long orgId, String createdBy)
+			throws ApplicationException;
+
+	void ExcelUploadForState(MultipartFile[] files, CustomerAttachmentType type, Long orgId, String createdBy)
+			throws ApplicationException;
+
+	void ExcelUploadForCity(MultipartFile[] files, CustomerAttachmentType type, Long orgId, String createdBy)
+			throws ApplicationException;
 
 	
 

@@ -12,19 +12,16 @@ import com.whydigit.efit.entity.BranchVO;
 @Repository
 public interface BranchRepo extends JpaRepository<BranchVO, Long> {
 
-
-	boolean existsByBranchCodeAndOrgId(String branchCode, Long orgId);
-
-	boolean existsByBranchNameAndOrgId(String branchName, Long orgId);
-
-
-
-
 	@Query(value = "select a from BranchVO a where a.orgId=?1")
 	List<BranchVO> findAllBranchByOrgId(Long orgId);
 
 	@Query(value = "select a from BranchVO a where a.orgId=?1 and a.active=true")
 	List<BranchVO> findAllActiveBranch(Long orgId);
+
+	boolean existsByBranchCodeAndOrgId(String branchCode, Long orgId);
+
+	boolean existsByBranchNameAndOrgId(String branchName, Long orgId);
+
 
 }
 
