@@ -493,7 +493,7 @@ public class OemServiceImpl implements OemService {
 		List<Map<String, Object>> oemOutwardStockdetails = new ArrayList<>();
 		for (Object[] ps : oemOutwardstockDetails) {
 			Map<String, Object> part = new HashMap<>();
-			part.put("outwardDociId", ps[0] != null ? ps[0].toString() : "");
+			part.put("outwardDocId", ps[0] != null ? ps[0].toString() : "");
 			part.put("outwardDocDate", ps[1] != null ? ps[1].toString() : "");
 			part.put("StockBranch", ps[2] != null ? ps[2].toString() : "");
 			oemOutwardStockdetails.add(part);
