@@ -71,14 +71,13 @@ public interface KitRepo extends JpaRepository<KitVO, Long> {
 
 	KitVO findAllByKitNoAndOrgId(String kitName, long orgId);
 
-	@Query(nativeQuery = true,value = "select kitcode,avlqty from \r\n"
-			+ "(select a.flow,b.flowid,a.emitterid,a.kitcode,a.orgid,sum(a.allotedqty)-b.boutwardqty avlqty from bininward a,\r\n"
-			+ "(select flow,flowid,emitterid,kitno,sum(outwardkitqty)boutwardqty from binoutward \r\n"
-			+ "group by flow,flowid,emitterid,kitno)b where a.kitcode = b.kitno\r\n"
-			+ "and a.emitterid=b.emitterid and a.flow=b.flow\r\n"
-			+ "group by a.orgid,b.flowid,a.flow,a.emitterid,a.kitcode\r\n"
-			+ ") c where c.avlqty > 0 and c.orgid= ?1 and c.emitterid=?2  and  c.kitcode=?3 and c.flowid=?4")
-	Set<Object[]> findByAvailableKitQtyByEmitter(Long orgId, Long emitterId, String kitId, Long flowId);
+	@Query(nativeQuery = true,value = " select g.kitno kitcode,g.kitqty avlqty from(\r\n"
+			+ "select f.flow,f.emitterid,f.kitno,orgid,sum(invqty) -sum(outqty) kitqty from (\r\n"
+			+ "select a.flow,a.emitterid,a.kitcode kitno,a.orgid,SUM(a.allotedqty)invqty,0 outqty from bininward a group by a.flow,a.emitterid,a.kitcode,a.orgid\r\n"
+			+ "union\r\n"
+			+ "select flow,emitterid,kitno ,orgid,0 invqty,SUM(outwardkitqty) outqty from binoutward group by flow,orgid,emitterid,kitno) f where f.flow=?4\r\n"
+			+ "and f.orgid=?1 and f.emitterid=?2 and f.kitno=?3 group by f.flow,f.emitterid,f.kitno,orgid)g where g.kitqty >0")
+	Set<Object[]> findByAvailableKitQtyByEmitter(Long orgId, Long emitterId, String kitId, String flowName);
 
 
 	
