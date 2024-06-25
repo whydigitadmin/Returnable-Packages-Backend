@@ -3360,10 +3360,18 @@ public class MasterServiceImpl implements MasterService {
 		            Map<String, Object> part = new HashMap<>();
 		            part.put("partNo", ps[0] != null ? ps[0].toString() : "");
 		            part.put("partName", ps[1] != null ? ps[1].toString() : "");
+		            part.put("kitNo", ps[2] != null ? ps[2].toString() : "");
+		            part.put("partQty", ps[3] != null ? Integer.parseInt(ps[3].toString()) : 0);
 		            
 		            oemEmptyStockdetails.add(part);
 		        }
 		        return oemEmptyStockdetails;
+			}
+
+			@Override
+			public Set<Object[]> getAvalkitqtyByWarehouse(String warehouse, String kitName) {
+				
+				return warehouseRepo.getAvalkitqtyByWarehouse(warehouse,kitName);
 			}
 
 }

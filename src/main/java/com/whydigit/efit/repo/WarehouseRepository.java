@@ -23,4 +23,7 @@ List<WarehouseVO> findAllWarehouse(Long orgId);
 @Query(value = "select a from WarehouseVO a where a.orgId=?1 and a.active=true")
 List<WarehouseVO> findAllActiveWarehouse(Long orgId);
 
+@Query(value = "select a.whlocation,a.kitcode,a.avalqty from availablekit1 a where whlocation=?1 and kitcode=?2",nativeQuery = true)
+Set<Object[]> getAvalkitqtyByWarehouse(String warehouse, String kitName);
+
 }
