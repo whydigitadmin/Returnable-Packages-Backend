@@ -3087,16 +3087,14 @@ public class MasterController extends BaseController {
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
-		Set<Object[]> header = new HashSet<>();
-
+		List<Map<String, String>> allotDetails = new ArrayList<>();
 		try {
-			header = masterService.getBinAllotmentPdfHeaderDetails(docid);
+			allotDetails = masterService.getBinAllotmentPdfHeaderDetails(docid);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
 		}
 		if (StringUtils.isEmpty(errorMsg)) {
-			List<Map<String, String>> allotDetails = findwaitingHeader(header);
 			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "PDf Header Details found by ID");
 			responseObjectsMap.put("HeaderDetails", allotDetails);
 			responseDTO = createServiceResponse(responseObjectsMap);
@@ -3108,25 +3106,7 @@ public class MasterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
-	private List<Map<String, String>> findwaitingHeader(Set<Object[]> header) {
-		List<Map<String, String>> allotDetails = new ArrayList<>();
-		for (Object[] ps : header) {
-			Map<String, String> part = new HashMap<>();
-			part.put("allotno", ps[0] != null ? ps[0].toString() : "");
-			part.put("allotDate", ps[1] != null ? ps[1].toString() : "");
-			part.put("binreqno", ps[2] != null ? ps[2].toString() : "");
-			part.put("binreqdate", ps[3] != null ? ps[3].toString() : "");
-			part.put("senderAddress", ps[4] != null ? ps[4].toString() : "");
-			part.put("senderCity", ps[5] != null ? ps[5].toString() : "");
-			part.put("senderState", ps[6] != null ? ps[6].toString() : "");
-			part.put("senderGst", ps[7] != null ? ps[7].toString() : "");
-			part.put("senderName", ps[8] != null ? ps[8].toString() : "");
-			part.put("receiverName", ps[9] != null ? ps[9].toString() : "");
-			part.put("senderPinCode", ps[10] != null ? ps[10].toString() : "");
-			allotDetails.add(part);
-		}
-		return allotDetails;
-	}
+	
 
 	@GetMapping("/getBinAllotmentPdfGridDetails")
 	public ResponseEntity<ResponseDTO> getBinAllotmentPdfGridDetails(@RequestParam String docid) {
