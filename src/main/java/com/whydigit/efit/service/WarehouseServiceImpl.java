@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -280,6 +282,11 @@ public class WarehouseServiceImpl implements WarehouseService {
 				Sheet sheet = workbook.getSheetAt(0); // Assuming only one sheet
 				List<String> errorMessages = new ArrayList<>();
 				System.out.println("Processing file: " + file.getOriginalFilename()); // Debug statement
+				
+				 Row headerRow = sheet.getRow(0);
+	                if (!isHeaderValidWarehouse(headerRow)) {
+	                    throw new ApplicationException("Invalid Excel format.Please Refer The Sample File");
+	                }
 
 				// Check all rows for validity first
 				for (Row row : sheet) {
@@ -387,6 +394,36 @@ public class WarehouseServiceImpl implements WarehouseService {
 		}
 		return true;
 	}
+	
+	 private boolean isHeaderValidWarehouse(Row headerRow) {
+	        if (headerRow == null) {
+	            return false;
+	        }
+	        int expectedColumnCount = 10;
+	        if (headerRow.getPhysicalNumberOfCells() != expectedColumnCount) {
+	            return false;
+	        }
+	        return "location".equalsIgnoreCase(getStringCellValue(headerRow.getCell(0))) &&
+	               "unit".equalsIgnoreCase(getStringCellValue(headerRow.getCell(1))) &&
+	               "code".equalsIgnoreCase(getStringCellValue(headerRow.getCell(2))) &&
+	               "address".equalsIgnoreCase(getStringCellValue(headerRow.getCell(3))) &&
+	               "country".equalsIgnoreCase(getStringCellValue(headerRow.getCell(4))) &&
+	               "state".equalsIgnoreCase(getStringCellValue(headerRow.getCell(5))) &&
+	               "city".equalsIgnoreCase(getStringCellValue(headerRow.getCell(6))) &&
+	               "pincode".equalsIgnoreCase(getStringCellValue(headerRow.getCell(7))) &&
+	               "gst".equalsIgnoreCase(getStringCellValue(headerRow.getCell(8))) &&
+	               "stockBranch".equalsIgnoreCase(getStringCellValue(headerRow.getCell(9))) ;
+	    }
+
+		private boolean isRowEmpty(Row row) {
+	        for (Cell cell : row) {
+	            if (cell.getCellType() != CellType.BLANK) {
+	                return false;
+	            }
+	        }
+	        return true;
+	    }
+
 
 	private String getStringCellValue(Cell cell) {
 		if (cell == null) {
@@ -415,9 +452,21 @@ public class WarehouseServiceImpl implements WarehouseService {
 	}
 
 	@Override
-	public Optional<WarehouseVO> getOrginWarehouseByUserId(Long userId,Long orgId) {
+	public List<Map<String, Object>> getOrginWarehouseByUserId(Long userId,Long orgId) {
 		// TODO Auto-generated method stub
-		return warehouseRepo.findByorginWareHouse(userId,orgId);
+		Set<Object[]>warehouseorgin=	warehouseRepo.findByorginWareHouse(userId,orgId);
+			return getOrginWarehouse(warehouseorgin);
 	}
 
+	private List<Map<String, Object>> getOrginWarehouse(Set<Object[]> warehouseorgin) {
+		List<Map<String, Object>> warehouse = new ArrayList<>();
+		for (Object[] w : warehouseorgin) {
+			Map<String, Object> orgin = new HashMap<>();
+			orgin.put("warehouse", w[0] != null ? w[0].toString() : "");
+		//	kitd.put("avlQty", w[2] != null ? Integer.parseInt(w[2].toString()) : 0);
+			warehouse.add(orgin);
+		}
+		return warehouse;
+
+}
 }

@@ -4,6 +4,7 @@ package com.whydigit.efit.service;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.math.BigDecimal;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
@@ -35,6 +36,8 @@ import javax.validation.Valid;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.EncryptedDocumentException;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -2885,6 +2888,8 @@ public class MasterServiceImpl implements MasterService {
 
 		return flowRepo.findByBranchcode(orgId, flow);
 	}
+	
+	//Excel File Uploads
 
 	private int totalRows = 0; // Initialize totalRows
 
@@ -2899,11 +2904,15 @@ public class MasterServiceImpl implements MasterService {
 	    successfulUploads = 0; // Reset successfulUploads for each execution
 
 	    // Process each uploaded file
-		for (MultipartFile file : files) {
-		    try (Workbook workbook = WorkbookFactory.create(file.getInputStream())) {
-		        Sheet sheet = workbook.getSheetAt(0); // Assuming only one sheet
-
-		        List<String> errorMessages = new ArrayList<>();
+	    for (MultipartFile file : files) {
+            try (Workbook workbook = WorkbookFactory.create(file.getInputStream())) {
+                Sheet sheet = workbook.getSheetAt(0); // Assuming only one sheet
+                List<String> errorMessages = new ArrayList<>();
+                System.out.println("Processing file: " + file.getOriginalFilename()); // Debug statement
+                Row headerRow = sheet.getRow(0);
+                if (!isHeaderValidAssetCategory(headerRow)) {
+                    throw new ApplicationException("Invalid Excel format.Please Refer The Sample File");
+                }
 
 		        // Check all rows for validity first
 		        for (Row row : sheet) {
@@ -2973,6 +2982,46 @@ public class MasterServiceImpl implements MasterService {
 		assetCategoryRepo.saveAll(assetCategoryVOsToSave);
 	}
 
+	 private boolean isHeaderValidAssetCategory(Row headerRow) {
+	        if (headerRow == null) {
+	            return false;
+	        }
+	        int expectedColumnCount = 3;
+	        if (headerRow.getPhysicalNumberOfCells() != expectedColumnCount) {
+	            return false;
+	        }
+	        return "assetType".equalsIgnoreCase(getStringCellValue(headerRow.getCell(0))) &&
+	               "category".equalsIgnoreCase(getStringCellValue(headerRow.getCell(1)))  &&
+	               "categoryCode".equalsIgnoreCase(getStringCellValue(headerRow.getCell(2)));
+	    }
+
+		private boolean isRowEmpty(Row row) {
+	        for (Cell cell : row) {
+	            if (cell.getCellType() != CellType.BLANK) {
+	                return false;
+	            }
+	        }
+	        return true;
+	    }
+
+	    private String getStringCellValue(Cell cell) {
+	        if (cell == null) {
+	            return "";
+	        }
+	        switch (cell.getCellType()) {
+	            case STRING:
+	                return cell.getStringCellValue();
+	            case NUMERIC:
+	                return BigDecimal.valueOf(cell.getNumericCellValue()).toPlainString();
+	            case BOOLEAN:
+	                return String.valueOf(cell.getBooleanCellValue());
+	            case FORMULA:
+	                return cell.getCellFormula();
+	            default:
+	                return "";
+	        }
+	    }
+
 	// Method to retrieve total rows processed
 	public int getTotalRows() {
 		return totalRows;
@@ -3003,6 +3052,11 @@ public class MasterServiceImpl implements MasterService {
 		        Sheet sheet = workbook.getSheetAt(0); // Assuming only one sheet
 
 		        List<String> errorMessages = new ArrayList<>();
+		        
+		        Row headerRow = sheet.getRow(0);
+                if (!isHeaderValidUnit(headerRow)) {
+                    throw new ApplicationException("Invalid Excel format.Please Refer The Sample File");
+                }
 
 		        // Check all rows for validity first
 		        for (Row row : sheet) {
@@ -3058,6 +3112,46 @@ public class MasterServiceImpl implements MasterService {
 		// Batch save all AssetCategoryVOs
 		unitRepo.saveAll(unitVOs);
 	}
+	
+	private boolean isHeaderValidUnit(Row headerRow) {
+        if (headerRow == null) {
+            return false;
+        }
+        int expectedColumnCount = 1;
+        if (headerRow.getPhysicalNumberOfCells() != expectedColumnCount) {
+            return false;
+        }
+        return "unit".equalsIgnoreCase(getStringCellValue(headerRow.getCell(0)));
+    }
+
+	private boolean isRowEmpty2(Row row) {
+        for (Cell cell : row) {
+            if (cell.getCellType() != CellType.BLANK) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private String getStringCellValue2(Cell cell) {
+        if (cell == null) {
+            return "";
+        }
+        switch (cell.getCellType()) {
+            case STRING:
+                return cell.getStringCellValue();
+            case NUMERIC:
+                return BigDecimal.valueOf(cell.getNumericCellValue()).toPlainString();
+            case BOOLEAN:
+                return String.valueOf(cell.getBooleanCellValue());
+            case FORMULA:
+                return cell.getCellFormula();
+            default:
+                return "";
+        }
+    }
+
+
 	// Method to retrieve total rows processed
 		public int getTotalRows2() {
 			return totalRows;
@@ -3087,7 +3181,12 @@ public class MasterServiceImpl implements MasterService {
 			        Sheet sheet = workbook.getSheetAt(0); // Assuming only one sheet
 
 			        List<String> errorMessages = new ArrayList<>();
-
+			        System.out.println("Processing file: " + file.getOriginalFilename()); // Debug statement
+			        
+			        Row headerRow = sheet.getRow(0);
+	                if (!isHeaderValidStockBranch(headerRow)) {
+	                    throw new ApplicationException("Invalid Excel format.Please Refer The Sample File");
+	                }
 			        // Check all rows for validity first
 			        for (Row row : sheet) {
 			            if (row.getRowNum() == 0) {
@@ -3147,6 +3246,48 @@ public class MasterServiceImpl implements MasterService {
 			// Batch save all AssetCategoryVOs
 			stockBranchRepo.saveAll(stockBranchVOs);
 		}
+		
+		 private boolean isHeaderValidStockBranch(Row headerRow) {
+		        if (headerRow == null) {
+		            return false;
+		        }
+		        int expectedColumnCount = 2;
+		        if (headerRow.getPhysicalNumberOfCells() != expectedColumnCount) {
+		            return false;
+		        }
+		        return "branchName".equalsIgnoreCase(getStringCellValue(headerRow.getCell(0))) &&
+		               "branchCode".equalsIgnoreCase(getStringCellValue(headerRow.getCell(1))) ;
+		    }
+
+			private boolean isRowEmpty3(Row row) {
+		        for (Cell cell : row) {
+		            if (cell.getCellType() != CellType.BLANK) {
+		                return false;
+		            }
+		        }
+		        return true;
+		    }
+
+		    private String getStringCellValue3(Cell cell) {
+		        if (cell == null) {
+		            return "";
+		        }
+		        switch (cell.getCellType()) {
+		            case STRING:
+		                return cell.getStringCellValue();
+		            case NUMERIC:
+		                return BigDecimal.valueOf(cell.getNumericCellValue()).toPlainString();
+		            case BOOLEAN:
+		                return String.valueOf(cell.getBooleanCellValue());
+		            case FORMULA:
+		                return cell.getCellFormula();
+		            default:
+		                return "";
+		        }
+		    }
+
+
+		
 		// Method to retrieve total rows processed
 			public int getTotalRows3() {
 				return totalRows;

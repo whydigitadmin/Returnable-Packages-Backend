@@ -288,7 +288,7 @@ public class WarehouseController extends BaseController {
 	        responseObjectsMap.put("totalRows", totalRows);
 	        responseObjectsMap.put("successfulUploads", successfulUploads);
 	        Map<String, Object> paramObjectsMap = new HashMap<>();
-	        paramObjectsMap.put("message", "Excel Upload For  City successful");
+	        paramObjectsMap.put("message", "Excel Upload For  warehouse successful");
 	        responseObjectsMap.put("paramObjectsMap", paramObjectsMap);
 	        responseDTO = createServiceResponse(responseObjectsMap);
 	        
@@ -300,7 +300,7 @@ public class WarehouseController extends BaseController {
 	        responseObjectsMap.put("status", false);
 	        responseObjectsMap.put("errorMessage", errorMsg);
 
-	        responseDTO = createServiceResponseError(responseObjectsMap,"Excel Upload For City Failed",errorMsg);
+	        responseDTO = createServiceResponseError(responseObjectsMap,"Excel Upload For warehouse Failed",errorMsg);
 	}
 	LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 	return ResponseEntity.ok().body(responseDTO);
@@ -313,9 +313,9 @@ public class WarehouseController extends BaseController {
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
-		WarehouseVO warehouseVO = null;
+		List<Map<String,Object>> warehouseVO = new ArrayList<>();
 		try {
-			warehouseVO = warehouseService.getOrginWarehouseByUserId(userId,orgId).orElse(null);
+			warehouseVO = warehouseService.getOrginWarehouseByUserId(userId,orgId);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
@@ -332,6 +332,7 @@ public class WarehouseController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
+	
 
 }
 

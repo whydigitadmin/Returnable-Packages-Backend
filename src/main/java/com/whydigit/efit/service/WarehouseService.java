@@ -1,6 +1,7 @@
 package com.whydigit.efit.service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -37,6 +38,6 @@ public interface WarehouseService {
 
 	int getSuccessfulUploads();
 
-	Optional<WarehouseVO> getOrginWarehouseByUserId(Long userId, Long orgId);
+	List<Map<String, Object>> getOrginWarehouseByUserId(Long userId, Long orgId);
 
 }
