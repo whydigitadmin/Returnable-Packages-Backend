@@ -1155,7 +1155,7 @@ public class EmitterController extends BaseController {
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
 		try {
-			BinInwardVO updatedBinInwardVO = emitterService.updateCreateBinInward(binInwardDTO);
+			BinInwardVO updatedBinInwardVO = emitterService.updateCrea\teBinInward(binInwardDTO);
 			if (updatedBinInwardVO != null) {
 				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "BinInward updated successfully");
 				responseObjectsMap.put("BinInwardVO", updatedBinInwardVO);
