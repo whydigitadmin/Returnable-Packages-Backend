@@ -24,10 +24,12 @@ import com.whydigit.efit.dto.OemBinInwardDTO;
 import com.whydigit.efit.dto.OemBinOutwardDTO;
 import com.whydigit.efit.dto.ResponseDTO;
 import com.whydigit.efit.dto.RetreivalDTO;
+import com.whydigit.efit.dto.TransportPickupDTO;
 import com.whydigit.efit.entity.GatheringEmptyVO;
 import com.whydigit.efit.entity.OemBinInwardVO;
 import com.whydigit.efit.entity.OemBinOutwardVO;
 import com.whydigit.efit.entity.RetreivalVO;
+import com.whydigit.efit.entity.TransportPickupVO;
 import com.whydigit.efit.service.OemService;
 
 @RestController
@@ -538,6 +540,109 @@ public class OemController extends BaseController{
 				responseDTO = createServiceResponse(responseObjectsMap);
 			} else {
 				responseDTO = createServiceResponseError(responseObjectsMap, "Retreival Creation Failed", errorMsg);
+			}
+			LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+			return ResponseEntity.ok().body(responseDTO);
+		}
+		
+		@GetMapping("/getRetrievalDetails")
+		public ResponseEntity<ResponseDTO> getRetrievalDetailsByReceiverId(@RequestParam Long orgId,@RequestParam Long receiverId) {
+			String methodName = "getOemStockBranchByUserId()";
+			LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+			String errorMsg = null;
+			Map<String, Object> responseObjectsMap = new HashMap<>();
+			ResponseDTO responseDTO = null;
+			List<Map<String,Object>> retrievalDetails = new ArrayList<>();
+			try {
+				retrievalDetails = oemService.getRetrievalDeatilsForPendingPickup(orgId, receiverId);
+			} catch (Exception e) {
+				errorMsg = e.getMessage();
+				LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			}
+			if (StringUtils.isEmpty(errorMsg)) {
+				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Retrieval Details found Success");
+				responseObjectsMap.put("retrievalDetails", retrievalDetails);
+				responseDTO = createServiceResponse(responseObjectsMap);
+			} else {
+				errorMsg = " not found for ID: ";
+				responseDTO = createServiceResponseError(responseObjectsMap, "Retrieval Details not found", errorMsg);
+			}
+			LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+			return ResponseEntity.ok().body(responseDTO);
+		}
+		
+		@GetMapping("/getRetrievalDeatilsforPickupFillgrid")
+		public ResponseEntity<ResponseDTO> getRetrievalDeatilsforPickupFillgrid(@RequestParam Long orgId,@RequestParam String rmNo) {
+			String methodName = "getRetrievalDeatilsforPickupFillgrid()";
+			LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+			String errorMsg = null;
+			Map<String, Object> responseObjectsMap = new HashMap<>();
+			ResponseDTO responseDTO = null;
+			List<Map<String,Object>> retrievalDetailsforPickup = new ArrayList<>();
+			try {
+				retrievalDetailsforPickup = oemService.getRetrievalDeatilsByRmNoforPickupFillgrid(orgId, rmNo);
+			} catch (Exception e) {
+				errorMsg = e.getMessage();
+				LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			}
+			if (StringUtils.isEmpty(errorMsg)) {
+				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Retrieval Details for Pickup Fillgrid found Success");
+				responseObjectsMap.put("retrievalDetails", retrievalDetailsforPickup);
+				responseDTO = createServiceResponse(responseObjectsMap);
+			} else {
+				errorMsg = " not found for ID: ";
+				responseDTO = createServiceResponseError(responseObjectsMap, "Retrieval Details for Pickup Fillgrid not found", errorMsg);
+			}
+			LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+			return ResponseEntity.ok().body(responseDTO);
+		}
+		
+		@GetMapping("/getDocIdByTransportPickup")
+		public ResponseEntity<ResponseDTO> getDocIdByTransportPickup() {
+			String methodName = "getDocIdByTransportPickup()";
+			LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+			String errorMsg = null;
+			Map<String, Object> responseObjectsMap = new HashMap<>();  
+			ResponseDTO responseDTO = null;
+			String transportPickupDocid = null;
+			try {
+				transportPickupDocid = oemService.getDocIdByTransportPickup();
+			} catch (Exception e) {
+				errorMsg = e.getMessage();
+				LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			}
+			if (StringUtils.isEmpty(errorMsg)) {
+				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "transportPickup DocId found success");
+				responseObjectsMap.put("transportPickupDocid", transportPickupDocid);
+				responseDTO = createServiceResponse(responseObjectsMap);
+			} else {
+				errorMsg = " not found for ID: ";
+				responseDTO = createServiceResponseError(responseObjectsMap, "transportPickup DocId not found", errorMsg);
+			}
+			LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+			return ResponseEntity.ok().body(responseDTO);
+		}
+		
+		@PostMapping("/createTransportPickp")
+		public ResponseEntity<ResponseDTO> createTransportPickp(@RequestBody TransportPickupDTO transportPickupDTO) {
+			String methodName = "createTransportPickp()";
+			LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+			String errorMsg = null;
+			Map<String, Object> responseObjectsMap = new HashMap<>();
+			ResponseDTO responseDTO = null;
+			TransportPickupVO transportPickupVO = new TransportPickupVO();
+			try {
+				transportPickupVO = oemService.createTransPickup(transportPickupDTO);
+			} catch (Exception e) {
+				errorMsg = e.getMessage();
+				LOGGER.error(CommonConstant.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			}
+			if (StringUtils.isBlank(errorMsg)) {
+				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "TransportPickup Created Successfully");
+				responseObjectsMap.put("transportPickupVO", transportPickupVO);
+				responseDTO = createServiceResponse(responseObjectsMap);
+			} else {
+				responseDTO = createServiceResponseError(responseObjectsMap, "TransportPickup Creation Failed", errorMsg);
 			}
 			LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 			return ResponseEntity.ok().body(responseDTO);

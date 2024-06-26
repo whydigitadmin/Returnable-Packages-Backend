@@ -24,16 +24,16 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name="retreival")
+@Table(name="transportpickup")
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
-public class RetreivalVO {
+public class TransportPickupVO {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "retreivalgen")
-	@SequenceGenerator(name = "retreivalgen", sequenceName = "retreivalseq", initialValue = 1000000001, allocationSize = 1)
-	@Column(name = "retreivalid")
+	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "transportpickupgen")
+	@SequenceGenerator(name = "transportpickupgen", sequenceName = "transportpickupseq", initialValue = 1000000001, allocationSize = 1)
+	@Column(name = "transportpickupid")
 	private Long id;
 	@Column(name = "docid")
 	private String docId;
@@ -43,6 +43,24 @@ public class RetreivalVO {
 	private String fromStockBranch;
 	@Column(name = "tostockbranch")
 	private String toStockBranch;
+	@Column(name = "transportdocno")
+	private String transPortDocNo;
+	@Column(name = "transporterid")
+	private Long transPorterId;
+	@Column(name = "transporter")
+	private String transPorter;
+	@Column(name = "handoverby")
+	private String handoverby;
+	@Column(name = "drivername")
+	private String driverName;
+	@Column(name = "driverphoneno")
+	private String driverPhoneNo;
+	@Column(name = "vechicleno")
+	private String vechicleNo;
+	@Column(name = "rmno")
+	private String rmNo;
+	@Column(name = "rmdate")
+	private LocalDate rmDate;
 	@Column(name = "createdby")
 	private String createdby;
 	@Column(name = "modifiedby")
@@ -50,24 +68,25 @@ public class RetreivalVO {
 	@Column(name = "cancelremarks")
 	private String cancelRemark;
 	@Column(name = "active")
-	private boolean active;
+	private boolean active=true;
 	@Column(name = "cancel")
-	private boolean cancel;
+	private boolean cancel=false;
 	@Column(name = "orgid")
 	private Long orgId;
 	@Column(name = "finyr")
 	private String finYr;
 	@Column(name = "receiverid")
 	private Long receiverId;
-	private String scode = "RETRE";
-	private String screen = "Retreival";
+	private String scode = "PIKUP";
+	private String screen = "Pickup";
 	
-	private String pickup="Pending";
-
-	@OneToMany(mappedBy = "retreivalVO", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "pickupVO", cascade = CascadeType.ALL)
 	@JsonManagedReference
-	private List<RetreivalDetailsVO> retreivalDetailsVO;
-
+	private List<TransportPickupDetailsVO> transportPickupDetailsVO;
+	
+	@Embedded
+	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
+	
 	@PrePersist
 	private void setDefaultFinyr() {
 		// Execute the logic to set the default value for finyr
@@ -83,7 +102,5 @@ public class RetreivalVO {
 				: LocalDate.now().minusYears(1).format(DateTimeFormatter.ofPattern("yyyy"));
 		return fyFull;
 	}
-	
-	@Embedded
-	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
+
 }

@@ -2469,8 +2469,32 @@ public class MasterServiceImpl implements MasterService {
 	// Bin allotment Issue manifest pdf
 
 	@Override
-	public Set<Object[]> getBinAllotmentPdfHeaderDetails(String docid) {
-		return binAllotmentNewRepo.getBinAllotmentHeader(docid);
+	public List<Map<String, String>> getBinAllotmentPdfHeaderDetails(String docid) {
+	
+		Set<Object[]> header= binAllotmentNewRepo.getBinAllotmentHeader(docid);
+		 return findwaitingHeader(header);
+	}
+	
+	private List<Map<String, String>> findwaitingHeader(Set<Object[]> header) {
+		List<Map<String, String>> allotDetails = new ArrayList<>();
+		for (Object[] ps : header) {
+			Map<String, String> part = new HashMap<>();
+			part.put("allotno", ps[0] != null ? ps[0].toString() : "");
+			part.put("allotDate", ps[1] != null ? ps[1].toString() : "");
+			part.put("binreqno", ps[2] != null ? ps[2].toString() : "");
+			part.put("binreqdate", ps[3] != null ? ps[3].toString() : "");
+			part.put("senderAddress", ps[4] != null ? ps[4].toString() : "");
+			part.put("senderCity", ps[5] != null ? ps[5].toString() : "");
+			part.put("senderState", ps[6] != null ? ps[6].toString() : "");
+			part.put("senderGst", ps[7] != null ? ps[7].toString() : "");
+			part.put("senderName", ps[8] != null ? ps[8].toString() : "");
+			part.put("receiverName", ps[9] != null ? ps[9].toString() : "");
+			part.put("senderPinCode", ps[10] != null ? ps[10].toString() : "");
+			part.put("receiverAddress", ps[11] != null ? ps[11].toString() : "");
+			part.put("receiverGstin", ps[12] != null ? ps[12].toString() : "");
+			allotDetails.add(part);
+		}
+		return allotDetails;
 	}
 
 	@Override
@@ -3374,6 +3398,8 @@ public class MasterServiceImpl implements MasterService {
 				
 				return warehouseRepo.getAvalkitqtyByWarehouse(warehouse,kitName);
 			}
+			
+			
 
 }
 

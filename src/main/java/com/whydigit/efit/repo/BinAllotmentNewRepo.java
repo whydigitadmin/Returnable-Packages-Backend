@@ -147,7 +147,10 @@ public interface BinAllotmentNewRepo extends JpaRepository<BinAllotmentNewVO, Lo
 
 	List<BinAllotmentNewVO> findAllBinAllotmentByEmitterId(Specification<BinAllotmentNewVO> specification);
 
-	@Query(nativeQuery = true, value = "select a.docid allotno,a.docdate allotdate,a.binreqno,a.binreqdate,c.address sender_address,c.city sender_city,c.state sender_state,c.gst sender_gst,d.name sender_name,e.legalname receiver_name,c.pincode from binallotment a, issuerequest b,warehouse c ,organization d,customer e where a.orgid=d.organizationid and a.binreqno=b.docid and b.whlocationid=c.warehouseid and b.emitterid=e.customerid and a.docid=?1")
+	@Query(nativeQuery = true, value = "select a.docid allotno,a.docdate allotdate,a.binreqno,a.binreqdate,c.address sender_address,c.city sender_city,c.state sender_state,c.gst sender_gst,\r\n"
+			+ "d.name sender_name,e.legalname receiver_name,c.pincode,concat(f.street1,',',f.street2,',',f.city,',',f.state,',',f.pincode)receiverAddress,f.gstin receiverGstin from binallotment a, issuerequest b,warehouse c ,organization d,customer e ,customer1 f\r\n"
+			+ "where a.orgid=d.organizationid and a.binreqno=b.docid and e.customerid=f.customerid\r\n"
+			+ "and b.whlocationid=c.warehouseid and b.emitterid=e.customerid and a.docid=?1")
 	Set<Object[]> getBinAllotmentHeader(String docid);
 
 	@Query(nativeQuery = true, value = "select a.kitcode,a.allotkitqty,b.asset product_name,b.assetcode product_code,sum(b.skuqty) product_qty from binallotment a, binallotment1 b where a.binallotmentid=b.binallotmentid and a.docid=?1 group by a.kitcode,a.allotkitqty,b.asset,b.assetcode")

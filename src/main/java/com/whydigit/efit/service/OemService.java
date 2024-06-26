@@ -10,10 +10,12 @@ import com.whydigit.efit.dto.GatheringEmptyDTO;
 import com.whydigit.efit.dto.OemBinInwardDTO;
 import com.whydigit.efit.dto.OemBinOutwardDTO;
 import com.whydigit.efit.dto.RetreivalDTO;
+import com.whydigit.efit.dto.TransportPickupDTO;
 import com.whydigit.efit.entity.GatheringEmptyVO;
 import com.whydigit.efit.entity.OemBinInwardVO;
 import com.whydigit.efit.entity.OemBinOutwardVO;
 import com.whydigit.efit.entity.RetreivalVO;
+import com.whydigit.efit.entity.TransportPickupVO;
 
 @Service
 public interface OemService {
@@ -60,4 +62,11 @@ public interface OemService {
 
 	String getDocIdByRetreival();
 
+	List<Map<String, Object>> getRetrievalDeatilsForPendingPickup(Long orgId, Long receiverId);
+
+	List<Map<String, Object>> getRetrievalDeatilsByRmNoforPickupFillgrid(Long orgId, String rmNo);
+	
+	TransportPickupVO createTransPickup(TransportPickupDTO transportPickupDTO);
+
+	String getDocIdByTransportPickup();
 }
