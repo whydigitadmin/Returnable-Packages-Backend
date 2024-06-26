@@ -414,6 +414,12 @@ public class BasicMasterServiceImpl implements BasicMasterService {
 	                Sheet sheet = workbook.getSheetAt(0); // Assuming only one sheet
 	                List<String> errorMessages = new ArrayList<>();
 	                System.out.println("Processing file: " + file.getOriginalFilename()); // Debug statement
+	                
+	                // Validate the header row
+	                Row headerRow = sheet.getRow(0);
+	                if (!isHeaderValidBranch(headerRow)) {
+	                    throw new ApplicationException("Invalid Excel format.Please Refer The Sample File");
+	                }
 
 	                // Check all rows for validity first
 	                for (Row row : sheet) {
@@ -508,7 +514,28 @@ public class BasicMasterServiceImpl implements BasicMasterService {
 	        branchRepo.saveAll(branchVOsToSave);
 	    }
 
-	    private boolean isRowEmpty(Row row) {
+	    private boolean isHeaderValidBranch(Row headerRow) {
+	        if (headerRow == null) {
+	            return false;
+	        }
+	        int expectedColumnCount = 11;
+	        if (headerRow.getPhysicalNumberOfCells() != expectedColumnCount) {
+	            return false;
+	        }
+	        return "branch".equalsIgnoreCase(getStringCellValue(headerRow.getCell(0))) &&
+	               "code".equalsIgnoreCase(getStringCellValue(headerRow.getCell(1))) &&
+	               "address1".equalsIgnoreCase(getStringCellValue(headerRow.getCell(2))) &&
+	               "address2".equalsIgnoreCase(getStringCellValue(headerRow.getCell(3)))&&
+	               "country".equalsIgnoreCase(getStringCellValue(headerRow.getCell(4)))&&
+	               "state".equalsIgnoreCase(getStringCellValue(headerRow.getCell(5)))&&
+	               "city".equalsIgnoreCase(getStringCellValue(headerRow.getCell(6)))&&
+	               "pincode".equalsIgnoreCase(getStringCellValue(headerRow.getCell(7)))&&
+	               "phoneNumber".equalsIgnoreCase(getStringCellValue(headerRow.getCell(8)))&&
+	               "gst".equalsIgnoreCase(getStringCellValue(headerRow.getCell(9)))&&
+	               "pan".equalsIgnoreCase(getStringCellValue(headerRow.getCell(10)));
+	    }
+
+		private boolean isRowEmpty(Row row) {
 	        for (Cell cell : row) {
 	            if (cell.getCellType() != CellType.BLANK) {
 	                return false;
@@ -560,6 +587,12 @@ public class BasicMasterServiceImpl implements BasicMasterService {
 	                Sheet sheet = workbook.getSheetAt(0); // Assuming only one sheet
 	                List<String> errorMessages = new ArrayList<>();
 	                System.out.println("Processing file: " + file.getOriginalFilename()); // Debug statement
+	                
+	                // Validate the header row
+	                Row headerRow = sheet.getRow(0);
+	                if (!isHeaderValidCountry(headerRow)) {
+	                    throw new ApplicationException("Invalid Excel format.Please Refer The Sample File");
+	                }
 
 	                // Check all rows for validity first
 	                for (Row row : sheet) {
@@ -659,6 +692,19 @@ public class BasicMasterServiceImpl implements BasicMasterService {
 	                return "";
 	        }
 	    }
+	    
+	    private boolean isHeaderValidCountry(Row headerRow) {
+	        if (headerRow == null) {
+	            return false;
+	        }
+	        int expectedColumnCount = 2;
+	        if (headerRow.getPhysicalNumberOfCells() != expectedColumnCount) {
+	            return false;
+	        }
+	        return "Country".equalsIgnoreCase(getStringCellValue(headerRow.getCell(0))) &&
+	               "code".equalsIgnoreCase(getStringCellValue(headerRow.getCell(1))) ;
+	    }
+
 
 	    public int getTotalRows1() {
 	        return totalRows;
@@ -685,6 +731,12 @@ public class BasicMasterServiceImpl implements BasicMasterService {
 	                Sheet sheet = workbook.getSheetAt(0); // Assuming only one sheet
 	                List<String> errorMessages = new ArrayList<>();
 	                System.out.println("Processing file: " + file.getOriginalFilename()); // Debug statement
+	                
+	                // Validate the header row
+	                Row headerRow = sheet.getRow(0);
+	                if (!isHeaderValidState(headerRow)) {
+	                    throw new ApplicationException("Invalid Excel format.Please Refer The Sample File");
+	                }
 
 	                // Check all rows for validity first
 	                for (Row row : sheet) {
@@ -791,8 +843,24 @@ public class BasicMasterServiceImpl implements BasicMasterService {
 	            default:
 	                return "";
 	        }
+	        
 	    }
 
+	    private boolean isHeaderValidState(Row headerRow) {
+	        if (headerRow == null) {
+	            return false;
+	        }
+	        int expectedColumnCount = 4;
+	        if (headerRow.getPhysicalNumberOfCells() != expectedColumnCount) {
+	            return false;
+	        }
+	        return  "code".equalsIgnoreCase(getStringCellValue(headerRow.getCell(0)))&&
+	        		 "no".equalsIgnoreCase(getStringCellValue(headerRow.getCell(1))) &&
+		               "state".equalsIgnoreCase(getStringCellValue(headerRow.getCell(2))) &&
+		               "country".equalsIgnoreCase(getStringCellValue(headerRow.getCell(3)));
+           
+	    }
+	    
 	    public int getTotalRows2() {
 	        return totalRows;
 	    }
@@ -805,9 +873,10 @@ public class BasicMasterServiceImpl implements BasicMasterService {
 
 	    private int totalRows3 = 0; // Initialize totalRows
 	    private int successfulUploads3 = 0; // Initialize successfulUploads
+
 	    @Override
 	    @Transactional
-	    public void ExcelUploadForCity(MultipartFile[] files, CustomerAttachmentType type, Long orgId,String CreatedBy)
+	    public void ExcelUploadForCity(MultipartFile[] files, CustomerAttachmentType type, Long orgId, String createdBy)
 	            throws ApplicationException {
 	        List<CityVO> cityVOsToSave = new ArrayList<>();
 	        totalRows = 0; // Reset totalRows for each execution
@@ -818,6 +887,12 @@ public class BasicMasterServiceImpl implements BasicMasterService {
 	                Sheet sheet = workbook.getSheetAt(0); // Assuming only one sheet
 	                List<String> errorMessages = new ArrayList<>();
 	                System.out.println("Processing file: " + file.getOriginalFilename()); // Debug statement
+
+	                // Validate the header row
+	                Row headerRow = sheet.getRow(0);
+	                if (!isHeaderValidCity(headerRow)) {
+	                    throw new ApplicationException("Invalid Excel format.Please Refer The Sample File");
+	                }
 
 	                // Check all rows for validity first
 	                for (Row row : sheet) {
@@ -833,29 +908,28 @@ public class BasicMasterServiceImpl implements BasicMasterService {
 	                    String state = getStringCellValue(row.getCell(1));
 	                    String city = getStringCellValue(row.getCell(2));
 	                    String code = getStringCellValue(row.getCell(3));
-	                   
+
 	                    // Validate each row
 	                    try {
-	                    	if (cityRepo.existsByCityNameAndCityCodeAndStateAndCountryAndOrgId(city,code,state,country,orgId)) {
-	                			errorMessages.add("A CityName and cityCode "+ state + code+ state+  " already exists for this country. Row: "
+	                        if (cityRepo.existsByCityNameAndCityCodeAndStateAndCountryAndOrgId(city, code, state, country, orgId)) {
+	                            errorMessages.add("A CityName and cityCode " + state + code + state + " already exists for this country. Row: "
 	                                    + (row.getRowNum() + 1));
-	                		}
-	                    	
-	                    	//throw new ApplicationException("A StateName and StateCode  already exists for this country");
-	                		if (cityRepo.existsByCityNameAndCountryAndOrgId(city,country,orgId)) {
-	                			errorMessages.add("A CityName " + city.toUpperCase()+" already exists for this country. Row: "
-	                                    + (row.getRowNum() + 1));
-	                		}
-	                		
-	                		if (cityRepo.existsByStateAndCountryAndOrgId(state,country,orgId)) {
-	                			errorMessages.add("A State " + state.toUpperCase()+" already exists for this country. Row: "
-	                                    + (row.getRowNum() + 1));
-	                		}
+	                        }
 
-	                		if (cityRepo.existsByCityCodeAndCountryAndOrgId(code,country,orgId)) {
-	                			errorMessages.add("A CityCode "+ code.toUpperCase()+ " already exists for this country. Row: "
+	                        if (cityRepo.existsByCityNameAndCountryAndOrgId(city, country, orgId)) {
+	                            errorMessages.add("A CityName " + city.toUpperCase() + " already exists for this country. Row: "
 	                                    + (row.getRowNum() + 1));
-	                		}
+	                        }
+
+	                        if (cityRepo.existsByStateAndCountryAndOrgId(state, country, orgId)) {
+	                            errorMessages.add("A State " + state.toUpperCase() + " already exists for this country. Row: "
+	                                    + (row.getRowNum() + 1));
+	                        }
+
+	                        if (cityRepo.existsByCityCodeAndCountryAndOrgId(code, country, orgId)) {
+	                            errorMessages.add("A CityCode " + code.toUpperCase() + " already exists for this country. Row: "
+	                                    + (row.getRowNum() + 1));
+	                        }
 	                    } catch (Exception e) {
 	                        errorMessages.add("Error processing row " + (row.getRowNum() + 1) + ": " + e.getMessage());
 	                    }
@@ -879,7 +953,6 @@ public class BasicMasterServiceImpl implements BasicMasterService {
 	                    String state = getStringCellValue(row.getCell(1));
 	                    String city = getStringCellValue(row.getCell(2));
 	                    String code = getStringCellValue(row.getCell(3));
-	                   
 
 	                    // Create BranchVO and add to list for batch saving
 	                    CityVO cityVO = new CityVO();
@@ -889,8 +962,8 @@ public class BasicMasterServiceImpl implements BasicMasterService {
 	                    cityVO.setActive(true);
 	                    cityVO.setState(state.toUpperCase());
 	                    cityVO.setCityName(city.toUpperCase());
-	                    cityVO.setCreatedBy(CreatedBy);
-	                    cityVO.setModifiedBy(CreatedBy);
+	                    cityVO.setCreatedBy(createdBy);
+	                    cityVO.setModifiedBy(createdBy);
 
 	                    cityVOsToSave.add(cityVO);
 	                    successfulUploads++; // Increment successfulUploads
@@ -931,6 +1004,20 @@ public class BasicMasterServiceImpl implements BasicMasterService {
 	        }
 	    }
 
+	    private boolean isHeaderValidCity(Row headerRow) {
+	        if (headerRow == null) {
+	            return false;
+	        }
+	        int expectedColumnCount = 4;
+	        if (headerRow.getPhysicalNumberOfCells() != expectedColumnCount) {
+	            return false;
+	        }
+	        return "Country".equalsIgnoreCase(getStringCellValue(headerRow.getCell(0))) &&
+	               "State".equalsIgnoreCase(getStringCellValue(headerRow.getCell(1))) &&
+	               "City".equalsIgnoreCase(getStringCellValue(headerRow.getCell(2))) &&
+	               "Code".equalsIgnoreCase(getStringCellValue(headerRow.getCell(3)));
+	    }
+
 	    public int getTotalRows3() {
 	        return totalRows;
 	    }
@@ -938,4 +1025,5 @@ public class BasicMasterServiceImpl implements BasicMasterService {
 	    public int getSuccessfulUploads3() {
 	        return successfulUploads;
 	    }
+
 }

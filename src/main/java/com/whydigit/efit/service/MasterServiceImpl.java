@@ -4,6 +4,7 @@ package com.whydigit.efit.service;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.math.BigDecimal;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
@@ -35,6 +36,8 @@ import javax.validation.Valid;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.EncryptedDocumentException;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -639,6 +642,8 @@ public class MasterServiceImpl implements MasterService {
 		customersVO.setCustomerType(customersDTO.getCustomerType());
 		customersVO.setEntityLegalName(customersDTO.getEntityLegalName());
 		customersVO.setEmail(customersDTO.getEmail());
+		customersVO.setCreatedBy(customersDTO.getCreatedBy());
+		customersVO.setModifiedBy(customersDTO.getCreatedBy());
 		String customerCode = null;
 		if (0 == customersDTO.getCustomerType()) {
 			int custseq = customersRepo.getCustomerCodeSeq();
@@ -2907,6 +2912,8 @@ public class MasterServiceImpl implements MasterService {
 
 		return flowRepo.findByBranchcode(orgId, flow);
 	}
+	
+	//Excel File Uploads
 
 	private int totalRows = 0; // Initialize totalRows
 
@@ -2914,18 +2921,22 @@ public class MasterServiceImpl implements MasterService {
 	
 	@Override
 	@Transactional
-	public void ExcelUploadForAssetCategory(MultipartFile[] files, CustomerAttachmentType type, Long orgId)
+	public void ExcelUploadForAssetCategory(MultipartFile[] files, CustomerAttachmentType type, Long orgId,String createdBy)
 	        throws ApplicationException {
 	    List<AssetCategoryVO> assetCategoryVOsToSave = new ArrayList<>();
 	    totalRows = 0; // Reset totalRows for each execution
 	    successfulUploads = 0; // Reset successfulUploads for each execution
 
 	    // Process each uploaded file
-		for (MultipartFile file : files) {
-		    try (Workbook workbook = WorkbookFactory.create(file.getInputStream())) {
-		        Sheet sheet = workbook.getSheetAt(0); // Assuming only one sheet
-
-		        List<String> errorMessages = new ArrayList<>();
+	    for (MultipartFile file : files) {
+            try (Workbook workbook = WorkbookFactory.create(file.getInputStream())) {
+                Sheet sheet = workbook.getSheetAt(0); // Assuming only one sheet
+                List<String> errorMessages = new ArrayList<>();
+                System.out.println("Processing file: " + file.getOriginalFilename()); // Debug statement
+                Row headerRow = sheet.getRow(0);
+                if (!isHeaderValidAssetCategory(headerRow)) {
+                    throw new ApplicationException("Invalid Excel format.Please Refer The Sample File");
+                }
 
 		        // Check all rows for validity first
 		        for (Row row : sheet) {
@@ -2995,6 +3006,46 @@ public class MasterServiceImpl implements MasterService {
 		assetCategoryRepo.saveAll(assetCategoryVOsToSave);
 	}
 
+	 private boolean isHeaderValidAssetCategory(Row headerRow) {
+	        if (headerRow == null) {
+	            return false;
+	        }
+	        int expectedColumnCount = 3;
+	        if (headerRow.getPhysicalNumberOfCells() != expectedColumnCount) {
+	            return false;
+	        }
+	        return "assetType".equalsIgnoreCase(getStringCellValue(headerRow.getCell(0))) &&
+	               "category".equalsIgnoreCase(getStringCellValue(headerRow.getCell(1)))  &&
+	               "categoryCode".equalsIgnoreCase(getStringCellValue(headerRow.getCell(2)));
+	    }
+
+		private boolean isRowEmpty(Row row) {
+	        for (Cell cell : row) {
+	            if (cell.getCellType() != CellType.BLANK) {
+	                return false;
+	            }
+	        }
+	        return true;
+	    }
+
+	    private String getStringCellValue(Cell cell) {
+	        if (cell == null) {
+	            return "";
+	        }
+	        switch (cell.getCellType()) {
+	            case STRING:
+	                return cell.getStringCellValue();
+	            case NUMERIC:
+	                return BigDecimal.valueOf(cell.getNumericCellValue()).toPlainString();
+	            case BOOLEAN:
+	                return String.valueOf(cell.getBooleanCellValue());
+	            case FORMULA:
+	                return cell.getCellFormula();
+	            default:
+	                return "";
+	        }
+	    }
+
 	// Method to retrieve total rows processed
 	public int getTotalRows() {
 		return totalRows;
@@ -3005,200 +3056,7 @@ public class MasterServiceImpl implements MasterService {
 		return successfulUploads;
 	}
 
-//	@Override
-//	@Transactional
-//	public void ExcelUploadForAssetCategory(MultipartFile[] files, CustomerAttachmentType type, Long orgId)
-//			throws ApplicationException {
-//		List<AssetCategoryVO> assetCategoryVOsToSave = new ArrayList<>();
-//		totalRows = 0; // Reset totalRows for each execution
-//		successfulUploads = 0; // Reset successfulUploads for each execution
-//
-//		try {
-//			// Process each uploaded file
-//			for (MultipartFile file : files) {
-//				Workbook workbook = WorkbookFactory.create(file.getInputStream());
-//				Sheet sheet = workbook.getSheetAt(0); // Assuming only one sheet
-//
-//				List<String> errorMessages = new ArrayList<>();
-//
-//				// Check all rows for validity first
-//				for (Row row : sheet) {
-//					if (row.getRowNum() == 0) {
-//						continue; // Skip header row
-//					}
-//
-//					totalRows++; // Increment totalRows
-//
-//					String assetType = row.getCell(0).getStringCellValue();
-//					String category = row.getCell(1).getStringCellValue();
-//					String categoryCode = row.getCell(2).getStringCellValue();
-//
-//					// Validate each row
-//					try {
-//						if (assetCategoryRepo.existsByCategoryAndOrgId(category, orgId)) {
-//							errorMessages.add("Category " + category + " Already exists for this Organization. Row: "
-//									+ (row.getRowNum() + 1));
-//						}
-//						if (assetCategoryRepo.existsByCategoryCodeAndOrgId(categoryCode, orgId)) {
-//							errorMessages.add("Category Code " + categoryCode
-//									+ " Already exists for this Organization. Row: " + (row.getRowNum() + 1));
-//						}
-//						AssetTypeVO assetTypeVO = assetTypeRepo.findByOrgIdAndAssetType(orgId, assetType);
-//						if (assetTypeVO == null) {
-//							errorMessages.add("Asset Type " + assetType + " not found for orgId: " + orgId
-//									+ " and assetType: " + assetType + ". Row: " + (row.getRowNum() + 1));
-//						}
-//					} catch (Exception e) {
-//						errorMessages.add("Error processing row " + (row.getRowNum() + 1) + ": " + e.getMessage());
-//					}
-//				}
-//
-//				// If there are errors, throw ApplicationException and do not save any rows
-//				if (!errorMessages.isEmpty()) {
-//					throw new ApplicationException(
-//							"Excel upload validation failed. Errors: " + String.join(", ", errorMessages));
-//				}
-//
-//				// No errors found, now save all rows
-//				for (Row row : sheet) {
-//					if (row.getRowNum() == 0) {
-//						continue; // Skip header row
-//					}
-//
-//					String assetType = row.getCell(0).getStringCellValue();
-//					String category = row.getCell(1).getStringCellValue();
-//					String categoryCode = row.getCell(2).getStringCellValue();
-//
-//					// Create AssetCategoryVO and add to list for batch saving
-//					AssetCategoryVO assetCategoryVO = new AssetCategoryVO();
-//					assetCategoryVO.setOrgId(orgId);
-//					assetCategoryVO.setActive(true);
-//					assetCategoryVO.setAssetType(assetType);
-//					assetCategoryVO.setCategory(category);
-//					assetCategoryVO.setCategoryCode(categoryCode);
-//					assetCategoryVOsToSave.add(assetCategoryVO);
-//					successfulUploads++; // Increment successfulUploads
-//				}
-//			}
-//
-//			// Batch save all AssetCategoryVOs
-//			assetCategoryRepo.saveAll(assetCategoryVOsToSave);
-//
-//		} catch (IOException e) {
-//			// Handle IO exceptions
-//			e.printStackTrace(); // Replace with proper error handling
-//			throw new ApplicationException("Failed to process Excel files: " + e.getMessage());
-//		}
-//	}
 
-
-
-//		private int totalRows1 = 0; // Initialize totalRows
-//
-//		private int successfulUploads1 = 0; // Initialize successfulUploads
-//
-//		@Override
-//		@Transactional
-//		public void handleExcelUploadForUsers(MultipartFile[] files, CustomerAttachmentType type, Long orgId) throws ApplicationException {
-//			List<UserVO> userVOs = new ArrayList<>();
-//			totalRows = 0; // Reset totalRows for each execution
-//			successfulUploads = 0; // Reset successfulUploads for each execution
-//
-//			try {
-//				// Process each uploaded file
-//				for (MultipartFile file : files) {
-//					Workbook workbook = WorkbookFactory.create(file.getInputStream());
-//					Sheet sheet = workbook.getSheetAt(0); // Assuming only one sheet
-//
-//					List<String> errorMessages = new ArrayList<>();
-//
-//					// Check all rows for validity first
-//					for (Row row : sheet) {
-//						if (row.getRowNum() == 0) {
-//							continue; // Skip header row
-//						}
-//
-//						totalRows++; // Increment totalRows
-//
-//						String Name = row.getCell(0).getStringCellValue();
-//						String Email = row.getCell(1).getStringCellValue();
-//						String Password = row.getCell(2).getStringCellValue();
-//						String Address = row.getCell(3).getStringCellValue();
-//						String Country = row.getCell(4).getStringCellValue();
-//						String State = row.getCell(5).getStringCellValue();
-//						String City = row.getCell(6).getStringCellValue();
-//						String Pincode = row.getCell(7).getStringCellValue();
-//						String PhoneNo = row.getCell(8).getStringCellValue();
-//						String warehouse = row.getCell(9).getStringCellValue();
-//						
-//
-//						// Validate each row
-//						try {
-//							if (userRepo.existsByNameAndOrgId(Name, orgId)) {
-//								errorMessages.add("userName " + Name + " Already exists for this UserName. Row: "
-//										+ (row.getRowNum() + 1));
-//							}
-//							if (userRepo.existsByEmailAndOrgId(Email, orgId)) {
-//								errorMessages.add("Email  " + Email
-//										+ " Already exists for this Email. Row: " + (row.getRowNum() + 1));
-//							}
-////							AssetTypeVO assetTypeVO = assetTypeRepo.findByOrgIdAndAssetType(orgId, assetType);
-////							if (assetTypeVO == null) {
-////								errorMessages.add("Asset Type " + assetType + " not found for orgId: " + orgId
-////										+ " and assetType: " + assetType + ". Row: " + (row.getRowNum() + 1));
-////							}
-//						} catch (Exception e) {
-//							errorMessages.add("Error processing row " + (row.getRowNum() + 1) + ": " + e.getMessage());
-//						}
-//					}
-//
-//					// If there are errors, throw ApplicationException and do not save any rows
-//					if (!errorMessages.isEmpty()) {
-//						throw new ApplicationException(
-//								"Excel upload validation failed. Errors: " + String.join(", ", errorMessages));
-//					}
-//
-//					// No errors found, now save all rows
-//					for (Row row : sheet) {
-//						if (row.getRowNum() == 0) {
-//							continue; // Skip header row
-//						}
-//
-//						String assetType = row.getCell(0).getStringCellValue();
-//						String category = row.getCell(1).getStringCellValue();
-//						String categoryCode = row.getCell(2).getStringCellValue();
-//
-//						// Create AssetCategoryVO and add to list for batch saving
-//						UserVO userVO = new UserVO();
-//						userVO.setUserName(orgId);
-//						userVO.setEmail(true);
-//						userVO.setPassword(assetType);
-//						userVO.set(category);
-//						userVO.setCategoryCode(categoryCode);
-//						userVOs.add(userVO);
-//						successfulUploads++; // Increment successfulUploads
-//					}
-//				}
-//
-//				// Batch save all AssetCategoryVOs
-//				assetCategoryRepo.saveAll(userVOs);
-//
-//			} catch (IOException e) {
-//				// Handle IO exceptions
-//				e.printStackTrace(); // Replace with proper error handling
-//				throw new ApplicationException("Failed to process Excel files: " + e.getMessage());
-//			}
-//		}
-//
-//		// Method to retrieve total rows processed
-//		public int getTotalRows1() {
-//			return totalRows;
-//		}
-//
-//		// Method to retrieve successful uploads count
-//		public int getSuccessfulUploads1() {
-//			return successfulUploads;
-//		}
 
 	private int totalRows2 = 0; // Initialize totalRows
 
@@ -3206,7 +3064,7 @@ public class MasterServiceImpl implements MasterService {
 	
 	@Override
 	@Transactional
-	public void ExcelUploadForUnit(MultipartFile[] files, CustomerAttachmentType type, Long orgId)
+	public void ExcelUploadForUnit(MultipartFile[] files, CustomerAttachmentType type, Long orgId,String createdBy)
 	        throws ApplicationException {
 	    List<UnitVO> unitVOs = new ArrayList<>();
 	    totalRows = 0; // Reset totalRows for each execution
@@ -3218,6 +3076,11 @@ public class MasterServiceImpl implements MasterService {
 		        Sheet sheet = workbook.getSheetAt(0); // Assuming only one sheet
 
 		        List<String> errorMessages = new ArrayList<>();
+		        
+		        Row headerRow = sheet.getRow(0);
+                if (!isHeaderValidUnit(headerRow)) {
+                    throw new ApplicationException("Invalid Excel format.Please Refer The Sample File");
+                }
 
 		        // Check all rows for validity first
 		        for (Row row : sheet) {
@@ -3273,6 +3136,46 @@ public class MasterServiceImpl implements MasterService {
 		// Batch save all AssetCategoryVOs
 		unitRepo.saveAll(unitVOs);
 	}
+	
+	private boolean isHeaderValidUnit(Row headerRow) {
+        if (headerRow == null) {
+            return false;
+        }
+        int expectedColumnCount = 1;
+        if (headerRow.getPhysicalNumberOfCells() != expectedColumnCount) {
+            return false;
+        }
+        return "unit".equalsIgnoreCase(getStringCellValue(headerRow.getCell(0)));
+    }
+
+	private boolean isRowEmpty2(Row row) {
+        for (Cell cell : row) {
+            if (cell.getCellType() != CellType.BLANK) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private String getStringCellValue2(Cell cell) {
+        if (cell == null) {
+            return "";
+        }
+        switch (cell.getCellType()) {
+            case STRING:
+                return cell.getStringCellValue();
+            case NUMERIC:
+                return BigDecimal.valueOf(cell.getNumericCellValue()).toPlainString();
+            case BOOLEAN:
+                return String.valueOf(cell.getBooleanCellValue());
+            case FORMULA:
+                return cell.getCellFormula();
+            default:
+                return "";
+        }
+    }
+
+
 	// Method to retrieve total rows processed
 		public int getTotalRows2() {
 			return totalRows;
@@ -3290,7 +3193,7 @@ public class MasterServiceImpl implements MasterService {
 		
 		@Override
 		@Transactional
-		public void ExcelUploadForStockBranch(MultipartFile[] files, CustomerAttachmentType type, Long orgId)
+		public void ExcelUploadForStockBranch(MultipartFile[] files, CustomerAttachmentType type, Long orgId,String createdBy)
 		        throws ApplicationException {
 			List<StockBranchVO> stockBranchVOs = new ArrayList<>();
 		    totalRows = 0; // Reset totalRows for each execution
@@ -3302,7 +3205,12 @@ public class MasterServiceImpl implements MasterService {
 			        Sheet sheet = workbook.getSheetAt(0); // Assuming only one sheet
 
 			        List<String> errorMessages = new ArrayList<>();
-
+			        System.out.println("Processing file: " + file.getOriginalFilename()); // Debug statement
+			        
+			        Row headerRow = sheet.getRow(0);
+	                if (!isHeaderValidStockBranch(headerRow)) {
+	                    throw new ApplicationException("Invalid Excel format.Please Refer The Sample File");
+	                }
 			        // Check all rows for validity first
 			        for (Row row : sheet) {
 			            if (row.getRowNum() == 0) {
@@ -3362,6 +3270,48 @@ public class MasterServiceImpl implements MasterService {
 			// Batch save all AssetCategoryVOs
 			stockBranchRepo.saveAll(stockBranchVOs);
 		}
+		
+		 private boolean isHeaderValidStockBranch(Row headerRow) {
+		        if (headerRow == null) {
+		            return false;
+		        }
+		        int expectedColumnCount = 2;
+		        if (headerRow.getPhysicalNumberOfCells() != expectedColumnCount) {
+		            return false;
+		        }
+		        return "branchName".equalsIgnoreCase(getStringCellValue(headerRow.getCell(0))) &&
+		               "branchCode".equalsIgnoreCase(getStringCellValue(headerRow.getCell(1))) ;
+		    }
+
+			private boolean isRowEmpty3(Row row) {
+		        for (Cell cell : row) {
+		            if (cell.getCellType() != CellType.BLANK) {
+		                return false;
+		            }
+		        }
+		        return true;
+		    }
+
+		    private String getStringCellValue3(Cell cell) {
+		        if (cell == null) {
+		            return "";
+		        }
+		        switch (cell.getCellType()) {
+		            case STRING:
+		                return cell.getStringCellValue();
+		            case NUMERIC:
+		                return BigDecimal.valueOf(cell.getNumericCellValue()).toPlainString();
+		            case BOOLEAN:
+		                return String.valueOf(cell.getBooleanCellValue());
+		            case FORMULA:
+		                return cell.getCellFormula();
+		            default:
+		                return "";
+		        }
+		    }
+
+
+		
 		// Method to retrieve total rows processed
 			public int getTotalRows3() {
 				return totalRows;

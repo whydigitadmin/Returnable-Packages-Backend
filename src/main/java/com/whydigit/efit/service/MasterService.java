@@ -355,34 +355,27 @@ public interface MasterService {
 
 	Set<Object[]> getBranchLocationByFlow(Long orgId, Long flowId);
 
-	void ExcelUploadForAssetCategory(MultipartFile[] files, CustomerAttachmentType type,Long orgId) throws ApplicationException;
+	void ExcelUploadForAssetCategory(MultipartFile[] files, CustomerAttachmentType type,Long orgId,String createdBy) throws ApplicationException;
 
 	int getTotalRows();
 
 	int getSuccessfulUploads();
 
-	void ExcelUploadForUnit(MultipartFile[] files, CustomerAttachmentType type, Long orgId) throws ApplicationException;
 
 
-	void ExcelUploadForStockBranch(MultipartFile[] files, CustomerAttachmentType type, Long orgId) throws ApplicationException;
+	void ExcelUploadForStockBranch(MultipartFile[] files, CustomerAttachmentType type, Long orgId,String createdBy) throws ApplicationException;
 
 	List<Map<String, Object>> getPartNoAndPartName(Long flowId, String kitNo, Long emitterId);
 
 	Set<Object[]> getAvalkitqtyByWarehouse(String warehouse, String kitName);
 
+	void ExcelUploadForUnit(MultipartFile[] files, CustomerAttachmentType type, Long orgId, String createdBy)
+			throws ApplicationException;
 
 
 
-//	void ExcelUploadForAssetCategory(MultipartFile[] files, CustomerAttachmentType type,Long orgId) throws ApplicationException;
-//
-//	int getTotalRows();
-//
-//	int getSuccessfulUploads();
 
-	//void handleExcelUploadForUsers(MultipartFile[] files, CustomerAttachmentType type, Long orgId) throws ApplicationException;
-  
 
-	
 
 	
 

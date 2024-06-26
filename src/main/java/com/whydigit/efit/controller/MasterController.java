@@ -3613,7 +3613,8 @@ public class MasterController extends BaseController {
 		//File Upload For Asset Category
 		
 		@PostMapping("/ExcelUploadForAssetCategory")
-		public ResponseEntity<ResponseDTO> handleExcelUpload(@RequestParam MultipartFile[] files,CustomerAttachmentType type,@RequestParam(required = false) Long orgId) {
+		public ResponseEntity<ResponseDTO> handleExcelUpload(@RequestParam MultipartFile[] files,CustomerAttachmentType type,@RequestParam(required = false) Long orgId,
+				@RequestParam(required =true) String createdBy) {
 		    String methodName = "ExcelUploadForAssetCategory()";
 		    LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		    String errorMsg = null;
@@ -3624,7 +3625,7 @@ public class MasterController extends BaseController {
 
 		    try {
 		        // Call service method to process Excel upload
-		        masterService.ExcelUploadForAssetCategory(files, type, orgId);
+		        masterService.ExcelUploadForAssetCategory(files, type, orgId,createdBy);
 		        
 		        // Retrieve the counts after processing
 		        totalRows = masterService.getTotalRows(); // Get total rows processed
@@ -3653,52 +3654,11 @@ public class MasterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 		}
 
-
-		
-    //File Upload For User Deatils
-
-//		@PostMapping("/ExcelUploadForUsers")
-//		public ResponseEntity<ResponseDTO> handleExcelUploadForUsers(@RequestParam MultipartFile[] files,
-//		                                                     CustomerAttachmentType type,
-//		                                                     @RequestParam(required = false) Long orgId) {
-//		    String methodName = "handleExcelUploadForUsers()";
-//		    LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
-//		    String errorMsg = null;
-//		    Map<String, Object> responseObjectsMap = new HashMap<>();
-//		    ResponseDTO responseDTO = null;
-//		    int totalRows = 0;
-//		    int successfulUploads = 0;
-//
-//		    try {
-//		        // Call service method to process Excel upload
-//		        masterService.handleExcelUploadForUsers(files, type, orgId);
-//		        
-//		        // Retrieve the counts after processing
-//		        totalRows = masterService.getTotalRows(); // Get total rows processed
-//		        successfulUploads = masterService.getSuccessfulUploads(); // Get successful uploads count
-//
-//		        // Construct success response
-//		        responseObjectsMap.put("statusFlag", "Ok");
-//		        responseObjectsMap.put("status", true);
-//		        responseObjectsMap.put("totalRows", totalRows);
-//		        responseObjectsMap.put("successfulUploads", successfulUploads);
-//		        responseObjectsMap.put("paramObjectsMap", Map.of("message", "Excel Upload For Users successful"));
-//		        responseDTO = createServiceResponse(responseObjectsMap);
-//		        
-//		    }  catch (Exception e) {
-//		errorMsg = e.getMessage();
-//		LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-//		responseDTO = createServiceResponseError(responseObjectsMap,
-//		"Excel Upload For Users failed. Please try again.", errorMsg);
-//		}
-//		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
-//		return ResponseEntity.ok().body(responseDTO);
-//		}
-
 		//Unit
 		
 		@PostMapping("/ExcelUploadForUnit")
-		public ResponseEntity<ResponseDTO> ExcelUploadForUnit(@RequestParam MultipartFile[] files,CustomerAttachmentType type,@RequestParam(required = false) Long orgId) {
+		public ResponseEntity<ResponseDTO> ExcelUploadForUnit(@RequestParam MultipartFile[] files,CustomerAttachmentType type,@RequestParam(required = false) Long orgId,
+				@RequestParam(required =false) String createdBy) {
 		    String methodName = "ExcelUploadForUnit()";
 		    LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		    String errorMsg = null;
@@ -3709,7 +3669,7 @@ public class MasterController extends BaseController {
 
 		    try {
 		        // Call service method to process Excel upload
-		        masterService.ExcelUploadForUnit(files, type, orgId);
+		        masterService.ExcelUploadForUnit(files, type, orgId,createdBy);
 		        
 		        // Retrieve the counts after processing
 		        totalRows = masterService.getTotalRows(); // Get total rows processed
@@ -3743,7 +3703,8 @@ public class MasterController extends BaseController {
 
 		
 		@PostMapping("/ExcelUploadForStockBranch")
-		public ResponseEntity<ResponseDTO> ExcelUploadForStockBranch(@RequestParam MultipartFile[] files,CustomerAttachmentType type,@RequestParam(required = false) Long orgId) {
+		public ResponseEntity<ResponseDTO> ExcelUploadForStockBranch(@RequestParam MultipartFile[] files,CustomerAttachmentType type,@RequestParam(required = false) Long orgId,
+				@RequestParam(required =true)String createdBy) {
 		    String methodName = "ExcelUploadForStockBranch()";
 		    LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		    String errorMsg = null;
@@ -3754,7 +3715,7 @@ public class MasterController extends BaseController {
 
 		    try {
 		        // Call service method to process Excel upload
-		        masterService.ExcelUploadForStockBranch(files, type, orgId);
+		        masterService.ExcelUploadForStockBranch(files, type, orgId,createdBy);
 		        
 		        // Retrieve the counts after processing
 		        totalRows = masterService.getTotalRows(); // Get total rows processed
