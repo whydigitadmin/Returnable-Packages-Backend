@@ -163,6 +163,7 @@ public class WarehouseController extends BaseController {
 		return location;
 	}
 
+
 	@PutMapping("/view")
 	public ResponseEntity<ResponseDTO> updateWarehouseVo(@RequestBody WarehouseVO warehousevo) {
 		String methodName = "updateWarehouseVo()";
@@ -303,7 +304,34 @@ public class WarehouseController extends BaseController {
 	}
 	LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 	return ResponseEntity.ok().body(responseDTO);
+	}	
+
+	@GetMapping("/getOrginWarehouseByUserId")
+	public ResponseEntity<ResponseDTO> getOrginWarehouseByUserId(@RequestParam(required = false) Long userId,@RequestParam(required = false) Long orgId) {
+		String methodName = "getOrginWarehouseByUserId()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		WarehouseVO warehouseVO = null;
+		try {
+			warehouseVO = warehouseService.getOrginWarehouseByUserId(userId,orgId).orElse(null);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Warehouse found by ID");
+			responseObjectsMap.put("warehouse", warehouseVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			errorMsg = "Warehouse not found for ID: " + userId;
+			responseDTO = createServiceResponseError(responseObjectsMap, "Warehouse not found", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
 	}
 
 
 }
+

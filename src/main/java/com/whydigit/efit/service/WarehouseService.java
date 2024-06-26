@@ -37,4 +37,6 @@ public interface WarehouseService {
 
 	int getSuccessfulUploads();
 
+	Optional<WarehouseVO> getOrginWarehouseByUserId(Long userId, Long orgId);
+
 }

@@ -414,4 +414,10 @@ public class WarehouseServiceImpl implements WarehouseService {
 		return successfulUploads;
 	}
 
+	@Override
+	public Optional<WarehouseVO> getOrginWarehouseByUserId(Long userId,Long orgId) {
+		// TODO Auto-generated method stub
+		return warehouseRepo.findByorginWareHouse(userId,orgId);
+	}
+
 }
