@@ -6,8 +6,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.web.multipart.MultipartFile;
 
 import com.whydigit.efit.dto.AssetCategoryDTO;
@@ -16,7 +14,7 @@ import com.whydigit.efit.dto.AssetInwardDTO;
 import com.whydigit.efit.dto.AssetTaggingDTO;
 import com.whydigit.efit.dto.AssetTypeDTO;
 import com.whydigit.efit.dto.BinAllotmentDTO;
-import com.whydigit.efit.dto.BinInwardDTO;
+import com.whydigit.efit.dto.BinRetrievalDTO;
 import com.whydigit.efit.dto.BranchDTO;
 import com.whydigit.efit.dto.CnoteDTO;
 import com.whydigit.efit.dto.CustomerAttachmentType;
@@ -39,6 +37,7 @@ import com.whydigit.efit.entity.AssetTypeVO;
 import com.whydigit.efit.entity.AssetVO;
 import com.whydigit.efit.entity.BinAllotmentNewVO;
 import com.whydigit.efit.entity.BinInwardVO;
+import com.whydigit.efit.entity.BinRetrievalVO;
 import com.whydigit.efit.entity.BranchVO;
 import com.whydigit.efit.entity.CnoteVO;
 import com.whydigit.efit.entity.CustomersAddressVO;
@@ -372,6 +371,15 @@ public interface MasterService {
 	void ExcelUploadForUnit(MultipartFile[] files, CustomerAttachmentType type, Long orgId, String createdBy)
 			throws ApplicationException;
 
+	
+	// Bin retrieval
+		BinRetrievalVO createBinRetrieval (BinRetrievalDTO binRetrievalDTO);
+
+		List<Map<String, Object>>getPendingBinRetrievalTransportPickupDetails(Long orgId,String retrievalWarehosue);
+
+		List<Map<String, Object>> getTransportPickupDetailsByDocId(Long orgId, String pickupDocId);
+
+		String getDocIdByBinRetrieval();
 
 
 
