@@ -1,5 +1,6 @@
 package com.whydigit.efit.repo;
 
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -28,4 +29,6 @@ public interface TransportPickupRepo extends JpaRepository<TransportPickupVO, Lo
 	@Query(nativeQuery = true, value = "select b.category,b.assetcode,b.asset,b.pickqty from transportpickup a,transportpickupdetails b where a.transportpickupid=b.transportpickupid and a.orgid=?1 and a.docid=?2")
 	Set<Object[]> getPickupDetails(Long orgId, String pickupDocId);
 
+	@Query(nativeQuery = true, value = "select * from transportpickup where receiverid=?1")
+	List<TransportPickupVO> getAllTranportPickupByReceiverId(Long receiverId);
 }

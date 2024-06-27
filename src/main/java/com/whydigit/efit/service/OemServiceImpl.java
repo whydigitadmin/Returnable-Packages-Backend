@@ -772,4 +772,9 @@ public class OemServiceImpl implements OemService {
 			// TODO Auto-generated method stub
 			return retreivalRepo.getAllReterivalByReceiverId(receiverId);
 		}
+		
+		@Override
+		public List<TransportPickupVO> getAllTranportPickupByReceiverId(Long receiverId) {
+			return transportPickupRepo.getAllTranportPickupByReceiverId(receiverId);
+		}
 }

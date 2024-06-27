@@ -756,6 +756,32 @@ public class OemController extends BaseController{
 
 				}
 				
+				@GetMapping("/getAllTranportPickupByReceiverId")
+				public ResponseEntity<ResponseDTO> getAllTranportPickupByReceiverId(@RequestParam(required = false) Long receiverId) {
+					String methodName = "getAllReterivalByReceiverId()";
+					LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+					String errorMsg = null;
+					Map<String, Object> responseObjectsMap = new HashMap<>();
+					ResponseDTO responseDTO = null;
+					List<TransportPickupVO> transportPickupVOs = new ArrayList<>();
+					try {
+						transportPickupVOs = oemService.getAllTranportPickupByReceiverId(receiverId);
+					} catch (Exception e) {
+						errorMsg = e.getMessage();
+						LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+					}
+					if (StringUtils.isBlank(errorMsg)) {
+						responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Transport Pickup information get successfully");
+						responseObjectsMap.put("transportPickupVO", transportPickupVOs);
+						responseDTO = createServiceResponse(responseObjectsMap);
+					} else {
+						responseDTO = createServiceResponseError(responseObjectsMap, "Transport Pickup information receive failed", errorMsg);
+					}
+					LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+					return ResponseEntity.ok().body(responseDTO);
+
+				}
+				
 }
 
 
