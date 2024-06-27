@@ -1,5 +1,6 @@
 package com.whydigit.efit.repo;
 
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -32,6 +33,9 @@ public interface RetreivalRepo extends JpaRepository<RetreivalVO, Long> {
 
 	@Query("select a from RetreivalVO a where a.docId=?1 and a.orgId=?2")
 	RetreivalVO findByDocidAndOrgId(String rmNo, Long orgId);
+
+	@Query(value ="select * from retreival where receiverid=?1",nativeQuery =true)
+	List<RetreivalVO> getAllReterivalByReceiverId(Long receiverId);
 
 
 }

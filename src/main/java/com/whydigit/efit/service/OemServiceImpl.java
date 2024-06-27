@@ -748,4 +748,28 @@ public class OemServiceImpl implements OemService {
 			String pickupDocId = finyr + "PK" + transportPickupRepo.finddocid();
 			return pickupDocId;
 		}
+
+		@Override
+		public List<OemBinInwardVO> getAllOemBinInwardByReceiverId(Long receiverId) {
+			// TODO Auto-generated method stub
+			return oemBinInwardRepo.getAllOemBinInwardByReceiverId(receiverId);
+		}
+
+		@Override
+		public List<OemBinOutwardVO> getAllOemBinOutwardByReceiverId(Long receiverId) {
+			// TODO Auto-generated method stub
+			return oemBinOutwardRepo.getAllOemBinOutwardByReceiverId(receiverId);
+		}
+
+		@Override
+		public List<GatheringEmptyVO> getAllGatheringEmptyByReceiverId(Long receiverId) {
+			// TODO Auto-generated method stub
+			return gatheringEmptyRepo.getAllGatheringEmptyByReceiverId(receiverId);
+		}
+
+		@Override
+		public List<RetreivalVO> getAllReterivalByReceiverId(Long receiverId) {
+			// TODO Auto-generated method stub
+			return retreivalRepo.getAllReterivalByReceiverId(receiverId);
+		}
 }
