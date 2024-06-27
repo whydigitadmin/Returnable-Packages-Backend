@@ -26,7 +26,7 @@ public interface TransportPickupRepo extends JpaRepository<TransportPickupVO, Lo
 	
 
 
-	@Query(nativeQuery = true, value = "SELECT docid,docdate,drivername,driverphoneno,transportdocno,vechicleno,fromstockbranch,tostockbranch FROM rp_dev.transportpickup where orgid=?1 and docid not in(\r\n"
+	@Query(nativeQuery = true, value = "SELECT docid,docdate,drivername,driverphoneno,transportdocno,vechicleno,fromstockbranch,tostockbranch FROM transportpickup where orgid=?1 and docid not in(\r\n"
 			+ "select pickupdocid from binretrieval where orgid=?1 group by pickupdocid) and tostockbranch=?2 group by docid,docdate,drivername,driverphoneno,transportdocno,vechicleno,fromstockbranch,tostockbranch")
 	Set<Object[]> getPendingPickupDetails(Long orgId, String retrievalWarehosue);
 
@@ -35,5 +35,7 @@ public interface TransportPickupRepo extends JpaRepository<TransportPickupVO, Lo
 
 	@Query(nativeQuery = true, value = "select * from transportpickup where receiverid=?1")
 	List<TransportPickupVO> getAllTranportPickupByReceiverId(Long receiverId);
+	
+	
 
 }
