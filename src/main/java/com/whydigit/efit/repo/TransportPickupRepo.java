@@ -2,6 +2,9 @@ package com.whydigit.efit.repo;
 
 import java.util.List;
 
+import java.util.Set;
+
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -21,8 +24,16 @@ public interface TransportPickupRepo extends JpaRepository<TransportPickupVO, Lo
 	@Query(nativeQuery = true, value = "CALL next_tranportdocid_sequence_value()")
 	void nextSeq();
 	
+
+
+	@Query(nativeQuery = true, value = "SELECT docid,docdate,drivername,driverphoneno,transportdocno,vechicleno,fromstockbranch,tostockbranch FROM rp_dev.transportpickup where orgid=?1 and docid not in(\r\n"
+			+ "select pickupdocid from binretrieval where orgid=?1 group by pickupdocid) and tostockbranch=?2 group by docid,docdate,drivername,driverphoneno,transportdocno,vechicleno,fromstockbranch,tostockbranch")
+	Set<Object[]> getPendingPickupDetails(Long orgId, String retrievalWarehosue);
+
+	@Query(nativeQuery = true, value = "select b.category,b.assetcode,b.asset,b.pickqty from transportpickup a,transportpickupdetails b where a.transportpickupid=b.transportpickupid and a.orgid=?1 and a.docid=?2")
+	Set<Object[]> getPickupDetails(Long orgId, String pickupDocId);
+
 	@Query(nativeQuery = true, value = "select * from transportpickup where receiverid=?1")
 	List<TransportPickupVO> getAllTranportPickupByReceiverId(Long receiverId);
 
-	
 }
