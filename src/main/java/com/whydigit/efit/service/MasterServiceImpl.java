@@ -29,13 +29,11 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
@@ -50,7 +48,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.support.StandardMultipartHttpServletRequest;
 
 import com.opencsv.CSVReader;
 import com.whydigit.efit.common.CommonConstant;
@@ -65,6 +62,8 @@ import com.whydigit.efit.dto.AssetTaggingDetailsDTO;
 import com.whydigit.efit.dto.AssetTypeDTO;
 import com.whydigit.efit.dto.BinAllotmentDTO;
 import com.whydigit.efit.dto.BinAllotmentDetailsDTO;
+import com.whydigit.efit.dto.BinRetrievalDTO;
+import com.whydigit.efit.dto.BinRetrievalDetailsDTO;
 import com.whydigit.efit.dto.BranchDTO;
 import com.whydigit.efit.dto.CnoteDTO;
 import com.whydigit.efit.dto.CustomerAttachmentType;
@@ -103,6 +102,8 @@ import com.whydigit.efit.entity.BasicDetailVO;
 import com.whydigit.efit.entity.BinAllotmentDetailsVO;
 import com.whydigit.efit.entity.BinAllotmentNewVO;
 import com.whydigit.efit.entity.BinInwardVO;
+import com.whydigit.efit.entity.BinRetrievalDetailsVO;
+import com.whydigit.efit.entity.BinRetrievalVO;
 import com.whydigit.efit.entity.BranchVO;
 import com.whydigit.efit.entity.CnoteVO;
 import com.whydigit.efit.entity.CustomerAttachmentVO;
@@ -145,6 +146,7 @@ import com.whydigit.efit.repo.BinAllotmentNewRepo;
 import com.whydigit.efit.repo.BinAllotmentRepo;
 import com.whydigit.efit.repo.BinInwardRepo;
 import com.whydigit.efit.repo.BinOutwardRepo;
+import com.whydigit.efit.repo.BinRetrievalRepo;
 import com.whydigit.efit.repo.BranchRepo;
 import com.whydigit.efit.repo.CnoteRepo;
 import com.whydigit.efit.repo.CustomerAttachmentRepo;
@@ -168,6 +170,7 @@ import com.whydigit.efit.repo.ProofOfDeliveryRepo;
 import com.whydigit.efit.repo.ServiceRepo;
 import com.whydigit.efit.repo.StockBranchRepo;
 import com.whydigit.efit.repo.TermsAndConditionsRepo;
+import com.whydigit.efit.repo.TransportPickupRepo;
 import com.whydigit.efit.repo.UnitRepo;
 import com.whydigit.efit.repo.UserRepo;
 import com.whydigit.efit.repo.VendorAddressRepo;
@@ -197,6 +200,13 @@ public class MasterServiceImpl implements MasterService {
 
 	@Autowired
 	FlowDetailRepo flowDetailRepo;
+	
+	@Autowired
+	TransportPickupRepo transportPickupRepo;
+	
+	@Autowired
+	BinRetrievalRepo binRetrievalRepo;
+	
 
 	@Autowired
 	BasicDetailRepo basicDetailRepo;
@@ -3350,9 +3360,148 @@ public class MasterServiceImpl implements MasterService {
 				
 				return warehouseRepo.getAvalkitqtyByWarehouse(warehouse,kitName);
 			}
-			
-			
 
+			@Override
+			public BinRetrievalVO createBinRetrieval(BinRetrievalDTO binRetrievalDTO) {
+			
+				BinRetrievalVO binRetrievalVO= new BinRetrievalVO();
+				String finyr = binRetrievalRepo.findFinyr();
+				String binRetrievalDocId = finyr + "BRI" + binRetrievalRepo.finddocid();
+				binRetrievalVO.setDocId(binRetrievalDocId);	
+				binRetrievalRepo.nextSeq();
+				
+				binRetrievalVO.setDocDate(binRetrievalDTO.getDocDate());
+			    binRetrievalVO.setRetrievalWarehouse(binRetrievalDTO.getRetrievalWarehouse());
+			    binRetrievalVO.setFromStockBranch(binRetrievalDTO.getFromStockBranch());
+			    binRetrievalVO.setToStockBranch(binRetrievalDTO.getToStockBranch());
+			    binRetrievalVO.setPickupDocId(binRetrievalDTO.getPickupDocId());
+			    binRetrievalVO.setPickupDate(binRetrievalDTO.getPickupDate());
+			    binRetrievalVO.setTransPortDocNo(binRetrievalDTO.getTransPortDocNo());
+			    binRetrievalVO.setTransPorter(binRetrievalDTO.getTransPorter());
+			    binRetrievalVO.setDriverName(binRetrievalDTO.getDriverName());
+			    binRetrievalVO.setHandOverBy(binRetrievalDTO.getHandOverBy());
+			    binRetrievalVO.setDriverPhoneNo(binRetrievalDTO.getDriverPhoneNo());
+			    binRetrievalVO.setVechicleNo(binRetrievalDTO.getVechicleNo());
+			    binRetrievalVO.setCreatedby(binRetrievalDTO.getCreatedby());
+			    binRetrievalVO.setOrgId(binRetrievalDTO.getOrgId());
+			    
+			    List<BinRetrievalDetailsVO>binRetrievalDetailsVO= new ArrayList<>();
+			    if(binRetrievalDTO.getBinRetrievalDetailsDTO()!=null)
+			    {
+			    	for(BinRetrievalDetailsDTO binRetrievalDetailsDTO:binRetrievalDTO.getBinRetrievalDetailsDTO()) 
+			    	{
+			    		BinRetrievalDetailsVO detailsVO=new BinRetrievalDetailsVO();
+			    		detailsVO.setCategory(binRetrievalDetailsDTO.getCategory());
+			    		detailsVO.setAsset(binRetrievalDetailsDTO.getAsset());
+			    		detailsVO.setAssetCode(binRetrievalDetailsDTO.getAssetCode());
+			    		detailsVO.setInvqty(binRetrievalDetailsDTO.getInvqty());
+			    		detailsVO.setRecqty(binRetrievalDetailsDTO.getRecqty());
+			    		detailsVO.setBinRetrievalVO(binRetrievalVO);
+			    		binRetrievalDetailsVO.add(detailsVO);
+			    	}
+			    }
+			    binRetrievalVO.setBinRetrievalDetailsVO(binRetrievalDetailsVO);
+			    BinRetrievalVO binRetrievalVO2= binRetrievalRepo.save(binRetrievalVO);
+			    List<BinRetrievalDetailsVO>binRetrievalDetailsVOs=binRetrievalVO2.getBinRetrievalDetailsVO();
+			    if (binRetrievalDetailsVOs != null && !binRetrievalDetailsVOs.isEmpty()) {
+					for (BinRetrievalDetailsVO retrievalDetailsVO  : binRetrievalDetailsVOs) {
+						AssetStockDetailsVO stockDetailsVO = new AssetStockDetailsVO();
+						stockDetailsVO.setStockRef(binRetrievalVO2.getPickupDocId());
+						stockDetailsVO.setStockBranch(binRetrievalVO2.getToStockBranch());
+						stockDetailsVO.setStockDate(binRetrievalVO2.getPickupDate());
+						stockDetailsVO.setSku(retrievalDetailsVO.getAsset());
+						stockDetailsVO.setSkuCode(retrievalDetailsVO.getAssetCode());
+						stockDetailsVO.setSkuQty(retrievalDetailsVO.getRecqty());
+						stockDetailsVO.setOrgId(binRetrievalVO2.getOrgId()*-1);
+						stockDetailsVO.setCategory(assetRepo.getCategoryByAssetCodeId(retrievalDetailsVO.getAssetCode()));
+						stockDetailsVO.setStatus("M");
+						stockDetailsVO.setScreen(binRetrievalVO2.getScreen());
+						stockDetailsVO.setSCode(binRetrievalVO2.getScode());
+						stockDetailsVO.setPm("M");
+						stockDetailsVO.setStockSource("");
+						stockDetailsVO.setBinLocation("");
+						stockDetailsVO.setCancelRemarks("");
+						stockDetailsVO.setStockLocation("");
+						stockDetailsVO.setSourceId(retrievalDetailsVO.getId());
+						stockDetailsVO.setFinyr(binRetrievalVO2.getFinYr());
+						assetStockDetailsRepo.save(stockDetailsVO);
+					}
+					for (BinRetrievalDetailsVO retrievalDetailsVO  : binRetrievalDetailsVOs) {
+						AssetStockDetailsVO stockDetailsVO = new AssetStockDetailsVO();
+						stockDetailsVO.setStockRef(binRetrievalVO2.getDocId());
+						stockDetailsVO.setStockBranch(binRetrievalVO2.getRetrievalWarehouse());
+						stockDetailsVO.setStockDate(binRetrievalVO2.getDocDate());
+						stockDetailsVO.setSku(retrievalDetailsVO.getAsset());
+						stockDetailsVO.setSkuCode(retrievalDetailsVO.getAssetCode());
+						stockDetailsVO.setSkuQty(retrievalDetailsVO.getRecqty());
+						stockDetailsVO.setOrgId(binRetrievalVO2.getOrgId()*-1);
+						stockDetailsVO.setCategory(assetRepo.getCategoryByAssetCodeId(retrievalDetailsVO.getAssetCode()));
+						stockDetailsVO.setStatus("S");
+						stockDetailsVO.setScreen(binRetrievalVO2.getScreen());
+						stockDetailsVO.setSCode(binRetrievalVO2.getScode());
+						stockDetailsVO.setPm("P");
+						stockDetailsVO.setStockSource("");
+						stockDetailsVO.setBinLocation("");
+						stockDetailsVO.setCancelRemarks("");
+						stockDetailsVO.setStockLocation("");
+						stockDetailsVO.setSourceId(retrievalDetailsVO.getId());
+						stockDetailsVO.setFinyr(binRetrievalVO2.getFinYr());
+						assetStockDetailsRepo.save(stockDetailsVO);
+					}
+				}
+			    return binRetrievalVO2;
+			}
+
+			@Override
+			public List<Map<String, Object>> getPendingBinRetrievalTransportPickupDetails(Long orgId, String retrievalWarehosue) {
+			Set<Object[]>getDetails= transportPickupRepo.getPendingPickupDetails(orgId,retrievalWarehosue);
+				return details(getDetails);
+			}
+
+			private List<Map<String, Object>> details(Set<Object[]> getDetails) {
+			
+				List<Map<String, Object>> det = new ArrayList<>();
+		        for (Object[] ps : getDetails) {
+		            Map<String, Object> part = new HashMap<>();
+		            part.put("pickupNo", ps[0] != null ? ps[0].toString() : "");
+		            part.put("pickupDate", ps[1] != null ? ps[1].toString() : "");
+		            part.put("driverName", ps[2] != null ? ps[2].toString() : "");
+		            part.put("driverPhoneNo", ps[3] != null ? ps[3].toString() : "");
+		            part.put("transportDocNo", ps[4] != null ? ps[4].toString() : "");
+		            part.put("vehicleNo", ps[5] != null ? ps[5].toString() : "");
+		            part.put("fromStockBranch", ps[6] != null ? ps[6].toString() : "");
+		            part.put("toStockBranch", ps[7] != null ? ps[7].toString() : "");		            
+		            det.add(part);
+		        }
+		        return det;
+			}
+			
+			
+			@Override
+			public List<Map<String, Object>> getTransportPickupDetailsByDocId(Long orgId, String pickupDocId) {
+			Set<Object[]>getPickupDetails= transportPickupRepo.getPickupDetails(orgId,pickupDocId);
+				return pickDetails(getPickupDetails);
+			}
+
+			private List<Map<String, Object>> pickDetails(Set<Object[]> getPickupDetails) {
+				List<Map<String, Object>> details = new ArrayList<>();
+		        for (Object[] ps : getPickupDetails) {
+		            Map<String, Object> part = new HashMap<>();
+		            part.put("category", ps[0] != null ? ps[0].toString() : "");
+					part.put("assetCode", ps[1] != null ? ps[1].toString() : "");
+					part.put("asset", ps[2] != null ? ps[2].toString() : "");
+					part.put("invQty", ps[3] != null ? Integer.parseInt(ps[3].toString()) : 0);	            
+		            details.add(part);
+		        }
+				return details;
+			}
+			
+			@Override
+			public String getDocIdByBinRetrieval() {
+				String finyr = binRetrievalRepo.findFinyr();
+				String binRetrievalDocId = finyr + "BRI" + binRetrievalRepo.finddocid();
+				return binRetrievalDocId;
+			}
 }
 
 	
