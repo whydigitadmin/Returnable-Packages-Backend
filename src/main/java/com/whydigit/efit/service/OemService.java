@@ -77,4 +77,6 @@ public interface OemService {
 	List<GatheringEmptyVO> getAllGatheringEmptyByReceiverId(Long receiverId);
 
 	List<RetreivalVO> getAllReterivalByReceiverId(Long receiverId);
+
+	List<TransportPickupVO> getAllTranportPickupByReceiverId(Long receiverId);
 }

@@ -344,7 +344,7 @@ public class OemServiceImpl implements OemService {
 			part.put("category", ps[1] != null ? ps[1].toString() : "");
 			part.put("assetName", ps[2] != null ? ps[2].toString() : "");
 			part.put("assetCode", ps[3] != null ? ps[3].toString() : "");
-			part.put("availQty", ps[4] != null ? Integer.parseInt(ps[4].toString()) : 0);
+			part.put("availQty", ps[4] != null ? ps[4].toString() : "");
 			oemStockdetails.add(part);
 		}
 		return oemStockdetails;
@@ -478,7 +478,7 @@ public class OemServiceImpl implements OemService {
 			part.put("category", ps[1] != null ? ps[1].toString() : "");
 			part.put("assetName", ps[2] != null ? ps[2].toString() : "");
 			part.put("assetCode", ps[3] != null ? ps[3].toString() : "");
-			part.put("availQty", ps[4] != null ? Integer.parseInt(ps[4].toString()) : 0);
+			part.put("availQty", ps[4] != null ? ps[4].toString() : "");
 			oemEmptyStockdetails.add(part);
 		}
 		return oemEmptyStockdetails;
@@ -772,4 +772,11 @@ public class OemServiceImpl implements OemService {
 			// TODO Auto-generated method stub
 			return retreivalRepo.getAllReterivalByReceiverId(receiverId);
 		}
+
+		@Override
+	public List<TransportPickupVO> getAllTranportPickupByReceiverId(Long receiverId) {
+		// TODO Auto-generated method stub
+		return transportPickupRepo.getAllTranportPickupByReceiverId(receiverId);
+	}
+	
 }
