@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
@@ -38,6 +37,7 @@ import com.whydigit.efit.dto.AssetInwardDTO;
 import com.whydigit.efit.dto.AssetTaggingDTO;
 import com.whydigit.efit.dto.AssetTypeDTO;
 import com.whydigit.efit.dto.BinAllotmentDTO;
+import com.whydigit.efit.dto.BinRetrievalDTO;
 import com.whydigit.efit.dto.BranchDTO;
 import com.whydigit.efit.dto.CnoteDTO;
 import com.whydigit.efit.dto.CustomerAttachmentType;
@@ -61,6 +61,7 @@ import com.whydigit.efit.entity.AssetTypeVO;
 import com.whydigit.efit.entity.AssetVO;
 import com.whydigit.efit.entity.BinAllotmentNewVO;
 import com.whydigit.efit.entity.BinInwardVO;
+import com.whydigit.efit.entity.BinRetrievalVO;
 import com.whydigit.efit.entity.BranchVO;
 import com.whydigit.efit.entity.CnoteVO;
 import com.whydigit.efit.entity.CustomersAddressVO;
@@ -3810,5 +3811,108 @@ public class MasterController extends BaseController {
 				kit.add(kitd);
 			}
 			return kit;
+		}
+		
+		@PostMapping("/createBinRetrieval")
+		public ResponseEntity<ResponseDTO> createBinRetrieval(@RequestBody BinRetrievalDTO binRetrievalDTO) {
+			String methodName = "createBinRetrieval()";
+			LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+			String errorMsg = null;
+			Map<String, Object> responseObjectsMap = new HashMap<>();
+			ResponseDTO responseDTO = null;
+			BinRetrievalVO binRetrievalVO  = new BinRetrievalVO();
+			try {
+				binRetrievalVO = masterService.createBinRetrieval(binRetrievalDTO);
+			} catch (Exception e) {
+				errorMsg = e.getMessage();
+				LOGGER.error(CommonConstant.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			}
+			if (StringUtils.isBlank(errorMsg)) {
+				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "BinRetrieval Created Successfully");
+				responseObjectsMap.put("binRetrievalVO", binRetrievalVO);
+				responseDTO = createServiceResponse(responseObjectsMap);
+			} else {
+				responseDTO = createServiceResponseError(responseObjectsMap, "BinRetrieval Creation Failed", errorMsg);
+			}
+			LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+			return ResponseEntity.ok().body(responseDTO);
+		}
+		
+		@GetMapping("/getPendingBinRetrievalPickup")
+		public ResponseEntity<ResponseDTO> getPendingBinRetrievalPickup(@RequestParam Long orgId,@RequestParam String retrievalWarehouse) {
+			String methodName = "getPendingBinRetrievalPickup()";
+			LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+			String errorMsg = null;
+			Map<String, Object> responseObjectsMap = new HashMap<>();
+			ResponseDTO responseDTO = null;
+			List<Map<String,Object>> pendingBinRetrieval = new ArrayList<>();
+			try {
+				pendingBinRetrieval = masterService.getPendingBinRetrievalTransportPickupDetails(orgId, retrievalWarehouse);
+			} catch (Exception e) {
+				errorMsg = e.getMessage();
+				LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			}
+			if (StringUtils.isEmpty(errorMsg)) {
+				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Pending BinRetrieval Details  found Success");
+				responseObjectsMap.put("pendingBinRetrieval", pendingBinRetrieval);
+				responseDTO = createServiceResponse(responseObjectsMap);
+			} else {
+				errorMsg = " not found for retrievalWarehouse: ";
+				responseDTO = createServiceResponseError(responseObjectsMap, "Pending BinRetrieval Details  not found", errorMsg);
+			}
+			LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+			return ResponseEntity.ok().body(responseDTO);
+		}
+		
+		@GetMapping("/getTransportPickupDetailsByDocid")
+		public ResponseEntity<ResponseDTO> getTransportPickupDetailsByDocid(@RequestParam Long orgId,@RequestParam String pickupDocId) {
+			String methodName = "getTransportPickupDetailsByDocid()";
+			LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+			String errorMsg = null;
+			Map<String, Object> responseObjectsMap = new HashMap<>();
+			ResponseDTO responseDTO = null;
+			List<Map<String,Object>> transportPickpDetails = new ArrayList<>();
+			try {
+				transportPickpDetails = masterService.getTransportPickupDetailsByDocId(orgId, pickupDocId);
+				} catch (Exception e) {
+				errorMsg = e.getMessage();
+				LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			}
+			if (StringUtils.isEmpty(errorMsg)) {
+				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Transport Pickup Details  found Success");
+				responseObjectsMap.put("transportPickpDetails", transportPickpDetails);
+				responseDTO = createServiceResponse(responseObjectsMap);
+			} else {
+				errorMsg = " not found for Transport Pickup: ";
+				responseDTO = createServiceResponseError(responseObjectsMap, "Transport Pickup Details  not found", errorMsg);
+			}
+			LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+			return ResponseEntity.ok().body(responseDTO);
+		}
+		
+		@GetMapping("/getDocIdByBinRetrieval")
+		public ResponseEntity<ResponseDTO> getDocIdByBinRetrieval() {
+			String methodName = "getDocIdByBinRetrieval()";
+			LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+			String errorMsg = null;
+			Map<String, Object> responseObjectsMap = new HashMap<>();  
+			ResponseDTO responseDTO = null;
+			String binRetrievalDocid = null;
+			try {
+				binRetrievalDocid = masterService.getDocIdByBinRetrieval();
+			} catch (Exception e) {
+				errorMsg = e.getMessage();
+				LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			}
+			if (StringUtils.isEmpty(errorMsg)) {
+				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "binRetrieval DocId found success");
+				responseObjectsMap.put("binRetrievalDocid", binRetrievalDocid);
+				responseDTO = createServiceResponse(responseObjectsMap);
+			} else {
+				errorMsg = " not found for ID: ";
+				responseDTO = createServiceResponseError(responseObjectsMap, "binRetrieval DocId not found", errorMsg);
+			}
+			LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+			return ResponseEntity.ok().body(responseDTO);
 		}
 }
