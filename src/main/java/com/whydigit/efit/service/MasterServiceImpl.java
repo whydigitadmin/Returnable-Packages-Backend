@@ -1956,6 +1956,8 @@ public class MasterServiceImpl implements MasterService {
 		assetTaggingVO.setCreatedBy(assetTaggingDTO.getCreatedBy());
 		assetTaggingVO.setModifiedBy(assetTaggingDTO.getCreatedBy());
 		assetTaggingVO.setActive(true);
+		assetTaggingVO.setPoNo(assetTaggingDTO.getPoNo());
+		assetTaggingVO.setPoDate(assetTaggingDTO.getPoDate());
 		assetTaggingVO.setCategory(assetTaggingDTO.getCategory());
 		assetTaggingVO.setAsset(assetTaggingDTO.getAsset());
 		assetTaggingVO.setAssetCode(assetTaggingDTO.getAssetCode());

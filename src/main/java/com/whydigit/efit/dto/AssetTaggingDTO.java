@@ -3,6 +3,8 @@ package com.whydigit.efit.dto;
 import java.time.LocalDate;
 import java.util.List;
 
+import javax.persistence.Column;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,6 +23,8 @@ public class AssetTaggingDTO {
 	private int seqTo;
 	private Long orgId;
 	private String createdBy;
+	private String poNo;
+	private LocalDate poDate;
 	
 	private List<AssetTaggingDetailsDTO>taggingDetailsDTO;
 	

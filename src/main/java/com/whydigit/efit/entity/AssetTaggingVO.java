@@ -80,6 +80,12 @@ public class AssetTaggingVO {
 	
 	public String finyr;
 	
+	@Column(name = "pono")
+	private String poNo;
+	
+	@Column(name="podate")
+	private LocalDate poDate;
+	
 	
 	@OneToMany(mappedBy = "taggingVO", cascade = CascadeType.ALL)
 	@JsonManagedReference
