@@ -24,5 +24,7 @@ public interface GatheringEmptyRepo extends JpaRepository<GatheringEmptyVO, Long
 	
 	@Query(nativeQuery = true,value = "select * from gatheringempty where orgid=?1 ")
 	List<GatheringEmptyVO> getAllGatheringEmptyByOrgId(Long orgId);
+	@Query(nativeQuery = true,value = "select * from gatheringempty where receiverid=?1 ")
+	List<GatheringEmptyVO> getAllGatheringEmptyByReceiverId(Long receiverId);
 
 }
