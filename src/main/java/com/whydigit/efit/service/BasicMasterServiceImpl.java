@@ -422,7 +422,7 @@ public class BasicMasterServiceImpl implements BasicMasterService {
 	                }
 
 	                // Check all rows for validity first
-	                for (Row row : sheet) {
+	                for (Row row : sheet) {   
 	                    if (row.getRowNum() == 0 || isRowEmpty(row)) {
 	                        continue; // Skip header row and empty rows
 	                    }

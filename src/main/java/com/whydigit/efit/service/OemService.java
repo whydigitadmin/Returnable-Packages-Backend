@@ -69,4 +69,12 @@ public interface OemService {
 	TransportPickupVO createTransPickup(TransportPickupDTO transportPickupDTO);
 
 	String getDocIdByTransportPickup();
+
+	List<OemBinInwardVO> getAllOemBinInwardByReceiverId(Long receiverId);
+
+	List<OemBinOutwardVO> getAllOemBinOutwardByReceiverId(Long receiverId);
+
+	List<GatheringEmptyVO> getAllGatheringEmptyByReceiverId(Long receiverId);
+
+	List<RetreivalVO> getAllReterivalByReceiverId(Long receiverId);
 }

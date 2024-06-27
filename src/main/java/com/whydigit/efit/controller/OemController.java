@@ -647,6 +647,115 @@ public class OemController extends BaseController{
 			LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 			return ResponseEntity.ok().body(responseDTO);
 		}
+		
+		//GET ALL BININWARD BY RECEIVERID
+		
+		@GetMapping("/getAllOemBinInwardByReceiverId")
+		public ResponseEntity<ResponseDTO> getAllOemBinInwardByReceiverId(@RequestParam(required = false) Long receiverId) {
+			String methodName = "getAllOemBinInward()";
+			LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+			String errorMsg = null;
+			Map<String, Object> responseObjectsMap = new HashMap<>();
+			ResponseDTO responseDTO = null;
+			List<OemBinInwardVO> oemBinInwardVOs = new ArrayList<>();
+			try {
+				oemBinInwardVOs = oemService.getAllOemBinInwardByReceiverId(receiverId);
+			} catch (Exception e) {
+				errorMsg = e.getMessage();
+				LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			}
+			if (StringUtils.isBlank(errorMsg)) {
+				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "OemBinInward information get successfully");
+				responseObjectsMap.put("oemBinInwardVOs", oemBinInwardVOs);
+				responseDTO = createServiceResponse(responseObjectsMap);
+			} else {
+				responseDTO = createServiceResponseError(responseObjectsMap, "OemBinInward information receive failed", errorMsg);
+			}
+			LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+			return ResponseEntity.ok().body(responseDTO);
+
+		}
+		
+		//GET ALL BININWARD BY RECEIVERID
+		
+				@GetMapping("/getAllOemBinOutwardByReceiverId")
+				public ResponseEntity<ResponseDTO> getAllOemBinOutwardByReceiverId(@RequestParam(required = false) Long receiverId) {
+					String methodName = "getAllOemBinOutwardByReceiverId()";
+					LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+					String errorMsg = null;
+					Map<String, Object> responseObjectsMap = new HashMap<>();
+					ResponseDTO responseDTO = null;
+					List<OemBinOutwardVO> oemBinOutwardVOs = new ArrayList<>();
+					try {
+						oemBinOutwardVOs = oemService.getAllOemBinOutwardByReceiverId(receiverId);
+					} catch (Exception e) {
+						errorMsg = e.getMessage();
+						LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+					}
+					if (StringUtils.isBlank(errorMsg)) {
+						responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "OemBinOutward information get successfully");
+						responseObjectsMap.put("OemBinOutward", oemBinOutwardVOs);
+						responseDTO = createServiceResponse(responseObjectsMap);
+					} else {
+						responseDTO = createServiceResponseError(responseObjectsMap, "OemBinOutward information receive failed", errorMsg);
+					}
+					LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+					return ResponseEntity.ok().body(responseDTO);
+
+				}
+				
+				@GetMapping("/getAllGatheringEmptyByReceiverId")
+				public ResponseEntity<ResponseDTO> getAllGatheringEmptyByReceiverId(@RequestParam(required = false) Long receiverId) {
+					String methodName = "getAllGatheringEmptyByReceiverId()";
+					LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+					String errorMsg = null;
+					Map<String, Object> responseObjectsMap = new HashMap<>();
+					ResponseDTO responseDTO = null;
+					List<GatheringEmptyVO> gatheringEmptyVOs = new ArrayList<>();
+					try {
+						gatheringEmptyVOs = oemService.getAllGatheringEmptyByReceiverId(receiverId);
+					} catch (Exception e) {
+						errorMsg = e.getMessage();
+						LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+					}
+					if (StringUtils.isBlank(errorMsg)) {
+						responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "GatheringEmpty information get successfully");
+						responseObjectsMap.put("gatheringEmptyVO", gatheringEmptyVOs);
+						responseDTO = createServiceResponse(responseObjectsMap);
+					} else {
+						responseDTO = createServiceResponseError(responseObjectsMap, "GatheringEmpty information receive failed", errorMsg);
+					}
+					LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+					return ResponseEntity.ok().body(responseDTO);
+
+				}
+				
+				@GetMapping("/getAllReterivalByReceiverId")
+				public ResponseEntity<ResponseDTO> getAllReterivalByReceiverId(@RequestParam(required = false) Long receiverId) {
+					String methodName = "getAllReterivalByReceiverId()";
+					LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+					String errorMsg = null;
+					Map<String, Object> responseObjectsMap = new HashMap<>();
+					ResponseDTO responseDTO = null;
+					List<RetreivalVO> retreivalVOs = new ArrayList<>();
+					try {
+						retreivalVOs = oemService.getAllReterivalByReceiverId(receiverId);
+					} catch (Exception e) {
+						errorMsg = e.getMessage();
+						LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+					}
+					if (StringUtils.isBlank(errorMsg)) {
+						responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Reterival Manifest information get successfully");
+						responseObjectsMap.put("retreivalVO", retreivalVOs);
+						responseDTO = createServiceResponse(responseObjectsMap);
+					} else {
+						responseDTO = createServiceResponseError(responseObjectsMap, "Reterival Manifest information receive failed", errorMsg);
+					}
+					LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+					return ResponseEntity.ok().body(responseDTO);
+
+				}
+				
 }
 
 
