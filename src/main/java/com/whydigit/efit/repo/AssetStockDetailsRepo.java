@@ -22,7 +22,7 @@ public interface AssetStockDetailsRepo extends JpaRepository<AssetStockDetailsVO
 	@Query(nativeQuery = true,value = "select a.skucode,a.sku,sum(a.skuqty) from(\r\n"
 			+ "select  skucode,sku,sum(skuqty)skuqty from stockdetails where stockbranch=?2 and status='S' and orgid=?1 and category=?3 group by skucode,sku having sum(skuqty)>0\r\n"
 			+ "union\r\n"
-			+ "select assetcode,asset,0 skuqty from asset where  orgid=?1 and category=?3) a group by a.skucode,a.sku") 
+			+ "select assetcode,asset,0 skuqty from asset where  orgid=?1 and assetcategory=?3) a group by a.skucode,a.sku") 
 	Set<Object[]> getAvailAssetDetailsByBranch(Long orgId, String stockBranch,String category);
 
 	@Query(nativeQuery = true,value = "select stockbranch,category,sku,skucode,sum(oqty)oqty,sum(rqty)rqty,abs(sum(dqty))dqty,sum(cqty)cqty from (\r\n"
