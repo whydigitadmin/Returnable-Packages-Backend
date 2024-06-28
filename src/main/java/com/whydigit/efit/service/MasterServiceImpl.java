@@ -3453,8 +3453,8 @@ public class MasterServiceImpl implements MasterService {
 			}
 
 			@Override
-			public List<Map<String, Object>> getPendingBinRetrievalTransportPickupDetails(Long orgId, String retrievalWarehosue) {
-			Set<Object[]>getDetails= transportPickupRepo.getPendingPickupDetails(orgId,retrievalWarehosue);
+			public List<Map<String, Object>> getPendingBinRetrievalTransportPickupDetails(Long orgId, Long userId) {
+			Set<Object[]>getDetails= transportPickupRepo.getPendingPickupDetails(orgId,userId);
 				return details(getDetails);
 			}
 
