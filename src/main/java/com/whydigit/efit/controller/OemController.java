@@ -782,6 +782,32 @@ public class OemController extends BaseController{
 
 				}
 				
+				@GetMapping("/getReterivalManifestHeaderPdf")
+				public ResponseEntity<ResponseDTO> getReterivalManifestHeaderPdf(@RequestParam(required = false) Long docId,@RequestParam(required = false) Long orgId) {
+					String methodName = "getReterivalManifestHeaderPdf()";
+					LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+					String errorMsg = null;
+					Map<String, Object> responseObjectsMap = new HashMap<>();
+					ResponseDTO responseDTO = null;
+					List<Map<String,Object>> reterivalManifestDetails = new ArrayList<>();
+					try {
+						reterivalManifestDetails = oemService.getReterivalManifestHeaderPdf(docId,orgId);
+					} catch (Exception e) {
+						errorMsg = e.getMessage();
+						LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+					}
+					if (StringUtils.isBlank(errorMsg)) {
+						responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Reterival Manifest Header information get successfully");
+						responseObjectsMap.put("reterivalManifestDetailsPdf", reterivalManifestDetails);
+						responseDTO = createServiceResponse(responseObjectsMap);
+					} else {
+						responseDTO = createServiceResponseError(responseObjectsMap, "Reterival Manifest Hesader information receive failed", errorMsg);
+					}
+					LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+					return ResponseEntity.ok().body(responseDTO);
+
+				}
+				
 }
 
 

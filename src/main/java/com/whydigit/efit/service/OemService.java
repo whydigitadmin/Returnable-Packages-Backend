@@ -79,4 +79,6 @@ public interface OemService {
 	List<RetreivalVO> getAllReterivalByReceiverId(Long receiverId);
 
 	List<TransportPickupVO> getAllTranportPickupByReceiverId(Long receiverId);
+
+	List<Map<String, Object>> getReterivalManifestHeaderPdf(Long docId, Long orgId);
 }
