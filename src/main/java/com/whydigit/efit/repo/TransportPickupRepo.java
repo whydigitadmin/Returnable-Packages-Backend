@@ -26,9 +26,12 @@ public interface TransportPickupRepo extends JpaRepository<TransportPickupVO, Lo
 	
 
 
-	@Query(nativeQuery = true, value = "SELECT docid,docdate,drivername,driverphoneno,transportdocno,vechicleno,fromstockbranch,tostockbranch FROM transportpickup where orgid=?1 and docid not in(\r\n"
-			+ "select pickupdocid from binretrieval where orgid=?1 group by pickupdocid) and tostockbranch=?2 group by docid,docdate,drivername,driverphoneno,transportdocno,vechicleno,fromstockbranch,tostockbranch")
-	Set<Object[]> getPendingPickupDetails(Long orgId, String retrievalWarehosue);
+	@Query(nativeQuery = true, value = " SELECT docid,docdate,drivername,driverphoneno,transportdocno,vechicleno,fromstockbranch,tostockbranch FROM transportpickup \r\n"
+			+ " where orgid=1 and docid not in\r\n"
+			+ "			(select pickupdocid from binretrieval where orgid=1 group by pickupdocid) and  tostockbranch in(SELECT a.whlocation FROM warehouse a, users b \r\n"
+			+ "WHERE FIND_IN_SET(a.warehouseid, b.access_warehouse) > 0 and b.user_id=12 and b.org_id=1 group by whlocation)\r\n"
+			+ "            group by docid,docdate,drivername,driverphoneno,transportdocno,vechicleno,fromstockbranch,tostockbranch")
+	Set<Object[]> getPendingPickupDetails(Long orgId, Long userId);
 
 	@Query(nativeQuery = true, value = "select b.category,b.assetcode,b.asset,b.pickqty from transportpickup a,transportpickupdetails b where a.transportpickupid=b.transportpickupid and a.orgid=?1 and a.docid=?2")
 	Set<Object[]> getPickupDetails(Long orgId, String pickupDocId);

@@ -3839,7 +3839,7 @@ public class MasterController extends BaseController {
 		}
 
 		@GetMapping("/getPendingBinRetrievalPickup")
-		public ResponseEntity<ResponseDTO> getPendingBinRetrievalPickup(@RequestParam Long orgId,@RequestParam String retrievalWarehouse) {
+		public ResponseEntity<ResponseDTO> getPendingBinRetrievalPickup(@RequestParam Long orgId,@RequestParam Long userId) {
 			String methodName = "getPendingBinRetrievalPickup()";
 			LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 			String errorMsg = null;
@@ -3847,7 +3847,7 @@ public class MasterController extends BaseController {
 			ResponseDTO responseDTO = null;
 			List<Map<String,Object>> pendingBinRetrieval = new ArrayList<>();
 			try {
-				pendingBinRetrieval = masterService.getPendingBinRetrievalTransportPickupDetails(orgId, retrievalWarehouse);
+				pendingBinRetrieval = masterService.getPendingBinRetrievalTransportPickupDetails(orgId, userId);
 			} catch (Exception e) {
 				errorMsg = e.getMessage();
 				LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);

@@ -375,12 +375,13 @@ public interface MasterService {
 	// Bin retrieval
 		BinRetrievalVO createBinRetrieval (BinRetrievalDTO binRetrievalDTO);
 
-		List<Map<String, Object>>getPendingBinRetrievalTransportPickupDetails(Long orgId,String retrievalWarehosue);
+		List<Map<String, Object>> getPendingBinRetrievalTransportPickupDetails(Long orgId, Long userId);
 
 		List<Map<String, Object>> getTransportPickupDetailsByDocId(Long orgId, String pickupDocId);
 
 		String getDocIdByBinRetrieval();
 
+		
 
 
 
