@@ -13,5 +13,6 @@ public class BinRetrievalDetailsDTO {
 	private String asset;
 	private int invqty;
 	private int recqty;
+	private int shortQty;
 
 }
