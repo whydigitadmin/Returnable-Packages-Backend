@@ -780,7 +780,7 @@ public class OemServiceImpl implements OemService {
 		}
 
 		@Override
-		public List<Map<String, Object>> getReterivalManifestHeaderPdf(Long docId, Long orgId) {
+		public List<Map<String, Object>> getReterivalManifestHeaderPdf(String docId, Long orgId) {
 			
 			Set<Object[]> getReterivalManifestPdf=transportPickupRepo.getManifestHeader(docId,orgId);
 			

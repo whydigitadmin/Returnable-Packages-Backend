@@ -783,7 +783,7 @@ public class OemController extends BaseController{
 				}
 				
 				@GetMapping("/getReterivalManifestHeaderPdf")
-				public ResponseEntity<ResponseDTO> getReterivalManifestHeaderPdf(@RequestParam(required = false) Long docId,@RequestParam(required = false) Long orgId) {
+				public ResponseEntity<ResponseDTO> getReterivalManifestHeaderPdf(@RequestParam(required = false) String docId,@RequestParam(required = false) Long orgId) {
 					String methodName = "getReterivalManifestHeaderPdf()";
 					LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 					String errorMsg = null;

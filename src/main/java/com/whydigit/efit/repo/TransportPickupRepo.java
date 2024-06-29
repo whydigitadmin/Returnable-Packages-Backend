@@ -43,7 +43,7 @@ public interface TransportPickupRepo extends JpaRepository<TransportPickupVO, Lo
     		+ "concat(c.street1,' ,',c.street2,' ,',c.state) as Address,c.gstin as SenderGst,d.name as Receiver,e.address As Address,e.gst as ReceiverGST\r\n"
     		+ "from retreival a join customer b join customer1 c join organization d join warehouse e on a.receiverid=b.customerid and b.customerid=c.customerid and\r\n"
     		+ " a.orgid=d.organizationid  and a.tostockbranch=e.whlocation where a.docid=?1 and a.orgid=?2",nativeQuery =true)
-	Set<Object[]> getManifestHeader(Long docId, Long orgId);
+	Set<Object[]> getManifestHeader(String docId, Long orgId);
 	
 	
 
