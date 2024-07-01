@@ -1348,6 +1348,8 @@ public class MasterServiceImpl implements MasterService {
 
 		// Update kit details
 		getKitVOFromKitDTO(kitDTO, kitVO);
+		List<KitAssetVO> assetVOs=kitAssetRepo.findByKitVO(kitVO);
+		kitAssetRepo.deleteAll(assetVOs);
 
 		// Update or create kit asset details
 		List<KitAssetVO> kitAssetVOList = new ArrayList<>();
