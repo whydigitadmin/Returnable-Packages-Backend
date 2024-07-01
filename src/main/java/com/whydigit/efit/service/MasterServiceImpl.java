@@ -3397,16 +3397,18 @@ public class MasterServiceImpl implements MasterService {
 			    		detailsVO.setInvqty(binRetrievalDetailsDTO.getInvqty());
 			    		detailsVO.setRecqty(binRetrievalDetailsDTO.getRecqty());
 			    		detailsVO.setShortQty(binRetrievalDetailsDTO.getShortQty());
+			    		detailsVO.setDamageQty(binRetrievalDetailsDTO.getDamageQty());
 			    		detailsVO.setBinRetrievalVO(binRetrievalVO);
 			    			
 			    		binRetrievalDetailsVO.add(detailsVO);
 			    	}
 			    }
+			    
 			    binRetrievalVO.setBinRetrievalDetailsVO(binRetrievalDetailsVO);
 			    BinRetrievalVO binRetrievalVO2= binRetrievalRepo.save(binRetrievalVO);
 			    List<BinRetrievalDetailsVO>binRetrievalDetailsVOs=binRetrievalVO2.getBinRetrievalDetailsVO();
 			    if (binRetrievalDetailsVOs != null && !binRetrievalDetailsVOs.isEmpty()) {
-					for (BinRetrievalDetailsVO retrievalDetailsVO  : binRetrievalDetailsVOs) {
+					for (BinRetrievalDetailsVO retrievalDetailsVO  : binRetrievalDetailsVOs) { 
 						AssetStockDetailsVO stockDetailsVO = new AssetStockDetailsVO();
 						stockDetailsVO.setStockRef(binRetrievalVO2.getPickupDocId());
 						stockDetailsVO.setStockBranch(binRetrievalVO2.getToStockBranch());
@@ -3429,29 +3431,8 @@ public class MasterServiceImpl implements MasterService {
 						assetStockDetailsRepo.save(stockDetailsVO);
 					}
 					for (BinRetrievalDetailsVO retrievalDetailsVO  : binRetrievalDetailsVOs) {
-						AssetStockDetailsVO stockDetailsVO = new AssetStockDetailsVO();
-						stockDetailsVO.setStockRef(binRetrievalVO2.getDocId());
-						stockDetailsVO.setStockBranch(binRetrievalVO2.getRetrievalWarehouse());
-						stockDetailsVO.setStockDate(binRetrievalVO2.getDocDate());
-						stockDetailsVO.setSku(retrievalDetailsVO.getAsset());
-						stockDetailsVO.setSkuCode(retrievalDetailsVO.getAssetCode());
-						stockDetailsVO.setSkuQty(retrievalDetailsVO.getRecqty());
-						stockDetailsVO.setOrgId(binRetrievalVO2.getOrgId());
-						stockDetailsVO.setCategory(assetRepo.getCategoryByAssetCodeId(retrievalDetailsVO.getAssetCode()));
-						stockDetailsVO.setStatus("S");
-						stockDetailsVO.setScreen(binRetrievalVO2.getScreen());
-						stockDetailsVO.setSCode(binRetrievalVO2.getScode());
-						stockDetailsVO.setPm("P");
-						stockDetailsVO.setStockSource("");
-						stockDetailsVO.setBinLocation("");
-						stockDetailsVO.setCancelRemarks("");
-						stockDetailsVO.setStockLocation("");
-						stockDetailsVO.setSourceId(retrievalDetailsVO.getId());
-						stockDetailsVO.setFinyr(binRetrievalVO2.getFinYr());
-						assetStockDetailsRepo.save(stockDetailsVO);
-					}
-					for (BinRetrievalDetailsVO retrievalDetailsVO  : binRetrievalDetailsVOs) {
-						if(retrievalDetailsVO.getShortQty()>0)
+						int dmgQty=retrievalDetailsVO.getDamageQty();
+						if(dmgQty>0)
 						{
 						AssetStockDetailsVO stockDetailsVO = new AssetStockDetailsVO();
 						stockDetailsVO.setStockRef(binRetrievalVO2.getDocId());
@@ -3459,7 +3440,7 @@ public class MasterServiceImpl implements MasterService {
 						stockDetailsVO.setStockDate(binRetrievalVO2.getDocDate());
 						stockDetailsVO.setSku(retrievalDetailsVO.getAsset());
 						stockDetailsVO.setSkuCode(retrievalDetailsVO.getAssetCode());
-						stockDetailsVO.setSkuQty(retrievalDetailsVO.getShortQty());
+						stockDetailsVO.setSkuQty(dmgQty);
 						stockDetailsVO.setOrgId(binRetrievalVO2.getOrgId());
 						stockDetailsVO.setCategory(assetRepo.getCategoryByAssetCodeId(retrievalDetailsVO.getAssetCode()));
 						stockDetailsVO.setStatus("D");
@@ -3474,6 +3455,30 @@ public class MasterServiceImpl implements MasterService {
 						stockDetailsVO.setFinyr(binRetrievalVO2.getFinYr());
 						assetStockDetailsRepo.save(stockDetailsVO);
 						}
+					}
+					for (BinRetrievalDetailsVO retrievalDetailsVO  : binRetrievalDetailsVOs) {
+						int grnqty=retrievalDetailsVO.getRecqty()-retrievalDetailsVO.getDamageQty();
+						AssetStockDetailsVO stockDetailsVO = new AssetStockDetailsVO();
+						stockDetailsVO.setStockRef(binRetrievalVO2.getDocId());
+						stockDetailsVO.setStockBranch(binRetrievalVO2.getRetrievalWarehouse());
+						stockDetailsVO.setStockDate(binRetrievalVO2.getDocDate());
+						stockDetailsVO.setSku(retrievalDetailsVO.getAsset());
+						stockDetailsVO.setSkuCode(retrievalDetailsVO.getAssetCode());
+						stockDetailsVO.setSkuQty(grnqty);
+						stockDetailsVO.setOrgId(binRetrievalVO2.getOrgId());
+						stockDetailsVO.setCategory(assetRepo.getCategoryByAssetCodeId(retrievalDetailsVO.getAssetCode()));
+						stockDetailsVO.setStatus("S");
+						stockDetailsVO.setScreen(binRetrievalVO2.getScreen());
+						stockDetailsVO.setSCode(binRetrievalVO2.getScode());
+						stockDetailsVO.setPm("P");
+						stockDetailsVO.setStockSource("");
+						stockDetailsVO.setBinLocation("");
+						stockDetailsVO.setCancelRemarks("");
+						stockDetailsVO.setStockLocation("");
+						stockDetailsVO.setSourceId(retrievalDetailsVO.getId());
+						stockDetailsVO.setFinyr(binRetrievalVO2.getFinYr());
+						assetStockDetailsRepo.save(stockDetailsVO);
+						
 					}
 				}
 			    return binRetrievalVO2;

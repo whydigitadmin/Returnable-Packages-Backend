@@ -1,4 +1,6 @@
 package com.whydigit.efit.dto;
+import javax.persistence.Column;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,5 +16,6 @@ public class BinRetrievalDetailsDTO {
 	private int invqty;
 	private int recqty;
 	private int shortQty;
+	private int damageQty;
 
 }
