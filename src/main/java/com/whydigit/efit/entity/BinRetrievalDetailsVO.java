@@ -44,6 +44,10 @@ public class BinRetrievalDetailsVO {
 	private int recqty;
 	@Column(name = "shortqty")
 	private int shortQty;
+	@Column(name = "damageqty")
+	private int damageQty;
+	@Column(name = "grnqty")
+	private int grnqty;
 	
 
 	@ManyToOne
