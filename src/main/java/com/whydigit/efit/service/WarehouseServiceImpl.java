@@ -60,16 +60,6 @@ public class WarehouseServiceImpl implements WarehouseService {
 	}
 
 	@Override
-	public Optional<WarehouseVO> updateWarehouseVo(WarehouseVO warehouse) {
-		if (warehouseRepo.existsById(warehouse.getWarehouseId())) {
-			return Optional.of(warehouseRepo.save(warehouse));
-		} else {
-			return Optional.empty();
-		}
-
-	}
-
-	@Override
 	public void deleteWarehouse(Long id) {
 		warehouseRepo.deleteById(id);
 
@@ -81,83 +71,6 @@ public class WarehouseServiceImpl implements WarehouseService {
 		return warehouseRepo.getWarehouseLocationByOrgID(orgId);
 	}
 
-//	@Override
-//	public WarehouseVO updateCreateWarehouse(WarehouseDTO warehouseDTO) throws ApplicationException {
-//		WarehouseVO warehouseVO = new WarehouseVO();
-//		if (warehouseDTO.getWarehouseId() != 0) {
-//			warehouseVO = warehouseRepo.findById(warehouseDTO.getWarehouseId())
-//					.orElseThrow(() -> new ApplicationException("Warehouse not found"));
-//			warehouseVO.setModifiedby(warehouseDTO.getCreatedBy());
-//		}
-//		getWarehouseVOFromWarehouseDTO(warehouseDTO, warehouseVO);
-//		return warehouseRepo.save(warehouseVO);
-//	}
-//
-//	private void getWarehouseVOFromWarehouseDTO(WarehouseDTO warehouseDTO, WarehouseVO warehouseVO)
-//			throws ApplicationException {
-//		if (warehouseDTO.getWarehouseId() != 0) {
-//			WarehouseVO existingWarehosue = warehouseRepo.findById(warehouseDTO.getWarehouseId()).orElseThrow(
-//					() -> new ApplicationException("Warehouse " + warehouseDTO.getWarehouseId() + " not found"));
-//			
-//			String whlocation=new StringBuilder(warehouseDTO.getLocationName().toUpperCase()).append("-")
-//					.append(warehouseDTO.getUnit().toUpperCase()).toString();
-//			if(whlocation!=existingWarehosue.getWarehouseLocation())
-//			{
-//				if (warehouseRepo.existsByWarehouseLocationAndOrgId(whlocation,existingWarehosue.getOrgId())) {
-//					throw new ApplicationException("LocationName And Unit Already Exists");
-//				}
-//				warehouseVO.setLocationName(warehouseDTO.getLocationName());
-//				warehouseVO.setUnit(warehouseDTO.getUnit());
-//			}
-//			
-////			if (!existingWarehosue.getLocationName().equals(warehouseDTO.getLocationName())||!existingWarehosue.getUnit().equals(warehouseDTO.getUnit())) {
-////				String whlocation=new StringBuilder(warehouseDTO.getLocationName().toUpperCase()).append("-")
-////						.append(warehouseDTO.getUnit().toUpperCase()).toString();
-////				
-////					if (warehouseRepo.existsByWarehouseLocationAndOrgId(whlocation,existingWarehosue.getOrgId())) {
-////						throw new ApplicationException("LocationName And Unit Already Exists");
-////					}
-////				warehouseVO.setLocationName(warehouseDTO.getLocationName());
-////				warehouseVO.setUnit(warehouseDTO.getUnit());
-////			}
-//			// Update Entity Legal Name if there's no duplicate
-//			
-//			warehouseVO.setOrgId(warehouseDTO.getOrgId());
-//			warehouseVO.setAddress(warehouseDTO.getAddress());
-//			warehouseVO.setModifiedby(warehouseDTO.getCreatedBy());
-//			warehouseVO.setState(warehouseDTO.getState());
-//			warehouseVO.setPincode(warehouseDTO.getPincode());
-//			warehouseVO.setCode(warehouseDTO.getCode());
-//			warehouseVO.setStockBranch(warehouseDTO.getStockBranch());
-//			warehouseVO.setCity(warehouseDTO.getCity());
-//			warehouseVO.setCountry(warehouseDTO.getCountry());
-//			warehouseVO.setGst(warehouseDTO.getGst());
-//			warehouseVO.setActive(warehouseDTO.isActive());
-//			warehouseVO.setWarehouseLocation(new StringBuilder(warehouseDTO.getLocationName().toUpperCase()).append("-")
-//					.append(warehouseDTO.getUnit().toUpperCase()).toString());
-//		}
-//		if (warehouseRepo.existsByLocationNameAndUnitAndOrgId(warehouseDTO.getLocationName(), warehouseDTO.getUnit(),
-//				warehouseDTO.getOrgId())) {
-//			throw new ApplicationException("LocationName And Unit Already Exists");
-//		}
-//		warehouseVO.setOrgId(warehouseDTO.getOrgId());
-//		warehouseVO.setUnit(warehouseDTO.getUnit());
-//		warehouseVO.setLocationName(warehouseDTO.getLocationName());
-//		warehouseVO.setAddress(warehouseDTO.getAddress());
-//		warehouseVO.setCreatedby(warehouseDTO.getCreatedBy());
-//		warehouseVO.setState(warehouseDTO.getState());
-//		warehouseVO.setPincode(warehouseDTO.getPincode());
-//		warehouseVO.setCode(warehouseDTO.getCode());
-//		warehouseVO.setModifiedby(warehouseDTO.getCreatedBy());
-//		warehouseVO.setStockBranch(warehouseDTO.getStockBranch());
-//		warehouseVO.setCity(warehouseDTO.getCity());
-//		warehouseVO.setCountry(warehouseDTO.getCountry());
-//		warehouseVO.setGst(warehouseDTO.getGst());
-//		warehouseVO.setActive(warehouseDTO.isActive());
-//		warehouseVO.setWarehouseLocation(new StringBuilder(warehouseDTO.getLocationName().toUpperCase()).append("-")
-//				.append(warehouseDTO.getUnit().toUpperCase()).toString());
-//
-//	}
 
 	@Override
 	public WarehouseVO updateCreateWarehouse(WarehouseDTO warehouseDTO) throws ApplicationException {

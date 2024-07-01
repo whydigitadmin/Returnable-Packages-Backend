@@ -164,31 +164,7 @@ public class WarehouseController extends BaseController {
 	}
 
 
-	@PutMapping("/view")
-	public ResponseEntity<ResponseDTO> updateWarehouseVo(@RequestBody WarehouseVO warehousevo) {
-		String methodName = "updateWarehouseVo()";
-		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
-		String errorMsg = null;
-		Map<String, Object> responseObjectsMap = new HashMap<>();
-		ResponseDTO responseDTO = null;
-		try {
-			WarehouseVO updateWarehousevo = warehouseService.updateWarehouseVo(warehousevo).orElse(null);
-			if (updateWarehousevo != null) {
-				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Warehouse updated successfully");
-				responseObjectsMap.put("WarehouseVO", updateWarehousevo);
-				responseDTO = createServiceResponse(responseObjectsMap);
-			} else {
-				errorMsg = "Warehouse not found for ID: " + warehousevo.getWarehouseId();
-				responseDTO = createServiceResponseError(responseObjectsMap, "Warehouse update failed", errorMsg);
-			}
-		} catch (Exception e) {
-			errorMsg = e.getMessage();
-			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-			responseDTO = createServiceResponseError(responseObjectsMap, "Warehouse update failed", errorMsg);
-		}
-		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
-		return ResponseEntity.ok().body(responseDTO);
-	}
+	
 
 	@GetMapping("/getWarehouseByUserID")
 	public ResponseEntity<ResponseDTO> getWarehouseByUserID(@RequestParam (required = true)long userId) {

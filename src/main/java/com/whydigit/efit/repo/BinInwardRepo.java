@@ -27,9 +27,28 @@ public interface BinInwardRepo extends JpaRepository<BinInwardVO, Long>{
 
 	boolean existsByDocid(String docid);
 
-	
+	 
 	Optional<BinInwardVO> findAllByDocid(String docid);
 
 	BinInwardVO findByAllotmentNo(String allotNo);
+	@Query(value ="select k.emitterid, k.orgid, k.displayname, k.flow, f.flowid, k.kitcode, " +
+            "sum(k.invQty) - sum(k.outqty) as availKitQty " +
+            "from ( " +
+            "select a.emitterid, a.orgid, b.displayname, a.flow, a.kitcode, sum(a.allotedqty) as invQty, 0 as outqty " +
+            "from bininward a join customer b on a.emitterid = b.customerid " +
+            "group by a.emitterid, a.orgid, b.displayname, a.flow, a.kitcode " +
+            "union " +
+            "select a.emitterid, a.orgid, b.displayname, a.flow, a.kitno as kitcode, 0 as invQty, sum(a.outwardkitqty) as outqty " +
+            "from binoutward a join customer b on a.emitterid = b.customerid " +
+            "group by a.emitterid, a.orgid, b.displayname, a.flow, a.kitno " +
+            ") k " +
+            "join flow f on k.flow = f.flow " +
+            "where f.flowid in ( " +
+            "select a.flowid from flow a, users b " +
+            "where find_in_set(a.flowid, b.access_flow_id) > 0 and b.user_id = ?2 and b.org_id = ?1 " +
+            "group by a.flowid) " +
+            "group by k.emitterid, k.orgid, k.displayname, k.flow, f.flowid, k.kitcode",
+            nativeQuery = true)
+	Set<Object[]> getKitAvilQtyDetails(Long orgId, Long userId);
 
 }

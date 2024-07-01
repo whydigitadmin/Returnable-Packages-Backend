@@ -157,6 +157,7 @@ import com.whydigit.efit.repo.DmapDetailsRepo;
 import com.whydigit.efit.repo.DmapRepo;
 import com.whydigit.efit.repo.FlowDetailRepo;
 import com.whydigit.efit.repo.FlowRepo;
+import com.whydigit.efit.repo.InwardRepo;
 import com.whydigit.efit.repo.IssueItemRepo;
 import com.whydigit.efit.repo.IssueRequestRepo;
 import com.whydigit.efit.repo.KitAssetRepo;
@@ -954,16 +955,16 @@ public class MasterServiceImpl implements MasterService {
 		}
 
 		getFlowVOFromFlowDTO(flowDTO, flowVO);
-
+		
+		List<FlowDetailVO> detailVOs=flowDetailRepo.findByFlowVO(flowVO);
+  		flowDetailRepo.deleteAll(detailVOs);
+		
 		// Update customer details excluding customer type and customer code
 		// Update or add new address details
 		List<FlowDetailVO> flowDetailVOList = new ArrayList<>();
 		if (flowDTO.getFlowDetailDTO() != null) {
 			for (FlowDetailDTO flowDetailDTO : flowDTO.getFlowDetailDTO()) {
-				if (flowDetailDTO.getId() != 0) {
-					FlowDetailVO flowDetailVO1 = flowDetailRepo.findById(flowDetailDTO.getId()).orElseThrow(
-							() -> new ApplicationException("Flow details not found for ID: " + flowDetailDTO.getId()));
-					//flowDetailVO1.setActive(flowDetailDTO.isActive());
+				FlowDetailVO flowDetailVO1=new FlowDetailVO();
 					flowDetailVO1.setCycleTime(flowDetailDTO.getCycleTime());
 					flowDetailVO1.setEmitterId(flowDTO.getEmitterId());
 					flowDetailVO1.setOrgId(flowDetailDTO.getOrgId());
@@ -975,21 +976,7 @@ public class MasterServiceImpl implements MasterService {
 					flowDetailVO1.setEmitter(flowRepo.findEmiterbyId(flowDTO.getEmitterId()));
 					flowDetailVO1.setFlowVO(flowVO);
 					flowDetailVOList.add(flowDetailVO1);
-				} else {
-					FlowDetailVO flowDetailVO1 = new FlowDetailVO();
-					//flowDetailVO1.setActive(flowDetailDTO.isActive());
-					flowDetailVO1.setCycleTime(flowDetailDTO.getCycleTime());
-					flowDetailVO1.setEmitterId(flowDTO.getEmitterId());
-					flowDetailVO1.setOrgId(flowDetailDTO.getOrgId());
-					flowDetailVO1.setPartName(flowDetailDTO.getPartName());
-					flowDetailVO1.setKitDesc(flowDetailDTO.getKitDesc());
-					flowDetailVO1.setKitNo(flowDetailDTO.getKitNo());
-					flowDetailVO1.setPartNumber(flowDetailDTO.getPartNumber());
-					flowDetailVO1.setPartQty(kitRepo.findPartqty(flowDetailDTO.getKitNo()));
-					flowDetailVO1.setEmitter(flowRepo.findEmiterbyId(flowDTO.getEmitterId()));
-					flowDetailVO1.setFlowVO(flowVO);
-					flowDetailVOList.add(flowDetailVO1);
-				}
+				
 			}
 		}
 		flowVO.setFlowDetailVO(flowDetailVOList);
@@ -1355,19 +1342,6 @@ public class MasterServiceImpl implements MasterService {
 		List<KitAssetVO> kitAssetVOList = new ArrayList<>();
 		if (kitDTO.getKitAssetDTO() != null) {
 			for (KitAssetDTO kitAssetDTO : kitDTO.getKitAssetDTO()) {
-				if (kitAssetDTO.getId() != 0) {
-					KitAssetVO kitAssetVO = kitAssetRepo.findById(kitAssetDTO.getId()).get();
-					kitAssetVO.setAssetType(kitAssetDTO.getAssetType());
-					kitAssetVO.setAssetCategory(kitAssetDTO.getAssetCategory());
-					kitAssetVO.setCategoryCode(kitAssetDTO.getCategoryCode());
-					kitAssetVO.setAssetCodeId(kitAssetDTO.getAssetCodeId());
-					kitAssetVO.setAssetName(kitAssetDTO.getAssetDesc());
-					kitAssetVO.setBelongsTo(kitAssetDTO.getBelongsTo());
-					kitAssetVO.setManufacturePartCode(kitAssetDTO.getManufacturePartCode());
-					kitAssetVO.setQuantity(kitAssetDTO.getQuantity());
-					kitAssetVO.setKitVO(kitVO);
-					kitAssetVOList.add(kitAssetVO);
-				} else {
 					KitAssetVO kitAssetVO = new KitAssetVO();
 					kitAssetVO.setAssetType(kitAssetDTO.getAssetType());
 					kitAssetVO.setBelongsTo(kitAssetDTO.getBelongsTo());
@@ -1381,7 +1355,7 @@ public class MasterServiceImpl implements MasterService {
 					kitAssetVOList.add(kitAssetVO);
 				}
 			}
-		}
+		
 		kitVO.setKitAssetVO(kitAssetVOList);
 
 		return kitRepo.save(kitVO);
@@ -3504,7 +3478,9 @@ public class MasterServiceImpl implements MasterService {
 		            part.put("transportDocNo", ps[4] != null ? ps[4].toString() : "");
 		            part.put("vehicleNo", ps[5] != null ? ps[5].toString() : "");
 		            part.put("fromStockBranch", ps[6] != null ? ps[6].toString() : "");
-		            part.put("toStockBranch", ps[7] != null ? ps[7].toString() : "");		            
+		            part.put("toStockBranch", ps[7] != null ? ps[7].toString() : "");	
+		            part.put("transporter", ps[8] != null ? ps[8].toString() : "");
+		            part.put("handoverBy", ps[9] != null ? ps[9].toString() : "");		
 		            det.add(part);
 		        }
 		        return det;
@@ -3537,7 +3513,50 @@ public class MasterServiceImpl implements MasterService {
 				return binRetrievalDocId;
 			}
 
-}
+			@Override
+			public List<BinRetrievalVO> getBinReterivalByOrgId(Long orgId) {
+				// TODO Auto-generated method stub
+				return binRetrievalRepo.findByOrgId(orgId);
+			}
+
+			@Override
+			public List<BinRetrievalVO> getBinReterivalByDocId(String docId) {
+				// TODO Auto-generated method stub
+				return binRetrievalRepo.findByDocId(docId);
+			}
+
+			@Override
+			public List<BinRetrievalVO> getAllBinReterival(Long id) {
+				// TODO Auto-generated method stub
+				return binRetrievalRepo.getAllBinReterival(id);
+			}
+
+			@Override
+			public List<Map<String, Object>> getAvilQtyByEmitterBykitWise(Long orgId, Long userId) {
+				
+				Set<Object[]>getKitAvilQtyDetails= binInwardRepo.getKitAvilQtyDetails(orgId,userId);
+				return kitDetails(getKitAvilQtyDetails);
+			}
+
+			private List<Map<String, Object>> kitDetails(Set<Object[]> getKitAvilQtyDetails) {
+				List<Map<String, Object>> details = new ArrayList<>();
+		        for (Object[] kd : getKitAvilQtyDetails) {
+		            Map<String, Object> part = new HashMap<>();
+		            part.put("emitterId", kd[0] != null ?Integer.parseInt(kd[0].toString()) : 0);
+					part.put("orgId", kd[1] != null ? Integer.parseInt (kd[1].toString()) : 0);
+					part.put("emitterName", kd[2] != null ? kd[2].toString() : "");
+					part.put("flowName", kd[3] != null ? kd[3].toString() : "");
+					part.put("flowID", kd[4] != null ? Integer.parseInt(kd[4].toString()) : 0);	
+					part.put("kitNo", kd[5] != null ? kd[5].toString() : "");
+					part.put("avilQty", kd[6] != null ? Integer.parseInt(kd[6].toString()) : 0);
+		            details.add(part);
+		        }
+				return details;
+			}
+			
+			}
+
+
 
 	
 

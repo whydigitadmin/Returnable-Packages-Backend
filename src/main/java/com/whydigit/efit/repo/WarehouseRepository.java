@@ -32,7 +32,7 @@ boolean existsByWarehouseLocationAndCodeAndOrgId(String location, String code, L
 boolean existsByCodeAndOrgId(String code, Long orgId);
 
 @Query(value = "SELECT a.whlocation FROM flow a, users b \n"
-		+ "WHERE FIND_IN_SET(a.flowid, b.access_flow_id) > 0 and b.user_id=?1 and b.org_id=?2 group by whlocation;",nativeQuery = true)
+		+ "WHERE FIND_IN_SET(a.flowid, b.access_flow_id) > 0 and b.user_id=?1 and b.org_id=?2 group by whlocation",nativeQuery = true)
 Set<Object[]> findByorginWareHouse(Long userId, Long orgId);
 
 }

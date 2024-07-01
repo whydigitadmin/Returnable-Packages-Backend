@@ -381,7 +381,13 @@ public interface MasterService {
 
 		String getDocIdByBinRetrieval();
 
+		List<BinRetrievalVO> getBinReterivalByOrgId(Long orgId);
 		
+		List<BinRetrievalVO> getBinReterivalByDocId(String docId);
+
+		List<BinRetrievalVO> getAllBinReterival(Long id);
+
+		List<Map<String, Object>> getAvilQtyByEmitterBykitWise(Long orgId, Long userId);
 
 
 
