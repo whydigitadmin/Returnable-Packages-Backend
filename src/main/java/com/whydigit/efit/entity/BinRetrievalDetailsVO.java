@@ -42,6 +42,9 @@ public class BinRetrievalDetailsVO {
 	private int invqty;
 	@Column(name = "recqty")
 	private int recqty;
+	@Column(name = "shortqty")
+	private int shortQty;
+	
 
 	@ManyToOne
 	@JoinColumn(name = "binretrievalid")

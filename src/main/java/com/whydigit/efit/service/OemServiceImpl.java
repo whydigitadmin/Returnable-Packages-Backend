@@ -791,15 +791,15 @@ public class OemServiceImpl implements OemService {
 			List<Map<String, Object>> status = new ArrayList<>();
 	        for (Object[] ps : getManifest) {
 	            Map<String, Object> values = new HashMap<>();
-	            values.put("transactionNO", ps[0] != null ? ps[0].toString() : "");
-	            values.put("transactionDate", ps[1] != null ? ps[1].toString() : "");
-	            values.put("dispatchDate", ps[2] != null ? ps[2].toString() : "");
+	            values.put("rmNo", ps[0] != null ? ps[0].toString() : "");
+	            values.put("rmDate", ps[1] != null ? ps[1].toString() : "");
+	            values.put("dispatchDate", ps[2] != null ? ps[2].toString() : "");   
 	            values.put("sender", ps[3] != null ? ps[3].toString() : "");
-	            values.put("address", ps[4] != null ? ps[4].toString() : "");
-	            values.put("gst", ps[5] != null ? ps[5].toString() : "");
+	            values.put("senderAddress", ps[4] != null ? ps[4].toString() : "");
+	            values.put("senderGstin", ps[5] != null ? ps[5].toString() : "");
 	            values.put("receiver", ps[6] != null ? ps[6].toString() : "");
-	            values.put("address", ps[7] != null ? ps[7].toString() : "");
-	            values.put("gst", ps[8] != null ? Integer.parseInt(ps[8].toString()) : 0);
+	            values.put("receiverAddress", ps[7] != null ? ps[7].toString() : "");
+	            values.put("receiverGstin", ps[8] != null ? (ps[8].toString()) : "");
 	            status.add(values);
 	        }
 	        return status;
