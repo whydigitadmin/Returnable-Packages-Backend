@@ -51,7 +51,7 @@ public class CustomQuery {
 			+ "    GROUP BY `a`.`kitcode` , `a`.`stockbranch`");
 
     // Add your new SQL query
-    jdbcTemplate.execute("CREATE OR REPLACE VIEW rp_dev.availableasset AS SELECT stockdetails.stockbranch AS stockbranch, stockdetails.sku AS sku, stockdetails.skucode AS skucode, SUM(stockdetails.skuqty) AS `sum(skuqty)`, stockdetails.orgid AS orgid, category FROM stockdetails WHERE stockdetails.status = 'S' GROUP BY stockdetails.stockbranch, stockdetails.sku, stockdetails.skucode, category, stockdetails.orgid HAVING SUM(stockdetails.skuqty) > 0");
+    jdbcTemplate.execute("CREATE OR REPLACE VIEW availableasset AS SELECT stockdetails.stockbranch AS stockbranch, stockdetails.sku AS sku, stockdetails.skucode AS skucode, SUM(stockdetails.skuqty) AS `sum(skuqty)`, stockdetails.orgid AS orgid, category FROM stockdetails WHERE stockdetails.status = 'S' GROUP BY stockdetails.stockbranch, stockdetails.sku, stockdetails.skucode, category, stockdetails.orgid HAVING SUM(stockdetails.skuqty) > 0");
     
     jdbcTemplate.execute("CREATE or replace VIEW avalablekit AS\r\n"
     + "    \r\n"
