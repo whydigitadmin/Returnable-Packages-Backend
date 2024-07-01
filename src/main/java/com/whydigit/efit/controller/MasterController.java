@@ -3915,4 +3915,109 @@ public class MasterController extends BaseController {
 			LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 			return ResponseEntity.ok().body(responseDTO);
 		}
+		
+		// GET BIN RETERVAL 
+		
+		@GetMapping("/getBinReterivalByOrgId")
+		public ResponseEntity<ResponseDTO> getBinReterivalByOrgId(@RequestParam(required = true) Long orgId) {
+			String methodName = "getBinReterival()";
+			LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+			String errorMsg = null;
+			Map<String, Object> responseObjectsMap = new HashMap<>();
+			ResponseDTO responseDTO = null;
+			List<BinRetrievalVO> binRetrievalVO = new ArrayList<BinRetrievalVO>();
+			try {
+				binRetrievalVO = masterService.getBinReterivalByOrgId(orgId);
+			} catch (Exception e) {
+				errorMsg = e.getMessage();
+				LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			}
+			if (StringUtils.isBlank(errorMsg)) {
+				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Bin Reterival Information get successfully");
+				responseObjectsMap.put("binRetrievalVO", binRetrievalVO);
+				responseDTO = createServiceResponse(responseObjectsMap);
+			} else {
+				responseDTO = createServiceResponseError(responseObjectsMap, "Bin Reterival Information receive failed", errorMsg);
+			}
+			LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+			return ResponseEntity.ok().body(responseDTO);
+		}
+		
+		@GetMapping("/getBinReterivalByDocId")
+		public ResponseEntity<ResponseDTO> getBinReterivalByDocId(@RequestParam(required = true) String docId) {
+			String methodName = "getBinReterival()";
+			LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+			String errorMsg = null;
+			Map<String, Object> responseObjectsMap = new HashMap<>();
+			ResponseDTO responseDTO = null;
+			List<BinRetrievalVO> binRetrievalVO = new ArrayList<BinRetrievalVO>();
+			try {
+				binRetrievalVO = masterService.getBinReterivalByDocId(docId);
+			} catch (Exception e) {
+				errorMsg = e.getMessage();
+				LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			}
+			if (StringUtils.isBlank(errorMsg)) {
+				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Bin Reterival Information get successfully");
+				responseObjectsMap.put("binRetrievalVO", binRetrievalVO);
+				responseDTO = createServiceResponse(responseObjectsMap);
+			} else {
+				responseDTO = createServiceResponseError(responseObjectsMap, "Bin Reterival Information receive failed", errorMsg);
+			}
+			LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+			return ResponseEntity.ok().body(responseDTO);
+		}
+		
+		@GetMapping("/getBinReterivalById")
+		public ResponseEntity<ResponseDTO> getAllBinReterival(@RequestParam(required = false) Long id) {
+			String methodName = "getBinReterival()";
+			LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+			String errorMsg = null;
+			Map<String, Object> responseObjectsMap = new HashMap<>();
+			ResponseDTO responseDTO = null;
+			List<BinRetrievalVO> binRetrievalVO = new ArrayList<BinRetrievalVO>();
+			try {
+				binRetrievalVO = masterService.getAllBinReterival(id);
+			} catch (Exception e) {
+				errorMsg = e.getMessage();
+				LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			}
+			if (StringUtils.isBlank(errorMsg)) {
+				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Bin Reterival Information get successfully");
+				responseObjectsMap.put("binRetrievalVO", binRetrievalVO);
+				responseDTO = createServiceResponse(responseObjectsMap);
+			} else {
+				responseDTO = createServiceResponseError(responseObjectsMap, "Bin Reterival Information receive failed", errorMsg);
+			}
+			LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+			return ResponseEntity.ok().body(responseDTO);
+		}
+		
+		@GetMapping("/getAvilQtyByEmitter")
+		public ResponseEntity<ResponseDTO> getAvilQtyByEmitterBykitWise(@RequestParam(required = false) Long orgId,
+				@RequestParam(required = false) Long userId) {
+			String methodName = "getAvilQtyByEmitter()";
+			LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+			String errorMsg = null;
+			Map<String, Object> responseObjectsMap = new HashMap<>();
+			ResponseDTO responseDTO = null;
+			List<Map<String, Object>>  emitterKit = new ArrayList<>();
+			try {
+				emitterKit = masterService.getAvilQtyByEmitterBykitWise(orgId,userId);
+			} catch (Exception e) {
+				errorMsg = e.getMessage();
+				LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			}
+			if (StringUtils.isBlank(errorMsg)) {
+				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Emitter Avilable Kit Qty Information get successfully");
+				responseObjectsMap.put("emitterKit", emitterKit);
+				responseDTO = createServiceResponse(responseObjectsMap);
+			} else {
+				responseDTO = createServiceResponseError(responseObjectsMap, "Emitter Avilable Kit Qty Information receive failed", errorMsg);
+			}
+			LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+			return ResponseEntity.ok().body(responseDTO);
+		}
+		
+		
 }

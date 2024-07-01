@@ -20,8 +20,6 @@ public interface WarehouseService {
 
 	Optional<WarehouseVO> getById(Long id);
 
-	Optional<WarehouseVO> updateWarehouseVo(WarehouseVO warehouse);
-
 	void deleteWarehouse(Long id);
 
 	Set<Object[]> getWarehouseLocationByOrgID(Long orgId);
