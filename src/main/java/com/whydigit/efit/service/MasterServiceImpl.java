@@ -1881,6 +1881,7 @@ public class MasterServiceImpl implements MasterService {
 		stockBranchVO.setOrgId(stockBranchDTO.getOrgId());
 		stockBranchVO.setCreatedBy(stockBranchDTO.getCreatedby());
 		stockBranchVO.setModifiedBy(stockBranchDTO.getCreatedby());
+		stockBranchVO.setActive(stockBranchDTO.isActive());
 		// stockBranchVO.setActive(stockBranchDTO.isActive());
 		return stockBranchRepo.save(stockBranchVO);
 	}
@@ -1907,6 +1908,7 @@ public class MasterServiceImpl implements MasterService {
 			}
 			// existingStockBranch.setActive(stockBranchDTO.isActive());
 			existingStockBranch.setModifiedBy(stockBranchDTO.getCreatedby());
+			existingStockBranch.setActive(stockBranchDTO.isActive());
 			return stockBranchRepo.save(existingStockBranch);
 		} else {
 			throw new NoSuchElementException("StockBranch with ID " + stockBranchDTO.getId() + " not found");
