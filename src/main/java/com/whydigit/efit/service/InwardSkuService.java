@@ -19,7 +19,5 @@ public interface InwardSkuService {
 	Optional<InwardSkuVO> getInwardSkuById(Long id);
 
 	List<InwardSkuVO> getAllInwardSku();
-	
-	
 
 }

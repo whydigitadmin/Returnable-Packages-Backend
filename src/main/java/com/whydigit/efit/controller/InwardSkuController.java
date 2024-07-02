@@ -139,5 +139,4 @@ public class InwardSkuController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
-	
 }

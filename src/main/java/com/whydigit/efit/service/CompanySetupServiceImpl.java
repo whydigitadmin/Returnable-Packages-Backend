@@ -11,19 +11,15 @@ import com.whydigit.efit.entity.CompanySetupVO;
 import com.whydigit.efit.repo.CompanySetRepo;
 import com.whydigit.efit.repo.CompanySetupRepo;
 
-
 @Service
 public class CompanySetupServiceImpl implements CompanySetupService {
 
 	@Autowired
 	private CompanySetupRepo companySetupRepo;
-	
-	
-	
+
 	@Autowired
 	private CompanySetRepo companySetRepo;
 
-	
 	public List<CompanySetupVO> getAllcompanies() {
 		return companySetupRepo.findAll();
 	}
@@ -51,10 +47,8 @@ public class CompanySetupServiceImpl implements CompanySetupService {
 	public void deleteCompany(int id) {
 		companySetupRepo.deleteById(id);
 	}
-	
-	
-	
-	@Override	
+
+	@Override
 	public List<CompanySetVO> getAllCompanySet() {
 		return companySetRepo.findAll();
 	}
@@ -82,8 +76,5 @@ public class CompanySetupServiceImpl implements CompanySetupService {
 	public void deleteCompanySet(int id) {
 		companySetRepo.deleteById(id);
 	}
-
-	
-
 
 }

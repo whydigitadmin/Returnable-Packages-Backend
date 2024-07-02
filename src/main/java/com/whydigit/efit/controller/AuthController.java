@@ -34,18 +34,19 @@ import com.whydigit.efit.dto.ResponseDTO;
 import com.whydigit.efit.dto.UserResponseDTO;
 import com.whydigit.efit.entity.UserVO;
 import com.whydigit.efit.service.AuthService;
+
 @CrossOrigin
 @RestController
 @RequestMapping("api/auth")
-public class AuthController extends BaseController{
+public class AuthController extends BaseController {
 
-	private static final Logger LOGGER = LoggerFactory. getLogger(AuthController.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(AuthController.class);
 
 	@Autowired
 	AuthService authService;
+
 	@PostMapping("/signup")
-	public ResponseEntity<ResponseDTO> signup(
-			@Valid @RequestBody CreateOrganizationFormDTO createOrganizationFormDTO) {
+	public ResponseEntity<ResponseDTO> signup(@Valid @RequestBody CreateOrganizationFormDTO createOrganizationFormDTO) {
 		String methodName = "createOrginization()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -56,20 +57,19 @@ public class AuthController extends BaseController{
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME_WITH_USER_NAME, methodName,
-					createOrganizationFormDTO.  getEmail(), errorMsg);
+					createOrganizationFormDTO.getEmail(), errorMsg);
 		}
 		if (StringUtils.isBlank(errorMsg)) {
-			responseObjectsMap.put(CommonConstant.STRING_MESSAGE,
-					UserConstants.SIGNUP_REGISTERED_SUCCESS_MESSAGE);
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, UserConstants.SIGNUP_REGISTERED_SUCCESS_MESSAGE);
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} else {
-			responseDTO = createServiceResponseError(responseObjectsMap,
-					UserConstants.SIGNUP_REGISTERED_FAILED_MESSAGE, errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, UserConstants.SIGNUP_REGISTERED_FAILED_MESSAGE,
+					errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-	
+
 	@PostMapping("/createUser")
 	public ResponseEntity<ResponseDTO> createUser(@Valid @RequestBody CreateUserFormDTO createUserFormDTO) {
 		String methodName = "createUser()";
@@ -94,7 +94,7 @@ public class AuthController extends BaseController{
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-	
+
 	@PutMapping("/updateUser")
 	public ResponseEntity<ResponseDTO> updateUser(@RequestBody CreateUserFormDTO CreateUserFormDTO) {
 		String methodName = "updateUser()";
@@ -102,8 +102,8 @@ public class AuthController extends BaseController{
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
-		try { 
-			UserVO updatedUserVO= authService.updateUser(CreateUserFormDTO);
+		try {
+			UserVO updatedUserVO = authService.updateUser(CreateUserFormDTO);
 			if (updatedUserVO != null) {
 				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "User updated successfully");
 				responseObjectsMap.put("updatedUserVO", updatedUserVO);
@@ -121,8 +121,6 @@ public class AuthController extends BaseController{
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
-	
-	
 	@GetMapping("/user/{userId}")
 	public ResponseEntity<ResponseDTO> getUserById(@PathVariable Long userId) {
 		String methodName = "getUserById()";
@@ -132,7 +130,8 @@ public class AuthController extends BaseController{
 		ResponseDTO responseDTO = null;
 		UserVO userVO = null;
 		try {
-			userVO = authService.getUserById(userId).orElse(null);;
+			userVO = authService.getUserById(userId).orElse(null);
+			;
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
@@ -148,7 +147,7 @@ public class AuthController extends BaseController{
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-	
+
 	@GetMapping("/userByOrgId")
 	public ResponseEntity<ResponseDTO> getUserByOrgId(@RequestParam Long orgId) {
 		String methodName = "getUserByOrgId()";
@@ -195,7 +194,7 @@ public class AuthController extends BaseController{
 			responseObjectsMap.put(UserConstants.KEY_USER, userResponseDTO);
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} else {
-			responseDTO = createServiceResponseError(responseObjectsMap,errorMsg,errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, errorMsg, errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
@@ -250,12 +249,11 @@ public class AuthController extends BaseController{
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-	
-	//Change Password
-	
+
+	// Change Password
+
 	@PostMapping("/changePassword")
-	public ResponseEntity<ResponseDTO> changePassword(
-			@Valid @RequestBody ChangePasswordFormDTO changePasswordFormDTO) {
+	public ResponseEntity<ResponseDTO> changePassword(@Valid @RequestBody ChangePasswordFormDTO changePasswordFormDTO) {
 		String methodName = "changePassword()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -269,12 +267,11 @@ public class AuthController extends BaseController{
 					changePasswordFormDTO.getUserName(), errorMsg);
 		}
 		if (StringUtils.isBlank(errorMsg)) {
-			responseObjectsMap.put(CommonConstant.STRING_MESSAGE,
-					UserConstants.CHANGE_PASSWORD_SUCCESS_MESSAGE);
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, UserConstants.CHANGE_PASSWORD_SUCCESS_MESSAGE);
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} else {
-			responseDTO = createServiceResponseError(responseObjectsMap,
-					UserConstants.CHANGE_PASSWORD_FAILED_MESSAGE, errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, UserConstants.CHANGE_PASSWORD_FAILED_MESSAGE,
+					errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);

@@ -70,6 +70,7 @@ public class WarehouseController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 
 	}
+
 	@GetMapping("/activeWarehouse")
 	public ResponseEntity<ResponseDTO> getAllActiveWarehouse(@RequestParam Long orgId) {
 		String methodName = "getAllActiveWarehouse()";
@@ -96,7 +97,7 @@ public class WarehouseController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 
 	}
-	
+
 	@GetMapping("/getWarehouseById/{id}")
 	public ResponseEntity<ResponseDTO> getWarehouseById(@PathVariable Long id) {
 		String methodName = "getWarehouseById()";
@@ -122,7 +123,6 @@ public class WarehouseController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-
 
 	@GetMapping("/getWarehouseLocationByOrgID")
 	public ResponseEntity<ResponseDTO> getWarehouseLocationByOrgID(@RequestParam(required = false) Long orgId) {
@@ -163,11 +163,8 @@ public class WarehouseController extends BaseController {
 		return location;
 	}
 
-
-	
-
 	@GetMapping("/getWarehouseByUserID")
-	public ResponseEntity<ResponseDTO> getWarehouseByUserID(@RequestParam (required = true)long userId) {
+	public ResponseEntity<ResponseDTO> getWarehouseByUserID(@RequestParam(required = true) long userId) {
 		String methodName = "getWarehouseByUserID()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -191,7 +188,7 @@ public class WarehouseController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-	
+
 	@DeleteMapping("/view/{id}")
 	public ResponseEntity<ResponseDTO> deleteWarehouse(@PathVariable Long id) {
 		String methodName = "deleteWarehouse()";
@@ -237,61 +234,63 @@ public class WarehouseController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-	
+
 	// File Upload For Warehouse
-	
+
 	@PostMapping("/ExcelUploadForWarehouse")
-	public ResponseEntity<ResponseDTO> ExcelUploadForWarehouse(@RequestParam MultipartFile[] files,CustomerAttachmentType type,@RequestParam(required = false) Long orgId,
+	public ResponseEntity<ResponseDTO> ExcelUploadForWarehouse(@RequestParam MultipartFile[] files,
+			CustomerAttachmentType type, @RequestParam(required = false) Long orgId,
 			@RequestParam(required = false) String createdBy) {
-	    String methodName = "ExcelUploadForWarehouse()";
-	    LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
-	    String errorMsg = null;
-	    Map<String, Object> responseObjectsMap = new HashMap<>();
-	    ResponseDTO responseDTO = null;
-	    int totalRows = 0;
-	    int successfulUploads = 0;
+		String methodName = "ExcelUploadForWarehouse()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		int totalRows = 0;
+		int successfulUploads = 0;
 
-	    try {
-	        // Call service method to process Excel upload
-	        warehouseService.ExcelUploadForWarehouse(files, type, orgId,createdBy);
-	        
-	        // Retrieve the counts after processing
-	        totalRows = warehouseService.getTotalRows(); // Get total rows processed
-	        successfulUploads = warehouseService.getSuccessfulUploads(); // Get successful uploads count
-	        // Construct success response
-	        responseObjectsMap.put("statusFlag", "Ok");
-	        responseObjectsMap.put("status", true);
-	        responseObjectsMap.put("totalRows", totalRows);
-	        responseObjectsMap.put("successfulUploads", successfulUploads);
-	        Map<String, Object> paramObjectsMap = new HashMap<>();
-	        paramObjectsMap.put("message", "Excel Upload For  warehouse successful");
-	        responseObjectsMap.put("paramObjectsMap", paramObjectsMap);
-	        responseDTO = createServiceResponse(responseObjectsMap);
-	        
-	    }  catch (Exception e) {
+		try {
+			// Call service method to process Excel upload
+			warehouseService.ExcelUploadForWarehouse(files, type, orgId, createdBy);
 
-	    	errorMsg = e.getMessage();
-	        LOGGER.error(CommonConstant.EXCEPTION_OCCURRED, methodName, e);
-	        responseObjectsMap.put("statusFlag", "Error");
-	        responseObjectsMap.put("status", false);
-	        responseObjectsMap.put("errorMessage", errorMsg);
+			// Retrieve the counts after processing
+			totalRows = warehouseService.getTotalRows(); // Get total rows processed
+			successfulUploads = warehouseService.getSuccessfulUploads(); // Get successful uploads count
+			// Construct success response
+			responseObjectsMap.put("statusFlag", "Ok");
+			responseObjectsMap.put("status", true);
+			responseObjectsMap.put("totalRows", totalRows);
+			responseObjectsMap.put("successfulUploads", successfulUploads);
+			Map<String, Object> paramObjectsMap = new HashMap<>();
+			paramObjectsMap.put("message", "Excel Upload For  warehouse successful");
+			responseObjectsMap.put("paramObjectsMap", paramObjectsMap);
+			responseDTO = createServiceResponse(responseObjectsMap);
 
-	        responseDTO = createServiceResponseError(responseObjectsMap,"Excel Upload For warehouse Failed",errorMsg);
+		} catch (Exception e) {
+
+			errorMsg = e.getMessage();
+			LOGGER.error(CommonConstant.EXCEPTION_OCCURRED, methodName, e);
+			responseObjectsMap.put("statusFlag", "Error");
+			responseObjectsMap.put("status", false);
+			responseObjectsMap.put("errorMessage", errorMsg);
+
+			responseDTO = createServiceResponseError(responseObjectsMap, "Excel Upload For warehouse Failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
 	}
-	LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
-	return ResponseEntity.ok().body(responseDTO);
-	}	
 
 	@GetMapping("/getOrginWarehouseByUserId")
-	public ResponseEntity<ResponseDTO> getOrginWarehouseByUserId(@RequestParam(required = false) Long userId,@RequestParam(required = false) Long orgId) {
+	public ResponseEntity<ResponseDTO> getOrginWarehouseByUserId(@RequestParam(required = false) Long userId,
+			@RequestParam(required = false) Long orgId) {
 		String methodName = "getOrginWarehouseByUserId()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
-		List<Map<String,Object>> warehouseVO = new ArrayList<>();
+		List<Map<String, Object>> warehouseVO = new ArrayList<>();
 		try {
-			warehouseVO = warehouseService.getOrginWarehouseByUserId(userId,orgId);
+			warehouseVO = warehouseService.getOrginWarehouseByUserId(userId, orgId);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
@@ -308,7 +307,4 @@ public class WarehouseController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
-	
-
 }
-

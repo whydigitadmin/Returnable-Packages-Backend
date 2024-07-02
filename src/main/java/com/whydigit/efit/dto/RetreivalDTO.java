@@ -11,9 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RetreivalDTO {
-	
-	
-	
+
 	private LocalDate docDate;
 	private String fromStockBranch;
 	private String toStockBranch;

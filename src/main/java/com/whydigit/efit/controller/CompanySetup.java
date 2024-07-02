@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -19,14 +18,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.whydigit.efit.common.CommonConstant;
 import com.whydigit.efit.common.UserConstants;
-import com.whydigit.efit.dto.BranchDTO;
 import com.whydigit.efit.dto.ResponseDTO;
-import com.whydigit.efit.entity.BranchVO;
 import com.whydigit.efit.entity.CompanySetVO;
 import com.whydigit.efit.entity.CompanySetupVO;
 import com.whydigit.efit.service.CompanySetupService;

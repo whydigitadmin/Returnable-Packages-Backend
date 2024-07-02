@@ -28,13 +28,11 @@ public interface BasicMasterService {
 	Optional<LocalCurrencyVO> updateLocalCurrency(LocalCurrencyVO localCurrencyVO);
 
 	void deleteLocalCurrency(int id);
-	
-	
 
 	List<CountryVO> getAllgetAllcountries();
 
 	Optional<CountryVO> getCountryById(Long id);
-	
+
 	List<CountryVO> getAllCountryByOrgId(Long orgId);
 
 	CountryVO createCountry(CountryVO countryVO) throws ApplicationException;
@@ -43,12 +41,11 @@ public interface BasicMasterService {
 
 	void deleteCountry(Long id);
 
-
 	List<StateVO> getAllgetAllStates();
 
 	Optional<StateVO> getStateById(Long id);
-	
-	List<StateVO> getAllStatesByCountry(String Country,Long orgId);
+
+	List<StateVO> getAllStatesByCountry(String Country, Long orgId);
 
 	StateVO createState(StateVO stateVO) throws ApplicationException;
 
@@ -56,11 +53,10 @@ public interface BasicMasterService {
 
 	void deleteState(Long id);
 
-
 	List<CityVO> getAllgetAllCities();
 
 	Optional<CityVO> getCityById(Long id);
-	
+
 	List<CityVO> getAllCitiesByStateAndCountry(String state, String country, Long orgId);
 
 	CityVO createCity(CityVO cityVO) throws ApplicationException;
@@ -68,8 +64,6 @@ public interface BasicMasterService {
 	Optional<CityVO> updateCity(CityVO cityVO) throws ApplicationException;
 
 	void deleteCity(Long id);
-
-
 
 	List<EmployeeVO> getAllgetAllEmployees();
 
@@ -81,7 +75,6 @@ public interface BasicMasterService {
 
 	void deleteEmployee(int id);
 
-
 	List<FinancialYearVO> getAllgetAllFinancialYears();
 
 	Optional<FinancialYearVO> getFinancialYearById(int id);
@@ -91,8 +84,7 @@ public interface BasicMasterService {
 	Optional<FinancialYearVO> updateFinancialYear(FinancialYearVO financialYearVO);
 
 	void deleteFinancialYear(int id);
-	
-	
+
 	List<CurrencyMasterVO> getAllCurrencyMaster();
 
 	Optional<CurrencyMasterVO> getCurrencyMasterById(int id);
@@ -107,7 +99,6 @@ public interface BasicMasterService {
 
 	int getSuccessfulUploads();
 
-
 	void ExcelUploadForBranch(MultipartFile[] files, CustomerAttachmentType type, Long orgId, String CreatedBy)
 			throws ApplicationException;
 
@@ -119,17 +110,5 @@ public interface BasicMasterService {
 
 	void ExcelUploadForCity(MultipartFile[] files, CustomerAttachmentType type, Long orgId, String createdBy)
 			throws ApplicationException;
-
-	
-
-	
-
-	
-
-
-
-
-
-
 
 }

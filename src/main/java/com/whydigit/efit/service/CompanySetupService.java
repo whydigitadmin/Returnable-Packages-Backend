@@ -1,4 +1,5 @@
 package com.whydigit.efit.service;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -16,11 +17,7 @@ public interface CompanySetupService {
 	void deleteCompany(int id);
 
 	List<CompanySetupVO> getAllcompanies();
-	
-	
-	
-	
-	
+
 	Optional<CompanySetVO> getCompanySetById(int id);
 
 	CompanySetVO createCompanySet(CompanySetVO companySetVO);
@@ -30,7 +27,5 @@ public interface CompanySetupService {
 	void deleteCompanySet(int id);
 
 	List<CompanySetVO> getAllCompanySet();
-
-	
 
 }

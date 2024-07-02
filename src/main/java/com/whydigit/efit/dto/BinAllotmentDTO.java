@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BinAllotmentDTO {
-	
+
 	private String createdby;
 	private LocalDate docDate;
 	private String binReqNo;
@@ -27,11 +27,7 @@ public class BinAllotmentDTO {
 	private int reqKitQty;
 	private int avlKitQty;
 	private int allotKitQty;
-	
-	private List<BinAllotmentDetailsDTO> binAllotmentDetailsDTO;
 
-	
-	
-	
+	private List<BinAllotmentDetailsDTO> binAllotmentDetailsDTO;
 
 }
