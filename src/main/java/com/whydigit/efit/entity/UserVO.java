@@ -48,19 +48,19 @@ public class UserVO {
 	private String accessWarehouse;
 	private String accessFlowId;
 	private Long pNo;
-	@Column(name="receiverid")
+	@Column(name = "receiverid")
 	private Long receiverId;
 	private boolean isActive;
 	private String lastLogin;
-	private String createdBy;	
+	private String createdBy;
 	@Column(name = "modifiedBy")
-	private String updatedBy;	
+	private String updatedBy;
 	@Enumerated(EnumType.STRING)
 	private Role role;
 	private long accessRightsRoleId;
-	
+
 	private boolean viewFlag;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "orgId")
 	private OrganizationVO organizationVO;
@@ -73,53 +73,48 @@ public class UserVO {
 	@ManyToOne
 	@JoinColumn(name = "emitter_id")
 	private CustomersVO customersVO;
-	
+
 	@JsonGetter("active")
-    public String getActive() {
-        return isActive ? "Active" : "In-Active";
-    }
-	
+	public String getActive() {
+		return isActive ? "Active" : "In-Active";
+	}
+
 	public boolean isActive() {
-        return isActive;
-    }
-	
+		return isActive;
+	}
+
 	@JsonGetter("accessWarehouse")
-    public List<Long> getAccessWarehouseAsList() {
-        if (accessWarehouse != null && !accessWarehouse.isEmpty()) {
-            return Arrays.stream(accessWarehouse.split(","))
-                         .map(Long::parseLong)
-                         .collect(Collectors.toList());
-        }
-        return null;
-    }
+	public List<Long> getAccessWarehouseAsList() {
+		if (accessWarehouse != null && !accessWarehouse.isEmpty()) {
+			return Arrays.stream(accessWarehouse.split(",")).map(Long::parseLong).collect(Collectors.toList());
+		}
+		return null;
+	}
 
-    // Standard getters and setters
-    public String getAccessWarehouse() {
-        return accessWarehouse;
-    }
+	// Standard getters and setters
+	public String getAccessWarehouse() {
+		return accessWarehouse;
+	}
 
-    public void setAccessWarehouse(String accessWarehouse) {
-        this.accessWarehouse = accessWarehouse;
-    }
-    
-    @JsonGetter("accessFlowId")
-    public List<Long> getAccessFlowIdAsList() {
-        if (accessFlowId != null && !accessFlowId.isEmpty()) {
-            return Arrays.stream(accessFlowId.split(","))
-                         .map(Long::parseLong)
-                         .collect(Collectors.toList());
-        }
-        return null;
-    }
+	public void setAccessWarehouse(String accessWarehouse) {
+		this.accessWarehouse = accessWarehouse;
+	}
 
-    // Standard getters and setters
-    public String getAccessFlowId() {
-        return accessFlowId;
-    }
+	@JsonGetter("accessFlowId")
+	public List<Long> getAccessFlowIdAsList() {
+		if (accessFlowId != null && !accessFlowId.isEmpty()) {
+			return Arrays.stream(accessFlowId.split(",")).map(Long::parseLong).collect(Collectors.toList());
+		}
+		return null;
+	}
 
-    public void setAccessFlowId(String accessFlowId) {
-        this.accessFlowId = accessFlowId;
-    }
- 
-	
+	// Standard getters and setters
+	public String getAccessFlowId() {
+		return accessFlowId;
+	}
+
+	public void setAccessFlowId(String accessFlowId) {
+		this.accessFlowId = accessFlowId;
+	}
+
 }

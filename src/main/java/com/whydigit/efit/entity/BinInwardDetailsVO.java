@@ -30,17 +30,17 @@ public class BinInwardDetailsVO {
 	@SequenceGenerator(name = "bininwarddetailsgen", sequenceName = "bininwardseq", initialValue = 1000000001, allocationSize = 1)
 	@Column(name = "bininwarddetailsid")
 	private Long binInwardDetailsId;
-	@Column(name = "tagcode", length = 25)
+	@Column(name = "tagcode")
 	private String tagCode;
-	@Column(name = "asset", length = 25)
+	@Column(name = "asset")
 	private String asset;
-	@Column(name = "assetcode", length = 25)
+	@Column(name = "assetcode")
 	private String assetCode;
-	@Column(name = "allotqty", length = 25)
+	@Column(name = "allotqty")
 	private int allotQty;
-	@Column(name = "recqty", length = 25)
+	@Column(name = "recqty")
 	private int recQty;
-	@Column(name = "rfid", length = 100)
+	@Column(name = "rfid")
 	private String rfId;              
 	
 	

@@ -40,22 +40,22 @@ public class CustomersVO {
 	@Column(name = "type")
 	private int customerType;
 
-	@Column(name = "legalname", length = 100)
+	@Column(name = "legalname")
 	private String entityLegalName;
 
-	@Column(name = "email", length = 50)
+	@Column(name = "email")
 	private String email;
 
-	@Column(name = "code", length = 25)
+	@Column(name = "code")
 	private String customerCode;
 
-	@Column(name = "displayname", length = 50)
+	@Column(name = "displayname")
 	private String displayName;
 
-	@Column(name = "phone", length = 25)
+	@Column(name = "phone")
 	private String phoneNumber;
 
-	@Column(name = "activateportal", length = 25)
+	@Column(name = "activateportal")
 	private boolean customerActivatePortal;
 
 	@Column(name = "active")
@@ -72,7 +72,7 @@ public class CustomersVO {
 
 	@Column(name = "sop")
 	private String sop;
-	
+
 	@Column(name = "document")
 	private String document;
 
@@ -83,17 +83,17 @@ public class CustomersVO {
 	@OneToMany(mappedBy = "customersVO", cascade = CascadeType.ALL)
 	@JsonManagedReference
 	List<CustomersBankDetailsVO> customersBankDetailsVO;
-	
-	@JsonGetter("active")
-    public String getActive() {
-        return active ? "Active" : "In-Active";
-    }
 
-    // Optionally, if you want to control serialization for 'cancel' field similarly
-    @JsonGetter("cancel")
-    public String getCancel() {
-        return cancel ? "T" : "F";
-    }
+	@JsonGetter("active")
+	public String getActive() {
+		return active ? "Active" : "In-Active";
+	}
+
+	// Optionally, if you want to control serialization for 'cancel' field similarly
+	@JsonGetter("cancel")
+	public String getCancel() {
+		return cancel ? "T" : "F";
+	}
 
 	@Embedded
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();

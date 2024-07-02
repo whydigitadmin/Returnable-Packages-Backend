@@ -1,4 +1,5 @@
 package com.whydigit.efit.entity;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -26,9 +27,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name="binretrieval")
+@Table(name = "binretrieval")
 public class BinRetrievalVO {
-
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "binretrievalgen")
@@ -68,9 +68,9 @@ public class BinRetrievalVO {
 	@Column(name = "cancelremarks")
 	private String cancelRemark;
 	@Column(name = "active")
-	private boolean active=true;
+	private boolean active = true;
 	@Column(name = "cancel")
-	private boolean cancel=false;
+	private boolean cancel = false;
 	@Column(name = "orgid")
 	private Long orgId;
 	@Column(name = "finyr")
@@ -100,6 +100,5 @@ public class BinRetrievalVO {
 				: LocalDate.now().minusYears(1).format(DateTimeFormatter.ofPattern("yyyy"));
 		return fyFull;
 	}
-
 
 }

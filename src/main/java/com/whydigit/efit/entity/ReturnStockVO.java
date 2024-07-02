@@ -16,39 +16,35 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name="returnstock")
+@Table(name = "returnstock")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 public class ReturnStockVO {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "returnstockgen")
 	@SequenceGenerator(name = "returnstockgen", sequenceName = "returnstockseq", initialValue = 1000000001, allocationSize = 1)
 	private Long returnstockid;
-	
-	@Column(name="issueitemid")
+
+	@Column(name = "issueitemid")
 	private Long issue_item_id;
-		
-	@Column(name="qty")
+
+	@Column(name = "qty")
 	private int qty;
-	
-	
-	@Column(name = "createdby", length = 25)
+
+	@Column(name = "createdby")
 	private String createdBy;
-	
-	@Column(name = "modifiedy", length = 25)
+
+	@Column(name = "modifiedy")
 	private String modifiedBy;
-	
-	@Column(name = "cancelremarks", length = 25)
+
+	@Column(name = "cancelremarks")
 	private String cancelRemark;
-	
-	
+
 	private boolean cancel;
-	
-	
+
 	@Embedded
-	private CreatedUpdatedDate commonDate=new CreatedUpdatedDate();
-	
+	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
 
 }

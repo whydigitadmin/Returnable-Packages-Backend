@@ -27,28 +27,27 @@ public class VendorBankDetailsVO {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "vendorbankgen")
 	@SequenceGenerator(name = "vendorbankgen", sequenceName = "vendorbankseq", initialValue = 1000000001, allocationSize = 1)
-	@Column(name="vendor3")
+	@Column(name = "vendor3")
 	private Long id;
-	
-	@Column(name="bank")
+
+	@Column(name = "bank")
 	private String bank;
-	
-	@Column(name="accountname")
+
+	@Column(name = "accountname")
 	private String accountName;
-	
-	@Column(name="ifsccode")
+
+	@Column(name = "ifsccode")
 	private String ifscCode;
-	
-	@Column(name="accountno")
+
+	@Column(name = "accountno")
 	private String accountNo;
-	
-	@Column(name="branch")
+
+	@Column(name = "branch")
 	private String branch;
-	
+
 	@ManyToOne
-	@JoinColumn(name="vendorid")
+	@JoinColumn(name = "vendorid")
 	@JsonBackReference
 	VendorVO vendorVO;
-
 
 }

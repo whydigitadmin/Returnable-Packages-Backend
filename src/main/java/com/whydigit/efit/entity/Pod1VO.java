@@ -17,7 +17,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "pod1") 
+@Table(name = "pod1")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -27,19 +27,18 @@ public class Pod1VO {
 	@SequenceGenerator(name = "pod1gen", sequenceName = "pod1seq", initialValue = 1000000001, allocationSize = 1)
 	@Column(name = "pod1id")
 	private Long pod1Id;
-	@Column(name = "assetcode", length = 30)
+	@Column(name = "assetcode")
 	private String assetCode;
-	@Column(name = "description", length = 100)
+	@Column(name = "description")
 	private String description;
-	@Column(name = "allotqty", length = 10)
+	@Column(name = "allotqty")
 	private int allotQty;
-	@Column(name = "acceptqty", length = 10)
+	@Column(name = "acceptqty")
 	private int acceptQty;
 
 	@ManyToOne
 	@JsonBackReference
 	@JoinColumn(name = "podid")
 	private PodVO podVO;
-
 
 }

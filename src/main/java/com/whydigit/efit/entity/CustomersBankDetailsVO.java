@@ -25,25 +25,25 @@ public class CustomersBankDetailsVO {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "CustomersBankDetailsVO")
 	@SequenceGenerator(name = "CustomersBankDetailsVO", sequenceName = "CustomersBankDetailsVo", initialValue = 1000000001, allocationSize = 1)
-	@Column(name="customer2id")
+	@Column(name = "customer2id")
 	private Long id;
-	
-	@Column(name="bank",length = 50)
+
+	@Column(name = "bank")
 	private String bank;
-	
-	@Column(name="accountname",length =30 )
+
+	@Column(name = "accountname")
 	private String accountName;
-	
-	@Column(name="ifsc",length =30 )
+
+	@Column(name = "ifsc")
 	private String ifscCode;
-	
-	@Column(name="branch",length =30 )
+
+	@Column(name = "branch")
 	private String branch;
-	
-	@Column(name="accountno",length =30 )
+
+	@Column(name = "accountno")
 	private Long accountNo;
-	
-	@Column(name="defaultaccount")
+
+	@Column(name = "defaultaccount")
 	private boolean isDefault;
 
 	@ManyToOne
@@ -51,5 +51,4 @@ public class CustomersBankDetailsVO {
 	@JsonBackReference
 	private CustomersVO customersVO;
 
-	
 }

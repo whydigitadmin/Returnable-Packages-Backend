@@ -28,7 +28,7 @@ public class CityVO {
 	@SequenceGenerator(name = "cityseqgen", sequenceName = "seqname", initialValue = 1000000001, allocationSize = 1)
 	@Column(name = "cityid")
 	private Long cityid;
-	
+
 	@Column(name = "active")
 	private boolean active;
 
@@ -37,7 +37,7 @@ public class CityVO {
 
 	@Column(name = "createdby")
 	private String createdBy;
-	
+
 	@Embedded
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
 
@@ -46,9 +46,9 @@ public class CityVO {
 
 	@Column(name = "cancelremarks")
 	private String cancelRemarks;
-	
-	@Column(name="orgid")
-	private Long orgId; 
+
+	@Column(name = "orgid")
+	private Long orgId;
 
 	@Column(name = "city")
 	private String cityName;
@@ -63,15 +63,14 @@ public class CityVO {
 	private String state;
 
 	@JsonGetter("active")
-    public String getActive() {
-        return active ? "Active" : "In-Active";
-    }
+	public String getActive() {
+		return active ? "Active" : "In-Active";
+	}
 
-    // Optionally, if you want to control serialization for 'cancel' field similarly
-    @JsonGetter("cancel")
-    public String getCancel() {
-        return cancel ? "T" : "F";
-    }	
+	// Optionally, if you want to control serialization for 'cancel' field similarly
+	@JsonGetter("cancel")
+	public String getCancel() {
+		return cancel ? "T" : "F";
+	}
 
-	
 }

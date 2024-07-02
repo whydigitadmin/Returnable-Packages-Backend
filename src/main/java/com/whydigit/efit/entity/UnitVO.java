@@ -25,26 +25,26 @@ public class UnitVO {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	@Column(name="orgid")
+	@Column(name = "orgid")
 	private long orgId;
 	private String unit;
-	private boolean active=true;
-	//private String action;
+	private boolean active = true;
+	// private String action;
 	private String createdBy;
 	private String updatedBy;
 	private boolean cancel;
-	
-	@JsonGetter("active")
-    public String getActive() {
-        return active ? "Active" : "In-Active";
-    }
 
-    // Optionally, if you want to control serialization for 'cancel' field similarly
-    @JsonGetter("cancel")
-    public String getCancel() {
-        return cancel ? "T" : "F";
-    }
-	
+	@JsonGetter("active")
+	public String getActive() {
+		return active ? "Active" : "In-Active";
+	}
+
+	// Optionally, if you want to control serialization for 'cancel' field similarly
+	@JsonGetter("cancel")
+	public String getCancel() {
+		return cancel ? "T" : "F";
+	}
+
 	@Embedded
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
 }

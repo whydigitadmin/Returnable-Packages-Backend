@@ -31,23 +31,23 @@ public class TermsAndConditionsVO {
 	private Long termsId;
 	@Column(name = "orgid")
 	private Long orgId;
-	@Column(name = "scode", length = 10)
+	@Column(name = "scode")
 	private String sCode;
-	@Column(name = "termscode", length = 10)
+	@Column(name = "termscode")
 	private String termsCode;
-	@Column(name = "details", length = 1000)
+	@Column(name = "details")
 	private String details;
-	@Column(name = "printremarks", length = 1000)
+	@Column(name = "printremarks")
 	private String printRemarks;
 	@Column(name = "effectivefrom")
 	private LocalDate effectiveFrom;
 	@Column(name = "effectiveto")
 	private LocalDate effectiveTo;
-	@Column(name = "createdby", length = 25)
+	@Column(name = "createdby")
 	private String createdBy;
-	@Column(name = "modifiebBy", length = 25)
+	@Column(name = "modifiebBy")
 	private String modifiedBy;
-	@Column(name = "cancelremarks", length = 25)
+	@Column(name = "cancelremarks")
 	private String cancelRemarks;
 	private boolean cancel;
 	private boolean active;

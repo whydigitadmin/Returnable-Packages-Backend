@@ -4,7 +4,6 @@
 package com.whydigit.efit.entity;
 
 import java.time.LocalDate;
-import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

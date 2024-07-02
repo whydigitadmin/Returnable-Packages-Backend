@@ -29,25 +29,25 @@ public class DmapDetailsVO {
 	@Column(name="dmap1id")
 	private Long id;
 	
-	@Column(name="scode",length = 5)
+	@Column(name="scode")
 	private String scode;
 	
-	@Column(name="prefx",length = 7)
+	@Column(name="prefx")
 	private String prefix;
 	
-	@Column(name="sequnce",length = 5)
+	@Column(name="sequnce")
 	private int sequence;
 	
-	@Column(name="suffix",length = 3)
+	@Column(name="suffix")
 	private String sufix;
 	
-	@Column(name="type",length = 2)
+	@Column(name="type")
 	private String type;
 	
-	@Column(name="docidtype",length = 15)
+	@Column(name="docidtype")
 	private String docIdType;
 	
-	@Column(name="finyear", length = 4)
+	@Column(name="finyear")
 	private String finYear;
 	
 	@ManyToOne
