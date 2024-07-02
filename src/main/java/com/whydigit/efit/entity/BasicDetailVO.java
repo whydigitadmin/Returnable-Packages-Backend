@@ -41,6 +41,7 @@ public class BasicDetailVO {
 	private Long emitterId;
 	@Column(name = "emitterdisplayname")
 	private String emitterDisplayName;
+	@Column(name = "part")
 	private String partName;
 	@Column(name = "code")
 	private String partNumber;

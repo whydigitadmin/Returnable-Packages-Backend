@@ -971,7 +971,7 @@ public class BasicMasterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
-	// File Upload For STATE
+	// File Upload For City
 
 	@PostMapping("/ExcelUploadForCity")
 	public ResponseEntity<ResponseDTO> ExcelUploadForCity(@RequestParam MultipartFile[] files,
