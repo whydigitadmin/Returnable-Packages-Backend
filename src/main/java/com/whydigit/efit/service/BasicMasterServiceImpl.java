@@ -94,8 +94,8 @@ public class BasicMasterServiceImpl implements BasicMasterService {
 	}
 
 	@Override
-	public List<CountryVO> getAllgetAllcountries() {
-		return countryRepo.findAll();
+	public List<CountryVO> getAllcountries(Long orgId) {
+		return countryRepo.findAllCountry(orgId);
 	}
 
 	@Override
@@ -159,14 +159,10 @@ public class BasicMasterServiceImpl implements BasicMasterService {
 
 //	state
 
-	@Override
-	public List<StateVO> getAllgetAllStates() {
-		return stateRepo.findAll();
-	}
 
 	@Override
 	public List<StateVO> getAllStatesByCountry(String Country, Long orgId) {
-		return stateRepo.findAllStateByCountryAndOrgId(Country, orgId);
+		return stateRepo.findAllActiveState(Country, orgId);
 	}
 
 	@Override
@@ -232,8 +228,8 @@ public class BasicMasterServiceImpl implements BasicMasterService {
 //	city
 
 	@Override
-	public List<CityVO> getAllgetAllCities() {
-		return cityRepo.findAll();
+	public List<CityVO> getAllgetAllCities(Long orgId,String country,String state) {
+		return cityRepo.findAllCity(orgId,country,state);
 	}
 
 	@Override
@@ -1023,5 +1019,17 @@ public class BasicMasterServiceImpl implements BasicMasterService {
 	    public int getSuccessfulUploads3() {
 	        return successfulUploads;
 	    }
+
+		@Override
+		public List<CountryVO> getAllgetAllcountries(Long orgId) {
+			// TODO Auto-generated method stub
+			return countryRepo.findAllCountry(orgId);
+		}
+
+		@Override
+		public List<StateVO> getAllgetAllStates(Long orgId, String country) {
+			// TODO Auto-generated method stub
+			return stateRepo.findAllState(orgId,country);
+		}
 
 }

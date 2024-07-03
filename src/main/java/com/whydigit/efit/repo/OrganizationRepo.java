@@ -8,4 +8,8 @@ public interface OrganizationRepo extends JpaRepository<OrganizationVO, Long>{
 
 	boolean existsByName(String name);
 
+	boolean existsByCode(String code);
+
+	boolean existsByEmail(String email);
+
 }

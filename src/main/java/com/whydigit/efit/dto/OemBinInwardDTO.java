@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OemBinInwardDTO {
-	private String docId;
 	private LocalDate docDate;
 	private Long flowId;
 	private String dispatchId;

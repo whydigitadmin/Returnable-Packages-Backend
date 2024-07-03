@@ -165,7 +165,7 @@ public class BasicMasterController extends BaseController {
 	}
 
 	@GetMapping("/country")
-	public ResponseEntity<ResponseDTO> getAllcountries() {
+	public ResponseEntity<ResponseDTO> getAllcountries(@RequestParam (required =true) Long orgId) {
 		String methodName = "getAllCountry()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -173,7 +173,7 @@ public class BasicMasterController extends BaseController {
 		ResponseDTO responseDTO = null;
 		List<CountryVO> countryVO = new ArrayList<>();
 		try {
-			countryVO = basicMasterService.getAllgetAllcountries();
+			countryVO = basicMasterService.getAllcountries(orgId);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
@@ -312,7 +312,8 @@ public class BasicMasterController extends BaseController {
 //	state
 
 	@GetMapping("/state")
-	public ResponseEntity<ResponseDTO> getAllStates() {
+	public ResponseEntity<ResponseDTO> getAllStates(@RequestParam(required =true) Long orgId,
+			@RequestParam(required = true) String country) {
 		String methodName = "getAllStates()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -320,7 +321,7 @@ public class BasicMasterController extends BaseController {
 		ResponseDTO responseDTO = null;
 		List<StateVO> stateVO = new ArrayList<>();
 		try {
-			stateVO = basicMasterService.getAllgetAllStates();
+			stateVO = basicMasterService.getAllgetAllStates(orgId,country);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
@@ -526,7 +527,9 @@ public class BasicMasterController extends BaseController {
 //	city
 
 	@GetMapping("/city")
-	public ResponseEntity<ResponseDTO> getAllCities() {
+	public ResponseEntity<ResponseDTO> getAllCities(@RequestParam(required =true)Long orgId,
+			@RequestParam(required =true) String country,@RequestParam(required =true) String state
+			) {
 		String methodName = "getAllCities()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -534,7 +537,7 @@ public class BasicMasterController extends BaseController {
 		ResponseDTO responseDTO = null;
 		List<CityVO> cityVO = new ArrayList<>();
 		try {
-			cityVO = basicMasterService.getAllgetAllCities();
+			cityVO = basicMasterService.getAllgetAllCities(orgId,country,state);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);

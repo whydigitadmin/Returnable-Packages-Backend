@@ -29,7 +29,7 @@ public interface BasicMasterService {
 
 	void deleteLocalCurrency(int id);
 
-	List<CountryVO> getAllgetAllcountries();
+	List<CountryVO> getAllgetAllcountries(Long orgId);
 
 	Optional<CountryVO> getCountryById(Long id);
 
@@ -41,7 +41,7 @@ public interface BasicMasterService {
 
 	void deleteCountry(Long id);
 
-	List<StateVO> getAllgetAllStates();
+	List<StateVO> getAllgetAllStates(Long orgId, String country);
 
 	Optional<StateVO> getStateById(Long id);
 
@@ -53,7 +53,7 @@ public interface BasicMasterService {
 
 	void deleteState(Long id);
 
-	List<CityVO> getAllgetAllCities();
+	List<CityVO> getAllgetAllCities(Long orgId, String country, String state);
 
 	Optional<CityVO> getCityById(Long id);
 
@@ -110,5 +110,7 @@ public interface BasicMasterService {
 
 	void ExcelUploadForCity(MultipartFile[] files, CustomerAttachmentType type, Long orgId, String createdBy)
 			throws ApplicationException;
+
+	List<CountryVO> getAllcountries(Long orgId);
 
 }

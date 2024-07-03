@@ -893,6 +893,7 @@ public class MasterServiceImpl implements MasterService {
 		FlowVO flowVO = createFlowVOByFlowDTO(flowDTO);
 		flowVO.setCreatedBy(flowDTO.getCreatedBy());
 		flowVO.setModifiedBy(flowDTO.getCreatedBy());
+		flowVO.setActive(flowDTO.isActive());
 		flowVO.setEmitter(flowRepo.findEmiterbyId(flowVO.getEmitterId()));
 		flowVO.setWarehouseLocation(flowRepo.getWarehouseLocationByLocationId(flowDTO.getWarehouseId()));
 		flowVO.setRetrievalWarehouseLocation(
@@ -3545,4 +3546,21 @@ public class MasterServiceImpl implements MasterService {
 		return details;
 	}
 
+	@Override
+	public List<String> getActiveAssetcategory(Long orgId) {
+	    Set<Object[]> getActiveCategory = binInwardRepo.getActiveCategory(orgId);
+	    return getActiveCategoryDetails(getActiveCategory);
+	}
+
+	private List<String> getActiveCategoryDetails(Set<Object[]> getActiveCategory) {
+	    List<String> details = new ArrayList<>();
+	    for (Object[] kd : getActiveCategory) {
+	        if (kd[0] != null) {
+	            details.add(kd[0].toString());
+	        }
+	    }
+	    return details;
+	}
+
 }
+

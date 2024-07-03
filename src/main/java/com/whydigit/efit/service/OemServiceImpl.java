@@ -103,7 +103,6 @@ public class OemServiceImpl implements OemService {
 		oemBinInwardVO.setDocId(binoutward);
 		oemBinInwardRepo.nextseq();
 
-		oemBinInwardVO.setDocId(oemBinInwardDTO.getDocId());
 		oemBinInwardVO.setDocDate(oemBinInwardDTO.getDocDate());
 		oemBinInwardVO.setFlowId(oemBinInwardDTO.getFlowId());
 		FlowVO flowVO = flowRepo.findById(oemBinInwardDTO.getFlowId()).get();
@@ -151,8 +150,7 @@ public class OemServiceImpl implements OemService {
 						stockDetailsVO.setSkuCode(binOutwardDetailsVO.getAssetCode());
 						stockDetailsVO.setSkuQty(binOutwardDetailsVO.getQty() * -1);
 						stockDetailsVO.setOrgId(binOutwardVO.getOrgId());
-						stockDetailsVO
-								.setCategory(assetRepo.getCategoryByAssetCodeId(binOutwardDetailsVO.getAssetCode()));
+						stockDetailsVO.setCategory(assetRepo.getCategoryByAssetCodeId(binOutwardDetailsVO.getAssetCode()));
 						stockDetailsVO.setStatus("M");
 						stockDetailsVO.setScreen("Dispatch");
 						stockDetailsVO.setSCode(dispatchVO.getScode());
@@ -214,7 +212,7 @@ public class OemServiceImpl implements OemService {
 
 		OemBinOutwardVO oemBinOutwardVO = new OemBinOutwardVO();
 		String finyr = oemBinOutwardRepo.findFinyr();
-		String binoutward = finyr + "OBO" + oemBinInwardRepo.finddocid();
+		String binoutward = finyr + "OBO" + oemBinOutwardRepo.finddocid();
 		oemBinOutwardVO.setDocId(binoutward);
 		oemBinOutwardRepo.nextSeq();
 		oemBinOutwardVO.setDocDate(oemBinOutwardDTO.getDocDate());

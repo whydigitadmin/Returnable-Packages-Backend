@@ -137,7 +137,7 @@ public class AuthServiceImpl implements AuthService {
 	}
 
 	private OrganizationVO getOrganizationVOFromCreateOrganizationFormDTO(
-			CreateOrganizationFormDTO createOrganizationFormDTO) {
+		CreateOrganizationFormDTO createOrganizationFormDTO) {
 		OrganizationVO organizationVO = new OrganizationVO();
 		OrganizationDTO organizationDTO = createOrganizationFormDTO.getOrganizationDTO();
 		organizationVO.setName(organizationDTO.getOrgName());
@@ -146,9 +146,16 @@ public class AuthServiceImpl implements AuthService {
 		organizationVO.setOrgLogo(organizationDTO.getOrgLogo());
 		organizationVO.setActive(true);
 		organizationVO.setPhoneNumber(organizationDTO.getPhoneNumber());
-		organizationVO.setPostalCode(organizationDTO.getPostalCode());
+		organizationVO.setPinCode(organizationDTO.getPinCode());
 		organizationVO.setState(organizationDTO.getState());
-		organizationVO.setStreet(organizationDTO.getStreet());
+		organizationVO.setAddress(organizationDTO.getAddress());
+		organizationVO.setEmail(organizationDTO.getEmail());
+		try {
+			organizationVO.setPassword(encoder.encode(CryptoUtils.getDecrypt(createOrganizationFormDTO.getPassword())));
+		} catch (Exception e) {
+			LOGGER.error(e.getMessage());
+			throw new ApplicationContextException(UserConstants.ERRROR_MSG_UNABLE_TO_ENCODE_USER_PASSWORD);
+		}
 		organizationVO.setSubscriptionType(CommonConstant.SUBSCRIPTION_TYPE_DEMO);
 		return organizationVO;
 	}
@@ -384,7 +391,7 @@ public class AuthServiceImpl implements AuthService {
 		userVO.setAccessRightsRoleId(createUserFormDTO.getAccessRightsRoleId());
 		userVO.setPNo(createUserFormDTO.getPNo());
 		userVO.setCreatedBy(createUserFormDTO.getCreatedBy());
-		userVO.setReceiverId(createUserFormDTO.getReceiverId());
+		userVO.setEmitterId(createUserFormDTO.getEmitterId());
 		userVO.setUpdatedBy(createUserFormDTO.getCreatedBy());
 		try {
 			userVO.setPassword(encoder.encode(CryptoUtils.getDecrypt(createUserFormDTO.getPassword())));

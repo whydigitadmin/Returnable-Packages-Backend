@@ -43,9 +43,6 @@ public class OrganizationVO {
 	@Column(name = "phone")
 	private String phoneNumber;
 
-	@Column(name = "street")
-	private String street;
-
 	@Column(name = "city")
 	private String city;
 
@@ -53,7 +50,7 @@ public class OrganizationVO {
 	private String state;
 
 	@Column(name = "pincode")
-	private String postalCode;
+	private String pinCode;
 
 	@Column(name = "country")
 	private String country;
@@ -64,8 +61,17 @@ public class OrganizationVO {
 	@Column(name = "code")
 	private String code;
 
+	private String email;
+	
+	private String address;
+	
+	private String password;
+	
+	@Column(name = "adminfirstname")
+	private String adminFirstName;
+	
 	@Column(name = "active")
-	private boolean isActive;
+	private boolean active;
 
 	@Column(name = "subscriptionType")
 	private String subscriptionType;

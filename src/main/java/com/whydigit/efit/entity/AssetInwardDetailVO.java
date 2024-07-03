@@ -52,10 +52,6 @@ public class AssetInwardDetailVO {
     @JoinColumn(name ="assetinwardid")
 	@JsonBackReference
 	private AssetInwardVO assetInwardVO;
-	
-	
 
-	@Embedded
-	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
 	
 }
