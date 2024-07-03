@@ -1,5 +1,8 @@
 package com.whydigit.efit.service;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,6 +101,17 @@ public class CompanyServiceImpl implements CompanyService {
 			throw new ApplicationContextException(UserConstants.ERRROR_MSG_UNABLE_TO_ENCODE_USER_PASSWORD);
 		}
 
+	}
+
+	@Override
+	public List<OrganizationVO> getAllCompany() {
+		return organizationRepo.findAll();
+	}
+
+	@Override
+	public Optional<OrganizationVO> getAllCompanyByOrgId(Long id) {
+		
+		return organizationRepo.findCompanyById(id);
 	}
 
 }
