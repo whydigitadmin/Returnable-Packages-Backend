@@ -30,7 +30,7 @@ public class BinAllotmentVO {
 	@Column(name = "issuerequestid")
 	private Long id;
 	private String scode="BNREQ";
-	@Column(name = "docid", length = 25)
+	@Column(name = "docid")
 	private String docId;
 	@Column(name = "docdate")
 	private LocalDate docDate;
@@ -40,7 +40,7 @@ public class BinAllotmentVO {
 	private Long customerId;
 	@Column(name = "whlocationid")
 	private long warehouseLocationId;
-	@Column(name = "warehouselocation", length = 50)
+	@Column(name = "warehouselocation")
 	private String warehouseLocation;
 	@Column(name = "emitterid")
 	private long emitterId;
@@ -48,7 +48,7 @@ public class BinAllotmentVO {
 	private long reqAddressId;
 	@Column(name = "flowid")
 	private Long flowTo;
-	@Column(name = "flow", length = 25)
+	@Column(name = "flow")
 	private String flowName;
 	@Column(name = "totalissueitem")
 	private int totalIssueItem;
@@ -62,11 +62,11 @@ public class BinAllotmentVO {
 	private LocalDate demandDate;
 	@Column(name = "issuestatus")
 	private int issueStatus;
-	@Column(name = "createdby", length = 25)
+	@Column(name = "createdby")
 	private String createdBy;
-	@Column(name = "modifiedy", length = 25)
+	@Column(name = "modifiedy")
 	private String modifiedBy;
-	@Column(name = "cancelremarks", length = 25)
+	@Column(name = "cancelremarks")
 	private String cancelRemark;
 	private String remark;
 	private boolean active;

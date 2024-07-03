@@ -31,15 +31,15 @@ public class InwardVO {
 	@Column(name ="issuerequest3id")
 	private long id;
 	private String status;
-	@Column(name ="returnqty",length =15)
+	@Column(name ="returnqty")
 	private int returnQty;
-	@Column(name ="netqtyrecieved",length =15)
+	@Column(name ="netqtyrecieved")
 	private int netQtyRecieved;
-	@Column(name ="netrecacceptstatus",length =15)
+	@Column(name ="netrecacceptstatus")
 	private boolean netRecAcceptStatus;
-	@Column(name ="issuerequest2rowid",length=15)
+	@Column(name ="issuerequest2rowid")
 	private int issueRequest2RowId;		
-	@Column(name ="remarks",length =200)
+	@Column(name ="remarks")
 	private String remarks;
 	
 	@JsonBackReference

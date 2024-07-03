@@ -157,7 +157,6 @@ import com.whydigit.efit.repo.DmapDetailsRepo;
 import com.whydigit.efit.repo.DmapRepo;
 import com.whydigit.efit.repo.FlowDetailRepo;
 import com.whydigit.efit.repo.FlowRepo;
-import com.whydigit.efit.repo.InwardRepo;
 import com.whydigit.efit.repo.IssueItemRepo;
 import com.whydigit.efit.repo.IssueRequestRepo;
 import com.whydigit.efit.repo.KitAssetRepo;
@@ -198,7 +197,6 @@ public class MasterServiceImpl implements MasterService {
 
 	@Autowired
 	WarehouseRepository warehouseRepo;
-	
 
 	@Autowired
 	TransportPickupRepo transportPickupRepo;
@@ -867,7 +865,7 @@ public class MasterServiceImpl implements MasterService {
 		}
 		return flowVO;
 	}
-	
+
 	@Override
 	public List<FlowVO> getAllReceiverActiveFlow(Long orgId, Long receiverId) {
 		List<FlowVO> flowVO = new ArrayList<>();
@@ -895,6 +893,7 @@ public class MasterServiceImpl implements MasterService {
 		FlowVO flowVO = createFlowVOByFlowDTO(flowDTO);
 		flowVO.setCreatedBy(flowDTO.getCreatedBy());
 		flowVO.setModifiedBy(flowDTO.getCreatedBy());
+		flowVO.setActive(flowDTO.isActive());
 		flowVO.setEmitter(flowRepo.findEmiterbyId(flowVO.getEmitterId()));
 		flowVO.setWarehouseLocation(flowRepo.getWarehouseLocationByLocationId(flowDTO.getWarehouseId()));
 		flowVO.setRetrievalWarehouseLocation(
@@ -936,9 +935,9 @@ public class MasterServiceImpl implements MasterService {
 					fdDTO.getOrgId());
 			basicDetailVO.setEflag(true);
 			basicDetailRepo.save(basicDetailVO);
-			return FlowDetailVO.builder().cycleTime(fdDTO.getCycleTime())
-					.emitterId(flowDTO.getEmitterId()).orgId(flowDTO.getOrgId()).partName(fdDTO.getPartName())
-					.kitDesc(fdDTO.getKitDesc()).kitNo(fdDTO.getKitNo()).partNumber(fdDTO.getPartNumber())
+			return FlowDetailVO.builder().cycleTime(fdDTO.getCycleTime()).emitterId(flowDTO.getEmitterId())
+					.orgId(flowDTO.getOrgId()).partName(fdDTO.getPartName()).kitDesc(fdDTO.getKitDesc())
+					.kitNo(fdDTO.getKitNo()).partNumber(fdDTO.getPartNumber())
 					.partQty(kitRepo.findPartqty(fdDTO.getKitNo()))
 					.emitter(flowRepo.findEmiterbyId(flowVO.getEmitterId())).flowVO(flowVO).build();
 		}).collect(Collectors.toList());
@@ -955,28 +954,28 @@ public class MasterServiceImpl implements MasterService {
 		}
 
 		getFlowVOFromFlowDTO(flowDTO, flowVO);
-		
-		List<FlowDetailVO> detailVOs=flowDetailRepo.findByFlowVO(flowVO);
-  		flowDetailRepo.deleteAll(detailVOs);
-		
+
+		List<FlowDetailVO> detailVOs = flowDetailRepo.findByFlowVO(flowVO);
+		flowDetailRepo.deleteAll(detailVOs);
+
 		// Update customer details excluding customer type and customer code
 		// Update or add new address details
 		List<FlowDetailVO> flowDetailVOList = new ArrayList<>();
 		if (flowDTO.getFlowDetailDTO() != null) {
 			for (FlowDetailDTO flowDetailDTO : flowDTO.getFlowDetailDTO()) {
-				FlowDetailVO flowDetailVO1=new FlowDetailVO();
-					flowDetailVO1.setCycleTime(flowDetailDTO.getCycleTime());
-					flowDetailVO1.setEmitterId(flowDTO.getEmitterId());
-					flowDetailVO1.setOrgId(flowDetailDTO.getOrgId());
-					flowDetailVO1.setPartName(flowDetailDTO.getPartName());
-					flowDetailVO1.setKitDesc(flowDetailDTO.getKitDesc());
-					flowDetailVO1.setKitNo(flowDetailDTO.getKitNo());
-					flowDetailVO1.setPartNumber(flowDetailDTO.getPartNumber());
-					flowDetailVO1.setPartQty(kitRepo.findPartqty(flowDetailDTO.getKitNo()));
-					flowDetailVO1.setEmitter(flowRepo.findEmiterbyId(flowDTO.getEmitterId()));
-					flowDetailVO1.setFlowVO(flowVO);
-					flowDetailVOList.add(flowDetailVO1);
-				
+				FlowDetailVO flowDetailVO1 = new FlowDetailVO();
+				flowDetailVO1.setCycleTime(flowDetailDTO.getCycleTime());
+				flowDetailVO1.setEmitterId(flowDTO.getEmitterId());
+				flowDetailVO1.setOrgId(flowDetailDTO.getOrgId());
+				flowDetailVO1.setPartName(flowDetailDTO.getPartName());
+				flowDetailVO1.setKitDesc(flowDetailDTO.getKitDesc());
+				flowDetailVO1.setKitNo(flowDetailDTO.getKitNo());
+				flowDetailVO1.setPartNumber(flowDetailDTO.getPartNumber());
+				flowDetailVO1.setPartQty(kitRepo.findPartqty(flowDetailDTO.getKitNo()));
+				flowDetailVO1.setEmitter(flowRepo.findEmiterbyId(flowDTO.getEmitterId()));
+				flowDetailVO1.setFlowVO(flowVO);
+				flowDetailVOList.add(flowDetailVO1);
+
 			}
 		}
 		flowVO.setFlowDetailVO(flowDetailVOList);
@@ -1335,27 +1334,27 @@ public class MasterServiceImpl implements MasterService {
 
 		// Update kit details
 		getKitVOFromKitDTO(kitDTO, kitVO);
-		List<KitAssetVO> assetVOs=kitAssetRepo.findByKitVO(kitVO);
+		List<KitAssetVO> assetVOs = kitAssetRepo.findByKitVO(kitVO);
 		kitAssetRepo.deleteAll(assetVOs);
 
 		// Update or create kit asset details
 		List<KitAssetVO> kitAssetVOList = new ArrayList<>();
 		if (kitDTO.getKitAssetDTO() != null) {
 			for (KitAssetDTO kitAssetDTO : kitDTO.getKitAssetDTO()) {
-					KitAssetVO kitAssetVO = new KitAssetVO();
-					kitAssetVO.setAssetType(kitAssetDTO.getAssetType());
-					kitAssetVO.setBelongsTo(kitAssetDTO.getBelongsTo());
-					kitAssetVO.setManufacturePartCode(kitAssetDTO.getManufacturePartCode());
-					kitAssetVO.setAssetCategory(kitAssetDTO.getAssetCategory());
-					kitAssetVO.setCategoryCode(kitAssetDTO.getCategoryCode());
-					kitAssetVO.setAssetCodeId(kitAssetDTO.getAssetCodeId());
-					kitAssetVO.setAssetName(kitAssetDTO.getAssetDesc());
-					kitAssetVO.setQuantity(kitAssetDTO.getQuantity());
-					kitAssetVO.setKitVO(kitVO);
-					kitAssetVOList.add(kitAssetVO);
-				}
+				KitAssetVO kitAssetVO = new KitAssetVO();
+				kitAssetVO.setAssetType(kitAssetDTO.getAssetType());
+				kitAssetVO.setBelongsTo(kitAssetDTO.getBelongsTo());
+				kitAssetVO.setManufacturePartCode(kitAssetDTO.getManufacturePartCode());
+				kitAssetVO.setAssetCategory(kitAssetDTO.getAssetCategory());
+				kitAssetVO.setCategoryCode(kitAssetDTO.getCategoryCode());
+				kitAssetVO.setAssetCodeId(kitAssetDTO.getAssetCodeId());
+				kitAssetVO.setAssetName(kitAssetDTO.getAssetDesc());
+				kitAssetVO.setQuantity(kitAssetDTO.getQuantity());
+				kitAssetVO.setKitVO(kitVO);
+				kitAssetVOList.add(kitAssetVO);
 			}
-		
+		}
+
 		kitVO.setKitAssetVO(kitAssetVOList);
 
 		return kitRepo.save(kitVO);
@@ -1881,6 +1880,7 @@ public class MasterServiceImpl implements MasterService {
 		stockBranchVO.setOrgId(stockBranchDTO.getOrgId());
 		stockBranchVO.setCreatedBy(stockBranchDTO.getCreatedby());
 		stockBranchVO.setModifiedBy(stockBranchDTO.getCreatedby());
+		stockBranchVO.setActive(stockBranchDTO.isActive());
 		// stockBranchVO.setActive(stockBranchDTO.isActive());
 		return stockBranchRepo.save(stockBranchVO);
 	}
@@ -1907,6 +1907,7 @@ public class MasterServiceImpl implements MasterService {
 			}
 			// existingStockBranch.setActive(stockBranchDTO.isActive());
 			existingStockBranch.setModifiedBy(stockBranchDTO.getCreatedby());
+			existingStockBranch.setActive(stockBranchDTO.isActive());
 			return stockBranchRepo.save(existingStockBranch);
 		} else {
 			throw new NoSuchElementException("StockBranch with ID " + stockBranchDTO.getId() + " not found");
@@ -2463,11 +2464,11 @@ public class MasterServiceImpl implements MasterService {
 
 	@Override
 	public List<Map<String, String>> getBinAllotmentPdfHeaderDetails(String docid) {
-	
-		Set<Object[]> header= binAllotmentNewRepo.getBinAllotmentHeader(docid);
-		 return findwaitingHeader(header);
+
+		Set<Object[]> header = binAllotmentNewRepo.getBinAllotmentHeader(docid);
+		return findwaitingHeader(header);
 	}
-	
+
 	private List<Map<String, String>> findwaitingHeader(Set<Object[]> header) {
 		List<Map<String, String>> allotDetails = new ArrayList<>();
 		for (Object[] ps : header) {
@@ -2657,16 +2658,16 @@ public class MasterServiceImpl implements MasterService {
 	}
 
 	@Override
-	public List<Map<String, Object>> getAvailableKitQtyByEmitter(Long orgId, Long emitterId, String kitId, Long flowId) {
-		
-		FlowVO flowVO= flowRepo.findById(flowId).get();
-		Set<Object[]> emitterAvailKitQty= kitRepo.findByAvailableKitQtyByEmitter(orgId,emitterId,kitId,flowVO.getFlowName());
-		
+	public List<Map<String, Object>> getAvailableKitQtyByEmitter(Long orgId, Long emitterId, String kitId,
+			Long flowId) {
+
+		FlowVO flowVO = flowRepo.findById(flowId).get();
+		Set<Object[]> emitterAvailKitQty = kitRepo.findByAvailableKitQtyByEmitter(orgId, emitterId, kitId,
+				flowVO.getFlowName());
+
 		return getAvaikitDetails(emitterAvailKitQty);
 	}
 
-
-	
 	private List<Map<String, Object>> getAvaikitDetails(Set<Object[]> emitterAvailKitQty) {
 		List<Map<String, Object>> avlKitQty = new ArrayList<>();
 		for (Object[] ps : emitterAvailKitQty) {
@@ -2900,139 +2901,140 @@ public class MasterServiceImpl implements MasterService {
 
 		return flowRepo.findByBranchcode(orgId, flow);
 	}
-	
-	//Excel File Uploads
+
+	// Excel File Uploads
 
 	private int totalRows = 0; // Initialize totalRows
 
 	private int successfulUploads = 0; // Initialize successfulUploads
-	
+
 	@Override
 	@Transactional
-	public void ExcelUploadForAssetCategory(MultipartFile[] files, CustomerAttachmentType type, Long orgId,String createdBy)
-	        throws ApplicationException {
-	    List<AssetCategoryVO> assetCategoryVOsToSave = new ArrayList<>();
-	    totalRows = 0; // Reset totalRows for each execution
-	    successfulUploads = 0; // Reset successfulUploads for each execution
+	public void ExcelUploadForAssetCategory(MultipartFile[] files, CustomerAttachmentType type, Long orgId,
+			String createdBy) throws ApplicationException {
+		List<AssetCategoryVO> assetCategoryVOsToSave = new ArrayList<>();
+		totalRows = 0; // Reset totalRows for each execution
+		successfulUploads = 0; // Reset successfulUploads for each execution
 
-	    // Process each uploaded file
-	    for (MultipartFile file : files) {
-            try (Workbook workbook = WorkbookFactory.create(file.getInputStream())) {
-                Sheet sheet = workbook.getSheetAt(0); // Assuming only one sheet
-                List<String> errorMessages = new ArrayList<>();
-                System.out.println("Processing file: " + file.getOriginalFilename()); // Debug statement
-                Row headerRow = sheet.getRow(0);
-                if (!isHeaderValidAssetCategory(headerRow)) {
-                    throw new ApplicationException("Invalid Excel format.Please Refer The Sample File");
-                }
+		// Process each uploaded file
+		for (MultipartFile file : files) {
+			try (Workbook workbook = WorkbookFactory.create(file.getInputStream())) {
+				Sheet sheet = workbook.getSheetAt(0); // Assuming only one sheet
+				List<String> errorMessages = new ArrayList<>();
+				System.out.println("Processing file: " + file.getOriginalFilename()); // Debug statement
+				Row headerRow = sheet.getRow(0);
+				if (!isHeaderValidAssetCategory(headerRow)) {
+					throw new ApplicationException("Invalid Excel format.Please Refer The Sample File");
+				}
 
-		        // Check all rows for validity first
-		        for (Row row : sheet) {
-		            if (row.getRowNum() == 0) {
-		                continue; // Skip header row
-		            }
+				// Check all rows for validity first
+				for (Row row : sheet) {
+					if (row.getRowNum() == 0) {
+						continue; // Skip header row
+					}
 
-		            totalRows++; // Increment totalRows
+					totalRows++; // Increment totalRows
 
-		            String assetType = row.getCell(0).getStringCellValue();
-		            String category = row.getCell(1).getStringCellValue();
-		            String categoryCode = row.getCell(2).getStringCellValue();
+					String assetType = row.getCell(0).getStringCellValue();
+					String category = row.getCell(1).getStringCellValue();
+					String categoryCode = row.getCell(2).getStringCellValue();
 
-		            // Validate each row
-		            try {
-		                if (assetCategoryRepo.existsByCategoryAndOrgId(category, orgId)) {
-		                    errorMessages.add("Category " + category + " Already exists for this Organization. Row: "
-		                            + (row.getRowNum() + 1));
-		                }
-		                if (assetCategoryRepo.existsByCategoryCodeAndOrgId(categoryCode, orgId)) {
-		                    errorMessages.add("Category Code " + categoryCode
-		                            + " Already exists for this Organization. Row: " + (row.getRowNum() + 1));
-		                }
-		                AssetTypeVO assetTypeVO = assetTypeRepo.findByOrgIdAndAssetType(orgId, assetType);
-		                if (assetTypeVO == null) {
-		                    errorMessages.add("Asset Type " + assetType + " not found for orgId: " + orgId
-		                            + " and assetType: " + assetType + ". Row: " + (row.getRowNum() + 1));
-		                }
-		            } catch (Exception e) {
-		                errorMessages.add("Error processing row " + (row.getRowNum() + 1) + ": " + e.getMessage());
-		            }
-		        }
+					// Validate each row
+					try {
+						if (assetCategoryRepo.existsByCategoryAndOrgId(category, orgId)) {
+							errorMessages.add("Category " + category + " Already exists for this Organization. Row: "
+									+ (row.getRowNum() + 1));
+						}
+						if (assetCategoryRepo.existsByCategoryCodeAndOrgId(categoryCode, orgId)) {
+							errorMessages.add("Category Code " + categoryCode
+									+ " Already exists for this Organization. Row: " + (row.getRowNum() + 1));
+						}
+						AssetTypeVO assetTypeVO = assetTypeRepo.findByOrgIdAndAssetType(orgId, assetType);
+						if (assetTypeVO == null) {
+							errorMessages.add("Asset Type " + assetType + " not found for orgId: " + orgId
+									+ " and assetType: " + assetType + ". Row: " + (row.getRowNum() + 1));
+						}
+					} catch (Exception e) {
+						errorMessages.add("Error processing row " + (row.getRowNum() + 1) + ": " + e.getMessage());
+					}
+				}
 
-		        // If there are errors, throw ApplicationException and do not save any rows
-		        if (!errorMessages.isEmpty()) {
-		            throw new ApplicationException(
-		                    "Excel upload validation failed. Errors: " + String.join(", ", errorMessages));
-		        }
+				// If there are errors, throw ApplicationException and do not save any rows
+				if (!errorMessages.isEmpty()) {
+					throw new ApplicationException(
+							"Excel upload validation failed. Errors: " + String.join(", ", errorMessages));
+				}
 
-		        // No errors found, now save all rows
-		        for (Row row : sheet) {
-		            if (row.getRowNum() == 0) {
-		                continue; // Skip header row
-		            }
+				// No errors found, now save all rows
+				for (Row row : sheet) {
+					if (row.getRowNum() == 0) {
+						continue; // Skip header row
+					}
 
-		            String assetType = row.getCell(0).getStringCellValue();
-		            String category = row.getCell(1).getStringCellValue();
-		            String categoryCode = row.getCell(2).getStringCellValue();
+					String assetType = row.getCell(0).getStringCellValue();
+					String category = row.getCell(1).getStringCellValue();
+					String categoryCode = row.getCell(2).getStringCellValue();
 
-		            // Create AssetCategoryVO and add to list for batch saving
-		            AssetCategoryVO assetCategoryVO = new AssetCategoryVO();
-		            assetCategoryVO.setOrgId(orgId);
-		            assetCategoryVO.setActive(true);
-		            assetCategoryVO.setAssetType(assetType.toUpperCase());
-		            assetCategoryVO.setCategory(category.toUpperCase());
-		            assetCategoryVO.setCategoryCode(categoryCode.toUpperCase());
-		            assetCategoryVOsToSave.add(assetCategoryVO);
-		            successfulUploads++; // Increment successfulUploads
-		        }
-		    } catch (IOException e) {
-		        // Handle IO exceptions specific to the file
-		        throw new ApplicationException("Failed to process file: " + file.getOriginalFilename() + " - " + e.getMessage());
-		    }
+					// Create AssetCategoryVO and add to list for batch saving
+					AssetCategoryVO assetCategoryVO = new AssetCategoryVO();
+					assetCategoryVO.setOrgId(orgId);
+					assetCategoryVO.setActive(true);
+					assetCategoryVO.setAssetType(assetType.toUpperCase());
+					assetCategoryVO.setCategory(category.toUpperCase());
+					assetCategoryVO.setCategoryCode(categoryCode.toUpperCase());
+					assetCategoryVOsToSave.add(assetCategoryVO);
+					successfulUploads++; // Increment successfulUploads
+				}
+			} catch (IOException e) {
+				// Handle IO exceptions specific to the file
+				throw new ApplicationException(
+						"Failed to process file: " + file.getOriginalFilename() + " - " + e.getMessage());
+			}
 		}
 
 		// Batch save all AssetCategoryVOs
 		assetCategoryRepo.saveAll(assetCategoryVOsToSave);
 	}
 
-	 private boolean isHeaderValidAssetCategory(Row headerRow) {
-	        if (headerRow == null) {
-	            return false;
-	        }
-	        int expectedColumnCount = 3;
-	        if (headerRow.getPhysicalNumberOfCells() != expectedColumnCount) {
-	            return false;
-	        }
-	        return "assetType".equalsIgnoreCase(getStringCellValue(headerRow.getCell(0))) &&
-	               "category".equalsIgnoreCase(getStringCellValue(headerRow.getCell(1)))  &&
-	               "categoryCode".equalsIgnoreCase(getStringCellValue(headerRow.getCell(2)));
-	    }
+	private boolean isHeaderValidAssetCategory(Row headerRow) {
+		if (headerRow == null) {
+			return false;
+		}
+		int expectedColumnCount = 3;
+		if (headerRow.getPhysicalNumberOfCells() != expectedColumnCount) {
+			return false;
+		}
+		return "assetType".equalsIgnoreCase(getStringCellValue(headerRow.getCell(0)))
+				&& "category".equalsIgnoreCase(getStringCellValue(headerRow.getCell(1)))
+				&& "categoryCode".equalsIgnoreCase(getStringCellValue(headerRow.getCell(2)));
+	}
 
-		private boolean isRowEmpty(Row row) {
-	        for (Cell cell : row) {
-	            if (cell.getCellType() != CellType.BLANK) {
-	                return false;
-	            }
-	        }
-	        return true;
-	    }
+	private boolean isRowEmpty(Row row) {
+		for (Cell cell : row) {
+			if (cell.getCellType() != CellType.BLANK) {
+				return false;
+			}
+		}
+		return true;
+	}
 
-	    private String getStringCellValue(Cell cell) {
-	        if (cell == null) {
-	            return "";
-	        }
-	        switch (cell.getCellType()) {
-	            case STRING:
-	                return cell.getStringCellValue();
-	            case NUMERIC:
-	                return BigDecimal.valueOf(cell.getNumericCellValue()).toPlainString();
-	            case BOOLEAN:
-	                return String.valueOf(cell.getBooleanCellValue());
-	            case FORMULA:
-	                return cell.getCellFormula();
-	            default:
-	                return "";
-	        }
-	    }
+	private String getStringCellValue(Cell cell) {
+		if (cell == null) {
+			return "";
+		}
+		switch (cell.getCellType()) {
+		case STRING:
+			return cell.getStringCellValue();
+		case NUMERIC:
+			return BigDecimal.valueOf(cell.getNumericCellValue()).toPlainString();
+		case BOOLEAN:
+			return String.valueOf(cell.getBooleanCellValue());
+		case FORMULA:
+			return cell.getCellFormula();
+		default:
+			return "";
+		}
+	}
 
 	// Method to retrieve total rows processed
 	public int getTotalRows() {
@@ -3044,519 +3046,521 @@ public class MasterServiceImpl implements MasterService {
 		return successfulUploads;
 	}
 
-
-
 	private int totalRows2 = 0; // Initialize totalRows
 
 	private int successfulUploads2 = 0; // Initialize successfulUploads
-	
+
 	@Override
 	@Transactional
-	public void ExcelUploadForUnit(MultipartFile[] files, CustomerAttachmentType type, Long orgId,String createdBy)
-	        throws ApplicationException {
-	    List<UnitVO> unitVOs = new ArrayList<>();
-	    totalRows = 0; // Reset totalRows for each execution
-	    successfulUploads = 0; // Reset successfulUploads for each execution
+	public void ExcelUploadForUnit(MultipartFile[] files, CustomerAttachmentType type, Long orgId, String createdBy)
+			throws ApplicationException {
+		List<UnitVO> unitVOs = new ArrayList<>();
+		totalRows = 0; // Reset totalRows for each execution
+		successfulUploads = 0; // Reset successfulUploads for each execution
 
-	    // Process each uploaded file
+		// Process each uploaded file
 		for (MultipartFile file : files) {
-		    try (Workbook workbook = WorkbookFactory.create(file.getInputStream())) {
-		        Sheet sheet = workbook.getSheetAt(0); // Assuming only one sheet
+			try (Workbook workbook = WorkbookFactory.create(file.getInputStream())) {
+				Sheet sheet = workbook.getSheetAt(0); // Assuming only one sheet
 
-		        List<String> errorMessages = new ArrayList<>();
-		        
-		        Row headerRow = sheet.getRow(0);
-                if (!isHeaderValidUnit(headerRow)) {
-                    throw new ApplicationException("Invalid Excel format.Please Refer The Sample File");
-                }
+				List<String> errorMessages = new ArrayList<>();
 
-		        // Check all rows for validity first
-		        for (Row row : sheet) {
-		            if (row.getRowNum() == 0) {
-		                continue; // Skip header row
-		            }
+				Row headerRow = sheet.getRow(0);
+				if (!isHeaderValidUnit(headerRow)) {
+					throw new ApplicationException("Invalid Excel format.Please Refer The Sample File");
+				}
 
-		            totalRows++; // Increment totalRows
+				// Check all rows for validity first
+				for (Row row : sheet) {
+					if (row.getRowNum() == 0) {
+						continue; // Skip header row
+					}
 
-		            String unit= row.getCell(0).getStringCellValue();
+					totalRows++; // Increment totalRows
 
-		            // Validate each row
-		            try {
-		                if (unitRepo.existsByUnitAndOrgId(unit, orgId)) {
-		                    errorMessages.add("unit " + unit + " Already exists for this Organization. Row: "
-		                            + (row.getRowNum() + 1));
-		                }
-		               
-		            } catch (Exception e) {
-		                errorMessages.add("Error processing row " + (row.getRowNum() + 1) + ": " + e.getMessage());
-		            }
-		        }
+					String unit = row.getCell(0).getStringCellValue();
 
-		        // If there are errors, throw ApplicationException and do not save any rows
-		        if (!errorMessages.isEmpty()) {
-		            throw new ApplicationException(
-		                    "Excel upload validation failed. Errors: " + String.join(", ", errorMessages));
-		        }
+					// Validate each row
+					try {
+						if (unitRepo.existsByUnitAndOrgId(unit, orgId)) {
+							errorMessages.add("unit " + unit + " Already exists for this Organization. Row: "
+									+ (row.getRowNum() + 1));
+						}
 
-		        // No errors found, now save all rows
-		        for (Row row : sheet) {
-		            if (row.getRowNum() == 0) {
-		                continue; // Skip header row
-		            }
+					} catch (Exception e) {
+						errorMessages.add("Error processing row " + (row.getRowNum() + 1) + ": " + e.getMessage());
+					}
+				}
 
-		            String unit = row.getCell(0).getStringCellValue();
-		           
+				// If there are errors, throw ApplicationException and do not save any rows
+				if (!errorMessages.isEmpty()) {
+					throw new ApplicationException(
+							"Excel upload validation failed. Errors: " + String.join(", ", errorMessages));
+				}
 
-		            // Create AssetCategoryVO and add to list for batch saving
-		            UnitVO unitVO = new UnitVO();
-		            unitVO.setOrgId(orgId);
-		            unitVO.setActive(true);
-		            unitVO.setUnit(unit);	 
-		            unitVOs.add(unitVO);
-		            successfulUploads++; // Increment successfulUploads
-		        }
-		    } catch (IOException e) {
-		        // Handle IO exceptions specific to the file
-		        throw new ApplicationException("Failed to process file: " + file.getOriginalFilename() + " - " + e.getMessage());
-		    }
+				// No errors found, now save all rows
+				for (Row row : sheet) {
+					if (row.getRowNum() == 0) {
+						continue; // Skip header row
+					}
+
+					String unit = row.getCell(0).getStringCellValue();
+
+					// Create AssetCategoryVO and add to list for batch saving
+					UnitVO unitVO = new UnitVO();
+					unitVO.setOrgId(orgId);
+					unitVO.setActive(true);
+					unitVO.setUnit(unit);
+					unitVOs.add(unitVO);
+					successfulUploads++; // Increment successfulUploads
+				}
+			} catch (IOException e) {
+				// Handle IO exceptions specific to the file
+				throw new ApplicationException(
+						"Failed to process file: " + file.getOriginalFilename() + " - " + e.getMessage());
+			}
 		}
 
 		// Batch save all AssetCategoryVOs
 		unitRepo.saveAll(unitVOs);
 	}
-	
+
 	private boolean isHeaderValidUnit(Row headerRow) {
-        if (headerRow == null) {
-            return false;
-        }
-        int expectedColumnCount = 1;
-        if (headerRow.getPhysicalNumberOfCells() != expectedColumnCount) {
-            return false;
-        }
-        return "unit".equalsIgnoreCase(getStringCellValue(headerRow.getCell(0)));
-    }
+		if (headerRow == null) {
+			return false;
+		}
+		int expectedColumnCount = 1;
+		if (headerRow.getPhysicalNumberOfCells() != expectedColumnCount) {
+			return false;
+		}
+		return "unit".equalsIgnoreCase(getStringCellValue(headerRow.getCell(0)));
+	}
 
 	private boolean isRowEmpty2(Row row) {
-        for (Cell cell : row) {
-            if (cell.getCellType() != CellType.BLANK) {
-                return false;
-            }
-        }
-        return true;
-    }
+		for (Cell cell : row) {
+			if (cell.getCellType() != CellType.BLANK) {
+				return false;
+			}
+		}
+		return true;
+	}
 
-    private String getStringCellValue2(Cell cell) {
-        if (cell == null) {
-            return "";
-        }
-        switch (cell.getCellType()) {
-            case STRING:
-                return cell.getStringCellValue();
-            case NUMERIC:
-                return BigDecimal.valueOf(cell.getNumericCellValue()).toPlainString();
-            case BOOLEAN:
-                return String.valueOf(cell.getBooleanCellValue());
-            case FORMULA:
-                return cell.getCellFormula();
-            default:
-                return "";
-        }
-    }
-
+	private String getStringCellValue2(Cell cell) {
+		if (cell == null) {
+			return "";
+		}
+		switch (cell.getCellType()) {
+		case STRING:
+			return cell.getStringCellValue();
+		case NUMERIC:
+			return BigDecimal.valueOf(cell.getNumericCellValue()).toPlainString();
+		case BOOLEAN:
+			return String.valueOf(cell.getBooleanCellValue());
+		case FORMULA:
+			return cell.getCellFormula();
+		default:
+			return "";
+		}
+	}
 
 	// Method to retrieve total rows processed
-		public int getTotalRows2() {
-			return totalRows;
-		}
+	public int getTotalRows2() {
+		return totalRows;
+	}
 
-		// Method to retrieve successful uploads count
-		public int getSuccessfulUploads2() {
-			return successfulUploads;
-		}
-	
+	// Method to retrieve successful uploads count
+	public int getSuccessfulUploads2() {
+		return successfulUploads;
+	}
 
-		private int totalRows3 = 0; // Initialize totalRows
+	private int totalRows3 = 0; // Initialize totalRows
 
-		private int successfulUploads3 = 0; // Initialize successfulUploads
-		
-		@Override
-		@Transactional
-		public void ExcelUploadForStockBranch(MultipartFile[] files, CustomerAttachmentType type, Long orgId,String createdBy)
-		        throws ApplicationException {
-			List<StockBranchVO> stockBranchVOs = new ArrayList<>();
-		    totalRows = 0; // Reset totalRows for each execution
-		    successfulUploads = 0; // Reset successfulUploads for each execution
+	private int successfulUploads3 = 0; // Initialize successfulUploads
 
-		    // Process each uploaded file
-			for (MultipartFile file : files) {
-			    try (Workbook workbook = WorkbookFactory.create(file.getInputStream())) {
-			        Sheet sheet = workbook.getSheetAt(0); // Assuming only one sheet
+	@Override
+	@Transactional
+	public void ExcelUploadForStockBranch(MultipartFile[] files, CustomerAttachmentType type, Long orgId,
+			String createdBy) throws ApplicationException {
+		List<StockBranchVO> stockBranchVOs = new ArrayList<>();
+		totalRows = 0; // Reset totalRows for each execution
+		successfulUploads = 0; // Reset successfulUploads for each execution
 
-			        List<String> errorMessages = new ArrayList<>();
-			        System.out.println("Processing file: " + file.getOriginalFilename()); // Debug statement
-			        
-			        Row headerRow = sheet.getRow(0);
-	                if (!isHeaderValidStockBranch(headerRow)) {
-	                    throw new ApplicationException("Invalid Excel format.Please Refer The Sample File");
-	                }
-			        // Check all rows for validity first
-			        for (Row row : sheet) {
-			            if (row.getRowNum() == 0) {
-			                continue; // Skip header row
-			            }
+		// Process each uploaded file
+		for (MultipartFile file : files) {
+			try (Workbook workbook = WorkbookFactory.create(file.getInputStream())) {
+				Sheet sheet = workbook.getSheetAt(0); // Assuming only one sheet
 
-			            totalRows++; // Increment totalRows
-			            String branchName = row.getCell(0).getStringCellValue();
-	                    String branchCode = row.getCell(1).getStringCellValue();
-			            // Validate each row
-			            try {
-	                        if (stockBranchRepo.existsByBranchAndOrgId(branchName, orgId)) {
-	                            errorMessages.add("Branch " + branchName + " already exists for this Organization. Row: "
-	                                    + (row.getRowNum() + 1));
-	                        }
-	                        if (stockBranchRepo.existsBybranchCodeAndOrgId(branchCode, orgId)) {
-	                            errorMessages.add("Branch Code " + branchCode + " already exists for this Organization. Row: "
-	                                    + (row.getRowNum() + 1));
-	                        }
-	                    } catch (Exception e) {
-	                        errorMessages.add("Error processing row " + (row.getRowNum() + 1) + ": " + e.getMessage());
-	                    }
-	                }
+				List<String> errorMessages = new ArrayList<>();
+				System.out.println("Processing file: " + file.getOriginalFilename()); // Debug statement
 
-			        // If there are errors, throw ApplicationException and do not save any rows
-			        if (!errorMessages.isEmpty()) {
-			            throw new ApplicationException(
-			                    "Excel upload validation failed. Errors: " + String.join(", ", errorMessages));
-			        }
-
-			        // No errors found, now save all rows
-			        for (Row row : sheet) {
-	                    if (row.getRowNum() == 0) {
-	                        continue; // Skip header row
-	                    }
-
-	                    String branchName = row.getCell(0).getStringCellValue();
-	                    String branchCode = row.getCell(1).getStringCellValue();
-
-	                    // Create StockBranchVO and add to list for batch saving
-	                    StockBranchVO vo = new StockBranchVO();
-	                    vo.setBranch(branchName);
-	                    vo.setBranchCode(branchCode);
-	                    vo.setOrgId(orgId);
-
-	                    stockBranchVOs.add(vo); // Add VO to list
-
-	                    successfulUploads++; // Increment successfulUploads4
-	                }
-	            }
-			     catch (IOException e) {
-			        // Handle IO exceptions specific to the file
-			        throw new ApplicationException("Failed to process file: " + file.getOriginalFilename() + " - " + e.getMessage());
-			    }
-			}
-
-			// Batch save all AssetCategoryVOs
-			stockBranchRepo.saveAll(stockBranchVOs);
-		}
-		
-		 private boolean isHeaderValidStockBranch(Row headerRow) {
-		        if (headerRow == null) {
-		            return false;
-		        }
-		        int expectedColumnCount = 2;
-		        if (headerRow.getPhysicalNumberOfCells() != expectedColumnCount) {
-		            return false;
-		        }
-		        return "branchName".equalsIgnoreCase(getStringCellValue(headerRow.getCell(0))) &&
-		               "branchCode".equalsIgnoreCase(getStringCellValue(headerRow.getCell(1))) ;
-		    }
-
-			private boolean isRowEmpty3(Row row) {
-		        for (Cell cell : row) {
-		            if (cell.getCellType() != CellType.BLANK) {
-		                return false;
-		            }
-		        }
-		        return true;
-		    }
-
-		    private String getStringCellValue3(Cell cell) {
-		        if (cell == null) {
-		            return "";
-		        }
-		        switch (cell.getCellType()) {
-		            case STRING:
-		                return cell.getStringCellValue();
-		            case NUMERIC:
-		                return BigDecimal.valueOf(cell.getNumericCellValue()).toPlainString();
-		            case BOOLEAN:
-		                return String.valueOf(cell.getBooleanCellValue());
-		            case FORMULA:
-		                return cell.getCellFormula();
-		            default:
-		                return "";
-		        }
-		    }
-
-
-		
-		// Method to retrieve total rows processed
-			public int getTotalRows3() {
-				return totalRows;
-			}
-
-			// Method to retrieve successful uploads count
-			public int getSuccessfulUploads3() {
-				return successfulUploads;
-			}
-			
-			@Override
-			public List<Map<String, Object>> getPartNoAndPartName(Long flowId, String kitNo, Long emitterId) {
-				
-				Set<Object[]> EmptystockDetails =assetStockDetailsRepo.getPartNameAndPartNoDetails(flowId,kitNo,emitterId);
-				return emptyGatheringDetails(EmptystockDetails);
-			}
-
-			private List<Map<String, Object>> emptyGatheringDetails(Set<Object[]> emptystockDetails) {
-				List<Map<String, Object>> oemEmptyStockdetails = new ArrayList<>();
-		        for (Object[] ps : emptystockDetails) {
-		            Map<String, Object> part = new HashMap<>();
-		            part.put("partNo", ps[0] != null ? ps[0].toString() : "");
-		            part.put("partName", ps[1] != null ? ps[1].toString() : "");
-		            part.put("kitNo", ps[2] != null ? ps[2].toString() : "");
-		            part.put("partQty", ps[3] != null ? Integer.parseInt(ps[3].toString()) : 0);
-		            
-		            oemEmptyStockdetails.add(part);
-		        }
-		        return oemEmptyStockdetails;
-			}
-
-			@Override
-			public Set<Object[]> getAvalkitqtyByWarehouse(String warehouse, String kitName) {
-				
-				return warehouseRepo.getAvalkitqtyByWarehouse(warehouse,kitName);
-			}
-			
-			@Override
-			public BinRetrievalVO createBinRetrieval(BinRetrievalDTO binRetrievalDTO) {
-
-				BinRetrievalVO binRetrievalVO= new BinRetrievalVO();
-				String finyr = binRetrievalRepo.findFinyr();
-				String binRetrievalDocId = finyr + "BRI" + binRetrievalRepo.finddocid();
-				binRetrievalVO.setDocId(binRetrievalDocId);	
-				binRetrievalRepo.nextSeq();
-
-				binRetrievalVO.setDocDate(binRetrievalDTO.getDocDate());
-			    binRetrievalVO.setRetrievalWarehouse(binRetrievalDTO.getRetrievalWarehouse());
-			    binRetrievalVO.setFromStockBranch(binRetrievalDTO.getFromStockBranch());
-			    binRetrievalVO.setToStockBranch(binRetrievalDTO.getToStockBranch());
-			    binRetrievalVO.setPickupDocId(binRetrievalDTO.getPickupDocId());
-			    binRetrievalVO.setPickupDate(binRetrievalDTO.getPickupDate());
-			    binRetrievalVO.setTransPortDocNo(binRetrievalDTO.getTransPortDocNo());
-			    binRetrievalVO.setTransPorter(binRetrievalDTO.getTransPorter());
-			    binRetrievalVO.setDriverName(binRetrievalDTO.getDriverName());
-			    binRetrievalVO.setHandOverBy(binRetrievalDTO.getHandOverBy());
-			    binRetrievalVO.setDriverPhoneNo(binRetrievalDTO.getDriverPhoneNo());
-			    binRetrievalVO.setVechicleNo(binRetrievalDTO.getVechicleNo());
-			    binRetrievalVO.setCreatedby(binRetrievalDTO.getCreatedby());
-			    binRetrievalVO.setOrgId(binRetrievalDTO.getOrgId());
-
-			    List<BinRetrievalDetailsVO>binRetrievalDetailsVO= new ArrayList<>();
-			    if(binRetrievalDTO.getBinRetrievalDetailsDTO()!=null)
-			    {
-			    	for(BinRetrievalDetailsDTO binRetrievalDetailsDTO:binRetrievalDTO.getBinRetrievalDetailsDTO()) 
-			    	{
-			    		BinRetrievalDetailsVO detailsVO=new BinRetrievalDetailsVO();
-			    		detailsVO.setCategory(binRetrievalDetailsDTO.getCategory());
-			    		detailsVO.setAsset(binRetrievalDetailsDTO.getAsset());
-			    		detailsVO.setAssetCode(binRetrievalDetailsDTO.getAssetCode());
-			    		detailsVO.setInvqty(binRetrievalDetailsDTO.getInvqty());
-			    		detailsVO.setRecqty(binRetrievalDetailsDTO.getRecqty());
-			    		detailsVO.setShortQty(binRetrievalDetailsDTO.getShortQty());
-			    		detailsVO.setDamageQty(binRetrievalDetailsDTO.getDamageQty());
-			    		detailsVO.setBinRetrievalVO(binRetrievalVO);
-			    			
-			    		binRetrievalDetailsVO.add(detailsVO);
-			    	}
-			    }
-			    
-			    binRetrievalVO.setBinRetrievalDetailsVO(binRetrievalDetailsVO);
-			    BinRetrievalVO binRetrievalVO2= binRetrievalRepo.save(binRetrievalVO);
-			    List<BinRetrievalDetailsVO>binRetrievalDetailsVOs=binRetrievalVO2.getBinRetrievalDetailsVO();
-			    if (binRetrievalDetailsVOs != null && !binRetrievalDetailsVOs.isEmpty()) {
-					for (BinRetrievalDetailsVO retrievalDetailsVO  : binRetrievalDetailsVOs) { 
-						AssetStockDetailsVO stockDetailsVO = new AssetStockDetailsVO();
-						stockDetailsVO.setStockRef(binRetrievalVO2.getPickupDocId());
-						stockDetailsVO.setStockBranch(binRetrievalVO2.getToStockBranch());
-						stockDetailsVO.setStockDate(binRetrievalVO2.getPickupDate());
-						stockDetailsVO.setSku(retrievalDetailsVO.getAsset());
-						stockDetailsVO.setSkuCode(retrievalDetailsVO.getAssetCode());
-						stockDetailsVO.setSkuQty(retrievalDetailsVO.getRecqty()*-1);
-						stockDetailsVO.setOrgId(binRetrievalVO2.getOrgId());
-						stockDetailsVO.setCategory(assetRepo.getCategoryByAssetCodeId(retrievalDetailsVO.getAssetCode()));
-						stockDetailsVO.setStatus("M");
-						stockDetailsVO.setScreen(binRetrievalVO2.getScreen());
-						stockDetailsVO.setSCode(binRetrievalVO2.getScode());
-						stockDetailsVO.setPm("M");
-						stockDetailsVO.setStockSource("");
-						stockDetailsVO.setBinLocation("");
-						stockDetailsVO.setCancelRemarks("");
-						stockDetailsVO.setStockLocation("");
-						stockDetailsVO.setSourceId(retrievalDetailsVO.getId());
-						stockDetailsVO.setFinyr(binRetrievalVO2.getFinYr());
-						assetStockDetailsRepo.save(stockDetailsVO);
+				Row headerRow = sheet.getRow(0);
+				if (!isHeaderValidStockBranch(headerRow)) {
+					throw new ApplicationException("Invalid Excel format.Please Refer The Sample File");
+				}
+				// Check all rows for validity first
+				for (Row row : sheet) {
+					if (row.getRowNum() == 0) {
+						continue; // Skip header row
 					}
-					for (BinRetrievalDetailsVO retrievalDetailsVO  : binRetrievalDetailsVOs) {
-						int dmgQty=retrievalDetailsVO.getDamageQty();
-						if(dmgQty>0)
-						{
-						AssetStockDetailsVO stockDetailsVO = new AssetStockDetailsVO();
-						stockDetailsVO.setStockRef(binRetrievalVO2.getDocId());
-						stockDetailsVO.setStockBranch(binRetrievalVO2.getRetrievalWarehouse());
-						stockDetailsVO.setStockDate(binRetrievalVO2.getDocDate());
-						stockDetailsVO.setSku(retrievalDetailsVO.getAsset());
-						stockDetailsVO.setSkuCode(retrievalDetailsVO.getAssetCode());
-						stockDetailsVO.setSkuQty(dmgQty);
-						stockDetailsVO.setOrgId(binRetrievalVO2.getOrgId());
-						stockDetailsVO.setCategory(assetRepo.getCategoryByAssetCodeId(retrievalDetailsVO.getAssetCode()));
-						stockDetailsVO.setStatus("D");
-						stockDetailsVO.setScreen(binRetrievalVO2.getScreen());
-						stockDetailsVO.setSCode(binRetrievalVO2.getScode());
-						stockDetailsVO.setPm("P");
-						stockDetailsVO.setStockSource("");
-						stockDetailsVO.setBinLocation("");
-						stockDetailsVO.setCancelRemarks("");
-						stockDetailsVO.setStockLocation("");
-						stockDetailsVO.setSourceId(retrievalDetailsVO.getId());
-						stockDetailsVO.setFinyr(binRetrievalVO2.getFinYr());
-						assetStockDetailsRepo.save(stockDetailsVO);
+
+					totalRows++; // Increment totalRows
+					String branchName = row.getCell(0).getStringCellValue();
+					String branchCode = row.getCell(1).getStringCellValue();
+					// Validate each row
+					try {
+						if (stockBranchRepo.existsByBranchAndOrgId(branchName, orgId)) {
+							errorMessages.add("Branch " + branchName + " already exists for this Organization. Row: "
+									+ (row.getRowNum() + 1));
 						}
-					}
-					for (BinRetrievalDetailsVO retrievalDetailsVO  : binRetrievalDetailsVOs) {
-						int grnqty=retrievalDetailsVO.getRecqty()-retrievalDetailsVO.getDamageQty();
-						AssetStockDetailsVO stockDetailsVO = new AssetStockDetailsVO();
-						stockDetailsVO.setStockRef(binRetrievalVO2.getDocId());
-						stockDetailsVO.setStockBranch(binRetrievalVO2.getRetrievalWarehouse());
-						stockDetailsVO.setStockDate(binRetrievalVO2.getDocDate());
-						stockDetailsVO.setSku(retrievalDetailsVO.getAsset());
-						stockDetailsVO.setSkuCode(retrievalDetailsVO.getAssetCode());
-						stockDetailsVO.setSkuQty(grnqty);
-						stockDetailsVO.setOrgId(binRetrievalVO2.getOrgId());
-						stockDetailsVO.setCategory(assetRepo.getCategoryByAssetCodeId(retrievalDetailsVO.getAssetCode()));
-						stockDetailsVO.setStatus("S");
-						stockDetailsVO.setScreen(binRetrievalVO2.getScreen());
-						stockDetailsVO.setSCode(binRetrievalVO2.getScode());
-						stockDetailsVO.setPm("P");
-						stockDetailsVO.setStockSource("");
-						stockDetailsVO.setBinLocation("");
-						stockDetailsVO.setCancelRemarks("");
-						stockDetailsVO.setStockLocation("");
-						stockDetailsVO.setSourceId(retrievalDetailsVO.getId());
-						stockDetailsVO.setFinyr(binRetrievalVO2.getFinYr());
-						assetStockDetailsRepo.save(stockDetailsVO);
-						
+						if (stockBranchRepo.existsBybranchCodeAndOrgId(branchCode, orgId)) {
+							errorMessages.add("Branch Code " + branchCode
+									+ " already exists for this Organization. Row: " + (row.getRowNum() + 1));
+						}
+					} catch (Exception e) {
+						errorMessages.add("Error processing row " + (row.getRowNum() + 1) + ": " + e.getMessage());
 					}
 				}
-			    return binRetrievalVO2;
+
+				// If there are errors, throw ApplicationException and do not save any rows
+				if (!errorMessages.isEmpty()) {
+					throw new ApplicationException(
+							"Excel upload validation failed. Errors: " + String.join(", ", errorMessages));
+				}
+
+				// No errors found, now save all rows
+				for (Row row : sheet) {
+					if (row.getRowNum() == 0) {
+						continue; // Skip header row
+					}
+
+					String branchName = row.getCell(0).getStringCellValue();
+					String branchCode = row.getCell(1).getStringCellValue();
+
+					// Create StockBranchVO and add to list for batch saving
+					StockBranchVO vo = new StockBranchVO();
+					vo.setBranch(branchName);
+					vo.setBranchCode(branchCode);
+					vo.setOrgId(orgId);
+
+					stockBranchVOs.add(vo); // Add VO to list
+
+					successfulUploads++; // Increment successfulUploads4
+				}
+			} catch (IOException e) {
+				// Handle IO exceptions specific to the file
+				throw new ApplicationException(
+						"Failed to process file: " + file.getOriginalFilename() + " - " + e.getMessage());
 			}
+		}
 
-			@Override
-			public List<Map<String, Object>> getPendingBinRetrievalTransportPickupDetails(Long orgId, Long userId) {
-			Set<Object[]>getDetails= transportPickupRepo.getPendingPickupDetails(orgId,userId);
-				return details(getDetails);
+		// Batch save all AssetCategoryVOs
+		stockBranchRepo.saveAll(stockBranchVOs);
+	}
+
+	private boolean isHeaderValidStockBranch(Row headerRow) {
+		if (headerRow == null) {
+			return false;
+		}
+		int expectedColumnCount = 2;
+		if (headerRow.getPhysicalNumberOfCells() != expectedColumnCount) {
+			return false;
+		}
+		return "branchName".equalsIgnoreCase(getStringCellValue(headerRow.getCell(0)))
+				&& "branchCode".equalsIgnoreCase(getStringCellValue(headerRow.getCell(1)));
+	}
+
+	private boolean isRowEmpty3(Row row) {
+		for (Cell cell : row) {
+			if (cell.getCellType() != CellType.BLANK) {
+				return false;
 			}
+		}
+		return true;
+	}
 
-			private List<Map<String, Object>> details(Set<Object[]> getDetails) {
+	private String getStringCellValue3(Cell cell) {
+		if (cell == null) {
+			return "";
+		}
+		switch (cell.getCellType()) {
+		case STRING:
+			return cell.getStringCellValue();
+		case NUMERIC:
+			return BigDecimal.valueOf(cell.getNumericCellValue()).toPlainString();
+		case BOOLEAN:
+			return String.valueOf(cell.getBooleanCellValue());
+		case FORMULA:
+			return cell.getCellFormula();
+		default:
+			return "";
+		}
+	}
 
-				List<Map<String, Object>> det = new ArrayList<>();
-		        for (Object[] ps : getDetails) {
-		            Map<String, Object> part = new HashMap<>();
-		            part.put("pickupNo", ps[0] != null ? ps[0].toString() : "");
-		            part.put("pickupDate", ps[1] != null ? ps[1].toString() : "");
-		            part.put("driverName", ps[2] != null ? ps[2].toString() : "");
-		            part.put("driverPhoneNo", ps[3] != null ? ps[3].toString() : "");
-		            part.put("transportDocNo", ps[4] != null ? ps[4].toString() : "");
-		            part.put("vehicleNo", ps[5] != null ? ps[5].toString() : "");
-		            part.put("fromStockBranch", ps[6] != null ? ps[6].toString() : "");
-		            part.put("toStockBranch", ps[7] != null ? ps[7].toString() : "");	
-		            part.put("transporter", ps[8] != null ? ps[8].toString() : "");
-		            part.put("handoverBy", ps[9] != null ? ps[9].toString() : "");		
-		            det.add(part);
-		        }
-		        return det;
+	// Method to retrieve total rows processed
+	public int getTotalRows3() {
+		return totalRows;
+	}
+
+	// Method to retrieve successful uploads count
+	public int getSuccessfulUploads3() {
+		return successfulUploads;
+	}
+
+	@Override
+	public List<Map<String, Object>> getPartNoAndPartName(Long flowId, String kitNo, Long emitterId) {
+
+		Set<Object[]> EmptystockDetails = assetStockDetailsRepo.getPartNameAndPartNoDetails(flowId, kitNo, emitterId);
+		return emptyGatheringDetails(EmptystockDetails);
+	}
+
+	private List<Map<String, Object>> emptyGatheringDetails(Set<Object[]> emptystockDetails) {
+		List<Map<String, Object>> oemEmptyStockdetails = new ArrayList<>();
+		for (Object[] ps : emptystockDetails) {
+			Map<String, Object> part = new HashMap<>();
+			part.put("partNo", ps[0] != null ? ps[0].toString() : "");
+			part.put("partName", ps[1] != null ? ps[1].toString() : "");
+			part.put("kitNo", ps[2] != null ? ps[2].toString() : "");
+			part.put("partQty", ps[3] != null ? Integer.parseInt(ps[3].toString()) : 0);
+
+			oemEmptyStockdetails.add(part);
+		}
+		return oemEmptyStockdetails;
+	}
+
+	@Override
+	public Set<Object[]> getAvalkitqtyByWarehouse(String warehouse, String kitName) {
+
+		return warehouseRepo.getAvalkitqtyByWarehouse(warehouse, kitName);
+	}
+
+	@Override
+	public BinRetrievalVO createBinRetrieval(BinRetrievalDTO binRetrievalDTO) {
+
+		BinRetrievalVO binRetrievalVO = new BinRetrievalVO();
+		String finyr = binRetrievalRepo.findFinyr();
+		String binRetrievalDocId = finyr + "BRI" + binRetrievalRepo.finddocid();
+		binRetrievalVO.setDocId(binRetrievalDocId);
+		binRetrievalRepo.nextSeq();
+
+		binRetrievalVO.setDocDate(binRetrievalDTO.getDocDate());
+		binRetrievalVO.setRetrievalWarehouse(binRetrievalDTO.getRetrievalWarehouse());
+		binRetrievalVO.setFromStockBranch(binRetrievalDTO.getFromStockBranch());
+		binRetrievalVO.setToStockBranch(binRetrievalDTO.getToStockBranch());
+		binRetrievalVO.setPickupDocId(binRetrievalDTO.getPickupDocId());
+		binRetrievalVO.setPickupDate(binRetrievalDTO.getPickupDate());
+		binRetrievalVO.setTransPortDocNo(binRetrievalDTO.getTransPortDocNo());
+		binRetrievalVO.setTransPorter(binRetrievalDTO.getTransPorter());
+		binRetrievalVO.setDriverName(binRetrievalDTO.getDriverName());
+		binRetrievalVO.setHandOverBy(binRetrievalDTO.getHandOverBy());
+		binRetrievalVO.setDriverPhoneNo(binRetrievalDTO.getDriverPhoneNo());
+		binRetrievalVO.setVechicleNo(binRetrievalDTO.getVechicleNo());
+		binRetrievalVO.setCreatedby(binRetrievalDTO.getCreatedby());
+		binRetrievalVO.setOrgId(binRetrievalDTO.getOrgId());
+
+		List<BinRetrievalDetailsVO> binRetrievalDetailsVO = new ArrayList<>();
+		if (binRetrievalDTO.getBinRetrievalDetailsDTO() != null) {
+			for (BinRetrievalDetailsDTO binRetrievalDetailsDTO : binRetrievalDTO.getBinRetrievalDetailsDTO()) {
+				BinRetrievalDetailsVO detailsVO = new BinRetrievalDetailsVO();
+				detailsVO.setCategory(binRetrievalDetailsDTO.getCategory());
+				detailsVO.setAsset(binRetrievalDetailsDTO.getAsset());
+				detailsVO.setAssetCode(binRetrievalDetailsDTO.getAssetCode());
+				detailsVO.setInvqty(binRetrievalDetailsDTO.getInvqty());
+				detailsVO.setRecqty(binRetrievalDetailsDTO.getRecqty());
+				detailsVO.setShortQty(binRetrievalDetailsDTO.getShortQty());
+				detailsVO.setDamageQty(binRetrievalDetailsDTO.getDamageQty());
+				detailsVO.setBinRetrievalVO(binRetrievalVO);
+
+				binRetrievalDetailsVO.add(detailsVO);
 			}
+		}
 
-
-			@Override
-			public List<Map<String, Object>> getTransportPickupDetailsByDocId(Long orgId, String pickupDocId) {
-			Set<Object[]>getPickupDetails= transportPickupRepo.getPickupDetails(orgId,pickupDocId);
-				return pickDetails(getPickupDetails);
+		binRetrievalVO.setBinRetrievalDetailsVO(binRetrievalDetailsVO);
+		BinRetrievalVO binRetrievalVO2 = binRetrievalRepo.save(binRetrievalVO);
+		List<BinRetrievalDetailsVO> binRetrievalDetailsVOs = binRetrievalVO2.getBinRetrievalDetailsVO();
+		if (binRetrievalDetailsVOs != null && !binRetrievalDetailsVOs.isEmpty()) {
+			for (BinRetrievalDetailsVO retrievalDetailsVO : binRetrievalDetailsVOs) {
+				AssetStockDetailsVO stockDetailsVO = new AssetStockDetailsVO();
+				stockDetailsVO.setStockRef(binRetrievalVO2.getPickupDocId());
+				stockDetailsVO.setStockBranch(binRetrievalVO2.getToStockBranch());
+				stockDetailsVO.setStockDate(binRetrievalVO2.getPickupDate());
+				stockDetailsVO.setSku(retrievalDetailsVO.getAsset());
+				stockDetailsVO.setSkuCode(retrievalDetailsVO.getAssetCode());
+				stockDetailsVO.setSkuQty(retrievalDetailsVO.getRecqty() * -1);
+				stockDetailsVO.setOrgId(binRetrievalVO2.getOrgId());
+				stockDetailsVO.setCategory(assetRepo.getCategoryByAssetCodeId(retrievalDetailsVO.getAssetCode()));
+				stockDetailsVO.setStatus("M");
+				stockDetailsVO.setScreen(binRetrievalVO2.getScreen());
+				stockDetailsVO.setSCode(binRetrievalVO2.getScode());
+				stockDetailsVO.setPm("M");
+				stockDetailsVO.setStockSource("");
+				stockDetailsVO.setBinLocation("");
+				stockDetailsVO.setCancelRemarks("");
+				stockDetailsVO.setStockLocation("");
+				stockDetailsVO.setSourceId(retrievalDetailsVO.getId());
+				stockDetailsVO.setFinyr(binRetrievalVO2.getFinYr());
+				assetStockDetailsRepo.save(stockDetailsVO);
 			}
-
-			private List<Map<String, Object>> pickDetails(Set<Object[]> getPickupDetails) {
-				List<Map<String, Object>> details = new ArrayList<>();
-		        for (Object[] ps : getPickupDetails) {
-		            Map<String, Object> part = new HashMap<>();
-		            part.put("category", ps[0] != null ? ps[0].toString() : "");
-					part.put("assetCode", ps[1] != null ? ps[1].toString() : "");
-					part.put("asset", ps[2] != null ? ps[2].toString() : "");
-					part.put("invQty", ps[3] != null ? Integer.parseInt(ps[3].toString()) : 0);	            
-		            details.add(part);
-		        }
-				return details;
+			for (BinRetrievalDetailsVO retrievalDetailsVO : binRetrievalDetailsVOs) {
+				int dmgQty = retrievalDetailsVO.getDamageQty();
+				if (dmgQty > 0) {
+					AssetStockDetailsVO stockDetailsVO = new AssetStockDetailsVO();
+					stockDetailsVO.setStockRef(binRetrievalVO2.getDocId());
+					stockDetailsVO.setStockBranch(binRetrievalVO2.getRetrievalWarehouse());
+					stockDetailsVO.setStockDate(binRetrievalVO2.getDocDate());
+					stockDetailsVO.setSku(retrievalDetailsVO.getAsset());
+					stockDetailsVO.setSkuCode(retrievalDetailsVO.getAssetCode());
+					stockDetailsVO.setSkuQty(dmgQty);
+					stockDetailsVO.setOrgId(binRetrievalVO2.getOrgId());
+					stockDetailsVO.setCategory(assetRepo.getCategoryByAssetCodeId(retrievalDetailsVO.getAssetCode()));
+					stockDetailsVO.setStatus("D");
+					stockDetailsVO.setScreen(binRetrievalVO2.getScreen());
+					stockDetailsVO.setSCode(binRetrievalVO2.getScode());
+					stockDetailsVO.setPm("P");
+					stockDetailsVO.setStockSource("");
+					stockDetailsVO.setBinLocation("");
+					stockDetailsVO.setCancelRemarks("");
+					stockDetailsVO.setStockLocation("");
+					stockDetailsVO.setSourceId(retrievalDetailsVO.getId());
+					stockDetailsVO.setFinyr(binRetrievalVO2.getFinYr());
+					assetStockDetailsRepo.save(stockDetailsVO);
+				}
 			}
+			for (BinRetrievalDetailsVO retrievalDetailsVO : binRetrievalDetailsVOs) {
+				int grnqty = retrievalDetailsVO.getRecqty() - retrievalDetailsVO.getDamageQty();
+				AssetStockDetailsVO stockDetailsVO = new AssetStockDetailsVO();
+				stockDetailsVO.setStockRef(binRetrievalVO2.getDocId());
+				stockDetailsVO.setStockBranch(binRetrievalVO2.getRetrievalWarehouse());
+				stockDetailsVO.setStockDate(binRetrievalVO2.getDocDate());
+				stockDetailsVO.setSku(retrievalDetailsVO.getAsset());
+				stockDetailsVO.setSkuCode(retrievalDetailsVO.getAssetCode());
+				stockDetailsVO.setSkuQty(grnqty);
+				stockDetailsVO.setOrgId(binRetrievalVO2.getOrgId());
+				stockDetailsVO.setCategory(assetRepo.getCategoryByAssetCodeId(retrievalDetailsVO.getAssetCode()));
+				stockDetailsVO.setStatus("S");
+				stockDetailsVO.setScreen(binRetrievalVO2.getScreen());
+				stockDetailsVO.setSCode(binRetrievalVO2.getScode());
+				stockDetailsVO.setPm("P");
+				stockDetailsVO.setStockSource("");
+				stockDetailsVO.setBinLocation("");
+				stockDetailsVO.setCancelRemarks("");
+				stockDetailsVO.setStockLocation("");
+				stockDetailsVO.setSourceId(retrievalDetailsVO.getId());
+				stockDetailsVO.setFinyr(binRetrievalVO2.getFinYr());
+				assetStockDetailsRepo.save(stockDetailsVO);
 
-			@Override
-			public String getDocIdByBinRetrieval() {
-				String finyr = binRetrievalRepo.findFinyr();
-				String binRetrievalDocId = finyr + "BRI" + binRetrievalRepo.finddocid();
-				return binRetrievalDocId;
 			}
+		}
+		return binRetrievalVO2;
+	}
 
-			@Override
-			public List<BinRetrievalVO> getBinReterivalByOrgId(Long orgId) {
-				// TODO Auto-generated method stub
-				return binRetrievalRepo.findByOrgId(orgId);
-			}
+	@Override
+	public List<Map<String, Object>> getPendingBinRetrievalTransportPickupDetails(Long orgId, Long userId) {
+		Set<Object[]> getDetails = transportPickupRepo.getPendingPickupDetails(orgId, userId);
+		return details(getDetails);
+	}
 
-			@Override
-			public List<BinRetrievalVO> getBinReterivalByDocId(String docId) {
-				// TODO Auto-generated method stub
-				return binRetrievalRepo.findByDocId(docId);
-			}
+	private List<Map<String, Object>> details(Set<Object[]> getDetails) {
 
-			@Override
-			public List<BinRetrievalVO> getAllBinReterival(Long id) {
-				// TODO Auto-generated method stub
-				return binRetrievalRepo.getAllBinReterival(id);
-			}
+		List<Map<String, Object>> det = new ArrayList<>();
+		for (Object[] ps : getDetails) {
+			Map<String, Object> part = new HashMap<>();
+			part.put("pickupNo", ps[0] != null ? ps[0].toString() : "");
+			part.put("pickupDate", ps[1] != null ? ps[1].toString() : "");
+			part.put("driverName", ps[2] != null ? ps[2].toString() : "");
+			part.put("driverPhoneNo", ps[3] != null ? ps[3].toString() : "");
+			part.put("transportDocNo", ps[4] != null ? ps[4].toString() : "");
+			part.put("vehicleNo", ps[5] != null ? ps[5].toString() : "");
+			part.put("fromStockBranch", ps[6] != null ? ps[6].toString() : "");
+			part.put("toStockBranch", ps[7] != null ? ps[7].toString() : "");
+			part.put("transporter", ps[8] != null ? ps[8].toString() : "");
+			part.put("handoverBy", ps[9] != null ? ps[9].toString() : "");
+			det.add(part);
+		}
+		return det;
+	}
 
-			@Override
-			public List<Map<String, Object>> getAvilQtyByEmitterBykitWise(Long orgId, Long userId) {
-				
-				Set<Object[]>getKitAvilQtyDetails= binInwardRepo.getKitAvilQtyDetails(orgId,userId);
-				return kitDetails(getKitAvilQtyDetails);
-			}
+	@Override
+	public List<Map<String, Object>> getTransportPickupDetailsByDocId(Long orgId, String pickupDocId) {
+		Set<Object[]> getPickupDetails = transportPickupRepo.getPickupDetails(orgId, pickupDocId);
+		return pickDetails(getPickupDetails);
+	}
 
-			private List<Map<String, Object>> kitDetails(Set<Object[]> getKitAvilQtyDetails) {
-				List<Map<String, Object>> details = new ArrayList<>();
-		        for (Object[] kd : getKitAvilQtyDetails) {
-		            Map<String, Object> part = new HashMap<>();
-		            part.put("emitterId", kd[0] != null ?Integer.parseInt(kd[0].toString()) : 0);
-					part.put("orgId", kd[1] != null ? Integer.parseInt (kd[1].toString()) : 0);
-					part.put("emitterName", kd[2] != null ? kd[2].toString() : "");
-					part.put("flowName", kd[3] != null ? kd[3].toString() : "");
-					part.put("flowID", kd[4] != null ? Integer.parseInt(kd[4].toString()) : 0);	
-					part.put("kitNo", kd[5] != null ? kd[5].toString() : "");
-					part.put("avilQty", kd[6] != null ? Integer.parseInt(kd[6].toString()) : 0);
-		            details.add(part);
-		        }
-				return details;
-			}
-			
-			}
+	private List<Map<String, Object>> pickDetails(Set<Object[]> getPickupDetails) {
+		List<Map<String, Object>> details = new ArrayList<>();
+		for (Object[] ps : getPickupDetails) {
+			Map<String, Object> part = new HashMap<>();
+			part.put("category", ps[0] != null ? ps[0].toString() : "");
+			part.put("assetCode", ps[1] != null ? ps[1].toString() : "");
+			part.put("asset", ps[2] != null ? ps[2].toString() : "");
+			part.put("invQty", ps[3] != null ? Integer.parseInt(ps[3].toString()) : 0);
+			details.add(part);
+		}
+		return details;
+	}
 
+	@Override
+	public String getDocIdByBinRetrieval() {
+		String finyr = binRetrievalRepo.findFinyr();
+		String binRetrievalDocId = finyr + "BRI" + binRetrievalRepo.finddocid();
+		return binRetrievalDocId;
+	}
 
+	@Override
+	public List<BinRetrievalVO> getBinReterivalByOrgId(Long orgId) {
+		// TODO Auto-generated method stub
+		return binRetrievalRepo.findByOrgId(orgId);
+	}
 
-	
+	@Override
+	public List<BinRetrievalVO> getBinReterivalByDocId(String docId) {
+		// TODO Auto-generated method stub
+		return binRetrievalRepo.findByDocId(docId);
+	}
+
+	@Override
+	public List<BinRetrievalVO> getAllBinReterival(Long id) {
+		// TODO Auto-generated method stub
+		return binRetrievalRepo.getAllBinReterival(id);
+	}
+
+	@Override
+	public List<Map<String, Object>> getAvilQtyByEmitterBykitWise(Long orgId, Long userId) {
+
+		Set<Object[]> getKitAvilQtyDetails = binInwardRepo.getKitAvilQtyDetails(orgId, userId);
+		return kitDetails(getKitAvilQtyDetails);
+	}
+
+	private List<Map<String, Object>> kitDetails(Set<Object[]> getKitAvilQtyDetails) {
+		List<Map<String, Object>> details = new ArrayList<>();
+		for (Object[] kd : getKitAvilQtyDetails) {
+			Map<String, Object> part = new HashMap<>();
+			part.put("emitterId", kd[0] != null ? Integer.parseInt(kd[0].toString()) : 0);
+			part.put("orgId", kd[1] != null ? Integer.parseInt(kd[1].toString()) : 0);
+			part.put("emitterName", kd[2] != null ? kd[2].toString() : "");
+			part.put("flowName", kd[3] != null ? kd[3].toString() : "");
+			part.put("flowID", kd[4] != null ? Integer.parseInt(kd[4].toString()) : 0);
+			part.put("kitNo", kd[5] != null ? kd[5].toString() : "");
+			part.put("avilQty", kd[6] != null ? Integer.parseInt(kd[6].toString()) : 0);
+			details.add(part);
+		}
+		return details;
+	}
+
+	@Override
+	public List<String> getActiveAssetcategory(Long orgId) {
+	    Set<Object[]> getActiveCategory = binInwardRepo.getActiveCategory(orgId);
+	    return getActiveCategoryDetails(getActiveCategory);
+	}
+
+	private List<String> getActiveCategoryDetails(Set<Object[]> getActiveCategory) {
+	    List<String> details = new ArrayList<>();
+	    for (Object[] kd : getActiveCategory) {
+	        if (kd[0] != null) {
+	            details.add(kd[0].toString());
+	        }
+	    }
+	    return details;
+	}
+
+}
 

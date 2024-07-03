@@ -1198,8 +1198,8 @@ public class EmitterServiceImpl implements EmitterService {
 	}
 
 	@Override
-	public List<Map<String,Object>> getDocIdByFlowOnEmitterDispatchScreen(Long flowId) {
-		Set<Object[]>getDocidDetails=flowRepo.getDocId(flowId);
+	public List<Map<String, Object>> getDocIdByFlowOnEmitterDispatchScreen(Long flowId) {
+		Set<Object[]> getDocidDetails = flowRepo.getDocId(flowId);
 		return getDocIdByFlow(getDocidDetails);
 	}
 
@@ -1229,54 +1229,54 @@ public class EmitterServiceImpl implements EmitterService {
 	}
 
 	@Override
-	public List<Map<String,Object>> getCountofBinRequestPendingAndCompleted(Long emitterId, Long orgId) {
-		
-		Set<Object[]>getCountOfBinRequestStatus=issueRequestRepo.getBinRequestStatusCount(emitterId,orgId);
-		
+	public List<Map<String, Object>> getCountofBinRequestPendingAndCompleted(Long emitterId, Long orgId) {
+
+		Set<Object[]> getCountOfBinRequestStatus = issueRequestRepo.getBinRequestStatusCount(emitterId, orgId);
+
 		return getCountOfBinRequestStatusDetails(getCountOfBinRequestStatus);
 	}
 
 	private List<Map<String, Object>> getCountOfBinRequestStatusDetails(Set<Object[]> getCountOfBinRequestStatus) {
 		List<Map<String, Object>> count = new ArrayList<>();
-        for (Object[] ps : getCountOfBinRequestStatus) {
-            Map<String, Object> part = new HashMap<>();
-            part.put("status", ps[0] != null ? ps[0].toString() : "");
-            part.put("emitterId", ps[1] != null ? ps[1].toString() : "");
-            part.put("emitter", ps[2] != null ? ps[2].toString() : "");
-            part.put("binReqNo", ps[3] != null ? ps[3].toString() : "");
-            part.put("binReqDate", ps[4] != null ? ps[4].toString() : "");
-            part.put("flow", ps[5] != null ? ps[5].toString() : "");
-            part.put("kitNo", ps[6] != null ? ps[6].toString() : "");
-            part.put("reqKitQty", ps[7] != null ? Integer.parseInt(ps[7].toString()) : 0);
-            count.add(part);
-        }
-        return count;
+		for (Object[] ps : getCountOfBinRequestStatus) {
+			Map<String, Object> part = new HashMap<>();
+			part.put("status", ps[0] != null ? ps[0].toString() : "");
+			part.put("emitterId", ps[1] != null ? ps[1].toString() : "");
+			part.put("emitter", ps[2] != null ? ps[2].toString() : "");
+			part.put("binReqNo", ps[3] != null ? ps[3].toString() : "");
+			part.put("binReqDate", ps[4] != null ? ps[4].toString() : "");
+			part.put("flow", ps[5] != null ? ps[5].toString() : "");
+			part.put("kitNo", ps[6] != null ? ps[6].toString() : "");
+			part.put("reqKitQty", ps[7] != null ? Integer.parseInt(ps[7].toString()) : 0);
+			count.add(part);
+		}
+		return count;
 	}
 
 	@Override
 	public List<Map<String, Object>> getBinInwardStatus(Long emitterId, Long orgId) {
-		
-	Set<Object[]>getBinInwardStatus=issueRequestRepo.getBinInward(emitterId,orgId);
-		
+
+		Set<Object[]> getBinInwardStatus = issueRequestRepo.getBinInward(emitterId, orgId);
+
 		return getBinInwardDetails(getBinInwardStatus);
 	}
 
 	private List<Map<String, Object>> getBinInwardDetails(Set<Object[]> getBinInward) {
 		List<Map<String, Object>> status = new ArrayList<>();
-        for (Object[] ps : getBinInward) {
-            Map<String, Object> values = new HashMap<>();
-            values.put("allotNo", ps[0] != null ? ps[0].toString() : "");
-            values.put("allotDate", ps[1] != null ? ps[1].toString() : "");
-            values.put("binReqNo", ps[2] != null ? ps[2].toString() : "");
-            values.put("binReqDate", ps[3] != null ? ps[3].toString() : "");
-            values.put("flow", ps[4] != null ? ps[4].toString() : "");
-            values.put("partNo", ps[5] != null ? ps[5].toString() : "");
-            values.put("partName", ps[6] != null ? ps[6].toString() : "");
-            values.put("kitNo", ps[7] != null ? ps[7].toString() : "");
-            values.put("allotkitQty", ps[8] != null ? Integer.parseInt(ps[8].toString()) : 0);
-            values.put("status", ps[9] != null ? ps[9].toString() : "");
-            status.add(values);
-        }
-        return status;
+		for (Object[] ps : getBinInward) {
+			Map<String, Object> values = new HashMap<>();
+			values.put("allotNo", ps[0] != null ? ps[0].toString() : "");
+			values.put("allotDate", ps[1] != null ? ps[1].toString() : "");
+			values.put("binReqNo", ps[2] != null ? ps[2].toString() : "");
+			values.put("binReqDate", ps[3] != null ? ps[3].toString() : "");
+			values.put("flow", ps[4] != null ? ps[4].toString() : "");
+			values.put("partNo", ps[5] != null ? ps[5].toString() : "");
+			values.put("partName", ps[6] != null ? ps[6].toString() : "");
+			values.put("kitNo", ps[7] != null ? ps[7].toString() : "");
+			values.put("allotkitQty", ps[8] != null ? Integer.parseInt(ps[8].toString()) : 0);
+			values.put("status", ps[9] != null ? ps[9].toString() : "");
+			status.add(values);
+		}
+		return status;
 	}
 }

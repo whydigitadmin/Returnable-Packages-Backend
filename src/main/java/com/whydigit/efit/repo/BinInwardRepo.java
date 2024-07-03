@@ -51,4 +51,7 @@ public interface BinInwardRepo extends JpaRepository<BinInwardVO, Long>{
             nativeQuery = true)
 	Set<Object[]> getKitAvilQtyDetails(Long orgId, Long userId);
 
+	@Query(value ="select a.category from assetcategory a where orgid=?1 and active=true",nativeQuery =true )
+	Set<Object[]> getActiveCategory(Long orgId);
+
 }

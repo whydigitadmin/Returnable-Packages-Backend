@@ -27,13 +27,13 @@ public class PoVO1 {
 	@SequenceGenerator(name = "po1gen", sequenceName = "po1seq", initialValue = 1000000001, allocationSize = 1)
 	@Column(name = "po1id")
 	private Long po1Id;
-	@Column(name = "itemid", length = 25)
+	@Column(name = "itemid")
 	private String itemId;
-	@Column(name = "description", length = 100)
+	@Column(name = "description")
 	private String description;
-	@Column(name = "hsncode", length = 10)
+	@Column(name = "hsncode")
 	private int hsnCode;
-	@Column(name = "qty", length = 10)
+	@Column(name = "qty")
 	private int qty;
 	@Column(name = "rate", precision = 10, scale = 3)
 	private Float rate;
@@ -41,12 +41,12 @@ public class PoVO1 {
 	private Float exRate;
 	@Column(name = "amount", precision = 10, scale = 2)
 	private Float amount;
-	@Column(name = "currency", length = 10)
+	@Column(name = "currency")
 	private String currency;
-	
+
 	@ManyToOne
 	@JsonBackReference
-	@JoinColumn(name="poid")
+	@JoinColumn(name = "poid")
 	private PoVO poVO;
 
 }

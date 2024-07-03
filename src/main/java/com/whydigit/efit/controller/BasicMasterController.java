@@ -1,4 +1,5 @@
 package com.whydigit.efit.controller;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -164,7 +165,7 @@ public class BasicMasterController extends BaseController {
 	}
 
 	@GetMapping("/country")
-	public ResponseEntity<ResponseDTO> getAllcountries() {
+	public ResponseEntity<ResponseDTO> getAllcountries(@RequestParam (required =true) Long orgId) {
 		String methodName = "getAllCountry()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -172,7 +173,7 @@ public class BasicMasterController extends BaseController {
 		ResponseDTO responseDTO = null;
 		List<CountryVO> countryVO = new ArrayList<>();
 		try {
-			countryVO = basicMasterService.getAllgetAllcountries();
+			countryVO = basicMasterService.getAllcountries(orgId);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
@@ -214,7 +215,7 @@ public class BasicMasterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-	
+
 	@GetMapping("/country/orgId")
 	public ResponseEntity<ResponseDTO> getAllCountryByOrgId(@RequestParam Long orgId) {
 		String methodName = "getAllCountryByOrgId()";
@@ -234,7 +235,8 @@ public class BasicMasterController extends BaseController {
 			responseObjectsMap.put("countryVO", countryVO);
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} else {
-			responseDTO = createServiceResponseError(responseObjectsMap, "countries information receive failed", errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "countries information receive failed",
+					errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
@@ -310,7 +312,8 @@ public class BasicMasterController extends BaseController {
 //	state
 
 	@GetMapping("/state")
-	public ResponseEntity<ResponseDTO> getAllStates() {
+	public ResponseEntity<ResponseDTO> getAllStates(@RequestParam(required =true) Long orgId,
+			@RequestParam(required = true) String country) {
 		String methodName = "getAllStates()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -318,7 +321,7 @@ public class BasicMasterController extends BaseController {
 		ResponseDTO responseDTO = null;
 		List<StateVO> stateVO = new ArrayList<>();
 		try {
-			stateVO = basicMasterService.getAllgetAllStates();
+			stateVO = basicMasterService.getAllgetAllStates(orgId,country);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
@@ -333,9 +336,9 @@ public class BasicMasterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-	
+
 	@GetMapping("/state/Country")
-	public ResponseEntity<ResponseDTO> getAllStatesByCountry(@RequestParam String country,@RequestParam Long orgId) {
+	public ResponseEntity<ResponseDTO> getAllStatesByCountry(@RequestParam String country, @RequestParam Long orgId) {
 		String methodName = "getAllStatesByCountry()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -343,7 +346,7 @@ public class BasicMasterController extends BaseController {
 		ResponseDTO responseDTO = null;
 		List<StateVO> stateVO = new ArrayList<>();
 		try {
-			stateVO = basicMasterService.getAllStatesByCountry(country,orgId);
+			stateVO = basicMasterService.getAllStatesByCountry(country, orgId);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
@@ -524,7 +527,9 @@ public class BasicMasterController extends BaseController {
 //	city
 
 	@GetMapping("/city")
-	public ResponseEntity<ResponseDTO> getAllCities() {
+	public ResponseEntity<ResponseDTO> getAllCities(@RequestParam(required =true)Long orgId,
+			@RequestParam(required =true) String country,@RequestParam(required =true) String state
+			) {
 		String methodName = "getAllCities()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -532,7 +537,7 @@ public class BasicMasterController extends BaseController {
 		ResponseDTO responseDTO = null;
 		List<CityVO> cityVO = new ArrayList<>();
 		try {
-			cityVO = basicMasterService.getAllgetAllCities();
+			cityVO = basicMasterService.getAllgetAllCities(orgId,country,state);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
@@ -547,9 +552,10 @@ public class BasicMasterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-	
+
 	@GetMapping("/city/getByStateAndCountry")
-	public ResponseEntity<ResponseDTO> getAllCitiesbyStateAndCountry(@RequestParam String state,@RequestParam String country,@RequestParam Long orgId) {
+	public ResponseEntity<ResponseDTO> getAllCitiesbyStateAndCountry(@RequestParam String state,
+			@RequestParam String country, @RequestParam Long orgId) {
 		String methodName = "getAllCitiesbyStateAndCountry()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -557,7 +563,7 @@ public class BasicMasterController extends BaseController {
 		ResponseDTO responseDTO = null;
 		List<CityVO> cityVO = new ArrayList<>();
 		try {
-			cityVO = basicMasterService.getAllCitiesByStateAndCountry(state,country,orgId);
+			cityVO = basicMasterService.getAllCitiesByStateAndCountry(state, country, orgId);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
@@ -736,7 +742,6 @@ public class BasicMasterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
-
 //	Financial
 
 	@GetMapping("/currencyMaster")
@@ -833,182 +838,185 @@ public class BasicMasterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-	
+
 	// File Upload For Branch
-	
+
 	@PostMapping("/ExcelUploadForBranch")
-	public ResponseEntity<ResponseDTO> ExcelUploadForBranch(@RequestParam MultipartFile[] files,CustomerAttachmentType type,@RequestParam(required = false) Long orgId,
+	public ResponseEntity<ResponseDTO> ExcelUploadForBranch(@RequestParam MultipartFile[] files,
+			CustomerAttachmentType type, @RequestParam(required = false) Long orgId,
 			@RequestParam(required = false) String createdBy) {
-	    String methodName = "ExcelUploadForBranch()";
-	    LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
-	    String errorMsg = null;
-	    Map<String, Object> responseObjectsMap = new HashMap<>();
-	    ResponseDTO responseDTO = null;
-	    int totalRows = 0;
-	    int successfulUploads = 0;
+		String methodName = "ExcelUploadForBranch()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		int totalRows = 0;
+		int successfulUploads = 0;
 
-	    try {
-	        // Call service method to process Excel upload
-	        basicMasterService.ExcelUploadForBranch(files, type, orgId,createdBy);
-	        
-	        // Retrieve the counts after processing
-	        totalRows = basicMasterService.getTotalRows(); // Get total rows processed
-	        successfulUploads = basicMasterService.getSuccessfulUploads(); // Get successful uploads count
-	        // Construct success response
-	        responseObjectsMap.put("statusFlag", "Ok");
-	        responseObjectsMap.put("status", true);
-	        responseObjectsMap.put("totalRows", totalRows);
-	        responseObjectsMap.put("successfulUploads", successfulUploads);
-	        Map<String, Object> paramObjectsMap = new HashMap<>();
-	        paramObjectsMap.put("message", "Excel Upload For  Branch successful");
-	        responseObjectsMap.put("paramObjectsMap", paramObjectsMap);
-	        responseDTO = createServiceResponse(responseObjectsMap);
-	        
-	    }  catch (Exception e) {
+		try {
+			// Call service method to process Excel upload
+			basicMasterService.ExcelUploadForBranch(files, type, orgId, createdBy);
 
-	    	errorMsg = e.getMessage();
-	        LOGGER.error(CommonConstant.EXCEPTION_OCCURRED, methodName, e);
-	        responseObjectsMap.put("statusFlag", "Error");
-	        responseObjectsMap.put("status", false);
-	        responseObjectsMap.put("errorMessage", errorMsg);
+			// Retrieve the counts after processing
+			totalRows = basicMasterService.getTotalRows(); // Get total rows processed
+			successfulUploads = basicMasterService.getSuccessfulUploads(); // Get successful uploads count
+			// Construct success response
+			responseObjectsMap.put("statusFlag", "Ok");
+			responseObjectsMap.put("status", true);
+			responseObjectsMap.put("totalRows", totalRows);
+			responseObjectsMap.put("successfulUploads", successfulUploads);
+			Map<String, Object> paramObjectsMap = new HashMap<>();
+			paramObjectsMap.put("message", "Excel Upload For  Branch successful");
+			responseObjectsMap.put("paramObjectsMap", paramObjectsMap);
+			responseDTO = createServiceResponse(responseObjectsMap);
 
-	        responseDTO = createServiceResponseError(responseObjectsMap,"Excel Upload For Branch Failed",errorMsg);
-	}
-	LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
-	return ResponseEntity.ok().body(responseDTO);
-	}
-	
-	// File Upload For Country
-	
-		@PostMapping("/ExcelUploadForCountry")
-		public ResponseEntity<ResponseDTO> ExcelUploadForCountry(@RequestParam MultipartFile[] files,CustomerAttachmentType type,@RequestParam(required = false) Long orgId,
-				@RequestParam(required = false) String createdBy) {
-		    String methodName = "ExcelUploadForCountry()";
-		    LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
-		    String errorMsg = null;
-		    Map<String, Object> responseObjectsMap = new HashMap<>();
-		    ResponseDTO responseDTO = null;
-		    int totalRows = 0;
-		    int successfulUploads = 0;
+		} catch (Exception e) {
 
-		    try {
-		        // Call service method to process Excel upload
-		        basicMasterService.ExcelUploadForCountry(files, type, orgId,createdBy);
-		        
-		        // Retrieve the counts after processing
-		        totalRows = basicMasterService.getTotalRows(); // Get total rows processed
-		        successfulUploads = basicMasterService.getSuccessfulUploads(); // Get successful uploads count
-		        // Construct success response
-		        responseObjectsMap.put("statusFlag", "Ok");
-		        responseObjectsMap.put("status", true);
-		        responseObjectsMap.put("totalRows", totalRows);
-		        responseObjectsMap.put("successfulUploads", successfulUploads);
-		        Map<String, Object> paramObjectsMap = new HashMap<>();
-		        paramObjectsMap.put("message", "Excel Upload For  Country successful");
-		        responseObjectsMap.put("paramObjectsMap", paramObjectsMap);
-		        responseDTO = createServiceResponse(responseObjectsMap);
-		        
-		    }  catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(CommonConstant.EXCEPTION_OCCURRED, methodName, e);
+			responseObjectsMap.put("statusFlag", "Error");
+			responseObjectsMap.put("status", false);
+			responseObjectsMap.put("errorMessage", errorMsg);
 
-		    	errorMsg = e.getMessage();
-		        LOGGER.error(CommonConstant.EXCEPTION_OCCURRED, methodName, e);
-		        responseObjectsMap.put("statusFlag", "Error");
-		        responseObjectsMap.put("status", false);
-		        responseObjectsMap.put("errorMessage", errorMsg);
-
-		        responseDTO = createServiceResponseError(responseObjectsMap,"Excel Upload For Country Failed",errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "Excel Upload For Branch Failed", errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
+	}
+
+	// File Upload For Country
+
+	@PostMapping("/ExcelUploadForCountry")
+	public ResponseEntity<ResponseDTO> ExcelUploadForCountry(@RequestParam MultipartFile[] files,
+			CustomerAttachmentType type, @RequestParam(required = false) Long orgId,
+			@RequestParam(required = false) String createdBy) {
+		String methodName = "ExcelUploadForCountry()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		int totalRows = 0;
+		int successfulUploads = 0;
+
+		try {
+			// Call service method to process Excel upload
+			basicMasterService.ExcelUploadForCountry(files, type, orgId, createdBy);
+
+			// Retrieve the counts after processing
+			totalRows = basicMasterService.getTotalRows(); // Get total rows processed
+			successfulUploads = basicMasterService.getSuccessfulUploads(); // Get successful uploads count
+			// Construct success response
+			responseObjectsMap.put("statusFlag", "Ok");
+			responseObjectsMap.put("status", true);
+			responseObjectsMap.put("totalRows", totalRows);
+			responseObjectsMap.put("successfulUploads", successfulUploads);
+			Map<String, Object> paramObjectsMap = new HashMap<>();
+			paramObjectsMap.put("message", "Excel Upload For  Country successful");
+			responseObjectsMap.put("paramObjectsMap", paramObjectsMap);
+			responseDTO = createServiceResponse(responseObjectsMap);
+
+		} catch (Exception e) {
+
+			errorMsg = e.getMessage();
+			LOGGER.error(CommonConstant.EXCEPTION_OCCURRED, methodName, e);
+			responseObjectsMap.put("statusFlag", "Error");
+			responseObjectsMap.put("status", false);
+			responseObjectsMap.put("errorMessage", errorMsg);
+
+			responseDTO = createServiceResponseError(responseObjectsMap, "Excel Upload For Country Failed", errorMsg);
 		}
-	
-		// File Upload For STATE
-		
-			@PostMapping("/ExcelUploadForState")
-			public ResponseEntity<ResponseDTO> ExcelUploadForState(@RequestParam MultipartFile[] files,CustomerAttachmentType type,@RequestParam(required = false) Long orgId,
-					@RequestParam(required = false) String createdBy) {
-			    String methodName = "ExcelUploadForState()";
-			    LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
-			    String errorMsg = null;
-			    Map<String, Object> responseObjectsMap = new HashMap<>();
-			    ResponseDTO responseDTO = null;
-			    int totalRows = 0;
-			    int successfulUploads = 0;
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
 
-			    try {
-			        // Call service method to process Excel upload
-			        basicMasterService.ExcelUploadForState(files, type, orgId,createdBy);
-			        
-			        // Retrieve the counts after processing
-			        totalRows = basicMasterService.getTotalRows(); // Get total rows processed
-			        successfulUploads = basicMasterService.getSuccessfulUploads(); // Get successful uploads count
-			        // Construct success response
-			        responseObjectsMap.put("statusFlag", "Ok");
-			        responseObjectsMap.put("status", true);
-			        responseObjectsMap.put("totalRows", totalRows);
-			        responseObjectsMap.put("successfulUploads", successfulUploads);
-			        Map<String, Object> paramObjectsMap = new HashMap<>();
-			        paramObjectsMap.put("message", "Excel Upload For  State successful");
-			        responseObjectsMap.put("paramObjectsMap", paramObjectsMap);
-			        responseDTO = createServiceResponse(responseObjectsMap);
-			        
-			    }  catch (Exception e) {
+	// File Upload For STATE
 
-			    	errorMsg = e.getMessage();
-			        LOGGER.error(CommonConstant.EXCEPTION_OCCURRED, methodName, e);
-			        responseObjectsMap.put("statusFlag", "Error");
-			        responseObjectsMap.put("status", false);
-			        responseObjectsMap.put("errorMessage", errorMsg);
+	@PostMapping("/ExcelUploadForState")
+	public ResponseEntity<ResponseDTO> ExcelUploadForState(@RequestParam MultipartFile[] files,
+			CustomerAttachmentType type, @RequestParam(required = false) Long orgId,
+			@RequestParam(required = false) String createdBy) {
+		String methodName = "ExcelUploadForState()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		int totalRows = 0;
+		int successfulUploads = 0;
 
-			        responseDTO = createServiceResponseError(responseObjectsMap,"Excel Upload For State Failed",errorMsg);
-			}
-			LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
-			return ResponseEntity.ok().body(responseDTO);
-			}
-			
-			// File Upload For STATE
-			
-				@PostMapping("/ExcelUploadForCity")
-				public ResponseEntity<ResponseDTO> ExcelUploadForCity(@RequestParam MultipartFile[] files,CustomerAttachmentType type,@RequestParam(required = false) Long orgId,
-						@RequestParam(required = false) String createdBy) {
-				    String methodName = "ExcelUploadForCity()";
-				    LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
-				    String errorMsg = null;
-				    Map<String, Object> responseObjectsMap = new HashMap<>();
-				    ResponseDTO responseDTO = null;
-				    int totalRows = 0;
-				    int successfulUploads = 0;
+		try {
+			// Call service method to process Excel upload
+			basicMasterService.ExcelUploadForState(files, type, orgId, createdBy);
 
-				    try {
-				        // Call service method to process Excel upload
-				        basicMasterService.ExcelUploadForCity(files, type, orgId,createdBy);
-				        
-				        // Retrieve the counts after processing
-				        totalRows = basicMasterService.getTotalRows(); // Get total rows processed
-				        successfulUploads = basicMasterService.getSuccessfulUploads(); // Get successful uploads count
-				        // Construct success response
-				        responseObjectsMap.put("statusFlag", "Ok");
-				        responseObjectsMap.put("status", true);
-				        responseObjectsMap.put("totalRows", totalRows);
-				        responseObjectsMap.put("successfulUploads", successfulUploads);
-				        Map<String, Object> paramObjectsMap = new HashMap<>();
-				        paramObjectsMap.put("message", "Excel Upload For  City successful");
-				        responseObjectsMap.put("paramObjectsMap", paramObjectsMap);
-				        responseDTO = createServiceResponse(responseObjectsMap);
-				        
-				    }  catch (Exception e) {
+			// Retrieve the counts after processing
+			totalRows = basicMasterService.getTotalRows(); // Get total rows processed
+			successfulUploads = basicMasterService.getSuccessfulUploads(); // Get successful uploads count
+			// Construct success response
+			responseObjectsMap.put("statusFlag", "Ok");
+			responseObjectsMap.put("status", true);
+			responseObjectsMap.put("totalRows", totalRows);
+			responseObjectsMap.put("successfulUploads", successfulUploads);
+			Map<String, Object> paramObjectsMap = new HashMap<>();
+			paramObjectsMap.put("message", "Excel Upload For  State successful");
+			responseObjectsMap.put("paramObjectsMap", paramObjectsMap);
+			responseDTO = createServiceResponse(responseObjectsMap);
 
-				    	errorMsg = e.getMessage();
-				        LOGGER.error(CommonConstant.EXCEPTION_OCCURRED, methodName, e);
-				        responseObjectsMap.put("statusFlag", "Error");
-				        responseObjectsMap.put("status", false);
-				        responseObjectsMap.put("errorMessage", errorMsg);
+		} catch (Exception e) {
 
-				        responseDTO = createServiceResponseError(responseObjectsMap,"Excel Upload For City Failed",errorMsg);
-				}
-				LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
-				return ResponseEntity.ok().body(responseDTO);
-				}
-			
-		
+			errorMsg = e.getMessage();
+			LOGGER.error(CommonConstant.EXCEPTION_OCCURRED, methodName, e);
+			responseObjectsMap.put("statusFlag", "Error");
+			responseObjectsMap.put("status", false);
+			responseObjectsMap.put("errorMessage", errorMsg);
+
+			responseDTO = createServiceResponseError(responseObjectsMap, "Excel Upload For State Failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
+	// File Upload For City
+
+	@PostMapping("/ExcelUploadForCity")
+	public ResponseEntity<ResponseDTO> ExcelUploadForCity(@RequestParam MultipartFile[] files,
+			CustomerAttachmentType type, @RequestParam(required = false) Long orgId,
+			@RequestParam(required = false) String createdBy) {
+		String methodName = "ExcelUploadForCity()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		int totalRows = 0;
+		int successfulUploads = 0;
+
+		try {
+			// Call service method to process Excel upload
+			basicMasterService.ExcelUploadForCity(files, type, orgId, createdBy);
+
+			// Retrieve the counts after processing
+			totalRows = basicMasterService.getTotalRows(); // Get total rows processed
+			successfulUploads = basicMasterService.getSuccessfulUploads(); // Get successful uploads count
+			// Construct success response
+			responseObjectsMap.put("statusFlag", "Ok");
+			responseObjectsMap.put("status", true);
+			responseObjectsMap.put("totalRows", totalRows);
+			responseObjectsMap.put("successfulUploads", successfulUploads);
+			Map<String, Object> paramObjectsMap = new HashMap<>();
+			paramObjectsMap.put("message", "Excel Upload For  City successful");
+			responseObjectsMap.put("paramObjectsMap", paramObjectsMap);
+			responseDTO = createServiceResponse(responseObjectsMap);
+
+		} catch (Exception e) {
+
+			errorMsg = e.getMessage();
+			LOGGER.error(CommonConstant.EXCEPTION_OCCURRED, methodName, e);
+			responseObjectsMap.put("statusFlag", "Error");
+			responseObjectsMap.put("status", false);
+			responseObjectsMap.put("errorMessage", errorMsg);
+
+			responseDTO = createServiceResponseError(responseObjectsMap, "Excel Upload For City Failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
 }

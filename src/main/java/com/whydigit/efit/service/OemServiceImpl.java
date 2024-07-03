@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.whydigit.efit.dto.BinInwardDetailsDTO;
 import com.whydigit.efit.dto.GathereingEmptyDetailsDTO;
 import com.whydigit.efit.dto.GatheringEmptyDTO;
 import com.whydigit.efit.dto.OemBinInwardDTO;
@@ -24,8 +23,6 @@ import com.whydigit.efit.dto.RetreivalDetailsDTO;
 import com.whydigit.efit.dto.TransportPickupDTO;
 import com.whydigit.efit.dto.TransportPickupDetailsDTO;
 import com.whydigit.efit.entity.AssetStockDetailsVO;
-import com.whydigit.efit.entity.BinAllotmentDetailsVO;
-import com.whydigit.efit.entity.BinInwardDetailsVO;
 import com.whydigit.efit.entity.BinOutwardDetailsVO;
 import com.whydigit.efit.entity.BinOutwardVO;
 import com.whydigit.efit.entity.DispatchVO;
@@ -63,7 +60,7 @@ public class OemServiceImpl implements OemService {
 
 	@Autowired
 	TransportPickupRepo transportPickupRepo;
-	
+
 	@Autowired
 	OemBinInwardRepo oemBinInwardRepo;
 
@@ -106,7 +103,6 @@ public class OemServiceImpl implements OemService {
 		oemBinInwardVO.setDocId(binoutward);
 		oemBinInwardRepo.nextseq();
 
-		oemBinInwardVO.setDocId(oemBinInwardDTO.getDocId());
 		oemBinInwardVO.setDocDate(oemBinInwardDTO.getDocDate());
 		oemBinInwardVO.setFlowId(oemBinInwardDTO.getFlowId());
 		FlowVO flowVO = flowRepo.findById(oemBinInwardDTO.getFlowId()).get();
@@ -154,8 +150,7 @@ public class OemServiceImpl implements OemService {
 						stockDetailsVO.setSkuCode(binOutwardDetailsVO.getAssetCode());
 						stockDetailsVO.setSkuQty(binOutwardDetailsVO.getQty() * -1);
 						stockDetailsVO.setOrgId(binOutwardVO.getOrgId());
-						stockDetailsVO
-								.setCategory(assetRepo.getCategoryByAssetCodeId(binOutwardDetailsVO.getAssetCode()));
+						stockDetailsVO.setCategory(assetRepo.getCategoryByAssetCodeId(binOutwardDetailsVO.getAssetCode()));
 						stockDetailsVO.setStatus("M");
 						stockDetailsVO.setScreen("Dispatch");
 						stockDetailsVO.setSCode(dispatchVO.getScode());
@@ -217,7 +212,7 @@ public class OemServiceImpl implements OemService {
 
 		OemBinOutwardVO oemBinOutwardVO = new OemBinOutwardVO();
 		String finyr = oemBinOutwardRepo.findFinyr();
-		String binoutward = finyr + "OBO" + oemBinInwardRepo.finddocid();
+		String binoutward = finyr + "OBO" + oemBinOutwardRepo.finddocid();
 		oemBinOutwardVO.setDocId(binoutward);
 		oemBinOutwardRepo.nextSeq();
 		oemBinOutwardVO.setDocDate(oemBinOutwardDTO.getDocDate());
@@ -514,13 +509,13 @@ public class OemServiceImpl implements OemService {
 
 	@Override
 	public RetreivalVO CreateRetreival(RetreivalDTO retreivalDTO) {
-		RetreivalVO retreivalVO=new RetreivalVO();
+		RetreivalVO retreivalVO = new RetreivalVO();
 
 		String finyr = retreivalRepo.findFinyr();
 		String retreivalDocid = finyr + "RM" + retreivalRepo.finddocid();
 		retreivalVO.setDocId(retreivalDocid);
 		retreivalRepo.nextSeq();
-		
+
 		retreivalVO.setDocDate(retreivalDTO.getDocDate());
 		retreivalVO.setFromStockBranch(retreivalDTO.getFromStockBranch());
 		retreivalVO.setToStockBranch(retreivalDTO.getToStockBranch());
@@ -528,22 +523,23 @@ public class OemServiceImpl implements OemService {
 		retreivalVO.setCreatedby(retreivalDTO.getCreatedby());
 		retreivalVO.setModifiedby(retreivalDTO.getCreatedby());
 		retreivalVO.setReceiverId(retreivalDTO.getReceiverId());
-		List<RetreivalDetailsVO>retreivalDetailsVO=new ArrayList<>();
+		List<RetreivalDetailsVO> retreivalDetailsVO = new ArrayList<>();
 		if (retreivalDTO.getRetreivalDetailsDTO() != null) {
-			for (RetreivalDetailsDTO retreivalDetailsDTO : retreivalDTO.getRetreivalDetailsDTO()) 
-			{
+			for (RetreivalDetailsDTO retreivalDetailsDTO : retreivalDTO.getRetreivalDetailsDTO()) {
 				RetreivalDetailsVO retreivalDetails = new RetreivalDetailsVO();
 				retreivalDetails.setOutwardDocId(retreivalDetailsDTO.getOutwardDocId());
 				retreivalDetails.setOutwardDocDate(retreivalDetailsDTO.getOutwardDocDate());
 				retreivalDetails.setOutwardStockBranch(retreivalDetailsDTO.getStockbranch());
-				retreivalDetails.setRetreivalVO(retreivalVO);				
+				retreivalDetails.setRetreivalVO(retreivalVO);
 				retreivalDetailsVO.add(retreivalDetails);
-				
-				OemBinOutwardVO savedOemBinOutwardVO= oemBinOutwardRepo.findByDocId(retreivalDetailsDTO.getOutwardDocId());
+
+				OemBinOutwardVO savedOemBinOutwardVO = oemBinOutwardRepo
+						.findByDocId(retreivalDetailsDTO.getOutwardDocId());
 				savedOemBinOutwardVO.setRetreival("Done");
 				oemBinOutwardRepo.save(savedOemBinOutwardVO);
-				
-				List<OemBinOutwardDetailsVO> oembinOutwardDetailsVOLists = savedOemBinOutwardVO.getOemBinOutwardDetails();
+
+				List<OemBinOutwardDetailsVO> oembinOutwardDetailsVOLists = savedOemBinOutwardVO
+						.getOemBinOutwardDetails();
 				if (oembinOutwardDetailsVOLists != null && !oembinOutwardDetailsVOLists.isEmpty())
 					for (OemBinOutwardDetailsVO oembinOutwardDetailsVO : oembinOutwardDetailsVOLists) {
 						AssetStockDetailsVO stockDetailsVO = new AssetStockDetailsVO();
@@ -554,7 +550,8 @@ public class OemServiceImpl implements OemService {
 						stockDetailsVO.setSkuCode(oembinOutwardDetailsVO.getAssetCode());
 						stockDetailsVO.setSkuQty(oembinOutwardDetailsVO.getOutQty() * -1);
 						stockDetailsVO.setOrgId(savedOemBinOutwardVO.getOrgId());
-						stockDetailsVO.setCategory(assetRepo.getCategoryByAssetCodeId(oembinOutwardDetailsVO.getAssetCode()));
+						stockDetailsVO
+								.setCategory(assetRepo.getCategoryByAssetCodeId(oembinOutwardDetailsVO.getAssetCode()));
 						stockDetailsVO.setStatus("R");
 						stockDetailsVO.setScreen(savedOemBinOutwardVO.getScreen());
 						stockDetailsVO.setSCode(savedOemBinOutwardVO.getScode());
@@ -577,7 +574,8 @@ public class OemServiceImpl implements OemService {
 					stockDetailsVO.setSkuCode(oembinOutwardDetailsVO.getAssetCode());
 					stockDetailsVO.setSkuQty(oembinOutwardDetailsVO.getOutQty());
 					stockDetailsVO.setOrgId(retreivalDTO.getOrgId());
-					stockDetailsVO.setCategory(assetRepo.getCategoryByAssetCodeId(oembinOutwardDetailsVO.getAssetCode()));
+					stockDetailsVO
+							.setCategory(assetRepo.getCategoryByAssetCodeId(oembinOutwardDetailsVO.getAssetCode()));
 					stockDetailsVO.setStatus("P");
 					stockDetailsVO.setScreen("Retreival");
 					stockDetailsVO.setSCode("RETRE");
@@ -593,8 +591,8 @@ public class OemServiceImpl implements OemService {
 			}
 		}
 		retreivalVO.setRetreivalDetailsVO(retreivalDetailsVO);
-		
-	return retreivalRepo.save(retreivalVO);
+
+		return retreivalRepo.save(retreivalVO);
 	}
 
 	@Override
@@ -603,13 +601,12 @@ public class OemServiceImpl implements OemService {
 		String retreivalDocid = finyr + "RM" + retreivalRepo.finddocid();
 		return retreivalDocid;
 	}
-	
-	
+
 	// getRetrival Details for Pending Pickup
 	@Override
 	public List<Map<String, Object>> getRetrievalDeatilsForPendingPickup(Long orgId, Long receiverId) {
 
-		Set<Object[]> retrievalDetails = retreivalRepo.getRetrievalDeatils(orgId,receiverId);
+		Set<Object[]> retrievalDetails = retreivalRepo.getRetrievalDeatils(orgId, receiverId);
 		return retrivalDetails(retrievalDetails);
 	}
 
@@ -625,184 +622,184 @@ public class OemServiceImpl implements OemService {
 		}
 		return retDetails;
 	}
-	
-	
+
 	// getRetrival Details for Pending Pickup
-		@Override
-		public List<Map<String, Object>> getRetrievalDeatilsByRmNoforPickupFillgrid(Long orgId, String rmNo) {
+	@Override
+	public List<Map<String, Object>> getRetrievalDeatilsByRmNoforPickupFillgrid(Long orgId, String rmNo) {
 
-			Set<Object[]> retrieval = retreivalRepo.getRetrievalDeatilsforPickupFillgrid(orgId,rmNo);
-			return retrivaldetailsFillgrid(retrieval);
+		Set<Object[]> retrieval = retreivalRepo.getRetrievalDeatilsforPickupFillgrid(orgId, rmNo);
+		return retrivaldetailsFillgrid(retrieval);
+	}
+
+	private List<Map<String, Object>> retrivaldetailsFillgrid(Set<Object[]> retrieval) {
+		List<Map<String, Object>> retDetailsfill = new ArrayList<>();
+		for (Object[] ps : retrieval) {
+			Map<String, Object> part = new HashMap<>();
+			part.put("category", ps[0] != null ? ps[0].toString() : "");
+			part.put("assetCode", ps[1] != null ? ps[1].toString() : "");
+			part.put("asset", ps[2] != null ? ps[2].toString() : "");
+			part.put("pickQty", ps[3] != null ? Integer.parseInt(ps[3].toString()) : 0);
+			retDetailsfill.add(part);
 		}
+		return retDetailsfill;
+	}
 
-		private List<Map<String, Object>> retrivaldetailsFillgrid(Set<Object[]> retrieval) {
-			List<Map<String, Object>> retDetailsfill = new ArrayList<>();
-			for (Object[] ps : retrieval) {
-				Map<String, Object> part = new HashMap<>();
-				part.put("category", ps[0] != null ? ps[0].toString() : "");
-				part.put("assetCode", ps[1] != null ? ps[1].toString() : "");
-				part.put("asset", ps[2] != null ? ps[2].toString() : "");
-				part.put("pickQty", ps[3] != null ? Integer.parseInt(ps[3].toString()) : 0);
-				retDetailsfill.add(part);
+	@Override
+	public TransportPickupVO createTransPickup(TransportPickupDTO transportPickupDTO) {
+
+		TransportPickupVO transportPickupVO = new TransportPickupVO();
+		String finyr = transportPickupRepo.findFinyr();
+		String pickupDocid = finyr + "PK" + transportPickupRepo.finddocid();
+		transportPickupVO.setDocId(pickupDocid);
+		transportPickupRepo.nextSeq();
+
+		RetreivalVO retreivalVO = retreivalRepo.findByDocidAndOrgId(transportPickupDTO.getRmNo(),
+				transportPickupDTO.getOrgId());
+		retreivalVO.setPickup("Done");
+		retreivalRepo.save(retreivalVO);
+
+		transportPickupVO.setDocDate(transportPickupDTO.getDocDate());
+		transportPickupVO.setFromStockBranch(transportPickupDTO.getFromStockBranch());
+		transportPickupVO.setToStockBranch(transportPickupDTO.getToStockBranch());
+		transportPickupVO.setTransPortDocNo(transportPickupDTO.getTransPortDocNo());
+		transportPickupVO.setTransPorterId(transportPickupDTO.getTransPorterId());
+		transportPickupVO.setTransPorter(transportPickupDTO.getTransPorter());
+		transportPickupVO.setHandoverby(transportPickupDTO.getHandoverby());
+		transportPickupVO.setDriverName(transportPickupDTO.getDriverName());
+		transportPickupVO.setDriverPhoneNo(transportPickupDTO.getDriverPhoneNo());
+		transportPickupVO.setVechicleNo(transportPickupDTO.getVechicleNo());
+		transportPickupVO.setRmNo(transportPickupDTO.getRmNo());
+		transportPickupVO.setRmDate(transportPickupDTO.getRmDate());
+		transportPickupVO.setCreatedby(transportPickupDTO.getCreatedby());
+		transportPickupVO.setOrgId(transportPickupDTO.getOrgId());
+		transportPickupVO.setReceiverId(transportPickupDTO.getReceiverId());
+
+		List<TransportPickupDetailsVO> transportPickupDetailsVO = new ArrayList<>();
+		if (transportPickupDTO.getTransportPickupDetailsDTO() != null) {
+			for (TransportPickupDetailsDTO transportPickupDetailsDTO : transportPickupDTO
+					.getTransportPickupDetailsDTO()) {
+				TransportPickupDetailsVO transportPickupDetailsVOs = new TransportPickupDetailsVO();
+				transportPickupDetailsVOs.setAsset(transportPickupDetailsDTO.getAsset());
+				transportPickupDetailsVOs.setAssetCode(transportPickupDetailsDTO.getAssetCode());
+				transportPickupDetailsVOs.setCategory(transportPickupDetailsDTO.getCategory());
+				transportPickupDetailsVOs.setPickQty(transportPickupDetailsDTO.getPickQty());
+				transportPickupDetailsVOs.setPickupVO(transportPickupVO);
+				transportPickupDetailsVO.add(transportPickupDetailsVOs);
 			}
-			return retDetailsfill;
 		}
+		transportPickupVO.setTransportPickupDetailsVO(transportPickupDetailsVO);
+		TransportPickupVO pickupVO = transportPickupRepo.save(transportPickupVO);
+		List<TransportPickupDetailsVO> pickupDetailsVO = pickupVO.getTransportPickupDetailsVO();
+		if (pickupDetailsVO != null && !pickupDetailsVO.isEmpty()) {
+			for (TransportPickupDetailsVO pickupDetails : pickupDetailsVO) {
 
-		@Override
-		public TransportPickupVO createTransPickup(TransportPickupDTO transportPickupDTO) {
-				
-				TransportPickupVO transportPickupVO= new TransportPickupVO();
-				String finyr = transportPickupRepo.findFinyr();
-				String pickupDocid = finyr + "PK" + transportPickupRepo.finddocid();
-				transportPickupVO.setDocId(pickupDocid);
-				transportPickupRepo.nextSeq();
-				
-				RetreivalVO retreivalVO=retreivalRepo.findByDocidAndOrgId(transportPickupDTO.getRmNo(),transportPickupDTO.getOrgId());
-				retreivalVO.setPickup("Done");
-				retreivalRepo.save(retreivalVO);
-				
-			 	transportPickupVO.setDocDate(transportPickupDTO.getDocDate());
-		        transportPickupVO.setFromStockBranch(transportPickupDTO.getFromStockBranch());
-		        transportPickupVO.setToStockBranch(transportPickupDTO.getToStockBranch());
-		        transportPickupVO.setTransPortDocNo(transportPickupDTO.getTransPortDocNo());
-		        transportPickupVO.setTransPorterId(transportPickupDTO.getTransPorterId());
-		        transportPickupVO.setTransPorter(transportPickupDTO.getTransPorter());
-		        transportPickupVO.setHandoverby(transportPickupDTO.getHandoverby());
-		        transportPickupVO.setDriverName(transportPickupDTO.getDriverName());
-		        transportPickupVO.setDriverPhoneNo(transportPickupDTO.getDriverPhoneNo());
-		        transportPickupVO.setVechicleNo(transportPickupDTO.getVechicleNo());
-		        transportPickupVO.setRmNo(transportPickupDTO.getRmNo());
-		        transportPickupVO.setRmDate(transportPickupDTO.getRmDate());
-		        transportPickupVO.setCreatedby(transportPickupDTO.getCreatedby());
-		        transportPickupVO.setOrgId(transportPickupDTO.getOrgId());
-		        transportPickupVO.setReceiverId(transportPickupDTO.getReceiverId());
-		        
-		        List<TransportPickupDetailsVO>transportPickupDetailsVO= new ArrayList<>();
-		        if (transportPickupDTO.getTransportPickupDetailsDTO() != null) {
-					for (TransportPickupDetailsDTO transportPickupDetailsDTO : transportPickupDTO.getTransportPickupDetailsDTO()) {
-						TransportPickupDetailsVO transportPickupDetailsVOs = new TransportPickupDetailsVO();
-						transportPickupDetailsVOs.setAsset(transportPickupDetailsDTO.getAsset());
-						transportPickupDetailsVOs.setAssetCode(transportPickupDetailsDTO.getAssetCode());
-						transportPickupDetailsVOs.setCategory(transportPickupDetailsDTO.getCategory());
-						transportPickupDetailsVOs.setPickQty(transportPickupDetailsDTO.getPickQty());
-						transportPickupDetailsVOs.setPickupVO(transportPickupVO);
-						transportPickupDetailsVO.add(transportPickupDetailsVOs);
-					}
-				}
-		        transportPickupVO.setTransportPickupDetailsVO(transportPickupDetailsVO);
-		        TransportPickupVO pickupVO=transportPickupRepo.save(transportPickupVO);
-		        List<TransportPickupDetailsVO> pickupDetailsVO=pickupVO.getTransportPickupDetailsVO();
-		        if (pickupDetailsVO != null && !pickupDetailsVO.isEmpty()) {
-					for (TransportPickupDetailsVO pickupDetails  : pickupDetailsVO) {
+				AssetStockDetailsVO stockDetailsVO = new AssetStockDetailsVO();
+				stockDetailsVO.setStockRef(pickupVO.getRmNo());
+				stockDetailsVO.setStockBranch(pickupVO.getFromStockBranch());
+				stockDetailsVO.setStockDate(pickupVO.getRmDate());
+				stockDetailsVO.setSku(pickupDetails.getAsset());
+				stockDetailsVO.setSkuCode(pickupDetails.getAssetCode());
+				stockDetailsVO.setSkuQty(pickupDetails.getPickQty() * -1);
+				stockDetailsVO.setOrgId(pickupVO.getOrgId());
+				stockDetailsVO.setCategory(assetRepo.getCategoryByAssetCodeId(pickupDetails.getAssetCode()));
+				stockDetailsVO.setStatus("P");
+				stockDetailsVO.setScreen("Retreival");
+				stockDetailsVO.setSCode("RETRE");
+				stockDetailsVO.setPm("M");
+				stockDetailsVO.setStockSource("");
+				stockDetailsVO.setBinLocation("");
+				stockDetailsVO.setCancelRemarks("");
+				stockDetailsVO.setStockLocation("");
+				stockDetailsVO.setSourceId(pickupDetails.getId());
+				stockDetailsVO.setFinyr(pickupVO.getFinYr());
+				assetStockDetailsRepo.save(stockDetailsVO);
+			}
+			for (TransportPickupDetailsVO pickupDetails : pickupDetailsVO) {
+				AssetStockDetailsVO stockDetailsVO = new AssetStockDetailsVO();
+				stockDetailsVO.setStockRef(pickupVO.getDocId());
+				stockDetailsVO.setStockBranch(pickupVO.getToStockBranch());
+				stockDetailsVO.setStockDate(pickupVO.getDocDate());
+				stockDetailsVO.setSku(pickupDetails.getAsset());
+				stockDetailsVO.setSkuCode(pickupDetails.getAssetCode());
+				stockDetailsVO.setSkuQty(pickupDetails.getPickQty());
+				stockDetailsVO.setOrgId(pickupVO.getOrgId());
+				stockDetailsVO.setCategory(assetRepo.getCategoryByAssetCodeId(pickupDetails.getAssetCode()));
+				stockDetailsVO.setStatus("M");
+				stockDetailsVO.setScreen(pickupVO.getScreen());
+				stockDetailsVO.setSCode(pickupVO.getScode());
+				stockDetailsVO.setPm("P");
+				stockDetailsVO.setStockSource("");
+				stockDetailsVO.setBinLocation("");
+				stockDetailsVO.setCancelRemarks("");
+				stockDetailsVO.setStockLocation("");
+				stockDetailsVO.setSourceId(pickupDetails.getId());
+				stockDetailsVO.setFinyr(pickupVO.getFinYr());
+				assetStockDetailsRepo.save(stockDetailsVO);
+			}
+		}
+		return pickupVO;
+	}
 
-						AssetStockDetailsVO stockDetailsVO = new AssetStockDetailsVO();
-						stockDetailsVO.setStockRef(pickupVO.getRmNo());
-						stockDetailsVO.setStockBranch(pickupVO.getFromStockBranch());
-						stockDetailsVO.setStockDate(pickupVO.getRmDate());
-						stockDetailsVO.setSku(pickupDetails.getAsset());
-						stockDetailsVO.setSkuCode(pickupDetails.getAssetCode());
-						stockDetailsVO.setSkuQty(pickupDetails.getPickQty() * -1);
-						stockDetailsVO.setOrgId(pickupVO.getOrgId());
-						stockDetailsVO.setCategory(assetRepo.getCategoryByAssetCodeId(pickupDetails.getAssetCode()));
-						stockDetailsVO.setStatus("P");
-						stockDetailsVO.setScreen("Retreival");
-						stockDetailsVO.setSCode("RETRE");
-						stockDetailsVO.setPm("M");
-						stockDetailsVO.setStockSource("");
-						stockDetailsVO.setBinLocation("");
-						stockDetailsVO.setCancelRemarks("");
-						stockDetailsVO.setStockLocation("");
-						stockDetailsVO.setSourceId(pickupDetails.getId());
-						stockDetailsVO.setFinyr(pickupVO.getFinYr());
-						assetStockDetailsRepo.save(stockDetailsVO);
-					}
-					for (TransportPickupDetailsVO pickupDetails  : pickupDetailsVO) {
-						AssetStockDetailsVO stockDetailsVO = new AssetStockDetailsVO();
-						stockDetailsVO.setStockRef(pickupVO.getDocId());
-						stockDetailsVO.setStockBranch(pickupVO.getToStockBranch());
-						stockDetailsVO.setStockDate(pickupVO.getDocDate());
-						stockDetailsVO.setSku(pickupDetails.getAsset());
-						stockDetailsVO.setSkuCode(pickupDetails.getAssetCode());
-						stockDetailsVO.setSkuQty(pickupDetails.getPickQty());
-						stockDetailsVO.setOrgId(pickupVO.getOrgId());
-						stockDetailsVO.setCategory(assetRepo.getCategoryByAssetCodeId(pickupDetails.getAssetCode()));
-						stockDetailsVO.setStatus("M");
-						stockDetailsVO.setScreen(pickupVO.getScreen());
-						stockDetailsVO.setSCode(pickupVO.getScode());
-						stockDetailsVO.setPm("P");
-						stockDetailsVO.setStockSource("");
-						stockDetailsVO.setBinLocation("");
-						stockDetailsVO.setCancelRemarks("");
-						stockDetailsVO.setStockLocation("");
-						stockDetailsVO.setSourceId(pickupDetails.getId());
-						stockDetailsVO.setFinyr(pickupVO.getFinYr());
-						assetStockDetailsRepo.save(stockDetailsVO);
-					}
-				}
-			return pickupVO;
-		}
-		
-		@Override
-		public String getDocIdByTransportPickup() {
-			String finyr = transportPickupRepo.findFinyr();
-			String pickupDocId = finyr + "PK" + transportPickupRepo.finddocid();
-			return pickupDocId;
-		}
+	@Override
+	public String getDocIdByTransportPickup() {
+		String finyr = transportPickupRepo.findFinyr();
+		String pickupDocId = finyr + "PK" + transportPickupRepo.finddocid();
+		return pickupDocId;
+	}
 
-		@Override
-		public List<OemBinInwardVO> getAllOemBinInwardByReceiverId(Long receiverId) {
-			// TODO Auto-generated method stub
-			return oemBinInwardRepo.getAllOemBinInwardByReceiverId(receiverId);
-		}
+	@Override
+	public List<OemBinInwardVO> getAllOemBinInwardByReceiverId(Long receiverId) {
+		// TODO Auto-generated method stub
+		return oemBinInwardRepo.getAllOemBinInwardByReceiverId(receiverId);
+	}
 
-		@Override
-		public List<OemBinOutwardVO> getAllOemBinOutwardByReceiverId(Long receiverId) {
-			// TODO Auto-generated method stub
-			return oemBinOutwardRepo.getAllOemBinOutwardByReceiverId(receiverId);
-		}
+	@Override
+	public List<OemBinOutwardVO> getAllOemBinOutwardByReceiverId(Long receiverId) {
+		// TODO Auto-generated method stub
+		return oemBinOutwardRepo.getAllOemBinOutwardByReceiverId(receiverId);
+	}
 
-		@Override
-		public List<GatheringEmptyVO> getAllGatheringEmptyByReceiverId(Long receiverId) {
-			// TODO Auto-generated method stub
-			return gatheringEmptyRepo.getAllGatheringEmptyByReceiverId(receiverId);
-		}
+	@Override
+	public List<GatheringEmptyVO> getAllGatheringEmptyByReceiverId(Long receiverId) {
+		// TODO Auto-generated method stub
+		return gatheringEmptyRepo.getAllGatheringEmptyByReceiverId(receiverId);
+	}
 
-		@Override
-		public List<RetreivalVO> getAllReterivalByReceiverId(Long receiverId) {
-			// TODO Auto-generated method stub
-			return retreivalRepo.getAllReterivalByReceiverId(receiverId);
-		}
+	@Override
+	public List<RetreivalVO> getAllReterivalByReceiverId(Long receiverId) {
+		// TODO Auto-generated method stub
+		return retreivalRepo.getAllReterivalByReceiverId(receiverId);
+	}
 
-		
-		@Override
-		public List<TransportPickupVO> getAllTranportPickupByReceiverId(Long receiverId) {
-			return transportPickupRepo.getAllTranportPickupByReceiverId(receiverId);
-		}
+	@Override
+	public List<TransportPickupVO> getAllTranportPickupByReceiverId(Long receiverId) {
+		return transportPickupRepo.getAllTranportPickupByReceiverId(receiverId);
+	}
 
-		@Override
-		public List<Map<String, Object>> getReterivalManifestHeaderPdf(String docId, Long orgId) {
-			
-			Set<Object[]> getReterivalManifestPdf=transportPickupRepo.getManifestHeader(docId,orgId);
-			
-			return getReterivalManifestDetails(getReterivalManifestPdf);
-		}
+	@Override
+	public List<Map<String, Object>> getReterivalManifestHeaderPdf(String docId, Long orgId) {
 
-		private List<Map<String, Object>> getReterivalManifestDetails(Set<Object[]> getManifest) {
-			List<Map<String, Object>> status = new ArrayList<>();
-	        for (Object[] ps : getManifest) {
-	            Map<String, Object> values = new HashMap<>();
-	            values.put("rmNo", ps[0] != null ? ps[0].toString() : "");
-	            values.put("rmDate", ps[1] != null ? ps[1].toString() : "");
-	            values.put("dispatchDate", ps[2] != null ? ps[2].toString() : "");   
-	            values.put("sender", ps[3] != null ? ps[3].toString() : "");
-	            values.put("senderAddress", ps[4] != null ? ps[4].toString() : "");
-	            values.put("senderGstin", ps[5] != null ? ps[5].toString() : "");
-	            values.put("receiver", ps[6] != null ? ps[6].toString() : "");
-	            values.put("receiverAddress", ps[7] != null ? ps[7].toString() : "");
-	            values.put("receiverGstin", ps[8] != null ? (ps[8].toString()) : "");
-	            status.add(values);
-	        }
-	        return status;
+		Set<Object[]> getReterivalManifestPdf = transportPickupRepo.getManifestHeader(docId, orgId);
+
+		return getReterivalManifestDetails(getReterivalManifestPdf);
+	}
+
+	private List<Map<String, Object>> getReterivalManifestDetails(Set<Object[]> getManifest) {
+		List<Map<String, Object>> status = new ArrayList<>();
+		for (Object[] ps : getManifest) {
+			Map<String, Object> values = new HashMap<>();
+			values.put("rmNo", ps[0] != null ? ps[0].toString() : "");
+			values.put("rmDate", ps[1] != null ? ps[1].toString() : "");
+			values.put("dispatchDate", ps[2] != null ? ps[2].toString() : "");
+			values.put("sender", ps[3] != null ? ps[3].toString() : "");
+			values.put("senderAddress", ps[4] != null ? ps[4].toString() : "");
+			values.put("senderGstin", ps[5] != null ? ps[5].toString() : "");
+			values.put("receiver", ps[6] != null ? ps[6].toString() : "");
+			values.put("receiverAddress", ps[7] != null ? ps[7].toString() : "");
+			values.put("receiverGstin", ps[8] != null ? (ps[8].toString()) : "");
+			status.add(values);
 		}
+		return status;
+	}
 
 }

@@ -13,7 +13,5 @@ public class ServiceDTO {
 	private String description;
 	private String createdBy;
 	private Long orgid;
-	
-	
 
 }

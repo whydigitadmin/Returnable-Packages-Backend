@@ -1,4 +1,5 @@
 package com.whydigit.efit.entity;
+
 import java.time.LocalDate;
 
 import javax.persistence.Column;
@@ -28,34 +29,30 @@ public class ProofOfDeliveryVO {
 	@SequenceGenerator(name = "proofofdeliverygen", sequenceName = "proofofdeliveryseq", initialValue = 1000000001, allocationSize = 1)
 	@Column(name = "proofofdeliveryid")
 	private long ProofOfDeliveryId;
-	@Column(name = "orgid",length = 15)
+	@Column(name = "orgid")
 	private long orgId;
-	@Column(name = "docid",length = 15)
+	@Column(name = "docid")
 	private String docId;
 	@Column(name = "docdate")
 	private LocalDate docDate;
-	@Column(name = "rfno",length =25 )
+	@Column(name = "rfno")
 	private String rfNo;
 	@Column(name = "rfdate")
 	private LocalDate rfDate;
-	@Column(name = "kitcode",length =25)
+	@Column(name = "kitcode")
 	private String kitCode;
-	@Column(name = "kitqty",length =15)
+	@Column(name = "kitqty")
 	private int kitQty;
-	@Column(name = "kitrqty",length =15)
+	@Column(name = "kitrqty")
 	private int kitRQty;
-	@Column(name = "uploadreceipt",length =240 )
+	@Column(name = "uploadreceipt")
 	private String uploadReceipt;
-	@Column(name = "createdby",length =25 )
+	@Column(name = "createdby")
 	private String createdBy;
-	@Column(name = "modifiedby",length =25 )
+	@Column(name = "modifiedby")
 	private String modifiedBy;
-	
-	
+
 	@Embedded
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
 
-
-	
-	
 }

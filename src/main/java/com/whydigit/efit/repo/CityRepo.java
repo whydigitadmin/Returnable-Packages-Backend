@@ -3,6 +3,7 @@ package com.whydigit.efit.repo;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.whydigit.efit.entity.CityVO;
@@ -13,6 +14,7 @@ public interface CityRepo extends JpaRepository<CityVO, Long> {
 
 	boolean existsById(Long cityid);
 
+	@Query(nativeQuery = true,value = "select * from city where orgid=?3 and active=true and country=?2 and state=?1")
 	List<CityVO> findAllByStateAndCountryAndOrgId(String state, String country, Long orgId);
 
 	
@@ -41,6 +43,9 @@ public interface CityRepo extends JpaRepository<CityVO, Long> {
 	boolean existsByStateAndCountryAndOrgId(String state, String country, Long orgId);
 
 	boolean existsByCityCodeAndCountryAndOrgId(String code, String country, Long orgId);
+	
+	@Query(nativeQuery = true,value = "select * from city where orgid=?1 and country=?2 and state=?3")
+	List<CityVO> findAllCity(Long orgId, String country, String state);
 
 
 }

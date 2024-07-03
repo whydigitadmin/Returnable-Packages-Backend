@@ -20,4 +20,3 @@ public class BinInwardDetailsDTO {
 	private int recQty;
 
 }
-

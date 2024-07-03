@@ -26,6 +26,5 @@ public class BasicDetailDTO {
 	private boolean active;
 	private String createdBy;
 	private String modifiedBy;
-	
-	
+
 }

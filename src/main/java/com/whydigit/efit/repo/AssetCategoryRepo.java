@@ -12,7 +12,7 @@ import com.whydigit.efit.entity.AssetCategoryVO;
 
 @Repository
 public interface AssetCategoryRepo extends JpaRepository<AssetCategoryVO, Long> {
-	
+
 	@Query(value = "select a from AssetCategoryVO a Where a.orgId=?1 and a.active=true")
 	List<AssetCategoryVO> getAllCategoryByOrgId(Long orgId);
 
@@ -35,23 +35,12 @@ public interface AssetCategoryRepo extends JpaRepository<AssetCategoryVO, Long> 
 
 	AssetCategoryVO findByCategoryAndAssetTypeAndOrgId(String category, String assetType, Long orgId);
 
-
 	boolean existsByAssetTypeAndCategoryAndCategoryCodeAndOrgId(String assetType, String category, String categoryCode,
 			Long orgId);
 
 	boolean existsByCategoryAndOrgId(String upperCase, Long orgId);
 
+	@Query(value = "select * from assetcategory where active=1 and orgid=1", nativeQuery = true)
+	List<AssetCategoryVO> findActivecategory(Long orgId);
 
-
-	
-	
-
-	
-
-	
-
-	
-
-	
-	
 }

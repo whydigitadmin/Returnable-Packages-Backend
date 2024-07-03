@@ -38,13 +38,13 @@ public class LogisticsVO {
 	@Column(name ="orgid")
 	private Long orgId;
 	
-	@Column(name ="avglotsize",length =15)
+	@Column(name ="avglotsize")
 	private int avgLotSize;
 	
-	@Column(name ="dispatchfrequency",length =15)
+	@Column(name ="dispatchfrequency")
 	private int dispatchFrequency;
 	
-	@Column(name ="diapatchto",length =50)
+	@Column(name ="diapatchto")
 	private String diapatchTo;
 	
 	

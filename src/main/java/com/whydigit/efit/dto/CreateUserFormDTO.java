@@ -18,7 +18,7 @@ public class CreateUserFormDTO {
 	private Long userId;
 	private String lastName;
 	private Long emitterId;
-	private Long receiverId;
+	//private Long receiverId;
 	private String userName;
 	private Long[] accessaddId;
 	private Long[] accessWarehouse;

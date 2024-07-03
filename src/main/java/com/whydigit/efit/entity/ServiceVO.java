@@ -28,32 +28,21 @@ public class ServiceVO {
 	private Long id;
 	private boolean cancel;
 	private boolean active;
-	@Column(name="createdby",length=25)
+	@Column(name = "createdby")
 	private String createdBy;
-	@Column(name="modifiedby",length=25)
+	@Column(name = "modifiedby")
 	private String modifiedBy;
-	@Column(name="cancelremarks",length=25)
+	@Column(name = "cancelremarks")
 	private String cancelRemarks;
-	@Column(name="code",length=2)
+	@Column(name = "code")
 	private String code;
-	@Column(name="description",length=25)
+	@Column(name = "description")
 	private String description;
-	
-	@Column(name="orgid")
+
+	@Column(name = "orgid")
 	private Long orgId;
-	
-	
-	
-	
+
 	@Embedded
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
 }

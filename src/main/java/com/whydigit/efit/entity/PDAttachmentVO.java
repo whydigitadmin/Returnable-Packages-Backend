@@ -25,11 +25,11 @@ public class PDAttachmentVO {
 	@SequenceGenerator(name = "partstudy5gen", sequenceName = "partstudy5seq", initialValue = 1000000001, allocationSize = 1)
 	@Column(name ="partstudy5id")
 	private long id;
-	@Column(name ="filename",length=50)
+	@Column(name ="filename")
 	private String fileName;
-	@Column(name ="type",length =50)
+	@Column(name ="type")
 	private String type;
-	@Column(name ="partystudy5rowid",length=15)
+	@Column(name ="partystudy5rowid")
 	private Long refPsId;
 	
 }

@@ -52,33 +52,33 @@ public class BranchVO {
 	private String GST;
 	@Column(name = "pan")
 	private String pan;
-	
+
 	private boolean eflag;
-	
+
 	@Column(name = "currency")
 	private String currency;
 	private boolean active;
 	private boolean cancel;
-	@Column(name = "cancelremarks", length = 25)
+	@Column(name = "cancelremarks")
 	private String cancelRemarks;
-	@Column(name = "createdby", length = 25)
+	@Column(name = "createdby")
 	private String createdBy;
-	@Column(name = "modifiedby", length = 25)
+	@Column(name = "modifiedby")
 	private String modifiedBy;
-	@Column(name = "scode", length = 5)
+	@Column(name = "scode")
 	private String sCode = "BRANC";
-	
-	@JsonGetter("active")
-    public String getActive() {
-        return active ? "Active" : "In-Active";
-    }
 
-    // Optionally, if you want to control serialization for 'cancel' field similarly
-    @JsonGetter("cancel")
-    public String getCancel() {
-        return cancel ? "T" : "F";
-    }
-	
+	@JsonGetter("active")
+	public String getActive() {
+		return active ? "Active" : "In-Active";
+	}
+
+	// Optionally, if you want to control serialization for 'cancel' field similarly
+	@JsonGetter("cancel")
+	public String getCancel() {
+		return cancel ? "T" : "F";
+	}
+
 	@Embedded
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
 }

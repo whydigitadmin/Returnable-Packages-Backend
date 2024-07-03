@@ -29,25 +29,24 @@ public class ApprovedPackageDrawingVO {
 	@SequenceGenerator(name = "partstudy6gen", sequenceName = "partstudy6seq", initialValue = 1000000001, allocationSize = 1)
 	@Column(name = "partstudy6id")
 	private Long id;
-	
-	@Column(name = "filename", length = 50)
+
+	@Column(name = "filename")
 	private String fileName;
-	
+
 	@Column(name = "rejectstatus")
 	private boolean rejectStatus;
-	
-	@Column(name = "partstudy6rowid", length = 15)
+
+	@Column(name = "partstudy6rowid")
 	private int rowId;
-	
+
 	@Column(name = "partystudyid")
 	private Long refPsId;
 
-
 	@JsonBackReference
-	@ManyToOne
+	@ManyToOne 
 	@JoinColumn(name = "partstudyid")
 	private PackingDetailVO packingDetailVO;
-	
+
 	@Embedded
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
 

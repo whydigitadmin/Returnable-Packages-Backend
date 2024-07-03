@@ -34,31 +34,31 @@ public class PodVO {
 	private Long podId;
 	@Column(name = "orgid")
 	private Long orgId;
-	@Column(name = "scode", length = 10)
+	@Column(name = "scode")
 	private String sCode = "POD";
-	@Column(name = "docid", length = 30)
+	@Column(name = "docid")
 	private String docId;
 	@Column(name = "docdate")
-	private LocalDate docDate; 
-	@Column(name = "refno", length = 30)
+	private LocalDate docDate;
+	@Column(name = "refno")
 	private String refNo;
 	@Column(name = "refdate")
 	private LocalDate refDate;
-	@Column(name = "kitcode", length = 30)
+	@Column(name = "kitcode")
 	private String kitCode;
-	@Column(name = "kitqty", length = 10)
+	@Column(name = "kitqty")
 	private int kitQty;
-	@Column(name = "kitrqty", length = 10)
+	@Column(name = "kitrqty")
 	private int kitRqty;
-	@Column(name = "stockbranchfrom", length = 10)
+	@Column(name = "stockbranchfrom")
 	private String stockBranchFrom;
-	@Column(name = "stockbranchto", length = 10)
+	@Column(name = "stockbranchto")
 	private String stockBranchTo;
 	private boolean cancel;
 	private boolean active;
-	@Column(name = "createdby", length = 25)
+	@Column(name = "createdby")
 	private String createdBy;
-	@Column(name = "modifiedby", length = 25)
+	@Column(name = "modifiedby")
 	private String modifiedBy;
 
 	@OneToMany(mappedBy = "podVO", cascade = CascadeType.ALL)

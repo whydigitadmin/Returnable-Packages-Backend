@@ -17,12 +17,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name="transportpickupdetails")
+@Table(name = "transportpickupdetails")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class TransportPickupDetailsVO {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "transportpickupdetailsgen")
 	@SequenceGenerator(name = "transportpickupdetailsgen", sequenceName = "transportpickupdetailsseq", initialValue = 1000000001, allocationSize = 1)
@@ -36,8 +36,7 @@ public class TransportPickupDetailsVO {
 	private String asset;
 	@Column(name = "pickqty")
 	private int pickQty;
-	
-	
+
 	@ManyToOne
 	@JoinColumn(name = "transportpickupid")
 	@JsonBackReference

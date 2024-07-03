@@ -38,28 +38,28 @@ public class IssueRequestVO {
 	@SequenceGenerator(name = "issuerequestgen", sequenceName = "issuerequestseq", initialValue = 1000000001, allocationSize = 1)
 	@Column(name = "issuerequestid")
 	private Long id;
-	private String scode="BNREQ";
-	@Column(name = "docid", length = 25)
+	private String scode = "BNREQ";
+	@Column(name = "docid")
 	private String docId;
 	@Column(name = "docdate")
-	private LocalDate docDate=LocalDate.now();
+	private LocalDate docDate = LocalDate.now();
 	@Column(name = "orgid")
 	private long orgId;
 	@Column(name = "customerid")
 	private Long customerId;
 	@Column(name = "whlocationid")
 	private long warehouseLocationId;
-	@Column(name = "warehouselocation", length = 50)
+	@Column(name = "warehouselocation")
 	private String warehouseLocation;
 	@Column(name = "emitterid")
 	private long emitterId;
-	@Column(name = "customercode", length = 30)
+	@Column(name = "customercode")
 	private String emitterCode;
 	@Column(name = "reqaddressid")
 	private long reqAddressId;
 	@Column(name = "flowid")
 	private Long flowTo;
-	@Column(name = "flow", length = 25)
+	@Column(name = "flow")
 	private String flowName;
 	@Column(name = "totalissueitem")
 	private int totalIssueItem;
@@ -73,11 +73,11 @@ public class IssueRequestVO {
 	private LocalDate demandDate;
 	@Column(name = "issuestatus")
 	private int issueStatus;
-	@Column(name = "createdby", length = 25)
+	@Column(name = "createdby")
 	private String createdBy;
-	@Column(name = "modifiedy", length = 25)
+	@Column(name = "modifiedy")
 	private String modifiedBy;
-	@Column(name = "cancelremarks", length = 25)
+	@Column(name = "cancelremarks")
 	private String cancelRemark;
 	private String remark;
 	private boolean active;
@@ -88,24 +88,24 @@ public class IssueRequestVO {
 	@OneToMany(mappedBy = "issueRequestVO", cascade = CascadeType.ALL, orphanRemoval = true)
 	@JsonManagedReference
 	private List<IssueItemVO> issueItemVO = new ArrayList<>();
-	
+
 	@Embedded
-	private CreatedUpdatedDate commonDate=new CreatedUpdatedDate();
+	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
 
 	@PrePersist
-    private void setDefaultFinyr() {
-        // Execute the logic to set the default value for finyr
-        String fyFull = calculateFinyr();
-        this.finyr = fyFull;
-    }
+	private void setDefaultFinyr() {
+		// Execute the logic to set the default value for finyr
+		String fyFull = calculateFinyr();
+		this.finyr = fyFull;
+	}
 
-    private String calculateFinyr() {
-        // Logic to calculate finyr based on the provided SQL query
-        String currentMonthDay = LocalDate.now().format(DateTimeFormatter.ofPattern("MMdd"));
-        String fyFull = (currentMonthDay.compareTo("0331") > 0) ?
-                            LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy")) :
-                            LocalDate.now().minusYears(1).format(DateTimeFormatter.ofPattern("yyyy"));
-        return fyFull;
-    }
+	private String calculateFinyr() {
+		// Logic to calculate finyr based on the provided SQL query
+		String currentMonthDay = LocalDate.now().format(DateTimeFormatter.ofPattern("MMdd"));
+		String fyFull = (currentMonthDay.compareTo("0331") > 0)
+				? LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy"))
+				: LocalDate.now().minusYears(1).format(DateTimeFormatter.ofPattern("yyyy"));
+		return fyFull;
+	}
 
 }

@@ -32,30 +32,30 @@ public class PoVO {
 	@SequenceGenerator(name = "pogen", sequenceName = "poseq", initialValue = 1000000001, allocationSize = 1)
 	@Column(name = "poid")
 	private Long poId;
-	@Column(name = "scode", length = 10)
+	@Column(name = "scode")
 	private String sCode;
-	@Column(name="orgid")
+	@Column(name = "orgid")
 	private Long orgId;
-	@Column(name = "company", length = 50)
+	@Column(name = "company")
 	private String company;
-	@Column(name = "address", length = 200)
+	@Column(name = "address")
 	private String address;
-	@Column(name = "selfgst", length = 25)
+	@Column(name = "selfgst")
 	private String selfGst;
-	@Column(name = "pono", length = 25)
+	@Column(name = "pono")
 	private String poNo;
 	private LocalDate date;
-	@Column(name = "apid", length = 20)
+	@Column(name = "apid")
 	private String apId;
-	@Column(name = "apaddress", length = 200)
+	@Column(name = "apaddress")
 	private String apAddress;
-	@Column(name = "apgst", length = 23)
+	@Column(name = "apgst")
 	private String apGst;
-	@Column(name = "shipto", length = 100)
+	@Column(name = "shipto")
 	private String shipTo;
-	@Column(name = "shiptoremarks", length = 100)
+	@Column(name = "shiptoremarks")
 	private String shipToRemarks;
-	@Column(name = "gsttype", length = 25)
+	@Column(name = "gsttype")
 	private String gstType;
 	@Column(name = "igst", precision = 2, scale = 1)
 	private Float iGst;
@@ -63,28 +63,23 @@ public class PoVO {
 	private Float cGst;
 	@Column(name = "sgst", precision = 2, scale = 1)
 	private Float sGst;
-	@Column(name = "terms", length = 1000)
+	@Column(name = "terms")
 	private String terms;
-	@Column(name = "createdby", length = 25)
+	@Column(name = "createdby")
 	private String createdBy;
-	@Column(name = "modified", length = 25)
+	@Column(name = "modified")
 	private String modifiedBy;
-	@Column(name = "ap", length = 25)
+	@Column(name = "ap")
 	private String ap;
-	@Column(name = "total", length = 15)
+	@Column(name = "total")
 	private int total;
-	
-	
+
 	private boolean cancel;
 	private boolean active;
-	
-	
-	@OneToMany(mappedBy ="poVO",cascade =CascadeType.ALL)
+
+	@OneToMany(mappedBy = "poVO", cascade = CascadeType.ALL)
 	@JsonManagedReference
 	private List<PoVO1> poVO1;
-	
-	
-	
 
 	@Embedded
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();

@@ -34,26 +34,26 @@ public class AssetInwardVO {
 	@SequenceGenerator(name = "assetinwardgen", sequenceName = "assetinwardseq", initialValue = 1000000001, allocationSize = 1)
 	@Column(name = "assetinwardid")
 	private long assetInwardId;
-	@Column(name = "scode", length = 10)
+	@Column(name = "scode")
 	private String sCode = "AINWD";
-	@Column(name = "docid", length = 10)
+	@Column(name = "docid")
 	private String docId;
 	@Column(name = "docdate")    
 	private LocalDate docDate = LocalDate.now();
-	@Column(name="sourcefrom",length = 25)
+	@Column(name="sourcefrom")
 	private String sourceFrom;
-	@Column(name = "stockbranch", length = 40)
+	@Column(name = "stockbranch")
 	private String stockBranch;
 	private boolean cancel;
-	@Column(name = "cancelremarks", length = 40)
+	@Column(name = "cancelremarks")
 	private String cancelRemarks;
-	@Column(name = "createdby", length = 40)
+	@Column(name = "createdby")
 	private String createdBy;
-	@Column(name = "modifiedby", length = 40)
+	@Column(name = "modifiedby")
 	private String modifiedBy;
 	@Column(name="orgid")
 	private Long orgId;
-	@Column(name="finyr",length = 15)
+	@Column(name="finyr")
 	private String finyr;
 	
 	@Column(name="assetcategory")

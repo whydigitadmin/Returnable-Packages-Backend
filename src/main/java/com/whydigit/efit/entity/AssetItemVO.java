@@ -31,13 +31,13 @@ public class AssetItemVO {
 	@Column(name="assetitemid")
 	private Long id;
 	
-	@Column(name="skuid",length = 25)
+	@Column(name="skuid")
 	private String skuId;
 	
-	@Column(name="asset",length = 25)
+	@Column(name="asset")
 	private String assetName;
 	
-	@Column(name="status",length = 10)
+	@Column(name="status")
 	private int status;
 	
 	@ManyToOne

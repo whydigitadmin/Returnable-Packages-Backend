@@ -40,16 +40,16 @@ public class DmapVO {
 	private boolean cancel=false;
 	private boolean active;
 	
-	@Column(name="cancelremarks",length = 50)
+	@Column(name="cancelremarks")
 	private String cancelRemarks;
 	
-	@Column(name="createdby",length = 25)
+	@Column(name="createdby")
 	private String createdBy;
 	
-	@Column(name="modifiedby",length = 25)
+	@Column(name="modifiedby")
 	private String modifiedBy;
 	
-	@Column(name="finyear",length = 4)
+	@Column(name="finyear")
 	private String finYear;
 	
 	@Column(name="fromdate")

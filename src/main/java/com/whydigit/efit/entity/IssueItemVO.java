@@ -35,27 +35,27 @@ public class IssueItemVO {
 	@SequenceGenerator(name = "issuerequest2gen", sequenceName = "issuerequest2seq", initialValue = 1000000001, allocationSize = 1)
 	@Column(name = "issuerequest2id")
 	private long id;
-	@Column(name = "issuerequest2rowid", length = 15)
+	@Column(name = "issuerequest2rowid")
 	private int issuerequest2rowid;
-	@Column(name = "kitcode", length = 25)
+	@Column(name = "kitcode")
 	private String kitName;
-	@Column(name = "kitqty", length = 15)
+	@Column(name = "kitqty")
 	private int kitQty;
-	@Column(name = "partno", length = 25)
+	@Column(name = "partno")
 	private String partNo;
-	@Column(name = "docid", length = 30)
+	@Column(name = "docid")
 	private String docId;
-	
-	@Column(name = "docdate", length = 30)
+
+	@Column(name = "docdate")
 	private LocalDate docDate;
-	
-	@Column(name = "partname", length = 255)
+
+	@Column(name = "partname")
 	private String partName;
-	@Column(name = "partqty", length = 15)
+	@Column(name = "partqty")
 	private int partQty;
-	@Column(name = "issueitemstatus", length = 15)
+	@Column(name = "issueitemstatus")
 	private int issueItemStatus;
-	@Column(name = "issuedqty", length = 15)
+	@Column(name = "issuedqty")
 	private int issuedQty;
 	@Transient
 	private int balanceQty;
@@ -63,7 +63,7 @@ public class IssueItemVO {
 	private String remark;
 	@Column(name = "reacheddate")
 	private String reachedDate;
-	@Column(name="approvedstatus")
+	@Column(name = "approvedstatus")
 	private boolean approvedStatus;
 	@ManyToOne
 	@JoinColumn(name = "issuerequestid")
@@ -85,7 +85,5 @@ public class IssueItemVO {
 	@JsonManagedReference
 	@OneToMany(mappedBy = "issueItemVO", cascade = CascadeType.ALL)
 	private List<IssueRequestApprovedVO> issueRequestApprovedVO;
-	
-
 
 }

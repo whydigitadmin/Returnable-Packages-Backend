@@ -58,19 +58,19 @@ public class BinInwardVO {
 	@Column(name = "modifiedby")
 	private String modifiedBy;
 
-	@Column(name = "cancelremarks", length = 25)
+	@Column(name = "cancelremarks")
 	private String cancelRemarks;
 	@Column(name = "allotmentno")
 	private String allotmentNo;
 	@Column(name = "reqno")
 	private String reqNo;
-	@Column(name = "flow", length = 120)
+	@Column(name = "flow")
 	private String flow;
 	@Column(name = "finyr")
 	private String finYr;
-	@Column(name = "kitcode", length = 25)
+	@Column(name = "kitcode")
 	private String kitCode;
-	@Column(name = "allotedqty", length = 25)
+	@Column(name = "allotedqty")
 	private int allotedQty;
 	@Column(name = "emitterid")
 	private Long emitterId;
@@ -78,11 +78,11 @@ public class BinInwardVO {
 	private LocalDate allotDate;
 	@Column(name = "binreqdate")
 	private LocalDate binReqDate;
-	@Column(name = "returnqty", length = 15)
+	@Column(name = "returnqty")
 	private int returnQty;
-	@Column(name = "returnremarks", length = 150)
+	@Column(name = "returnremarks")
 	private String returnRemarks;
-	@Column(name = "podfileuploadpath", length = 250)
+	@Column(name = "podfileuploadpath")
 	private String podFileUploadPath;
 	@Column(name="partname")
 	private String partName;

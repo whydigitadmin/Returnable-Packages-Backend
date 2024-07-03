@@ -64,14 +64,12 @@ import com.whydigit.efit.exception.ApplicationException;
 public interface MasterService {
 
 	List<AssetVO> getAllAsset(Long orgId);
-	
+
 	List<AssetVO> getAllActiveAsset(Long orgId);
 
-	List<AssetVO> getAllAssetByCategory(Long orgId,String category);
-	
+	List<AssetVO> getAllAssetByCategory(Long orgId, String category);
+
 	Optional<AssetVO> getAssetById(Long id);
-	
-	
 
 	AssetVO createAsset(AssetVO assetVO) throws ApplicationException;
 
@@ -89,7 +87,7 @@ public interface MasterService {
 	AssetCategoryVO updateAssetCategory(AssetCategoryDTO assetGroupVO) throws ApplicationException;
 
 	// CUstomers
-	
+
 	List<CustomersVO> getAllActiveCustomers(Long orgId);
 
 	List<CustomersVO> getAllCustomers(Long orgId);
@@ -100,11 +98,9 @@ public interface MasterService {
 
 	CustomersVO updateCustomers(CustomersDTO customersDTO) throws ApplicationException;
 
-
 	void deleteCustomers(Long id);
 
 	void deleteCustomersBankDetails(Long id);
-
 
 	void deleteCustomersAddress(Long id);
 
@@ -113,13 +109,13 @@ public interface MasterService {
 	// FLOW
 
 	List<FlowVO> getAllFlow(Long orgId, Long emitterId);
-	
+
 	List<FlowVO> getAllActiveFlow(Long orgId, Long emitterId);
-	
+
 	List<FlowVO> getAllReceiverActiveFlow(Long orgId, Long receiverId);
 
 	Set<Object[]> getKitDetailsByEmitter(Long emitterId, Long orgId);
-	
+
 	Optional<FlowVO> getFlowById(long id);
 
 	FlowVO createFlow(FlowDTO flowDTO) throws ApplicationException;
@@ -145,7 +141,7 @@ public interface MasterService {
 	List<AssetTypeVO> getAllAssetType(Long orgId);
 
 	AssetTypeVO createAssetType(AssetTypeVO assetCategoryVO);
-	
+
 	AssetTypeVO updateAssetType(AssetTypeDTO assetTypeVO) throws ApplicationException;
 
 //unit
@@ -162,9 +158,9 @@ public interface MasterService {
 
 	// Create Kit
 	List<KitResponseDTO> getAllKit(Long orgId);
-	
+
 	List<KitResponseDTO> getActiveAllKit(Long orgId);
-	
+
 	Optional<KitVO> getKitById(Long id);
 
 	Optional<KitVO> getKitByKitCode(String kitName);
@@ -186,7 +182,7 @@ public interface MasterService {
 
 	// Vendor
 	List<VendorVO> getAllVendor(Long orgId);
-	
+
 	List<VendorVO> getAllActiveVendor(Long orgId);
 
 	Optional<VendorVO> getVendorById(Long id);
@@ -232,7 +228,7 @@ public interface MasterService {
 	StockBranchVO updateStockBranch(StockBranchDTO stockBranchDTO) throws ApplicationException;
 
 	List<StockBranchVO> getAllStockBranchByOrgId(Long orgId);
-	
+
 	List<StockBranchVO> getAllActiveStockBranchByOrgId(Long orgId);
 
 	AssetInwardVO createAssetInward(AssetInwardDTO assetInwardDTO);
@@ -242,7 +238,7 @@ public interface MasterService {
 	AssetTaggingVO createTagging(AssetTaggingDTO assetTaggingDTO);
 
 	List<AssetTaggingVO> getAllAsetTaggingByOrgId(Long orgId);
-	
+
 	AssetTaggingVO getTaggingById(Long id);
 
 	Set<Object[]> getTagCodeByAsset(String assetcode, String asset, int endno, String category);
@@ -291,7 +287,6 @@ public interface MasterService {
 
 	Set<Object[]> getAllotmentDetailsByAllotmentNoAndOrgId(Long orgId, String docid);
 
-
 	Set<Object[]> getAlllBinInwardByEmitterAndOrgId(Long emitterid, Long orgId);
 
 	Optional<BinInwardVO> getBinInwardById(Long id);
@@ -325,44 +320,43 @@ public interface MasterService {
 	List<Object[]> getRandomAssetDetailsByKitCodeAndAllotQty(String kitCode, int qty, String stockbranch);
 
 	// Get Bin Allotment details
-	
-	List<BinAllotmentNewVO> getCustomizedAllotmentDetails(String kitCode, String flow, String emitter, LocalDate startAllotDate,
-			LocalDate endAllotDate);
-	
-	List<Object[]>availableAllAssetDetails(Long orgId);
+
+	List<BinAllotmentNewVO> getCustomizedAllotmentDetails(String kitCode, String flow, String emitter,
+			LocalDate startAllotDate, LocalDate endAllotDate);
+
+	List<Object[]> availableAllAssetDetails(Long orgId);
 
 	List<FlowVO> getFlowByKitCode(String kitcode);
 
 	List<Map<String, Object>> getAvailableKitQtyByEmitter(Long orgId, Long emitterId, String kitId, Long flowId);
 
-	Set<Object[]> getAssetDetailsByAssetForAssetInward(Long orgId, String stockBranch, String sku,int qty);
+	Set<Object[]> getAssetDetailsByAssetForAssetInward(Long orgId, String stockBranch, String sku, int qty);
 
 	Set<Object[]> getAvailAssetDetailsByBranch(Long orgId, String stockBranch, String category);
-	
-	
+
 	List<BranchVO> getAllBranch(Long orgId);
-	
+
 	List<BranchVO> getAllActiveBranch(Long orgId);
-	
+
 	Optional<BranchVO> getBranchById(Long id);
 
 	BranchVO createUpdateBranch(BranchDTO branchDTO) throws ApplicationException;
-	
+
 	void deleteBranch(Long id);
 
 	Set<Object[]> getEmitterAndReceiverByKitNo(String kitNo);
 
 	Set<Object[]> getBranchLocationByFlow(Long orgId, Long flowId);
 
-	void ExcelUploadForAssetCategory(MultipartFile[] files, CustomerAttachmentType type,Long orgId,String createdBy) throws ApplicationException;
+	void ExcelUploadForAssetCategory(MultipartFile[] files, CustomerAttachmentType type, Long orgId, String createdBy)
+			throws ApplicationException;
 
 	int getTotalRows();
 
 	int getSuccessfulUploads();
 
-
-
-	void ExcelUploadForStockBranch(MultipartFile[] files, CustomerAttachmentType type, Long orgId,String createdBy) throws ApplicationException;
+	void ExcelUploadForStockBranch(MultipartFile[] files, CustomerAttachmentType type, Long orgId, String createdBy)
+			throws ApplicationException;
 
 	List<Map<String, Object>> getPartNoAndPartName(Long flowId, String kitNo, Long emitterId);
 
@@ -371,45 +365,24 @@ public interface MasterService {
 	void ExcelUploadForUnit(MultipartFile[] files, CustomerAttachmentType type, Long orgId, String createdBy)
 			throws ApplicationException;
 
-	
 	// Bin retrieval
-		BinRetrievalVO createBinRetrieval (BinRetrievalDTO binRetrievalDTO);
+	BinRetrievalVO createBinRetrieval(BinRetrievalDTO binRetrievalDTO);
 
-		List<Map<String, Object>> getPendingBinRetrievalTransportPickupDetails(Long orgId, Long userId);
+	List<Map<String, Object>> getPendingBinRetrievalTransportPickupDetails(Long orgId, Long userId);
 
-		List<Map<String, Object>> getTransportPickupDetailsByDocId(Long orgId, String pickupDocId);
+	List<Map<String, Object>> getTransportPickupDetailsByDocId(Long orgId, String pickupDocId);
 
-		String getDocIdByBinRetrieval();
+	String getDocIdByBinRetrieval();
 
-		List<BinRetrievalVO> getBinReterivalByOrgId(Long orgId);
-		
-		List<BinRetrievalVO> getBinReterivalByDocId(String docId);
+	List<BinRetrievalVO> getBinReterivalByOrgId(Long orgId);
 
-		List<BinRetrievalVO> getAllBinReterival(Long id);
+	List<BinRetrievalVO> getBinReterivalByDocId(String docId);
 
-		List<Map<String, Object>> getAvilQtyByEmitterBykitWise(Long orgId, Long userId);
+	List<BinRetrievalVO> getAllBinReterival(Long id);
 
+	List<Map<String, Object>> getAvilQtyByEmitterBykitWise(Long orgId, Long userId);
 
+	List<String> getActiveAssetcategory(Long orgId);
 
-
-	
-
-	
-
-	
-
-	
-
-
-	
-
-	
-
-
-	
-
-	
-
-	
 
 }

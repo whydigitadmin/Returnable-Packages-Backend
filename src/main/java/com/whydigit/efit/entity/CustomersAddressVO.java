@@ -25,51 +25,48 @@ public class CustomersAddressVO {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "CustomersAddressVO")
 	@SequenceGenerator(name = "CustomersAddressVO", sequenceName = "CustomersAddressVo", initialValue = 1000000001, allocationSize = 1)
-	@Column(name="customer1id")
+	@Column(name = "customer1id")
 	private Long id;
-	
-	@Column(name="gst",length = 25)
+
+	@Column(name = "gst")
 	private String gstRegistrationStatus;
-	
-	@Column(name="street1",length = 100) 
+
+	@Column(name = "street1")
 	private String street1;
-	
-	@Column(name="street2",length = 100)
+
+	@Column(name = "street2")
 	private String street2;
-	
-	@Column(name="pincode",length = 25)
+
+	@Column(name = "pincode")
 	private String pinCode;
-	
-	@Column(name="phone",length = 25)
+
+	@Column(name = "phone")
 	private String phoneNumber;
-	
-	@Column(name="gstin",length = 16)
+
+	@Column(name = "gstin")
 	private String gstNumber;
-	
-	@Column(name="city",length = 25)
+
+	@Column(name = "city")
 	private String city;
-	
-	@Column(name="contactperson",length = 25)
+
+	@Column(name = "contactperson")
 	private String contactName;
-	
-	@Column(name="state",length = 25)
-    private String state;
-	
-	@Column(name="email",length = 50)
-    private String email;
-	
-	@Column(name="designation",length = 50)
-    private String designation;
-	
-	@Column(name="country",length = 25)
+
+	@Column(name = "state")
+	private String state;
+
+	@Column(name = "email")
+	private String email;
+
+	@Column(name = "designation")
+	private String designation;
+
+	@Column(name = "country")
 	private String country;
 
-     
 	@ManyToOne
 	@JoinColumn(name = "customerid")
 	@JsonBackReference
 	private CustomersVO customersVO;
-
-	
 
 }

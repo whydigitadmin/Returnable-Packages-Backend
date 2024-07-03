@@ -1294,9 +1294,9 @@ public class EmitterController extends BaseController {
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
-		List<Map<String,Object>> partstudy = new ArrayList<>();
+		List<Map<String, Object>> partstudy = new ArrayList<>();
 		try {
-			partstudy = emitterService.getDocIdByFlowOnEmitterDispatchScreen(FlowId); 
+			partstudy = emitterService.getDocIdByFlowOnEmitterDispatchScreen(FlowId);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
@@ -1312,7 +1312,6 @@ public class EmitterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-
 
 	@GetMapping("/getBininwardListByDocId")
 	public ResponseEntity<ResponseDTO> getBininwardListByDocId(@RequestParam String DocId) {
@@ -1355,9 +1354,9 @@ public class EmitterController extends BaseController {
 		}
 		return binReqDetails;
 	}
-	
+
 	@GetMapping("/getStockBranchByUserId")
-	public ResponseEntity<ResponseDTO> getStockBranchByUserId(@RequestParam Long orgId,@RequestParam Long userId) {
+	public ResponseEntity<ResponseDTO> getStockBranchByUserId(@RequestParam Long orgId, @RequestParam Long userId) {
 		String methodName = "getStockBranchByUserId()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -1377,7 +1376,8 @@ public class EmitterController extends BaseController {
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} else {
 			errorMsg = " not found for ID: ";
-			responseDTO = createServiceResponseError(responseObjectsMap, "Emitter StockBranch List not found", errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "Emitter StockBranch List not found",
+					errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
@@ -1395,7 +1395,8 @@ public class EmitterController extends BaseController {
 	}
 
 	@GetMapping("/getStockLedgerByEmitter")
-	public ResponseEntity<ResponseDTO> getStockLedgerByEmitter(@RequestParam String startDate,@RequestParam String endDate,@RequestParam String stockBranch) {
+	public ResponseEntity<ResponseDTO> getStockLedgerByEmitter(@RequestParam String startDate,
+			@RequestParam String endDate, @RequestParam String stockBranch) {
 		String methodName = "getStockLedgerByEmitter()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -1437,16 +1438,16 @@ public class EmitterController extends BaseController {
 		}
 		return stockLedger;
 	}
-	
-	
+
 	@GetMapping("/getBinRequestStatusCount")
-	public ResponseEntity<ResponseDTO> getBinRequestStatusCount(@RequestParam Long emitterId,@RequestParam Long orgId) {
+	public ResponseEntity<ResponseDTO> getBinRequestStatusCount(@RequestParam Long emitterId,
+			@RequestParam Long orgId) {
 		String methodName = "getBinRequestStatusCount()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
-		List<Map<String,Object>> binreqStatus = new ArrayList<>();
+		List<Map<String, Object>> binreqStatus = new ArrayList<>();
 		try {
 			binreqStatus = emitterService.getCountofBinRequestPendingAndCompleted(emitterId, orgId);
 		} catch (Exception e) {
@@ -1464,15 +1465,15 @@ public class EmitterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-	
+
 	@GetMapping("/getBinInwardStatus")
-	public ResponseEntity<ResponseDTO> getBinInwardStatus(@RequestParam Long emitterId,@RequestParam Long orgId) {
+	public ResponseEntity<ResponseDTO> getBinInwardStatus(@RequestParam Long emitterId, @RequestParam Long orgId) {
 		String methodName = "getBinInwardStatus()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
-		List<Map<String,Object>> binInwardStatus = new ArrayList<>();
+		List<Map<String, Object>> binInwardStatus = new ArrayList<>();
 		try {
 			binInwardStatus = emitterService.getBinInwardStatus(emitterId, orgId);
 		} catch (Exception e) {
@@ -1490,5 +1491,5 @@ public class EmitterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-	
+
 }

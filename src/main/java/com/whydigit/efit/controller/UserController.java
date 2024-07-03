@@ -12,5 +12,4 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController extends BaseController {
 	public static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
-	
 }

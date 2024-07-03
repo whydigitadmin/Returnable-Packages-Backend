@@ -1,8 +1,7 @@
 package com.whydigit.efit.dto;
+
 import java.time.LocalDate;
 import java.util.List;
-
-import com.whydigit.efit.entity.BinRetrievalDetailsVO;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -28,6 +27,6 @@ public class BinRetrievalDTO {
 	private String createdby;
 	private Long orgId;
 
-	private List<BinRetrievalDetailsDTO>binRetrievalDetailsDTO;
+	private List<BinRetrievalDetailsDTO> binRetrievalDetailsDTO;
 
 }
