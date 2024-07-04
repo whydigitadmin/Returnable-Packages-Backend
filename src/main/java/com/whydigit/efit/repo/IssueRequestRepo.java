@@ -56,7 +56,11 @@ public interface IssueRequestRepo
 	@Query(nativeQuery = true,value="select a.flowid from issuerequest a where a.docid=?1")
 	Long getFlowIdByrequestId(String binReqNo);
 
-	@Query(nativeQuery =true,value = "SELECT a.docid, a.docdate AS reqDate, a.emitter, a.emitterid, b.kitcode, b.kitqty AS reqKitQty, b.partno, b.partname, a.flow, a.flowid FROM issuerequest a JOIN issuerequest2 b ON a.issuerequestid = b.issuerequestid JOIN users u ON FIND_IN_SET(a.whlocationid, u.access_warehouse) > 0 WHERE a.docid NOT IN (SELECT binreqno FROM binallotment) AND a.orgid = ?1 AND u.user_id = ?2 GROUP BY a.docid, a.docdate, a.emitter, a.emitterid, b.kitcode, b.kitqty, b.partno, b.partname, a.flow, a.flowid;")
+	@Query(nativeQuery =true,value = "SELECT a.docid, a.docdate AS reqDate, a.emitter, a.emitterid, b.kitcode, b.kitqty AS reqKitQty, b.partno, b.partname, a.flow, a.flowid \n"
+			+ "FROM issuerequest a JOIN issuerequest2 b ON a.issuerequestid = b.issuerequestid \n"
+			+ "JOIN users u ON FIND_IN_SET(a.whlocationid, u.access_warehouse) > 0 \n"
+			+ "WHERE concat(a.docid,b.kitcode ) NOT IN (SELECT concat(binreqno,kitcode) FROM binallotment) AND a.orgid = ?1 AND u.user_id = ?2 \n"
+			+ "GROUP BY a.docid, a.docdate, a.emitter, a.emitterid, b.kitcode, b.kitqty, b.partno, b.partname, a.flow, a.flowid")
 	Set<Object[]> getIssueRequestByOrgId(Long orgId, Long userId);
 
 	@Query(nativeQuery =true,value = "select 'Completed'Status,a.emitterid,a.emitter,a.docid,a.docdate,a.flow,b.kitcode,b.kitqty from issuerequest a,issuerequest2 b \r\n"

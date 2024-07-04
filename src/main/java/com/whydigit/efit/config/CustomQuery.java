@@ -128,6 +128,11 @@ public class CustomQuery {
     + "        AND a.kitno = b.kitno\r\n"
     + "        AND a.flowid = b.flowid\r\n"
     + "        AND a.orgid = b.orgid");
+    jdbcTemplate.execute("create or replace view kitstockdetails as\r\n"
+    		+ "select a.orgid,a.flow,b.flowid,a.docdate stockdate,a.kitcode kitno,sum(a.allotedqty)sqty  from bininward a,flow b where a.flow=b.flow group by a.orgid,a.flow,b.flowid,a.docdate,a.kitcode\r\n"
+    		+ "union\r\n"
+    		+ "select orgid,flow,flowid,docdate stockdate,kitno, sum(outwardkitqty*-1)sqty  from binoutward   group by orgid,flow,flowid,docdate,kitno");
+    
     }
 }
 

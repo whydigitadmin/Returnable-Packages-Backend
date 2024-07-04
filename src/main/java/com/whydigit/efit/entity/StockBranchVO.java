@@ -34,6 +34,8 @@ public class StockBranchVO {
 
 	@Column(name = "active")
 	private boolean active = true;
+	
+	private boolean eflag;
 
 	@Column(name = "createdby")
 	private String createdBy;

@@ -12,12 +12,13 @@ import com.whydigit.efit.entity.UnitVO;
 
 @Repository
 public interface UnitRepo extends JpaRepository<UnitVO, Long> {
-	@Query(value = "select a from UnitVO a Where a.orgId=?1")
-	List<UnitVO> getAllUnit(Long orgId);
 
 	boolean existsByUnitAndOrgId(String unit, long orgId);
 
 	Optional<UnitVO> findById(Long id);
+	
+    @Query(value ="select * from unit where org_id=?1",nativeQuery =true)
+	List<UnitVO> findAllUnitByOrgId(Long orgId);
 
 
 }

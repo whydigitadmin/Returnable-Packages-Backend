@@ -382,7 +382,11 @@ public interface MasterService {
 
 	List<Map<String, Object>> getAvilQtyByEmitterBykitWise(Long orgId, Long userId);
 
-	List<String> getActiveAssetcategory(Long orgId);
+	List<String> getActiveAssetcategory(Long orgId,String assetCategory);
+
+	Map<String, List<VendorVO>> VendorsType(Long orgId);
+
+	
 
 
 }

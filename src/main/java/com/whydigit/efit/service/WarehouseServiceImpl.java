@@ -26,8 +26,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.whydigit.efit.dto.CustomerAttachmentType;
 import com.whydigit.efit.dto.WarehouseDTO;
+import com.whydigit.efit.entity.StockBranchVO;
 import com.whydigit.efit.entity.WarehouseVO;
 import com.whydigit.efit.exception.ApplicationException;
+import com.whydigit.efit.repo.StockBranchRepo;
 import com.whydigit.efit.repo.UserRepo;
 import com.whydigit.efit.repo.WarehouseRepository;
 
@@ -39,6 +41,9 @@ public class WarehouseServiceImpl implements WarehouseService {
 
 	@Autowired
 	UserRepo userRepo;
+	
+	@Autowired
+	StockBranchRepo stockBranchRepo;
 
 	@Override
 	public List<WarehouseVO> getAllWarehouse(Long orgId) {
@@ -118,6 +123,9 @@ public class WarehouseServiceImpl implements WarehouseService {
 		warehouseVO.setPincode(warehouseDTO.getPincode());
 		warehouseVO.setCode(warehouseDTO.getCode());
 		warehouseVO.setStockBranch(warehouseDTO.getStockBranch());
+		StockBranchVO stockBranchVO=stockBranchRepo.findByBranchCode(warehouseDTO.getStockBranch());
+		stockBranchVO.setEflag(true);
+		stockBranchRepo.save(stockBranchVO);
 		warehouseVO.setCity(warehouseDTO.getCity());
 		warehouseVO.setCountry(warehouseDTO.getCountry());
 		warehouseVO.setGst(warehouseDTO.getGst());

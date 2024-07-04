@@ -11,7 +11,7 @@ import com.whydigit.efit.entity.CountryVO;
 @Repository
 public interface CountryRepo extends JpaRepository<CountryVO, Long> {
 
-	@Query(value = "select * from country where orgid=?1 and active=true",nativeQuery =true)
+	@Query(value = "select * from country where orgid=?1 ",nativeQuery =true)
 	List<CountryVO> findAllByOrgId(Long orgId);
 
 	boolean existsByCountryAndOrgId(String country, Long orgId);
@@ -26,7 +26,7 @@ public interface CountryRepo extends JpaRepository<CountryVO, Long> {
 
 	boolean existsByCountryCodeAndOrgIdAndIdNot(String countryCode, Long orgId, Long id);
 	
-    @Query(value = "select * from country where orgid=?1",nativeQuery = true)
+    @Query(value = "select * from country where active=1 and orgid=?1",nativeQuery = true)
 	List<CountryVO> findAllCountry(Long orgId);
 
 

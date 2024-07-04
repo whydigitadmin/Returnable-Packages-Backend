@@ -825,7 +825,10 @@ public class MasterServiceImpl implements MasterService {
 		customersVO.setOrgId(customersDTO.getOrgId());
 		customersVO.setEmail(customersDTO.getEmail());
 		customersVO.setPhoneNumber(customersDTO.getPhoneNumber());
+		customersVO.setCreatedBy(customersDTO.getCreatedBy());
+		customersVO.setModifiedBy(customersDTO.getCreatedBy());
 		customersVO.setCustomerActivatePortal(customersDTO.isCustomerActivatePortal());
+		
 		customersVO.setActive(customersDTO.isActive());
 	}
 
@@ -1136,15 +1139,8 @@ public class MasterServiceImpl implements MasterService {
 
 	@Override
 	public List<UnitVO> getAllUnit(Long orgId) {
-		List<UnitVO> unitVO = new ArrayList<>();
-		if (ObjectUtils.isNotEmpty(orgId)) {
-			LOGGER.info("Successfully Received Unit BY OrgId : {}", orgId);
-			unitVO = unitRepo.getAllUnit(orgId);
-		} else {
-			LOGGER.info("Successfully Received Unit Information For All OrgId.");
-			unitVO = unitRepo.findAll();
-		}
-		return unitVO;
+		
+		return unitRepo.findAllUnitByOrgId(orgId);
 	}
 
 	@Override
@@ -1592,8 +1588,7 @@ public class MasterServiceImpl implements MasterService {
 			vendorVO.setPhoneNumber(vendorDTO.getPhoneNumber());
 			vendorVO.setEmail(vendorDTO.getEmail());
 			vendorVO.setCountry(vendorDTO.getCountry());
-			vendorVO.setCreatedby(vendorDTO.getCreatedBy());
-			vendorVO.setModifiedby(vendorDTO.getCreatedBy());
+			vendorVO.setModifiedBy(vendorDTO.getCreatedBy());
 			vendorVO.setVenderActivePortal(vendorDTO.isVenderActivePortal());
 			vendorVO.setActive(vendorDTO.isActive());
 		} else {
@@ -1609,6 +1604,8 @@ public class MasterServiceImpl implements MasterService {
 			vendorVO.setPhoneNumber(vendorDTO.getPhoneNumber());
 			vendorVO.setEntityLegalName(vendorDTO.getEntityLegalName());
 			vendorVO.setEmail(vendorDTO.getEmail());
+			vendorVO.setCreatedBy(vendorDTO.getCreatedBy());
+			vendorVO.setModifiedBy(vendorDTO.getCreatedBy());
 			vendorVO.setVenderActivePortal(vendorDTO.isActive());
 			vendorVO.setActive(vendorDTO.isActive());
 		}
@@ -2683,6 +2680,8 @@ public class MasterServiceImpl implements MasterService {
 		return avlKitQty;
 	}
 
+	
+	
 	@Override
 	public Set<Object[]> getAssetDetailsByAssetForAssetInward(Long orgId, String stockBranch, String assetCode,
 			int qty) {
@@ -3551,8 +3550,8 @@ public class MasterServiceImpl implements MasterService {
 	}
 
 	@Override
-	public List<String> getActiveAssetcategory(Long orgId) {
-	    Set<Object[]> getActiveCategory = binInwardRepo.getActiveCategory(orgId);
+	public List<String> getActiveAssetcategory(Long orgId,String assetCategory) {
+	    Set<Object[]> getActiveCategory = binInwardRepo.getActiveCategory(orgId,assetCategory);
 	    return getActiveCategoryDetails(getActiveCategory);
 	}
 
@@ -3564,6 +3563,17 @@ public class MasterServiceImpl implements MasterService {
 	        }
 	    }
 	    return details;
+	}
+	
+	@Override
+	public Map<String, List<VendorVO>> VendorsType(Long orgId) {
+		List<VendorVO> vendorVO = vendorRepo.getAllActiveVendorsByOrgId(orgId);
+		Map<String, List<VendorVO>> vendors = new HashMap<>();
+		List<VendorVO> transporterVO = vendorRepo.getAllActiveTransportVendorsByOrgId(orgId);
+		List<VendorVO> supplierVO = vendorRepo.getAllActiveSupplierVendorsByOrgId(orgId);
+		vendors.put("transportVendorVO", transporterVO);
+		vendors.put("supplierVendorVO", supplierVO);
+		return vendors;
 	}
 
 }

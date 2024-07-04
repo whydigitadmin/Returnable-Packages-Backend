@@ -23,7 +23,7 @@ public class VendorDTO {
 	private boolean venderActivePortal;
 	private boolean active;
 	private String createdBy;
-	private String modifiedby;
+	//private String modifiedBy;
 	
 	
 	private List<VendorAddressDTO>vendorAddressDTO;

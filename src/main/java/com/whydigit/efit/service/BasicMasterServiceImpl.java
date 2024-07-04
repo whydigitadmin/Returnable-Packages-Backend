@@ -93,10 +93,6 @@ public class BasicMasterServiceImpl implements BasicMasterService {
 		localCurrencyRepo.deleteById(id);
 	}
 
-	@Override
-	public List<CountryVO> getAllcountries(Long orgId) {
-		return countryRepo.findAllCountry(orgId);
-	}
 
 	@Override
 	public Optional<CountryVO> getCountryById(Long id) {
@@ -161,8 +157,8 @@ public class BasicMasterServiceImpl implements BasicMasterService {
 
 
 	@Override
-	public List<StateVO> getAllStatesByCountry(String Country, Long orgId) {
-		return stateRepo.findAllActiveState(Country, orgId);
+	public List<StateVO> getAllStatesByCountry(Long orgId,String country) {
+		return stateRepo.findAllActiveState(orgId,country);
 	}
 
 	@Override
@@ -228,8 +224,8 @@ public class BasicMasterServiceImpl implements BasicMasterService {
 //	city
 
 	@Override
-	public List<CityVO> getAllgetAllCities() {
-		return cityRepo.findAllCity();
+	public List<CityVO> getAllgetAllCities(Long orgId) {
+		return cityRepo.findAllCity(orgId);
 	}
 
 	@Override
@@ -238,9 +234,9 @@ public class BasicMasterServiceImpl implements BasicMasterService {
 	}
 
 	@Override
-	public List<CityVO> getAllCitiesByStateAndCountry(String state, String country, Long orgId) {
+	public List<CityVO> getAllCitiesByStateAndCountry(Long orgId,String country,String state) {
 
-		return cityRepo.findAllByStateAndCountryAndOrgId(state, country, orgId);
+		return cityRepo.findAllByStateAndCountryAndOrgId(orgId,country,state);
 	}
 
 	@Override
@@ -1020,16 +1016,23 @@ public class BasicMasterServiceImpl implements BasicMasterService {
 	        return successfulUploads;
 	    }
 
+
 		@Override
-		public List<CountryVO> getAllgetAllcountries(Long orgId) {
+		public List<StateVO> getAllgetAllStates(Long orgId) {
+			// TODO Auto-generated method stub
+			return stateRepo.findAllState(orgId);
+		}
+
+//		@Override
+//		public List<CountryVO> getAllgetAllcountries(Long orgId) {
+//			// TODO Auto-generated method stub
+//			return countryRepo.findAllCountry(orgId);
+//		}
+
+		@Override
+		public List<CountryVO> getAllcountries(Long orgId) {
 			// TODO Auto-generated method stub
 			return countryRepo.findAllCountry(orgId);
 		}
-
-		@Override
-		public List<StateVO> getAllgetAllStates(Long orgId, String country) {
-			// TODO Auto-generated method stub
-			return stateRepo.findAllState(orgId,country);
-		}
-
+		
 }
