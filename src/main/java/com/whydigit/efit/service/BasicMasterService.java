@@ -53,7 +53,7 @@ public interface BasicMasterService {
 
 	void deleteState(Long id);
 
-	List<CityVO> getAllgetAllCities(Long orgId, String country, String state);
+	List<CityVO> getAllgetAllCities();
 
 	Optional<CityVO> getCityById(Long id);
 

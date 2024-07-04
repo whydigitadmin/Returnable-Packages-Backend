@@ -62,6 +62,8 @@ public class VendorVO {
 
 	@Column(name = "email")
 	private String email;
+	
+	private String country;
 
 	@Column(name = "activeportal")
 	private boolean venderActivePortal;

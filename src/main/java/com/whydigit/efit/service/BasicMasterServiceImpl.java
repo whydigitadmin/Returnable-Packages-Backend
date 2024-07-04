@@ -228,8 +228,8 @@ public class BasicMasterServiceImpl implements BasicMasterService {
 //	city
 
 	@Override
-	public List<CityVO> getAllgetAllCities(Long orgId,String country,String state) {
-		return cityRepo.findAllCity(orgId,country,state);
+	public List<CityVO> getAllgetAllCities() {
+		return cityRepo.findAllCity();
 	}
 
 	@Override

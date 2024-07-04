@@ -527,9 +527,7 @@ public class BasicMasterController extends BaseController {
 //	city
 
 	@GetMapping("/city")
-	public ResponseEntity<ResponseDTO> getAllCities(@RequestParam(required =true)Long orgId,
-			@RequestParam(required =true) String country,@RequestParam(required =true) String state
-			) {
+	public ResponseEntity<ResponseDTO> getAllCities() {
 		String methodName = "getAllCities()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -537,7 +535,7 @@ public class BasicMasterController extends BaseController {
 		ResponseDTO responseDTO = null;
 		List<CityVO> cityVO = new ArrayList<>();
 		try {
-			cityVO = basicMasterService.getAllgetAllCities(orgId,country,state);
+			cityVO = basicMasterService.getAllgetAllCities();
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);

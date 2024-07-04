@@ -1506,6 +1506,7 @@ public class MasterServiceImpl implements MasterService {
 		// Update vendor details
 		getVendorVOFromVendorDTO(vendorDTO, vendorVO);
 
+		
 		// Update or create bank details
 		List<VendorBankDetailsVO> vendorBankDetailsVO = new ArrayList<>();
 		if (vendorDTO.getVendorBankDetailsDTO() != null) {
@@ -1590,6 +1591,9 @@ public class MasterServiceImpl implements MasterService {
 			vendorVO.setVenderType(vendorDTO.getVenderType());
 			vendorVO.setPhoneNumber(vendorDTO.getPhoneNumber());
 			vendorVO.setEmail(vendorDTO.getEmail());
+			vendorVO.setCountry(vendorDTO.getCountry());
+			vendorVO.setCreatedby(vendorDTO.getCreatedBy());
+			vendorVO.setModifiedby(vendorDTO.getCreatedBy());
 			vendorVO.setVenderActivePortal(vendorDTO.isVenderActivePortal());
 			vendorVO.setActive(vendorDTO.isActive());
 		} else {
