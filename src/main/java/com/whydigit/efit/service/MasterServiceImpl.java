@@ -3576,5 +3576,19 @@ public class MasterServiceImpl implements MasterService {
 		return vendors;
 	}
 
+	@Override
+	public List<String> getAllActiveAssetcategory(Long orgId) {
+		 Set<Object[]> getActiveCategory = binInwardRepo.getActiveCategory1(orgId);
+		    return getActiveCategoryDetails1(getActiveCategory);
+		}
+	private List<String> getActiveCategoryDetails1(Set<Object[]> getActiveCategory1) {
+	    List<String> details = new ArrayList<>();
+	    for (Object[] kd : getActiveCategory1) {
+	        if (kd[0] != null) {
+	            details.add(kd[0].toString());
+	        }
+	    }
+	    return details;
+	}
 }
 

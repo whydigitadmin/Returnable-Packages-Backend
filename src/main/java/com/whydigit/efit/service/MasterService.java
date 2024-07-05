@@ -386,6 +386,8 @@ public interface MasterService {
 
 	Map<String, List<VendorVO>> VendorsType(Long orgId);
 
+	List<String> getAllActiveAssetcategory(Long orgId);
+
 	
 
 
