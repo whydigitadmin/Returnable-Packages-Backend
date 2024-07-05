@@ -414,7 +414,7 @@ public class AuthServiceImpl implements AuthService {
 	                .collect(Collectors.toList());
 
 	        List<FlowVO> flows = flowRepo.findAllById(flowIdList);
-	        flows.forEach(flow -> flow.setEflag(false));
+	        flows.forEach(flow -> flow.setEflag(true));
 	        flowRepo.saveAll(flows);
 	    }
 		userVO.setAccessFlowId(flowIds);

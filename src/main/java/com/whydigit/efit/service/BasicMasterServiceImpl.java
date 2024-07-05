@@ -222,10 +222,13 @@ public class BasicMasterServiceImpl implements BasicMasterService {
 	}
 
 //	city
-
 	@Override
-	public List<CityVO> getAllgetAllCities(Long orgId) {
-		return cityRepo.findAllCity(orgId);
+	public List<CityVO> getAllCities(Long orgId) {
+		return cityRepo.findAllByOrgId(orgId);
+	}
+	@Override
+	public List<CityVO> getAllActiveCities(Long orgId) {
+		return cityRepo.findAllActiveCity(orgId);
 	}
 
 	@Override

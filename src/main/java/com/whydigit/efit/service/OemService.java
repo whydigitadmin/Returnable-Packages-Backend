@@ -30,7 +30,7 @@ public interface OemService {
 
 	Set<Object[]> getOutwardDetailsByFlow(Long flowId, Long orgId);
 
-	List<OemBinInwardVO> getAllOemBinInward(Long orgId);
+	List<OemBinInwardVO> getAllOemBinInward(Long orgId,Long receiverId);
 
 	OemBinInwardVO getAllOemBinInwardByDocId(String docId);
 
