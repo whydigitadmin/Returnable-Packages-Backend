@@ -524,8 +524,8 @@ public class BasicMasterController extends BaseController {
 	}
 
 //	city
-
-	@GetMapping("/city")
+	
+	@GetMapping("/cityByOrgid")
 	public ResponseEntity<ResponseDTO> getAllCities(@RequestParam(required =true) Long orgId) {
 		String methodName = "getAllCities()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
@@ -534,7 +534,32 @@ public class BasicMasterController extends BaseController {
 		ResponseDTO responseDTO = null;
 		List<CityVO> cityVO = new ArrayList<>();
 		try {
-			cityVO = basicMasterService.getAllgetAllCities(orgId);
+			cityVO = basicMasterService.getAllCities(orgId);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "city information get successfully");
+			responseObjectsMap.put("cityVO", cityVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "city information receive failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
+	@GetMapping("/city")
+	public ResponseEntity<ResponseDTO> getAllActiveCities(@RequestParam(required =true) Long orgId) {
+		String methodName = "getAllActiveCities()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<CityVO> cityVO = new ArrayList<>();
+		try {
+			cityVO = basicMasterService.getAllActiveCities(orgId);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);

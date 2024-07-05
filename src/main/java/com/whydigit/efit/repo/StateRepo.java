@@ -33,7 +33,7 @@ public interface StateRepo extends JpaRepository<StateVO, Long> {
 			String no, Long orgId);
 
 	
-	@Query(value = "select * from state  where and orgid=?1",nativeQuery = true)
+	@Query(value = "select * from state  where  orgid=?1",nativeQuery = true)
 	List<StateVO> findAllState(Long orgId);
 
 

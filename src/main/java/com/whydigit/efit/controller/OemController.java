@@ -150,7 +150,7 @@ public class OemController extends BaseController {
 	}
 
 	@GetMapping("/getAllOemBinInward")
-	public ResponseEntity<ResponseDTO> getAllOemBinInward(@RequestParam(required = false) Long orgId) {
+	public ResponseEntity<ResponseDTO> getAllOemBinInward(@RequestParam(required = false) Long orgId,@RequestParam(required = false) Long receiverId) {
 		String methodName = "getAllOemBinInward()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -158,7 +158,7 @@ public class OemController extends BaseController {
 		ResponseDTO responseDTO = null;
 		List<OemBinInwardVO> oemBinInwardVOs = new ArrayList<>();
 		try {
-			oemBinInwardVOs = oemService.getAllOemBinInward(orgId);
+			oemBinInwardVOs = oemService.getAllOemBinInward(orgId,receiverId);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);

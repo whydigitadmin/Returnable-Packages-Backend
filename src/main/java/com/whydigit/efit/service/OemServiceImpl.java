@@ -203,8 +203,8 @@ public class OemServiceImpl implements OemService {
 	}
 
 	@Override
-	public List<OemBinInwardVO> getAllOemBinInward(Long orgId) {
-		return oemBinInwardRepo.findAllOemBinInwardByOrgIdAndUserId(orgId);
+	public List<OemBinInwardVO> getAllOemBinInward(Long orgId,Long receiverId) {
+		return oemBinInwardRepo.findAllOemBinInwardByOrgIdAndUserId(orgId,receiverId);
 	}
 
 	@Override

@@ -41,6 +41,7 @@ public interface BasicMasterService {
 
 	void deleteCountry(Long id);
 
+	
 	List<StateVO> getAllgetAllStates(Long orgId);
 
 	Optional<StateVO> getStateById(Long id);
@@ -52,8 +53,10 @@ public interface BasicMasterService {
 	Optional<StateVO> updateState(StateVO stateVO) throws ApplicationException;
 
 	void deleteState(Long id);
+	
+	List<CityVO> getAllCities(Long orgId);
 
-	List<CityVO> getAllgetAllCities(Long orgId);
+	List<CityVO> getAllActiveCities(Long orgId);
 
 	Optional<CityVO> getCityById(Long id);
 

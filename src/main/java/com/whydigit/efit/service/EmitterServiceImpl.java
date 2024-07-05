@@ -992,7 +992,7 @@ public class EmitterServiceImpl implements EmitterService {
 				String emitter = flowRepo.findEmiterbyFlowId(flow);
 				String orgin = flowRepo.findOrigionbyFlowId(flow);
 				AssetStockDetailsVO assetStockDetailsVO = new AssetStockDetailsVO();
-				assetStockDetailsVO.setStockRef(savedBinInwardVO.getAllotmentNo());
+				assetStockDetailsVO.setStockRef(savedBinInwardVO.getDocid());
 				assetStockDetailsVO.setStockDate(savedBinInwardVO.getAllotDate());
 				assetStockDetailsVO.setSkuCode(binInwardDetails.getAssetCode());
 				assetStockDetailsVO.setSku(binInwardDetails.getAsset());
