@@ -4025,7 +4025,7 @@ public class MasterController extends BaseController {
 	}
 
 	@GetMapping("/getActiveAssetcategory")
-	public ResponseEntity<ResponseDTO> getActiveAssetcategory(@RequestParam(required = true) Long orgId,@RequestParam(required = true) String assetCategory) {
+	public ResponseEntity<ResponseDTO> getActiveAssetcategory(@RequestParam(required = true) Long orgId,@RequestParam(required = false) String assetCategory) {
 		String methodName = "getActiveAssetcategory()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
