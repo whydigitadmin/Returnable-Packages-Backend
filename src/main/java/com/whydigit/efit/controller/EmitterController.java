@@ -800,7 +800,8 @@ public class EmitterController extends BaseController {
 	}
 
 	@GetMapping("/getReqDetailsByOrgId")
-	public ResponseEntity<ResponseDTO> getReqDetailsByOrgId(@RequestParam Long orgid, @RequestParam String reqNo) {
+	public ResponseEntity<ResponseDTO> getReqDetailsByOrgId(@RequestParam Long orgid, @RequestParam String reqNo
+			,@RequestParam String kitNo ) {
 		String methodName = "getReqDetailsByOrgId()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -808,7 +809,7 @@ public class EmitterController extends BaseController {
 		ResponseDTO responseDTO = null;
 		Set<Object[]> partstudy = new HashSet<>();
 		try {
-			partstudy = emitterService.getReqDetailsByOrgId(orgid, reqNo);
+			partstudy = emitterService.getReqDetailsByOrgId(orgid, reqNo,kitNo);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
@@ -1395,9 +1396,9 @@ public class EmitterController extends BaseController {
 	}
 
 	@GetMapping("/getStockLedgerByEmitter")
-	public ResponseEntity<ResponseDTO> getStockLedgerByEmitter(@RequestParam String startDate,
+	public ResponseEntity<ResponseDTO> getAssetStockLedgerByEmitter(@RequestParam String startDate,
 			@RequestParam String endDate, @RequestParam String stockBranch) {
-		String methodName = "getStockLedgerByEmitter()";
+		String methodName = "getAssetStockLedgerByEmitter()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
@@ -1487,6 +1488,61 @@ public class EmitterController extends BaseController {
 		} else {
 			errorMsg = " not found for ID: ";
 			responseDTO = createServiceResponseError(responseObjectsMap, "Bin Inward Data not found", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+	
+	@GetMapping("/getKitLedgerByEmitter")
+	public ResponseEntity<ResponseDTO> getKitLedgerByEmitter(@RequestParam String startDate,
+			@RequestParam String endDate, @RequestParam Long flowId,
+			 @RequestParam Long orgId) {
+		String methodName = "getKitLedgerByEmitter()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<Map<String, Object>> kitLedger = new ArrayList<>();
+		try {
+			kitLedger = emitterService.getKitLedgerByEmitter(startDate, endDate, flowId,orgId);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Bin Inward Data Get Success");
+			responseObjectsMap.put("kitLedger", kitLedger);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			errorMsg = " not found for ID: ";
+			responseDTO = createServiceResponseError(responseObjectsMap, "Kit Ledger not found", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+	
+	@GetMapping("/getStockKitQtyByEmitter")
+	public ResponseEntity<ResponseDTO> getStockKitQtyByEmitter(@RequestParam Long orgId, @RequestParam Long emitterId,
+			@RequestParam Long flowId) {
+		String methodName = "getStockKitQtyByEmitter()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<Map<String, Object>> stock = new ArrayList<>();
+		try {
+			stock = emitterService.getStockKitQtyByEmitter(orgId, emitterId, flowId);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Available Kit Qty found by ID");
+			responseObjectsMap.put("avlKitQty", stock);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			errorMsg = " not found for ID: ";
+			responseDTO = createServiceResponseError(responseObjectsMap, "Available Kit Qty not found", errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);

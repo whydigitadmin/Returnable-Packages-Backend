@@ -40,10 +40,10 @@ public class VendorVO {
 	private boolean cancel;
 
 	@Column(name = "createdby")
-	private String createdby;
+	private String createdBy;
 
 	@Column(name = "modifiedby")
-	private String modifiedby;
+	private String modifiedBy;
 
 	@Column(name = "cancelremarks")
 	private String cancelremarks;
@@ -62,6 +62,8 @@ public class VendorVO {
 
 	@Column(name = "email")
 	private String email;
+	
+	private String country;
 
 	@Column(name = "activeportal")
 	private boolean venderActivePortal;

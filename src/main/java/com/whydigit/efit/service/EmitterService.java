@@ -99,7 +99,6 @@ public interface EmitterService {
 
 	// Bin Allotment
 
-	Set<Object[]> getReqDetailsByOrgId(Long orgId, String reqNo);
 
 	Optional<AssetTaggingDetailsVO> getTaggingDetailsByRfId(String rfId);
 
@@ -150,5 +149,11 @@ public interface EmitterService {
 	List<Map<String, Object>> getCountofBinRequestPendingAndCompleted(Long emitterId, Long orgId);
 
 	List<Map<String, Object>> getBinInwardStatus(Long emitterId, Long orgId);
+
+	List<Map<String, Object>> getKitLedgerByEmitter(String startDate, String endDate, Long flowId, Long orgId);
+	
+	List<Map<String, Object>> getStockKitQtyByEmitter(Long orgId, Long emitterId, Long flowId);
+
+	Set<Object[]> getReqDetailsByOrgId(Long orgid, String reqNo, String kitNo);
 
 }

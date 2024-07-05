@@ -1056,6 +1056,30 @@ public class MasterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
+	@GetMapping("/getVendorList")
+	public ResponseEntity<ResponseDTO> getVendorListByVendorType(@RequestParam Long orgId) {
+		String methodName = "getVendorListByVendorType()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		Map<String, List<VendorVO>> vendorVO  = null;
+		try {
+			vendorVO = masterService.VendorsType(orgId);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "VendorsType Get Successfully");
+			responseObjectsMap.put("vendorVO", vendorVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "VendorsType Get Failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
 	@GetMapping("/AllVendor")
 	public ResponseEntity<ResponseDTO> getAllVendor(@RequestParam Long orgId) {
 		String methodName = "getAllVendor()";
@@ -3332,6 +3356,8 @@ public class MasterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
+	
+	
 
 	@GetMapping("/getAssetDetailsForAssetInward")
 	public ResponseEntity<ResponseDTO> getAssetDetailsForAssetInward(@RequestParam Long orgId,
@@ -3999,7 +4025,7 @@ public class MasterController extends BaseController {
 	}
 
 	@GetMapping("/getActiveAssetcategory")
-	public ResponseEntity<ResponseDTO> getActiveAssetcategory(@RequestParam(required = true) Long orgId) {
+	public ResponseEntity<ResponseDTO> getActiveAssetcategory(@RequestParam(required = true) Long orgId,@RequestParam(required = false) String assetCategory) {
 		String methodName = "getActiveAssetcategory()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -4007,7 +4033,7 @@ public class MasterController extends BaseController {
 		ResponseDTO responseDTO = null;
 		List<String> activeAssetcategory  = new ArrayList<>();
 		try {
-			activeAssetcategory = masterService.getActiveAssetcategory(orgId);
+			activeAssetcategory = masterService.getActiveAssetcategory(orgId,assetCategory);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);

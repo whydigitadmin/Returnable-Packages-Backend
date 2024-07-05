@@ -12,8 +12,8 @@ import com.whydigit.efit.entity.StateVO;
 public interface StateRepo extends JpaRepository<StateVO, Long> {
 	
 	
-@Query(value = "select * from state   where orgid=?2 and active=true and country=?1",nativeQuery = true)
-	List<StateVO> findAllActiveState (String country, Long orgId);
+@Query(value = "    select * from state  where  active=1 and orgid=?1 and country=?2",nativeQuery = true)
+	List<StateVO> findAllActiveState (Long orgId, String country);
 
 	boolean existsByStateNameAndStateCodeAndCountryAndOrgId(String stateName, String stateCode, String country,
 			Long orgId);
@@ -33,8 +33,8 @@ public interface StateRepo extends JpaRepository<StateVO, Long> {
 			String no, Long orgId);
 
 	
-	@Query(value = "select * from state  where orgid=?1 and country=?2",nativeQuery = true)
-	List<StateVO> findAllState(Long orgId, String country);
+	@Query(value = "select * from state  where and orgid=?1",nativeQuery = true)
+	List<StateVO> findAllState(Long orgId);
 
 
 	

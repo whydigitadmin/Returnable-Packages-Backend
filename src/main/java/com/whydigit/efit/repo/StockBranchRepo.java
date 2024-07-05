@@ -29,4 +29,7 @@ public interface StockBranchRepo extends JpaRepository<StockBranchVO, Long> {
 
 	boolean existsBybranchCodeAndOrgId(String branchCode, Long orgId);
 
+
+	StockBranchVO findByBranchCode(String stockBranch);
+
 }

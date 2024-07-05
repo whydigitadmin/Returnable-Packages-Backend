@@ -78,6 +78,16 @@ public interface KitRepo extends JpaRepository<KitVO, Long> {
 			+ "select flow,emitterid,kitno ,orgid,0 invqty,SUM(outwardkitqty) outqty from binoutward group by flow,orgid,emitterid,kitno) f where f.flow=?4\r\n"
 			+ "and f.orgid=?1 and f.emitterid=?2 and f.kitno=?3 group by f.flow,f.emitterid,f.kitno,orgid)g where g.kitqty >0")
 	Set<Object[]> findByAvailableKitQtyByEmitter(Long orgId, Long emitterId, String kitId, String flowName);
+	
+	@Query(nativeQuery = true,value = " select g.flow,g.kitno kitcode,g.kitqty avlqty from(\r\n"
+			+ "select f.flow,f.emitterid,f.kitno,orgid,sum(invqty) -sum(outqty) kitqty from (\r\n"
+			+ "select a.flow,a.emitterid,a.kitcode kitno,a.orgid,SUM(a.allotedqty)invqty,0 outqty from bininward a group by a.flow,a.emitterid,a.kitcode,a.orgid\r\n"
+			+ "union\r\n"
+			+ "select flow,emitterid,kitno ,orgid,0 invqty,SUM(outwardkitqty) outqty from binoutward group by flow,orgid,emitterid,kitno) f where f.flow=?3\r\n"
+			+ "and f.orgid=?1 and f.emitterid=?2  group by f.flow,f.emitterid,f.kitno,orgid)g where g.kitqty >0")
+	Set<Object[]> findByStockKitQtyByEmitter(Long orgId, Long emitterId, String flowName);
+	
+	
 
 
 	

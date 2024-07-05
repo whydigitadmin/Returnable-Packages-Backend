@@ -391,7 +391,6 @@ public class AuthServiceImpl implements AuthService {
 		userVO.setAccessRightsRoleId(createUserFormDTO.getAccessRightsRoleId());
 		userVO.setPNo(createUserFormDTO.getPNo());
 		userVO.setCreatedBy(createUserFormDTO.getCreatedBy());
-		userVO.setEmitterId(createUserFormDTO.getEmitterId());
 		userVO.setUpdatedBy(createUserFormDTO.getCreatedBy());
 		try {
 			userVO.setPassword(encoder.encode(CryptoUtils.getDecrypt(createUserFormDTO.getPassword())));

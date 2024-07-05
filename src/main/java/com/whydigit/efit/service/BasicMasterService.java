@@ -29,7 +29,7 @@ public interface BasicMasterService {
 
 	void deleteLocalCurrency(int id);
 
-	List<CountryVO> getAllgetAllcountries(Long orgId);
+//	List<CountryVO> getAllgetAllcountries(Long orgId);
 
 	Optional<CountryVO> getCountryById(Long id);
 
@@ -41,11 +41,11 @@ public interface BasicMasterService {
 
 	void deleteCountry(Long id);
 
-	List<StateVO> getAllgetAllStates(Long orgId, String country);
+	List<StateVO> getAllgetAllStates(Long orgId);
 
 	Optional<StateVO> getStateById(Long id);
 
-	List<StateVO> getAllStatesByCountry(String Country, Long orgId);
+	List<StateVO> getAllStatesByCountry(Long orgId,String country);
 
 	StateVO createState(StateVO stateVO) throws ApplicationException;
 
@@ -53,11 +53,10 @@ public interface BasicMasterService {
 
 	void deleteState(Long id);
 
-	List<CityVO> getAllgetAllCities(Long orgId, String country, String state);
+	List<CityVO> getAllgetAllCities(Long orgId);
 
 	Optional<CityVO> getCityById(Long id);
 
-	List<CityVO> getAllCitiesByStateAndCountry(String state, String country, Long orgId);
 
 	CityVO createCity(CityVO cityVO) throws ApplicationException;
 
@@ -112,5 +111,7 @@ public interface BasicMasterService {
 			throws ApplicationException;
 
 	List<CountryVO> getAllcountries(Long orgId);
+
+	List<CityVO> getAllCitiesByStateAndCountry(Long orgId, String country, String state);
 
 }

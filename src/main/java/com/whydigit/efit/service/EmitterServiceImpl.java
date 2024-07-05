@@ -706,8 +706,8 @@ public class EmitterServiceImpl implements EmitterService {
 	}
 
 	@Override
-	public Set<Object[]> getReqDetailsByOrgId(Long orgId, String reqNo) {
-		return binAllotmentNewRepo.findReqDetailsByOrgId(orgId, reqNo);
+	public Set<Object[]> getReqDetailsByOrgId(Long orgId, String reqNo,String kitNo) {
+		return binAllotmentNewRepo.findReqDetailsByOrgId(orgId, reqNo,kitNo);
 	}
 
 	@Override
@@ -1278,5 +1278,49 @@ public class EmitterServiceImpl implements EmitterService {
 			status.add(values);
 		}
 		return status;
+	}
+
+	@Override
+	public List<Map<String, Object>> getKitLedgerByEmitter(String startDate, String endDate, Long flowId, Long orgId) {
+		Set<Object[]> getKitLedger = assetStockDetailsRepo.getKitLedger(startDate, endDate,flowId,orgId);
+
+		return getgetKitLedgerDetails(getKitLedger);
+	}
+
+	private List<Map<String, Object>> getgetKitLedgerDetails(Set<Object[]> getKitLedger) {
+		List<Map<String, Object>> status = new ArrayList<>();
+		for (Object[] ps : getKitLedger) {
+			Map<String, Object> values = new HashMap<>();
+			values.put("kitNo", ps[0] != null ? ps[0].toString() : "");
+			values.put("oqty", ps[1] != null ?  Integer.parseInt(ps[1].toString()) : 0);
+			values.put("rqty", ps[2] != null ? Integer.parseInt(ps[2].toString()) : 0);
+			values.put("dqty", ps[3] != null ?  Integer.parseInt(ps[3].toString()) : 0);
+			values.put("cqty", ps[4] != null ? Integer.parseInt(ps[4].toString()) : 0);
+			status.add(values);
+		}
+		return status;
+	}
+	
+	@Override
+	public List<Map<String, Object>> getStockKitQtyByEmitter(Long orgId, Long emitterId,
+			Long flowId) {
+
+		FlowVO flowVO = flowRepo.findById(flowId).get();
+		Set<Object[]> emitterStockKitQty = kitRepo.findByStockKitQtyByEmitter(orgId, emitterId,
+				flowVO.getFlowName());
+
+		return getStockKitDetails(emitterStockKitQty);
+	}
+
+	private List<Map<String, Object>> getStockKitDetails(Set<Object[]> emitterStockKitQty) {
+		List<Map<String, Object>> avlKitQty = new ArrayList<>();
+		for (Object[] ps : emitterStockKitQty) {
+			Map<String, Object> part = new HashMap<>();
+			part.put("flow", ps[0] != null ? ps[0].toString() : "");
+			part.put("kitCode", ps[1] != null ? ps[1].toString() : "");
+			part.put("kitAvailQty", ps[2] != null ? Integer.parseInt(ps[2].toString()) : 0);
+			avlKitQty.add(part);
+		}
+		return avlKitQty;
 	}
 }

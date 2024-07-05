@@ -48,8 +48,6 @@ public class UserVO {
 	private String accessWarehouse;
 	private String accessFlowId;
 	private Long pNo;
-	@Column(name = "emitterid")
-	private Long emitterId;
 	private boolean isActive;
 	private String lastLogin;
 	private String createdBy;

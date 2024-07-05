@@ -52,5 +52,15 @@ public interface AssetStockDetailsRepo extends JpaRepository<AssetStockDetailsVO
 	
 	@Query(nativeQuery = true,value="select a.partno,a.partname,a.kitno,a.partqty from KITPART a where flowid=?1 and kitno=?2 and emitterid=?3")
 	Set<Object[]> getPartNameAndPartNoDetails(Long flowId, String kitNo, Long emitterId);
+	
+@Query(nativeQuery =true,value = "select a.kitno,sum(a.oqty)oqty,sum(a.rqty)rqty,abs(sum(a.dqty))dqty,sum(a.cqty)cqty from(\r\n"
+		+ "select 1 sno,flow,flowid,kitno,sum(sqty) oqty,0 rqty,0 dqty,0 cqty  from kitstockdetails where flowid=?3 and orgid=?4 and stockdate<?1 group by sno,flow,flowid,kitno \r\n"
+		+ "union\r\n"
+		+ "select 2 sno,flow,flowid,kitno,0 oqty,sum(sqty) rqty,0 dqty,0 cqty  from kitstockdetails where flowid=?3 and orgid=?4 and stockdate between ?1 and ?2 and  sqty>0 group by sno,flow,flowid,kitno\r\n"
+		+ "union\r\n"
+		+ "select 3 sno,flow,flowid,kitno,0 oqty,0 rqty,sum(sqty) dqty,0 cqty  from kitstockdetails where flowid=?3 and orgid=?4 and stockdate between ?1 and ?2 and sqty<0 group by sno,flow,flowid,kitno\r\n"
+		+ "union\r\n"
+		+ "select 4 sno,flow,flowid,kitno,0 oqty,0 rqty,0 dqty,sum(sqty) cqty  from kitstockdetails where flowid=?3 and orgid=?4 and stockdate <=?2 group by sno,flow,flowid,kitno ) a group by a.kitno")
+	Set<Object[]> getKitLedger(String startDate, String endDate, Long flowId, Long orgId);
 
 }
