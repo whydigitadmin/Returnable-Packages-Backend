@@ -791,14 +791,14 @@ public class MasterController extends BaseController {
 		List<Map<String, Object>> flowDetails = new ArrayList<>();
 		for (Object[] f : flowVO) {
 			Map<String, Object> f1 = new HashMap<>();
-			f1.put("emitter", f[0] != null ? f[0].toString() : "");
-			f1.put("flow", f[1] != null ? f[1].toString() : "");
-			f1.put("reciever", f[2] != null ? f[2].toString() : "");
-			f1.put("recieverid", f[3] != null ? f[3].toString() : "");
-			f1.put("partname", f[4] != null ? f[4].toString() : "");
-			f1.put("kitcode", f[5] != null ? f[5].toString() : "");
-			f1.put("partno", f[6] != null ? f[6].toString() : "");
-			f1.put("partqty", f[7] != null ? Integer.parseInt(f[7].toString()) : 0);
+			f1.put("kitcode", f[0] != null ? f[0].toString() : "");
+//			f1.put("flow", f[1] != null ? f[1].toString() : "");
+//			f1.put("reciever", f[2] != null ? f[2].toString() : "");
+//			f1.put("recieverid", f[3] != null ? f[3].toString() : "");
+//			f1.put("partname", f[4] != null ? f[4].toString() : "");
+//			f1.put("kitcode", f[5] != null ? f[5].toString() : "");
+//			f1.put("partno", f[6] != null ? f[6].toString() : "");
+//			f1.put("partqty", f[7] != null ? Integer.parseInt(f[7].toString()) : 0);
 			flowDetails.add(f1);
 		}
 		return flowDetails;
