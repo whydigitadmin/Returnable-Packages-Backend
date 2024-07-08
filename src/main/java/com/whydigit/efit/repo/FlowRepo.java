@@ -58,7 +58,10 @@ public interface FlowRepo extends JpaRepository<FlowVO, Long> {
 	@Query(nativeQuery = true, value = "select receiver,destination,orgin  from flow where flowid=?1")
 	Set<Object[]> getFlowDetails(Long flowId);
 
-	@Query(nativeQuery = true, value = "select f.emitter,f.flow,f.receiver,f.receiverid,p.partname,p.kitno,p.partno,p.partqty from flow f, flow1 p where f.flowid=p.flowid and f.emitterid=?1 and f.orgid=?2 group by  f.emitter,f.flow,f.receiver,f.receiverid,p.partname,p.kitno,p.partno,p.partqty")
+//	@Query(nativeQuery = true, value = "select f.emitter,f.flow,f.receiver,f.receiverid,p.partname,p.kitno,p.partno,p.partqty from flow f, flow1 p where f.flowid=p.flowid and f.emitterid=?1 and f.orgid=?2 group by  f.emitter,f.flow,f.receiver,f.receiverid,p.partname,p.kitno,p.partno,p.partqty")
+//	Set<Object[]> findKitDetailsByEmitter(Long emitterId, Long orgId);
+	
+	@Query(nativeQuery = true, value = "select p.kitno from flow f, flow1 p where f.flowid=p.flowid and f.emitterid=?1 and f.orgid=?2 group by  p.kitno")
 	Set<Object[]> findKitDetailsByEmitter(Long emitterId, Long orgId);
 
 	@Query(nativeQuery = true, value = "select * from flow f left join flow1 f1 on f.flowid=f1.flowid where kitno=?1")
