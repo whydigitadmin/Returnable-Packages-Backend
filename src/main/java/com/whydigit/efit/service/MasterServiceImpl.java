@@ -86,6 +86,7 @@ import com.whydigit.efit.dto.ProofOfDeliveryDTO;
 import com.whydigit.efit.dto.ServiceDTO;
 import com.whydigit.efit.dto.StockBranchDTO;
 import com.whydigit.efit.dto.TermsAndConditionsDTO;
+import com.whydigit.efit.dto.UnitDTO;
 import com.whydigit.efit.dto.VendorAddressDTO;
 import com.whydigit.efit.dto.VendorBankDetailsDTO;
 import com.whydigit.efit.dto.VendorDTO;
@@ -828,7 +829,7 @@ public class MasterServiceImpl implements MasterService {
 		customersVO.setCreatedBy(customersDTO.getCreatedBy());
 		customersVO.setModifiedBy(customersDTO.getCreatedBy());
 		customersVO.setCustomerActivatePortal(customersDTO.isCustomerActivatePortal());
-		
+
 		customersVO.setActive(customersDTO.isActive());
 	}
 
@@ -1139,7 +1140,7 @@ public class MasterServiceImpl implements MasterService {
 
 	@Override
 	public List<UnitVO> getAllUnit(Long orgId) {
-		
+
 		return unitRepo.findAllUnitByOrgId(orgId);
 	}
 
@@ -1158,15 +1159,23 @@ public class MasterServiceImpl implements MasterService {
 	}
 
 	@Override
-	public Optional<UnitVO> updateUnit(UnitVO unitVO) throws ApplicationException {
-		if (unitRepo.existsById((long) unitVO.getId())) {
-			if (unitRepo.existsByUnitAndOrgId(unitVO.getUnit(), unitVO.getOrgId())) {
-				throw new ApplicationException("A Unit already exists for this Organization");
+	public UnitVO updateUnit(UnitDTO unitVO) throws ApplicationException {
+
+		UnitVO unitVO2 = unitRepo.findById(unitVO.getId()).get();
+		if (unitRepo.existsById(unitVO.getId())) {
+			if (!unitVO2.getUnit().equals(unitVO.getUnit())) {
+				if (unitRepo.existsByUnitAndOrgId(unitVO.getUnit(), unitVO.getOrgId())) {
+					throw new ApplicationException("A Unit already exists for this Organization");
+				}
+				unitVO2.setUnit(unitVO.getUnit());
 			}
-			return Optional.of(unitRepo.save(unitVO));
+			unitVO2.setUpdatedBy(unitVO.getUpdatedBy());
+			unitVO2.setActive(unitVO.isActive());
 		} else {
-			return Optional.empty();
+			throw new ApplicationException("The Unit ID is Not Found");
 		}
+
+		return unitRepo.save(unitVO2);
 	}
 
 	@Override
@@ -1502,7 +1511,6 @@ public class MasterServiceImpl implements MasterService {
 		// Update vendor details
 		getVendorVOFromVendorDTO(vendorDTO, vendorVO);
 
-		
 		// Update or create bank details
 		List<VendorBankDetailsVO> vendorBankDetailsVO = new ArrayList<>();
 		if (vendorDTO.getVendorBankDetailsDTO() != null) {
@@ -1775,7 +1783,7 @@ public class MasterServiceImpl implements MasterService {
 		assetInwardVO.setOrgId(assetInwardDTO.getOrgId());
 		assetInwardVO.setCategory(assetInwardDTO.getCategory());
 		assetInwardVO.setAssetCode(assetInwardDTO.getAssetCode());
-		assetInwardVO.setQty(assetInwardDTO.getQty());
+		assetInwardVO.setQty(assetInwardDTO.getQty()); 
 		assetInwardVO.setCreatedBy(assetInwardDTO.getCreatedBy());
 		assetInwardVO.setModifiedBy(assetInwardDTO.getCreatedBy());
 		List<AssetInwardDetailVO> assetInwardDetailVO = new ArrayList<>();
@@ -2680,8 +2688,6 @@ public class MasterServiceImpl implements MasterService {
 		return avlKitQty;
 	}
 
-	
-	
 	@Override
 	public Set<Object[]> getAssetDetailsByAssetForAssetInward(Long orgId, String stockBranch, String assetCode,
 			int qty) {
@@ -3550,21 +3556,21 @@ public class MasterServiceImpl implements MasterService {
 	}
 
 	@Override
-	public List<String> getActiveAssetcategory(Long orgId,String assetCategory) {
-	    Set<Object[]> getActiveCategory = binInwardRepo.getActiveCategory(orgId,assetCategory);
-	    return getActiveCategoryDetails(getActiveCategory);
+	public List<String> getActiveAssetcategory(Long orgId, String assetCategory) {
+		Set<Object[]> getActiveCategory = binInwardRepo.getActiveCategory(orgId, assetCategory);
+		return getActiveCategoryDetails(getActiveCategory);
 	}
 
 	private List<String> getActiveCategoryDetails(Set<Object[]> getActiveCategory) {
-	    List<String> details = new ArrayList<>();
-	    for (Object[] kd : getActiveCategory) {
-	        if (kd[0] != null) {
-	            details.add(kd[0].toString());
-	        }
-	    }
-	    return details;
+		List<String> details = new ArrayList<>();
+		for (Object[] kd : getActiveCategory) {
+			if (kd[0] != null) {
+				details.add(kd[0].toString());
+			}
+		}
+		return details;
 	}
-	
+
 	@Override
 	public Map<String, List<VendorVO>> VendorsType(Long orgId) {
 		List<VendorVO> vendorVO = vendorRepo.getAllActiveVendorsByOrgId(orgId);
@@ -3578,17 +3584,17 @@ public class MasterServiceImpl implements MasterService {
 
 	@Override
 	public List<String> getAllActiveAssetcategory(Long orgId) {
-		 Set<Object[]> getActiveCategory = binInwardRepo.getActiveCategory1(orgId);
-		    return getActiveCategoryDetails1(getActiveCategory);
-		}
+		Set<Object[]> getActiveCategory = binInwardRepo.getActiveCategory1(orgId);
+		return getActiveCategoryDetails1(getActiveCategory);
+	}
+
 	private List<String> getActiveCategoryDetails1(Set<Object[]> getActiveCategory1) {
-	    List<String> details = new ArrayList<>();
-	    for (Object[] kd : getActiveCategory1) {
-	        if (kd[0] != null) {
-	            details.add(kd[0].toString());
-	        }
-	    }
-	    return details;
+		List<String> details = new ArrayList<>();
+		for (Object[] kd : getActiveCategory1) {
+			if (kd[0] != null) {
+				details.add(kd[0].toString());
+			}
+		}
+		return details;
 	}
 }
-

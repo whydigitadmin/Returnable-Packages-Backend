@@ -29,6 +29,7 @@ import com.whydigit.efit.dto.ProofOfDeliveryDTO;
 import com.whydigit.efit.dto.ServiceDTO;
 import com.whydigit.efit.dto.StockBranchDTO;
 import com.whydigit.efit.dto.TermsAndConditionsDTO;
+import com.whydigit.efit.dto.UnitDTO;
 import com.whydigit.efit.dto.VendorDTO;
 import com.whydigit.efit.entity.AssetCategoryVO;
 import com.whydigit.efit.entity.AssetInwardVO;
@@ -152,7 +153,7 @@ public interface MasterService {
 
 	UnitVO createUnit(UnitVO unitVO) throws ApplicationException;
 
-	Optional<UnitVO> updateUnit(UnitVO unitVO) throws ApplicationException;
+	UnitVO updateUnit(UnitDTO unitVO) throws ApplicationException;
 
 	void deleteUnit(Long id);
 
