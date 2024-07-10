@@ -2801,11 +2801,11 @@ public class MasterServiceImpl implements MasterService {
 	@Override
 	public BinAllotmentNewVO createBinAllotment(BinAllotmentDTO binAllotmentDTO) {
 
-		boolean isBinReqNoExist = binAllotmentNewRepo.existsByBinReqNo(binAllotmentDTO.getBinReqNo());
-
-		if (isBinReqNoExist) {
-			throw new RuntimeException("ReqNo " + binAllotmentDTO.getBinReqNo() + " already exists.");
-		}
+//		boolean isBinReqNoExist = binAllotmentNewRepo.existsByBinReqNo(binAllotmentDTO.getBinReqNo());
+//
+//		if (isBinReqNoExist) {
+//			throw new RuntimeException("ReqNo " + binAllotmentDTO.getBinReqNo() + " already exists.");
+//		}
 
 		BinAllotmentNewVO binAllotmentNewVO = new BinAllotmentNewVO();
 		// Set Docid for Bin Allotment

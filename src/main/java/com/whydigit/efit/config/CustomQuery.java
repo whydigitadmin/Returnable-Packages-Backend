@@ -134,10 +134,7 @@ public class CustomQuery {
     		+ "union\r\n"
     		+ "select orgid,flow,flowid,docdate stockdate,kitno, sum(outwardkitqty*-1)sqty  from binoutward   group by orgid,flow,flowid,docdate,kitno");
     
-    jdbcTemplate.execute("CREATE \r\n"
-    		+ "    ALGORITHM = UNDEFINED \r\n"
-    		+ "    DEFINER = root@localhost \r\n"
-    		+ "    SQL SECURITY DEFINER\r\n"
+    jdbcTemplate.execute("CREATE or replace\r\n"
     		+ "VIEW availablekit1 AS\r\n"
     		+ "    SELECT \r\n"
     		+ "        a.whlocation AS whlocation,\r\n"
