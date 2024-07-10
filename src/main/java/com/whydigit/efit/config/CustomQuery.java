@@ -128,11 +128,42 @@ public class CustomQuery {
     + "        AND a.kitno = b.kitno\r\n"
     + "        AND a.flowid = b.flowid\r\n"
     + "        AND a.orgid = b.orgid");
+    
     jdbcTemplate.execute("create or replace view kitstockdetails as\r\n"
     		+ "select a.orgid,a.flow,b.flowid,a.docdate stockdate,a.kitcode kitno,sum(a.allotedqty)sqty  from bininward a,flow b where a.flow=b.flow group by a.orgid,a.flow,b.flowid,a.docdate,a.kitcode\r\n"
     		+ "union\r\n"
     		+ "select orgid,flow,flowid,docdate stockdate,kitno, sum(outwardkitqty*-1)sqty  from binoutward   group by orgid,flow,flowid,docdate,kitno");
     
+    jdbcTemplate.execute("CREATE \r\n"
+    		+ "    ALGORITHM = UNDEFINED \r\n"
+    		+ "    DEFINER = root@localhost \r\n"
+    		+ "    SQL SECURITY DEFINER\r\n"
+    		+ "VIEW availablekit1 AS\r\n"
+    		+ "    SELECT \r\n"
+    		+ "        a.whlocation AS whlocation,\r\n"
+    		+ "        a.kitcode AS kitcode,\r\n"
+    		+ "        COALESCE(FLOOR(MIN(a.avalqty)), 0) AS avalqty\r\n"
+    		+ "    FROM\r\n"
+    		+ "        (SELECT \r\n"
+    		+ "            w.whlocation AS whlocation,\r\n"
+    		+ "            a.kitno AS kitcode,\r\n"
+    		+ "            b.asset AS asset,\r\n"
+    		+ "            b.quantity AS quantity,\r\n"
+    		+ "            COALESCE(SUM(c.skuqty), 0) AS SUM_skuqty,\r\n"
+    		+ "            (CASE\r\n"
+    		+ "                WHEN (b.quantity <> 0) THEN COALESCE((SUM(c.skuqty) / b.quantity), 0)\r\n"
+    		+ "                ELSE 0\r\n"
+    		+ "            END) AS avalqty\r\n"
+    		+ "        FROM\r\n"
+    		+ "            (kit a\r\n"
+    		+ "        JOIN kit2 b ON (a.kitid = b.kitid))\r\n"
+    		+ "        JOIN warehouse w ON (1 = 1)\r\n"
+    		+ "        LEFT JOIN stockdetails c ON (b.asset = c.sku\r\n"
+    		+ "            AND c.status = 'S'\r\n"
+    		+ "            AND c.stockbranch = w.whlocation)\r\n"
+    		+ "        GROUP BY w.whlocation, a.kitno, b.asset, b.quantity) a\r\n"
+    		+ "    GROUP BY a.whlocation, a.kitcode\r\n");
+    		
     }
 }
 

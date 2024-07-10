@@ -53,6 +53,7 @@ import com.whydigit.efit.dto.ResponseDTO;
 import com.whydigit.efit.dto.ServiceDTO;
 import com.whydigit.efit.dto.StockBranchDTO;
 import com.whydigit.efit.dto.TermsAndConditionsDTO;
+import com.whydigit.efit.dto.UnitDTO;
 import com.whydigit.efit.dto.VendorDTO;
 import com.whydigit.efit.entity.AssetCategoryVO;
 import com.whydigit.efit.entity.AssetInwardVO;
@@ -1617,14 +1618,14 @@ public class MasterController extends BaseController {
 	}
 
 	@PutMapping("/unit")
-	public ResponseEntity<ResponseDTO> updateUnit(@RequestBody UnitVO unitVO) {
+	public ResponseEntity<ResponseDTO> updateUnit(@RequestBody UnitDTO unitVO) {
 		String methodName = "updateUnit()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
 		try {
-			UnitVO updatedUnitVO = masterService.updateUnit(unitVO).orElse(null);
+			UnitVO updatedUnitVO = masterService.updateUnit(unitVO);
 			if (updatedUnitVO != null) {
 				responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Unit updated successfully");
 				responseObjectsMap.put("unitVO", updatedUnitVO);

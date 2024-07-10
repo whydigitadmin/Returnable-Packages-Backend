@@ -200,11 +200,11 @@ public class EmitterServiceImpl implements EmitterService {
 			if (StringUtils.isBlank(issueRequestDTO.getIrType().name())) {
 				throw new ApplicationException("Invalid issue request type");
 			} else if (issueRequestDTO.getIrType().equals(IssueRequestType.IR_KIT)) {
-//				FlowDetailVO flowDetailVO = flowVO.getFlowDetailVO().stream()
-//						.filter(fd -> StringUtils.equalsIgnoreCase(fd.getKitName(), issueItemDTO.getKitName()))
-//						.findFirst().orElseThrow(() -> new ApplicationException("Flow not Match with kit"));
-//				issueItem.setPartName(flowDetailVO.getPartName());
-//				issueItem.setPartNo(flowDetailVO.getPartNumber());
+				FlowDetailVO flowDetailVO = flowVO.getFlowDetailVO().stream()
+						.filter(fd -> StringUtils.equalsIgnoreCase(fd.getKitNo(), issueItemDTO.getKitName()))
+						.findFirst().orElseThrow(() -> new ApplicationException("Flow not Match with kit"));
+				issueItem.setPartName(flowDetailVO.getPartName());
+				issueItem.setPartNo(flowDetailVO.getPartNumber());
 			} else if (issueRequestDTO.getIrType().equals(IssueRequestType.IR_PART)) {
 				FlowDetailVO flowDetailVO = flowVO.getFlowDetailVO().stream()
 						.filter(fd -> StringUtils.equalsIgnoreCase(fd.getPartNumber(), issueItemDTO.getPartNo()))
