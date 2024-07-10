@@ -64,20 +64,20 @@ public interface IssueRequestRepo
 	Set<Object[]> getIssueRequestByOrgId(Long orgId, Long userId);
 
 	@Query(nativeQuery =true,value = "select 'Completed'Status,a.emitterid,a.emitter,a.docid,a.docdate,a.flow,b.kitcode,b.kitqty from issuerequest a,issuerequest2 b \r\n"
-			+ "where a.docid  in(select binreqno from binallotment) and  a.issuerequestid=b.issuerequestid and a.emitterid=?1 and a.orgid=?2  \r\n"
+			+ "where concat(a.docid,b.kitcode ) IN (SELECT concat(binreqno,kitcode) FROM binallotment) and  a.issuerequestid=b.issuerequestid and a.emitterid=?1 and a.orgid=?2  \r\n"
 			+ "group by status,a.emitterid,a.emitter,a.docid,a.docdate,a.flow,b.kitcode,b.kitqty\r\n"
 			+ "union\r\n"
 			+ "select 'Pending'Status,a.emitterid,a.emitter,a.docid,a.docdate,a.flow,b.kitcode,b.kitqty from issuerequest a,issuerequest2 b \r\n"
-			+ "where a.docid not in(select binreqno from binallotment) and  a.issuerequestid=b.issuerequestid and a.emitterid=?1 and a.orgid=?2  \r\n"
+			+ "where concat(a.docid,b.kitcode ) NOT IN (SELECT concat(binreqno,kitcode) FROM binallotment) and  a.issuerequestid=b.issuerequestid and a.emitterid=?1 and a.orgid=?2  \r\n"
 			+ "group by status,a.emitterid,a.emitter,a.docid,a.docdate,a.flow,b.kitcode,b.kitqty")
 	Set<Object[]> getBinRequestStatusCount(Long emitterId, Long orgId);
 	
 	@Query(value = "select a.docid,a.docdate,a.binreqno,a.binreqdate, a.flow,c.partno ,c.partname,a.kitcode,a.allotkitqty,'Completed'status from binallotment a, bininward b, flow1 c,flow d\r\n"
-			+ " where a.docid in (select allotmentno from bininward) and a.emitterid=?1 and c.emitterid=?1 and a.kitcode=c.kitno and  c.flowid= d.flowid and a.orgid=?2 and a.flow=d.flow\r\n"
+			+ " where concat(a.docid,a.binreqno,a.kitcode) in (select concat(allotmentno,reqno,kitcode) from bininward) and a.emitterid=?1 and c.emitterid=?1 and a.kitcode=c.kitno and  c.flowid= d.flowid and a.orgid=?2 and a.flow=d.flow\r\n"
 			+ " group by a.docid,a.docdate,a.flow,a.kitcode,a.allotkitqty,c.partno ,c.partname,a.binreqno,a.binreqdate \r\n"
 			+ "union\r\n"
 			+ "select a.docid,a.docdate,a.binreqno,a.binreqdate, a.flow,c.partno ,c.partname,a.kitcode,a.allotkitqty,'Pending'status from binallotment a, bininward b, flow1 c,flow d\r\n"
-			+ " where a.docid not in (select allotmentno from bininward) and a.emitterid=?1 and c.emitterid=?1 and a.kitcode=c.kitno and a.orgid=?2 and c.flowid= d.flowid  and a.flow=d.flow\r\n"
+			+ " where concat(a.docid,a.binreqno,a.kitcode) not in (select concat(allotmentno,reqno,kitcode) from bininward) and a.emitterid=?1 and c.emitterid=?1 and a.kitcode=c.kitno and a.orgid=?2 and c.flowid= d.flowid  and a.flow=d.flow\r\n"
 			+ " group by a.docid,a.docdate,a.flow,a.kitcode,a.allotkitqty,c.partno ,c.partname,a.binreqno,a.binreqdate", nativeQuery = true)
 	Set<Object[]> getBinInward(Long emitterId, Long orgId);
 	
