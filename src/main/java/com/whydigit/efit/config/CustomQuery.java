@@ -158,7 +158,7 @@ public class CustomQuery {
     		+ "        AND c.status = 'S'\r\n"
     		+ "        AND c.stockbranch = w.whlocation\r\n"
     		+ "    GROUP BY w.whlocation, a.kitno, b.assetcode, b.quantity) a\r\n"
-    		+ "GROUP BY a.whlocation, a.kitcode;");
+    		+ "GROUP BY a.whlocation, a.kitcode");
     		
     }
 }
