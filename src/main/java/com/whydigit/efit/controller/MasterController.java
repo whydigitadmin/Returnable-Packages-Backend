@@ -3140,6 +3140,8 @@ public class MasterController extends BaseController {
 			part.put("productName", ps[2] != null ? ps[2].toString() : "");
 			part.put("productCode", ps[3] != null ? ps[3].toString() : "");
 			part.put("productQty", ps[4] != null ? Integer.parseInt(ps[4].toString()) : 0);
+			part.put("allotmentNo", ps[5] != null ? ps[5].toString() : "");
+			part.put("allotmentDate", ps[6] != null ? ps[6].toString() : "");
 			allotDetails.add(part);
 		}
 		return allotDetails;
