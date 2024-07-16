@@ -2948,6 +2948,7 @@ public class MasterController extends BaseController {
 			bininwards.put("allotedQty", bininward[7] != null ? Integer.parseInt(bininward[7].toString()) : 0);
 			bininwards.put("part", bininward[8] != null ? bininward[8].toString() : "");
 			bininwards.put("partCode", bininward[9] != null ? bininward[9].toString() : "");
+			bininwards.put("binReqNo", bininward[10] != null ? bininward[10].toString() : "");
 
 			binInwardVos.add(bininwards);
 		}
@@ -3047,6 +3048,7 @@ public class MasterController extends BaseController {
 			part.put("emitterId", ps[6] != null ? ps[6].toString() : "");
 			part.put("partName", ps[8] != null ? ps[8].toString() : "");
 			part.put("partNo", ps[9] != null ? ps[9].toString() : "");
+			part.put("binReqNo", ps[10] != null ? ps[10].toString() : "");
 			allotDetails.add(part);
 		}
 		return allotDetails;
