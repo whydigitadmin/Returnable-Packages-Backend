@@ -30,8 +30,8 @@ public interface BinOutwardRepo extends JpaRepository<BinOutwardVO, Long> {
 	@Query(value = "select * from binoutward where docid=?1", nativeQuery = true)
 	List<BinOutwardVO> getAllBinOutwardByDocId(String docId);
 	
-	@Query(nativeQuery = true,value = "select a.docid,a.docdate,a.outwardkitqty,c.partno,a.kitno,c.partname  from binoutward a, flow b,flow1 c where \r\n"
-			+ " a.flowid=b.flowid and b.flowid=c.flowid and b.flowid=?2 and b.emitterid=?3 and a.kitno=c.kitno and a.orgid=?1 and a.invoiceno is null group by a.docid,a.docdate,a.outwardkitqty,c.partno,a.kitno,c.partname")
+	@Query(nativeQuery = true,value = "select a.docid,a.docdate,a.outwardkitqty,a.partcode,a.kitno,c.partname  from binoutward a, flow b,flow1 c where \r\n"
+			+ " a.flowid=b.flowid and b.flowid=c.flowid and b.flowid=?2 and b.emitterid=?3 and a.kitno=c.kitno and a.orgid=?1 and c.partno=a.partcode and a.invoiceno is null group by a.docid,a.docdate,a.outwardkitqty,a.partcode,a.kitno,c.partname")
 	List<Object[]> findEmitterDispatchByFlowId(Long orgId, Long flowId, Long emitterId);
 
 
