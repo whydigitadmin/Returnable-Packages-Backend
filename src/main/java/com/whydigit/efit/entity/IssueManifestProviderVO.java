@@ -60,8 +60,8 @@ public class IssueManifestProviderVO {
 	private Long amount;
 	@Column(name = "transportername")
 	private String transporterName;
-	@Column(name = "vechileno")
-	private String vechileNo;
+	@Column(name = "vehicleeno")
+	private String vehicleeNo;
 	@Column(name = "driverphoneno")
 	private String driverPhoneNo;
 	@Column(name = "declaration")

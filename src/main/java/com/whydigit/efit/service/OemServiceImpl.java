@@ -860,7 +860,7 @@ public class OemServiceImpl implements OemService {
 		issueManifestProviderVO.setAmountInWords(issueManifestProviderDTO.getAmountInWords());
 		issueManifestProviderVO.setAmount(issueManifestProviderDTO.getAmount());
 		issueManifestProviderVO.setTransporterName(issueManifestProviderDTO.getTransporterName());
-		issueManifestProviderVO.setVechileNo(issueManifestProviderDTO.getVechileNo());
+		issueManifestProviderVO.setVehicleeNo(issueManifestProviderDTO.getVechileNo());
 		issueManifestProviderVO.setDriverPhoneNo(issueManifestProviderDTO.getDriverPhoneNo());
 		issueManifestProviderVO.setActive(issueManifestProviderDTO.isActive());
 		issueManifestProviderVO.setCancel(issueManifestProviderDTO.isCancel());
