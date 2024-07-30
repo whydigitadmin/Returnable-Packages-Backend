@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import org.apache.xmlbeans.impl.jam.internal.elements.InvokableImpl;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.whydigit.efit.dto.AssetCategoryDTO;
@@ -21,6 +22,7 @@ import com.whydigit.efit.dto.CustomerAttachmentType;
 import com.whydigit.efit.dto.CustomersDTO;
 import com.whydigit.efit.dto.DmapDTO;
 import com.whydigit.efit.dto.FlowDTO;
+import com.whydigit.efit.dto.InvoiceDTO;
 import com.whydigit.efit.dto.KitDTO;
 import com.whydigit.efit.dto.KitResponseDTO;
 import com.whydigit.efit.dto.PoDTO;
@@ -45,6 +47,7 @@ import com.whydigit.efit.entity.CustomersAddressVO;
 import com.whydigit.efit.entity.CustomersVO;
 import com.whydigit.efit.entity.DmapVO;
 import com.whydigit.efit.entity.FlowVO;
+import com.whydigit.efit.entity.InvoiceVO;
 import com.whydigit.efit.entity.KitVO;
 import com.whydigit.efit.entity.ManufacturerProductVO;
 import com.whydigit.efit.entity.ManufacturerVO;
@@ -390,6 +393,12 @@ public interface MasterService {
 	List<String> getAllActiveAssetcategory(Long orgId);
 
 	
-
+	// Invoice
+	
+	Map<String, Object> createUpdateInvoice(InvoiceDTO invoiceDTO)throws ApplicationException;
+	
+	List<InvoiceVO> getAllInvoice(Long orgId);
+	
+	InvoiceVO getInvoiceById(Long id);
 
 }

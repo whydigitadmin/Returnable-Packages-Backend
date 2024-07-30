@@ -44,6 +44,7 @@ import com.whydigit.efit.dto.CustomerAttachmentType;
 import com.whydigit.efit.dto.CustomersDTO;
 import com.whydigit.efit.dto.DmapDTO;
 import com.whydigit.efit.dto.FlowDTO;
+import com.whydigit.efit.dto.InvoiceDTO;
 import com.whydigit.efit.dto.KitDTO;
 import com.whydigit.efit.dto.KitResponseDTO;
 import com.whydigit.efit.dto.PoDTO;
@@ -69,6 +70,7 @@ import com.whydigit.efit.entity.CustomersAddressVO;
 import com.whydigit.efit.entity.CustomersVO;
 import com.whydigit.efit.entity.DmapVO;
 import com.whydigit.efit.entity.FlowVO;
+import com.whydigit.efit.entity.InvoiceVO;
 import com.whydigit.efit.entity.KitVO;
 import com.whydigit.efit.entity.ManufacturerProductVO;
 import com.whydigit.efit.entity.ManufacturerVO;
@@ -4075,6 +4077,80 @@ public class MasterController extends BaseController {
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} else {
 			responseDTO = createServiceResponseError(responseObjectsMap, "Active Asset Category Information receive failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+	
+
+	@PutMapping("/createUpdateInvoice")
+	public ResponseEntity<ResponseDTO> createUpdateInvocie(@RequestBody InvoiceDTO invoiceDTO) {
+	    String methodName = "createUpdateInvocie()";
+	    LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+	    String errorMsg = null;
+	    Map<String, Object> responseObjectsMap = new HashMap<>();
+	    ResponseDTO responseDTO = null;
+	    try {
+	        Map<String, Object> invoiceVO = masterService.createUpdateInvoice(invoiceDTO);
+	        responseObjectsMap.put(CommonConstant.STRING_MESSAGE, invoiceVO.get("message"));
+	        responseObjectsMap.put("invoiceVO", invoiceVO.get("invoiceVO"));
+	        responseDTO = createServiceResponse(responseObjectsMap);
+	    } catch (Exception e) {
+	        errorMsg = e.getMessage();
+	        LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+	        responseDTO = createServiceResponseError(responseObjectsMap, errorMsg, errorMsg);
+	    }
+	    LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+	    return ResponseEntity.ok().body(responseDTO);
+	}
+	
+	@GetMapping("/getAllInvoiceByOrgId")
+	public ResponseEntity<ResponseDTO> getAllInvoiceByOrgId(@RequestParam(required = true) Long orgId) {
+		String methodName = "getAllInvoiceByOrgId()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<InvoiceVO> invoiceVO  = new ArrayList<>();
+		try {
+			invoiceVO = masterService.getAllInvoice(orgId);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Invoice Information get successfully");
+			responseObjectsMap.put("invoiceVO", invoiceVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "Invoice Information receive failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+	
+	@GetMapping("/getInvoiceById")
+	public ResponseEntity<ResponseDTO> getInvoiceById(@RequestParam(required = true) Long id) {
+		String methodName = "getInvoiceById()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		InvoiceVO invoiceVO  = new InvoiceVO();
+		try {
+			invoiceVO = masterService.getInvoiceById(id);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Invoice Information get successfully");
+			responseObjectsMap.put("invoiceVO", invoiceVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "Invoice Information receive failed",
 					errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);

@@ -74,6 +74,8 @@ import com.whydigit.efit.dto.DmapDTO;
 import com.whydigit.efit.dto.DmapDetailsDTO;
 import com.whydigit.efit.dto.FlowDTO;
 import com.whydigit.efit.dto.FlowDetailDTO;
+import com.whydigit.efit.dto.InvoiceDTO;
+import com.whydigit.efit.dto.InvoiceProductLinesDTO;
 import com.whydigit.efit.dto.KitAssetDTO;
 import com.whydigit.efit.dto.KitDTO;
 import com.whydigit.efit.dto.KitResponseDTO;
@@ -115,6 +117,8 @@ import com.whydigit.efit.entity.DmapDetailsVO;
 import com.whydigit.efit.entity.DmapVO;
 import com.whydigit.efit.entity.FlowDetailVO;
 import com.whydigit.efit.entity.FlowVO;
+import com.whydigit.efit.entity.InvoiceProductLinesVO;
+import com.whydigit.efit.entity.InvoiceVO;
 import com.whydigit.efit.entity.KitAssetVO;
 import com.whydigit.efit.entity.KitVO;
 import com.whydigit.efit.entity.ManufacturerProductVO;
@@ -158,6 +162,8 @@ import com.whydigit.efit.repo.DmapDetailsRepo;
 import com.whydigit.efit.repo.DmapRepo;
 import com.whydigit.efit.repo.FlowDetailRepo;
 import com.whydigit.efit.repo.FlowRepo;
+import com.whydigit.efit.repo.InvoiceProductLinesRepo;
+import com.whydigit.efit.repo.InvoiceRepo;
 import com.whydigit.efit.repo.IssueItemRepo;
 import com.whydigit.efit.repo.IssueRequestRepo;
 import com.whydigit.efit.repo.KitAssetRepo;
@@ -180,6 +186,7 @@ import com.whydigit.efit.repo.VendorRepo;
 import com.whydigit.efit.repo.WarehouseRepository;
 import com.whydigit.efit.util.CommonUtils;
 
+
 @Service
 public class MasterServiceImpl implements MasterService {
 
@@ -195,6 +202,12 @@ public class MasterServiceImpl implements MasterService {
 	AssetCategoryRepo assetCategoryRepo;
 	@Autowired
 	CustomersRepo customersRepo;
+	
+	@Autowired
+	InvoiceRepo invoiceRepo;
+	
+	@Autowired
+	InvoiceProductLinesRepo invoiceProductLinesRepo;
 
 	@Autowired
 	WarehouseRepository warehouseRepo;
@@ -3595,4 +3608,101 @@ public class MasterServiceImpl implements MasterService {
 		}
 		return details;
 	}
+
+	@Override
+	public Map<String, Object> createUpdateInvoice(InvoiceDTO invoiceDTO) throws ApplicationException {
+		InvoiceVO invoiceVO=new InvoiceVO();
+		String message;
+		if(ObjectUtils.isEmpty(invoiceDTO.getId()))
+		{
+			List<InvoiceProductLinesVO>invoiceProductLinesVO= new ArrayList<>();
+			if(invoiceDTO.getProductLines()!=null)
+			{
+				for(InvoiceProductLinesDTO invoiceProductLinesDTO : invoiceDTO.getProductLines())
+				{
+					InvoiceProductLinesVO invoiceProductLinesVO1= new InvoiceProductLinesVO();
+					invoiceProductLinesVO1.setDescription(invoiceProductLinesDTO.getDescription());
+					invoiceProductLinesVO1.setQuantity(invoiceProductLinesDTO.getQuantity());
+					invoiceProductLinesVO1.setRate(invoiceProductLinesDTO.getRate());
+					invoiceProductLinesVO1.setAmount(invoiceProductLinesDTO.getAmount());
+					invoiceProductLinesVO1.setInvoiceVO(invoiceVO);
+					invoiceProductLinesVO.add(invoiceProductLinesVO1);
+				}
+			}
+			invoiceVO.setProductLines(invoiceProductLinesVO);
+			invoiceVO.setCreatedBy(invoiceDTO.getCreatedBy());
+			invoiceVO.setModifiedeBy(invoiceDTO.getCreatedBy());
+			mapInvoiceDTOToInvoiceVO(invoiceDTO,invoiceVO);
+			message="Invoice Created successfully";
+		}
+		else
+		{
+			invoiceVO=invoiceRepo.findById(invoiceDTO.getId()).orElse(null);
+			List<InvoiceProductLinesVO>invoiceProductLinesVO= invoiceProductLinesRepo.findByInvoiceVO(invoiceVO);
+	        invoiceProductLinesRepo.deleteAll(invoiceProductLinesVO);
+	        
+	        if(invoiceDTO.getProductLines()!=null)
+			{
+				for(InvoiceProductLinesDTO invoiceProductLinesDTO : invoiceDTO.getProductLines())
+				{
+					InvoiceProductLinesVO invoiceProductLinesVO1= new InvoiceProductLinesVO();
+					invoiceProductLinesVO1.setDescription(invoiceProductLinesDTO.getDescription());
+					invoiceProductLinesVO1.setQuantity(invoiceProductLinesDTO.getQuantity());
+					invoiceProductLinesVO1.setRate(invoiceProductLinesDTO.getRate());
+					invoiceProductLinesVO1.setAmount(invoiceProductLinesDTO.getAmount());
+					invoiceProductLinesVO1.setInvoiceVO(invoiceVO);
+					invoiceProductLinesVO.add(invoiceProductLinesVO1);
+				}
+			}
+	        invoiceVO.setModifiedeBy(invoiceDTO.getCreatedBy());
+	        invoiceVO.setProductLines(invoiceProductLinesVO);
+			mapInvoiceDTOToInvoiceVO(invoiceDTO,invoiceVO);
+	        message = "Invoice Updated successfully";
+			
+		}
+		invoiceRepo.save(invoiceVO);
+		Map<String, Object> response = new HashMap<>();
+	    response.put("invoiceVO", invoiceVO);
+	    response.put("message", message);
+	    return response;
+	}
+
+	private void mapInvoiceDTOToInvoiceVO(InvoiceDTO invoiceDTO, InvoiceVO invoiceVO) {
+        invoiceVO.setLogoWidth(invoiceDTO.getLogoWidth());
+        invoiceVO.setTitle(invoiceDTO.getTitle());
+        invoiceVO.setCompanyName(invoiceDTO.getCompanyName());
+        invoiceVO.setName(invoiceDTO.getName());
+        invoiceVO.setCompanyAddress(invoiceDTO.getCompanyAddress());
+        invoiceVO.setCompanyAddress2(invoiceDTO.getCompanyAddress2());
+        invoiceVO.setCompanyCountry(invoiceDTO.getCompanyCountry());
+        invoiceVO.setBillTo(invoiceDTO.getBillTo());
+        invoiceVO.setClientName(invoiceDTO.getClientName());
+        invoiceVO.setClientAddress(invoiceDTO.getClientAddress());
+        invoiceVO.setClientAddress2(invoiceDTO.getClientAddress2());
+        invoiceVO.setClientCountry(invoiceDTO.getClientCountry());
+        invoiceVO.setInvoiceTitleLabel(invoiceDTO.getInvoiceTitleLabel());
+        invoiceVO.setInvoiceTitle(invoiceDTO.getInvoiceTitle());
+        invoiceVO.setInvoiceDateLabel(invoiceDTO.getInvoiceDateLabel());
+        invoiceVO.setInvoiceDate(LocalDate.now());
+        invoiceVO.setInvoiceDueDateLabel(invoiceDTO.getInvoiceDueDateLabel());
+        invoiceVO.setInvoiceDueDate(invoiceDTO.getInvoiceDueDate());
+        invoiceVO.setProductLineDescription(invoiceDTO.getProductLineDescription());
+        invoiceVO.setProductLineQuantity(invoiceDTO.getProductLineQuantity());
+        invoiceVO.setProductLineQuantityRate(invoiceDTO.getProductLineQuantityRate());
+        invoiceVO.setProductLineQuantityAmount(invoiceDTO.getProductLineQuantityAmount());
+        invoiceVO.setOrgId(invoiceDTO.getOrgId());		
+	}
+
+	@Override
+	public List<InvoiceVO> getAllInvoice(Long orgId) {
+		
+		return invoiceRepo.findAllByOrgId(orgId);
+	}
+
+	@Override
+	public InvoiceVO getInvoiceById(Long id) {
+		// TODO Auto-generated method stub
+		return invoiceRepo.findById(id).get();
+		}
+
 }
