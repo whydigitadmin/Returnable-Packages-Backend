@@ -27,7 +27,7 @@ public class BinInwardDetailsVO {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "bininwarddetailsgen")
-	@SequenceGenerator(name = "bininwarddetailsgen", sequenceName = "bininwardseq", initialValue = 1000000001, allocationSize = 1)
+	@SequenceGenerator(name = "bininwarddetailsgen", sequenceName = "bininwarddetailsseq", initialValue = 1000000001, allocationSize = 1)
 	@Column(name = "bininwarddetailsid")
 	private Long binInwardDetailsId;
 	@Column(name = "tagcode")

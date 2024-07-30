@@ -19,10 +19,10 @@ public interface DispatchRepository extends JpaRepository<DispatchVO, Long> {
 			+ ") AS finyr")
 	String findFinyr();
 
-	@Query(nativeQuery = true, value = "select sequence_value from oembininwarddocidseq")
+	@Query(nativeQuery = true, value = "select sequence_value from emitterdispatchdocid")
 	int finddocid();
 
-	@Query(nativeQuery = true, value = "CALL next_oembininward_sequence_value()")
+	@Query(nativeQuery = true, value = "CALL next_dispatchsequence_value()")
 	void nextseq();
 
 	@Query(nativeQuery = true, value = " select a.binoutwarddocid,a.binoutdocdate,a.partname,a.partno,a.kitno,a.qty from \r\n"

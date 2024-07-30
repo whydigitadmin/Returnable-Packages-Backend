@@ -22,7 +22,7 @@ public interface BinInwardRepo extends JpaRepository<BinInwardVO, Long>{
 	@Query(nativeQuery = true, value = "CALL next_inwardid()")
 	void nextDocseq();
 
-	@Query(nativeQuery = true, value ="select a.docid,a.docdate,a.allotmentno,a.allotdate,a.flow,a.kitcode,a.reqkitqty,a.allotedqty,a.partname,a.partCode from bininward a where orgid=?2 and emitterid=?1")
+	@Query(nativeQuery = true, value ="select a.docid,a.docdate,a.allotmentno,a.allotdate,a.flow,a.kitcode,a.reqkitqty,a.allotedqty,a.partname,a.partCode,a.reqno from bininward a where orgid=?2 and emitterid=?1")
 	Set<Object[]> findAllByEmitterIdAndOrgId(Long emitterid, Long orgId);
 
 	boolean existsByDocid(String docid);
