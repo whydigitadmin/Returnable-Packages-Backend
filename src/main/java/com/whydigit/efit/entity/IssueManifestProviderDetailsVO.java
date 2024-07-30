@@ -1,0 +1,49 @@
+package com.whydigit.efit.entity;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Entity
+@Table(name = "issuemanifestproviderdetails")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class IssueManifestProviderDetailsVO {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "issuemanifestproviderdetailsgen")
+	@SequenceGenerator(name = "issuemanifestproviderdetailsgen", sequenceName = "issuemanifestproviderdetailsseq", initialValue = 1000000001, allocationSize = 1)
+	@Column(name = "impdetailsid")
+	private Long id;
+	@Column(name = "kitid")
+	private String kitId;
+	@Column(name = "kitname")
+	private String kitName;
+	@Column(name = "kitqty")
+	private Long kitQty;
+	@Column(name = "hsncode")
+	private Long hsnCode;
+	@Column(name = "assetcode")
+	private String assetCode;
+	@Column(name = "asset")
+	private String asset;
+	@Column(name = "assetqty")
+	private Long assetQty;
+
+	@ManyToOne
+	@JsonBackReference
+	@JoinColumn(name = "impid")
+	private IssueManifestProviderVO issueManifestProviderVO;
+}

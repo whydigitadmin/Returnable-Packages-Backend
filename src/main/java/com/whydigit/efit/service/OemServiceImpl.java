@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import org.apache.commons.lang3.ObjectUtils;
@@ -14,6 +15,8 @@ import org.springframework.stereotype.Service;
 
 import com.whydigit.efit.dto.GathereingEmptyDetailsDTO;
 import com.whydigit.efit.dto.GatheringEmptyDTO;
+import com.whydigit.efit.dto.IssueManifestProviderDTO;
+import com.whydigit.efit.dto.IssueManifestProviderDetailsDTO;
 import com.whydigit.efit.dto.OemBinInwardDTO;
 import com.whydigit.efit.dto.OemBinInwardDetailsDTO;
 import com.whydigit.efit.dto.OemBinOutwardDTO;
@@ -29,6 +32,8 @@ import com.whydigit.efit.entity.DispatchVO;
 import com.whydigit.efit.entity.FlowVO;
 import com.whydigit.efit.entity.GathereingEmptyDetailsVO;
 import com.whydigit.efit.entity.GatheringEmptyVO;
+import com.whydigit.efit.entity.IssueManifestProviderDetailsVO;
+import com.whydigit.efit.entity.IssueManifestProviderVO;
 import com.whydigit.efit.entity.OemBinInwardDetailsVO;
 import com.whydigit.efit.entity.OemBinInwardVO;
 import com.whydigit.efit.entity.OemBinOutwardDetailsVO;
@@ -37,12 +42,15 @@ import com.whydigit.efit.entity.RetreivalDetailsVO;
 import com.whydigit.efit.entity.RetreivalVO;
 import com.whydigit.efit.entity.TransportPickupDetailsVO;
 import com.whydigit.efit.entity.TransportPickupVO;
+import com.whydigit.efit.exception.ApplicationException;
 import com.whydigit.efit.repo.AssetRepo;
 import com.whydigit.efit.repo.AssetStockDetailsRepo;
 import com.whydigit.efit.repo.BinOutwardRepo;
 import com.whydigit.efit.repo.DispatchRepository;
 import com.whydigit.efit.repo.FlowRepo;
 import com.whydigit.efit.repo.GatheringEmptyRepo;
+import com.whydigit.efit.repo.IssueManifestProviderDetailsRepo;
+import com.whydigit.efit.repo.IssueManifestProviderRepo;
 import com.whydigit.efit.repo.OemBinInwardDetailsRepo;
 import com.whydigit.efit.repo.OemBinInwardRepo;
 import com.whydigit.efit.repo.OemBinOutwardDetailsRepo;
@@ -93,6 +101,12 @@ public class OemServiceImpl implements OemService {
 
 	@Autowired
 	GatheringEmptyRepo gatheringEmptyRepo;
+	
+	@Autowired
+	IssueManifestProviderRepo issueManifestProviderRepo;
+	
+	@Autowired
+	IssueManifestProviderDetailsRepo issueManifestProviderDetailsRepo ;
 
 	@Override
 	public OemBinInwardVO createOemBinInward(OemBinInwardDTO oemBinInwardDTO) {
@@ -800,6 +814,98 @@ public class OemServiceImpl implements OemService {
 			status.add(values);
 		}
 		return status;
+	}
+
+	@Override
+	public Map<String, Object> createUpdateIssuemanifest(IssueManifestProviderDTO issueManifestProviderDTO)
+			throws ApplicationException {
+		IssueManifestProviderVO issueManifestProviderVO = null;
+		String message = null;
+		if (issueManifestProviderDTO.getId() != null) {
+			// Update existing entity
+			issueManifestProviderVO = issueManifestProviderRepo.findById(issueManifestProviderDTO.getId())
+					.orElseThrow(() -> new ApplicationException(
+							"This Id Not Found Any Information, Invalid Id: " + issueManifestProviderDTO.getId()));
+			issueManifestProviderVO.setUpdatedBy(issueManifestProviderDTO.getCreatedBy());
+			message = "IssueManifestProvider Updation Sucessfully";
+
+		} else {
+
+			issueManifestProviderVO = new IssueManifestProviderVO();
+			issueManifestProviderVO.setCreatedBy(issueManifestProviderDTO.getCreatedBy());
+			issueManifestProviderVO.setUpdatedBy(issueManifestProviderDTO.getCreatedBy());
+			message = "IssueManifestProvider Creatrion Sucessfully";
+		}
+		getIssueManifestProviderVOFromIssueManifestProviderDTO(issueManifestProviderVO, issueManifestProviderDTO);
+		issueManifestProviderRepo.save(issueManifestProviderVO);
+
+		// Prepare the response
+		Map<String, Object> response = new HashMap<>();
+		response.put("message", message);
+		response.put("issueManifestProviderVO", issueManifestProviderVO);
+		return response;
+	}
+
+	private IssueManifestProviderVO getIssueManifestProviderVOFromIssueManifestProviderDTO(
+			IssueManifestProviderVO issueManifestProviderVO, IssueManifestProviderDTO issueManifestProviderDTO) {
+		issueManifestProviderVO.setTransactionNo(issueManifestProviderDTO.getTransactionNo());
+		issueManifestProviderVO.setTransactionDate(issueManifestProviderDTO.getTransactionDate());
+		issueManifestProviderVO.setDispatchDate(issueManifestProviderDTO.getDispatchDate());
+		issueManifestProviderVO.setTransactionType(issueManifestProviderDTO.getTransactionType());
+		issueManifestProviderVO.setSender(issueManifestProviderDTO.getSender());
+		issueManifestProviderVO.setSenderAddress(issueManifestProviderDTO.getSenderAddress());
+		issueManifestProviderVO.setReceiver(issueManifestProviderDTO.getReceiver());
+		issueManifestProviderVO.setReceiverAddress(issueManifestProviderDTO.getReceiverAddress());
+		issueManifestProviderVO.setReceiverGst(issueManifestProviderDTO.getReceiverGst());
+		issueManifestProviderVO.setAmountInWords(issueManifestProviderDTO.getAmountInWords());
+		issueManifestProviderVO.setAmount(issueManifestProviderDTO.getAmount());
+		issueManifestProviderVO.setTransporterName(issueManifestProviderDTO.getTransporterName());
+		issueManifestProviderVO.setVechileNo(issueManifestProviderDTO.getVechileNo());
+		issueManifestProviderVO.setDriverPhoneNo(issueManifestProviderDTO.getDriverPhoneNo());
+		issueManifestProviderVO.setActive(issueManifestProviderDTO.isActive());
+		issueManifestProviderVO.setCancel(issueManifestProviderDTO.isCancel());
+		issueManifestProviderVO.setOrgId(issueManifestProviderDTO.getOrgId());
+
+		if (issueManifestProviderDTO.getId() != null) {
+
+			List<IssueManifestProviderDetailsVO> issueManifestProviderDetailsVOs = issueManifestProviderDetailsRepo
+					.findByIssueManifestProviderVO(issueManifestProviderVO);
+			issueManifestProviderDetailsRepo.deleteAll(issueManifestProviderDetailsVOs);
+		}
+
+		List<IssueManifestProviderDetailsVO> detailsVOs = new ArrayList<IssueManifestProviderDetailsVO>();
+
+		for (IssueManifestProviderDetailsDTO detailsDTO : issueManifestProviderDTO
+				.getIssueManifestProviderDetailsDTO()) {
+
+			IssueManifestProviderDetailsVO issueManifestProviderDetailsVO = new IssueManifestProviderDetailsVO();
+
+			issueManifestProviderDetailsVO.setAsset(detailsDTO.getAsset());
+			issueManifestProviderDetailsVO.setAssetCode(detailsDTO.getAssetCode());
+			issueManifestProviderDetailsVO.setAssetQty(detailsDTO.getAssetQty());
+			issueManifestProviderDetailsVO.setKitId(detailsDTO.getKitId());
+			issueManifestProviderDetailsVO.setKitName(detailsDTO.getKitName());
+			issueManifestProviderDetailsVO.setKitQty(detailsDTO.getKitQty());
+			issueManifestProviderDetailsVO.setHsnCode(detailsDTO.getHsnCode());
+			issueManifestProviderDetailsVO.setIssueManifestProviderVO(issueManifestProviderVO);
+			detailsVOs.add(issueManifestProviderDetailsVO);
+
+		}
+		issueManifestProviderVO.setIssueManifestProviderDetailsVOs(detailsVOs);
+		return issueManifestProviderVO;
+
+	}
+
+	@Override
+	public List<IssueManifestProviderVO> getAllIssueManifestProvider() {
+		
+		return issueManifestProviderRepo.findAll();
+	}
+
+	@Override
+	public Optional<IssueManifestProviderVO> getAllIssueManifestProviderById(Long id) {
+
+		return issueManifestProviderRepo.findById(id);
 	}
 
 }

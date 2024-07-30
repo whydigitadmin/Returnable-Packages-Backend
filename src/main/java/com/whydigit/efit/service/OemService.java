@@ -2,20 +2,24 @@ package com.whydigit.efit.service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.stereotype.Service;
 
 import com.whydigit.efit.dto.GatheringEmptyDTO;
+import com.whydigit.efit.dto.IssueManifestProviderDTO;
 import com.whydigit.efit.dto.OemBinInwardDTO;
 import com.whydigit.efit.dto.OemBinOutwardDTO;
 import com.whydigit.efit.dto.RetreivalDTO;
 import com.whydigit.efit.dto.TransportPickupDTO;
 import com.whydigit.efit.entity.GatheringEmptyVO;
+import com.whydigit.efit.entity.IssueManifestProviderVO;
 import com.whydigit.efit.entity.OemBinInwardVO;
 import com.whydigit.efit.entity.OemBinOutwardVO;
 import com.whydigit.efit.entity.RetreivalVO;
 import com.whydigit.efit.entity.TransportPickupVO;
+import com.whydigit.efit.exception.ApplicationException;
 
 @Service
 public interface OemService {
@@ -81,4 +85,13 @@ public interface OemService {
 	List<TransportPickupVO> getAllTranportPickupByReceiverId(Long receiverId);
 
 	List<Map<String, Object>> getReterivalManifestHeaderPdf(String docId, Long orgId);
+
+	//ISSUEMANIFEST
+	
+	Map<String, Object> createUpdateIssuemanifest(IssueManifestProviderDTO issueManifestProviderDTO) throws ApplicationException;
+	
+	List<IssueManifestProviderVO> getAllIssueManifestProvider();
+	
+	Optional<IssueManifestProviderVO> getAllIssueManifestProviderById(Long id);
+	
 }
