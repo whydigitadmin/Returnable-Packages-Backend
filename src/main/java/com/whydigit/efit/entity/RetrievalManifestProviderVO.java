@@ -1,4 +1,3 @@
-
 package com.whydigit.efit.entity;
 
 import java.time.LocalDate;
@@ -24,15 +23,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "mim")
+@Table(name = "rim")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class IssueManifestProviderVO {
+public class RetrievalManifestProviderVO {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "issuemanifestprovidergen")
-	@SequenceGenerator(name = "issuemanifestprovidergen", sequenceName = "issuemanifestproviderseq", initialValue = 1000000001, allocationSize = 1)
-	@Column(name = "mimid")
+	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "rimgen")
+	@SequenceGenerator(name = "rimgen", sequenceName = "rimseq", initialValue = 1000000001, allocationSize = 1)
+	@Column(name = "rimid")
 	private Long id;
 	@Column(name = "orgid")
 	private Long orgId;
@@ -48,16 +47,12 @@ public class IssueManifestProviderVO {
 	private String sender;
 	@Column(name = "senderaddress")
 	private String senderAddress;
-	@Column(name = "receiver")
+	@Column(name = "Receiver")
 	private String receiver;
 	@Column(name = "receiveraddress")
 	private String receiverAddress;
-	@Column(name = "receivergst")
-	private String receiverGst;
-	@Column(name = "Amountinwords")
-	private String amountInWords;
-	@Column(name = "amount")
-	private Long amount;
+	@Column(name = "sendergst")
+	private String senderGst;
 	@Column(name = "transportername")
 	private String transporterName;
 	@Column(name = "vehicleeno")
@@ -88,12 +83,13 @@ public class IssueManifestProviderVO {
 		return cancel ? "T" : "F";
 	}
 	
-	@OneToMany(mappedBy ="issueManifestProviderVO",cascade =CascadeType.ALL)
+	@OneToMany(mappedBy ="retrievalManifestProviderVO",cascade =CascadeType.ALL)
 	@JsonManagedReference
-	private List<IssueManifestProviderDetailsVO> issueManifestProviderDetailsVOs;
+	private List<RetrievalManifestProviderDetailsVO> retrievalManifestProviderDetailsVOs;
 	
 	
 
 	@Embedded
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
 }
+

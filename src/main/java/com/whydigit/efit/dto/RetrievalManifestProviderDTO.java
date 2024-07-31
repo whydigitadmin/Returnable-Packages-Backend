@@ -3,16 +3,13 @@ package com.whydigit.efit.dto;
 import java.time.LocalDate;
 import java.util.List;
 
-import com.whydigit.efit.entity.IssueManifestProviderDetailsVO;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class IssueManifestProviderDTO {
+public class RetrievalManifestProviderDTO {
 
 	private Long id;
 
@@ -32,11 +29,7 @@ public class IssueManifestProviderDTO {
 
 	private String receiverAddress;
 
-	private String receiverGst;
-
-	private String amountInWords;
-
-	private Long amount;
+	private String senderGst;
 
 	private String transporterName;
 
@@ -52,6 +45,6 @@ public class IssueManifestProviderDTO {
 
 	private Long orgId;
 	
-	private List<IssueManifestProviderDetailsDTO> issueManifestProviderDetailsDTO;
+	private List<RetrievalManifestProviderDetailsDTO> retrievalManifestProviderDetailsDTO;
 
 }

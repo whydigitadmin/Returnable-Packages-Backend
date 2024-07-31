@@ -26,12 +26,14 @@ import com.whydigit.efit.dto.OemBinInwardDTO;
 import com.whydigit.efit.dto.OemBinOutwardDTO;
 import com.whydigit.efit.dto.ResponseDTO;
 import com.whydigit.efit.dto.RetreivalDTO;
+import com.whydigit.efit.dto.RetrievalManifestProviderDTO;
 import com.whydigit.efit.dto.TransportPickupDTO;
 import com.whydigit.efit.entity.GatheringEmptyVO;
 import com.whydigit.efit.entity.IssueManifestProviderVO;
 import com.whydigit.efit.entity.OemBinInwardVO;
 import com.whydigit.efit.entity.OemBinOutwardVO;
 import com.whydigit.efit.entity.RetreivalVO;
+import com.whydigit.efit.entity.RetrievalManifestProviderVO;
 import com.whydigit.efit.entity.TransportPickupVO;
 import com.whydigit.efit.service.OemService;
 
@@ -899,6 +901,85 @@ public class OemController extends BaseController {
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} else {
 			responseDTO = createServiceResponseError(responseObjectsMap, "IssueManifestProvider information receive failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+
+	}
+
+	
+	//RETRIEVALMANIFEST
+
+	@PutMapping("/createUpdateRetrievalManifest")
+	public ResponseEntity<ResponseDTO> createUpdateRetrievalManifest(@RequestBody RetrievalManifestProviderDTO retrievalManifestProviderDTO) {
+	    String methodName = "createUpdateRetrievalManifest()";
+	    LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+	    String errorMsg = null;
+	    Map<String, Object> responseObjectsMap = new HashMap<>();
+	    ResponseDTO responseDTO = null;
+	    try {
+	        Map<String, Object> retrievalManifestProviderVO = oemService.createUpdateRetrievalManifest(retrievalManifestProviderDTO);
+	        responseObjectsMap.put(CommonConstant.STRING_MESSAGE, retrievalManifestProviderVO.get("message"));
+	        responseObjectsMap.put("issueManifestProviderVO", retrievalManifestProviderVO.get("retrievalManifestProviderVO"));
+	        responseDTO = createServiceResponse(responseObjectsMap);
+	    } catch (Exception e) {
+	        errorMsg = e.getMessage();
+	        LOGGER.error(CommonConstant.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+	        responseDTO = createServiceResponseError(responseObjectsMap, errorMsg, errorMsg);
+	    }
+	    LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+	    return ResponseEntity.ok().body(responseDTO);
+	}
+
+	@GetMapping("/getAllRetrievalManifestProvider")
+	public ResponseEntity<ResponseDTO> getAllRetrievalManifestProvider() {
+		String methodName = "getAllRetrievalManifestProvider()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<RetrievalManifestProviderVO> retrievalManifestProviderVOs =new ArrayList<RetrievalManifestProviderVO>();
+		try {
+			retrievalManifestProviderVOs = oemService.getAllRetrievalManifestProvider();
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "RetrievalManifest information get successfully");
+			responseObjectsMap.put("retrievalManifestProviderVOs", retrievalManifestProviderVOs);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "RetrievalManifest information receive failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+
+	}
+
+
+	@GetMapping("/getRetrievalManifestProviderById")
+	public ResponseEntity<ResponseDTO> getRetrievalManifestProviderById(Long id) {
+		String methodName = "getRetrievalManifestProviderById()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		RetrievalManifestProviderVO retrievalManifestProviderVO =null;
+		try {
+			retrievalManifestProviderVO = oemService.getRetrievalManifestProviderById(id).orElse(null);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "RetrievalManifest information get successfully By Id");
+			responseObjectsMap.put("retrievalManifestProviderVO", retrievalManifestProviderVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "RetrievalManifest information receive failed",
 					errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);

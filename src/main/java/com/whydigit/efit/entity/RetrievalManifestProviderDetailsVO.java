@@ -15,17 +15,16 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 @Entity
-@Table(name = "mimdetails")
+@Table(name = "rimdetails")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class IssueManifestProviderDetailsVO {
+public class RetrievalManifestProviderDetailsVO {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "mimdetailsgen")
-	@SequenceGenerator(name = "mimdetailsgen", sequenceName = "mimdetailsseq", initialValue = 1000000001, allocationSize = 1)
-	@Column(name = "mimdetailsid")
+	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "rimdetailssgen")
+	@SequenceGenerator(name = "rimdetailsgen", sequenceName = "rimdetailsseq", initialValue = 1000000001, allocationSize = 1)
+	@Column(name = "rimdetailsid")
 	private Long id;
 	@Column(name = "kitid")
 	private String kitId;
@@ -44,6 +43,7 @@ public class IssueManifestProviderDetailsVO {
 
 	@ManyToOne
 	@JsonBackReference
-	@JoinColumn(name = "mimid")
-	private IssueManifestProviderVO issueManifestProviderVO;
+	@JoinColumn(name = "rimid")
+	private RetrievalManifestProviderVO retrievalManifestProviderVO;
+
 }

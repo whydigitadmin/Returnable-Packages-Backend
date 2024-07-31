@@ -12,12 +12,14 @@ import com.whydigit.efit.dto.IssueManifestProviderDTO;
 import com.whydigit.efit.dto.OemBinInwardDTO;
 import com.whydigit.efit.dto.OemBinOutwardDTO;
 import com.whydigit.efit.dto.RetreivalDTO;
+import com.whydigit.efit.dto.RetrievalManifestProviderDTO;
 import com.whydigit.efit.dto.TransportPickupDTO;
 import com.whydigit.efit.entity.GatheringEmptyVO;
 import com.whydigit.efit.entity.IssueManifestProviderVO;
 import com.whydigit.efit.entity.OemBinInwardVO;
 import com.whydigit.efit.entity.OemBinOutwardVO;
 import com.whydigit.efit.entity.RetreivalVO;
+import com.whydigit.efit.entity.RetrievalManifestProviderVO;
 import com.whydigit.efit.entity.TransportPickupVO;
 import com.whydigit.efit.exception.ApplicationException;
 
@@ -93,5 +95,13 @@ public interface OemService {
 	List<IssueManifestProviderVO> getAllIssueManifestProvider();
 	
 	Optional<IssueManifestProviderVO> getAllIssueManifestProviderById(Long id);
+	
+	//RETERIVELMANIFEST
+	
+    Map<String, Object> createUpdateRetrievalManifest(RetrievalManifestProviderDTO retrievalManifestProviderDTO) throws ApplicationException;
+	
+	List<RetrievalManifestProviderVO> getAllRetrievalManifestProvider();
+	
+	Optional<RetrievalManifestProviderVO> getRetrievalManifestProviderById(Long id);
 	
 }
