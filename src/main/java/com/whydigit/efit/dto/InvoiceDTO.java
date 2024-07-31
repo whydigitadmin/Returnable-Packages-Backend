@@ -45,8 +45,10 @@ public class InvoiceDTO {
     private String term;
     private String termLabel;
     private String totalLabel;
+    private String subTotalLabel;
 	private Long orgId;
 	private String createdBy;
+	
     private List<InvoiceProductLinesDTO>productLines;
 
 }

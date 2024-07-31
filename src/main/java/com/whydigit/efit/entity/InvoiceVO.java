@@ -93,6 +93,8 @@ public class InvoiceVO {
     private String termLabel;
 	@Column(name = "totallabel")
     private String totalLabel;
+	@Column(name = "subtotallabel")
+    private String subTotalLabel;
 	
 	
 	@Column(name = "orgid")

@@ -3713,6 +3713,7 @@ public class MasterServiceImpl implements MasterService {
         invoiceVO.setTerm(invoiceDTO.getTerm());
         invoiceVO.setTermLabel(invoiceDTO.getTermLabel());
         invoiceVO.setTotalLabel(invoiceDTO.getTotalLabel());
+        invoiceVO.setSubTotalLabel(invoiceDTO.getSubTotalLabel());
         invoiceVO.setOrgId(invoiceDTO.getOrgId());
         
         
