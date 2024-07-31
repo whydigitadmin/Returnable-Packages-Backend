@@ -38,6 +38,13 @@ public class InvoiceDTO {
     private String productLineQuantity;
     private String productLineQuantityRate;
     private String productLineQuantityAmount;
+    private String notesLabel;
+    private String notes;
+    private String taxLabel;
+    private String taxLabel1;
+    private String term;
+    private String termLabel;
+    private String totalLabel;
 	private Long orgId;
 	private String createdBy;
     private List<InvoiceProductLinesDTO>productLines;

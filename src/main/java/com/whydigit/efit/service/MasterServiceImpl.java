@@ -3633,7 +3633,14 @@ public class MasterServiceImpl implements MasterService {
 			invoiceVO.setProductLines(invoiceProductLinesVO);
 			invoiceVO.setCreatedBy(invoiceDTO.getCreatedBy());
 			invoiceVO.setModifiedeBy(invoiceDTO.getCreatedBy());
+			 String base64Image = invoiceDTO.getLogo();
+			if (base64Image != null && base64Image.startsWith("data:image/")) {
+	            base64Image = base64Image.substring(base64Image.indexOf(",") + 1);
+	            byte[] imageBytes = Base64.getDecoder().decode(base64Image);
+	            invoiceVO.setLogo(imageBytes);
+	        }
 			mapInvoiceDTOToInvoiceVO(invoiceDTO,invoiceVO);
+			
 			message="Invoice Created successfully";
 		}
 		else
@@ -3660,6 +3667,12 @@ public class MasterServiceImpl implements MasterService {
 	        invoiceVO.setModifiedeBy(invoiceDTO.getCreatedBy());
 	        invoiceVO.setProductLines(invoiceProductLinesVO);
 	        mapInvoiceDTOToInvoiceVO(invoiceDTO,invoiceVO);
+	        String base64Image = invoiceDTO.getLogo();
+	        if (base64Image != null && base64Image.startsWith("data:image/")) {
+	            base64Image = base64Image.substring(base64Image.indexOf(",") + 1);
+	            byte[] imageBytes = Base64.getDecoder().decode(base64Image);
+	            invoiceVO.setLogo(imageBytes);
+	        }
 	        message = "Invoice Updated successfully";
 			
 		}
@@ -3693,14 +3706,16 @@ public class MasterServiceImpl implements MasterService {
         invoiceVO.setProductLineQuantity(invoiceDTO.getProductLineQuantity());
         invoiceVO.setProductLineQuantityRate(invoiceDTO.getProductLineQuantityRate());
         invoiceVO.setProductLineQuantityAmount(invoiceDTO.getProductLineQuantityAmount());
+        invoiceVO.setNotesLabel(invoiceDTO.getNotesLabel());
+        invoiceVO.setNotes(invoiceDTO.getNotes());
+        invoiceVO.setTaxLabel(invoiceDTO.getTaxLabel());
+        invoiceVO.setTaxLabel1(invoiceDTO.getTaxLabel1());
+        invoiceVO.setTerm(invoiceDTO.getTerm());
+        invoiceVO.setTermLabel(invoiceDTO.getTermLabel());
+        invoiceVO.setTotalLabel(invoiceDTO.getTotalLabel());
         invoiceVO.setOrgId(invoiceDTO.getOrgId());
         
-        String base64Image = invoiceDTO.getLogo();
-        if (base64Image != null && base64Image.startsWith("data:image/")) {
-            base64Image = base64Image.substring(base64Image.indexOf(",") + 1);
-            byte[] imageBytes = Base64.getDecoder().decode(base64Image);
-            invoiceVO.setLogo(imageBytes);
-        }
+        
 	}
 
 	@Override
