@@ -33,8 +33,8 @@ public class InvoiceVO {
 	@SequenceGenerator(name = "invoicegen", sequenceName = "invoiceseq", initialValue = 1000000001, allocationSize = 1)
 	@Column(name = "invoiceid")
 	private Long id;
-	@Column(name = "logo")
-	private String logo;
+	@Column(name = "logo", columnDefinition = "LONGBLOB")
+	private byte[] logo;
 	@Column(name = "logowidth")
     private int logoWidth;
 	@Column(name = "title")

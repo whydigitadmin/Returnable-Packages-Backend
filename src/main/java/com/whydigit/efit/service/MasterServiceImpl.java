@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -3690,7 +3691,14 @@ public class MasterServiceImpl implements MasterService {
         invoiceVO.setProductLineQuantity(invoiceDTO.getProductLineQuantity());
         invoiceVO.setProductLineQuantityRate(invoiceDTO.getProductLineQuantityRate());
         invoiceVO.setProductLineQuantityAmount(invoiceDTO.getProductLineQuantityAmount());
-        invoiceVO.setOrgId(invoiceDTO.getOrgId());		
+        invoiceVO.setOrgId(invoiceDTO.getOrgId());
+        
+        String base64Image = invoiceDTO.getLogo();
+        if (base64Image != null && base64Image.startsWith("data:image/")) {
+            base64Image = base64Image.substring(base64Image.indexOf(",") + 1);
+            byte[] imageBytes = Base64.getDecoder().decode(base64Image);
+            invoiceVO.setLogo(imageBytes);
+        }
 	}
 
 	@Override
