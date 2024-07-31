@@ -3638,10 +3638,12 @@ public class MasterServiceImpl implements MasterService {
 		}
 		else
 		{
-			invoiceVO=invoiceRepo.findById(invoiceDTO.getId()).orElse(null);
-			List<InvoiceProductLinesVO>invoiceProductLinesVO= invoiceProductLinesRepo.findByInvoiceVO(invoiceVO);
-	        invoiceProductLinesRepo.deleteAll(invoiceProductLinesVO);
+			
+			invoiceVO=invoiceRepo.findById(invoiceDTO.getId()).get();
+			List<InvoiceProductLinesVO>invoiceProductLinesVO2= invoiceProductLinesRepo.findByInvoiceVO(invoiceVO);
+	        invoiceProductLinesRepo.deleteAll(invoiceProductLinesVO2);
 	        
+	        List<InvoiceProductLinesVO>invoiceProductLinesVO= new ArrayList<>();
 	        if(invoiceDTO.getProductLines()!=null)
 			{
 				for(InvoiceProductLinesDTO invoiceProductLinesDTO : invoiceDTO.getProductLines())
@@ -3657,7 +3659,7 @@ public class MasterServiceImpl implements MasterService {
 			}
 	        invoiceVO.setModifiedeBy(invoiceDTO.getCreatedBy());
 	        invoiceVO.setProductLines(invoiceProductLinesVO);
-			mapInvoiceDTOToInvoiceVO(invoiceDTO,invoiceVO);
+	        mapInvoiceDTOToInvoiceVO(invoiceDTO,invoiceVO);
 	        message = "Invoice Updated successfully";
 			
 		}
