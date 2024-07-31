@@ -79,6 +79,23 @@ public class InvoiceVO {
     private String productLineQuantityRate;
 	@Column(name = "productlinequantityamount")
     private String productLineQuantityAmount;
+	@Column(name = "noteslabel")
+    private String notesLabel;
+	@Column(name = "notes",length = 1000)
+    private String notes;
+	@Column(name = "taxlabel")
+    private String taxLabel;
+	@Column(name = "taxlabel1")
+    private String taxLabel1;
+	@Column(name = "term",length = 1000)
+    private String term;
+	@Column(name = "termlabel")
+    private String termLabel;
+	@Column(name = "totallabel")
+    private String totalLabel;
+	@Column(name = "subtotallabel")
+    private String subTotalLabel;
+	
 	
 	@Column(name = "orgid")
 	private Long orgId;
