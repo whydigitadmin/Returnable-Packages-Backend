@@ -53,6 +53,7 @@ import com.whydigit.efit.dto.ProofOfDeliveryDTO;
 import com.whydigit.efit.dto.ResponseDTO;
 import com.whydigit.efit.dto.ServiceDTO;
 import com.whydigit.efit.dto.StockBranchDTO;
+import com.whydigit.efit.dto.TaxInvoiceDTO;
 import com.whydigit.efit.dto.TermsAndConditionsDTO;
 import com.whydigit.efit.dto.UnitDTO;
 import com.whydigit.efit.dto.VendorDTO;
@@ -79,6 +80,7 @@ import com.whydigit.efit.entity.PodVO;
 import com.whydigit.efit.entity.ProofOfDeliveryVO;
 import com.whydigit.efit.entity.ServiceVO;
 import com.whydigit.efit.entity.StockBranchVO;
+import com.whydigit.efit.entity.TaxInvoiceVO;
 import com.whydigit.efit.entity.TermsAndConditionsVO;
 import com.whydigit.efit.entity.UnitVO;
 import com.whydigit.efit.entity.VendorAddressVO;
@@ -4157,4 +4159,80 @@ public class MasterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 	
+	
+	
+	// Tax Invoice
+	
+	@PutMapping("/createUpdateTaxInvoice")
+	public ResponseEntity<ResponseDTO> createUpdateTaxInvocie(@RequestBody TaxInvoiceDTO taxInvoiceDTO) {
+	    String methodName = "createUpdateTaxInvocie()";
+	    LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+	    String errorMsg = null;
+	    Map<String, Object> responseObjectsMap = new HashMap<>();
+	    ResponseDTO responseDTO = null;
+	    try {
+	        Map<String, Object> taxInvoiceVO = masterService.createUpdateTaxInvoice(taxInvoiceDTO);
+	        responseObjectsMap.put(CommonConstant.STRING_MESSAGE, taxInvoiceVO.get("message"));
+	        responseObjectsMap.put("taxInvoiceVO", taxInvoiceVO.get("taxInvoiceVO"));
+	        responseDTO = createServiceResponse(responseObjectsMap);
+	    } catch (Exception e) {
+	        errorMsg = e.getMessage();
+	        LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+	        responseDTO = createServiceResponseError(responseObjectsMap, errorMsg, errorMsg);
+	    }
+	    LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+	    return ResponseEntity.ok().body(responseDTO);
+	}
+	
+	@GetMapping("/getAllTaxInvoiceByOrgId")
+	public ResponseEntity<ResponseDTO> getAllTaxInvoiceByOrgId(@RequestParam(required = true) Long orgId) {
+		String methodName = "getAllTaxInvoiceByOrgId()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<TaxInvoiceVO> taxInvoiceVO  = new ArrayList<>();
+		try {
+			taxInvoiceVO = masterService.getAllTaxInvoice(orgId);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Tax Invoice Information get successfully");
+			responseObjectsMap.put("taxInvoiceVO", taxInvoiceVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "Tax Invoice Information receive failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+	
+	@GetMapping("/getTaxInvoiceById")
+	public ResponseEntity<ResponseDTO> getTaxInvoiceById(@RequestParam(required = true) Long id) {
+		String methodName = "getTaxInvoiceById()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		TaxInvoiceVO taxInvoiceVO  = new TaxInvoiceVO();
+		try {
+			taxInvoiceVO = masterService.getTaxInvoiceById(id);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "TaxInvoice Information Get Successfully");
+			responseObjectsMap.put("taxInvoiceVO", taxInvoiceVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "TaxInvoice Information Received Failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
 }
