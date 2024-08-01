@@ -88,6 +88,9 @@ import com.whydigit.efit.dto.PodDTO;
 import com.whydigit.efit.dto.ProofOfDeliveryDTO;
 import com.whydigit.efit.dto.ServiceDTO;
 import com.whydigit.efit.dto.StockBranchDTO;
+import com.whydigit.efit.dto.TaxInvoiceDTO;
+import com.whydigit.efit.dto.TaxInvoiceKitLineDTO;
+import com.whydigit.efit.dto.TaxInvoiceProductLineDTO;
 import com.whydigit.efit.dto.TermsAndConditionsDTO;
 import com.whydigit.efit.dto.UnitDTO;
 import com.whydigit.efit.dto.VendorAddressDTO;
@@ -132,6 +135,9 @@ import com.whydigit.efit.entity.PodVO;
 import com.whydigit.efit.entity.ProofOfDeliveryVO;
 import com.whydigit.efit.entity.ServiceVO;
 import com.whydigit.efit.entity.StockBranchVO;
+import com.whydigit.efit.entity.TaxInvoiceKitLineVO;
+import com.whydigit.efit.entity.TaxInvoiceProductLineVO;
+import com.whydigit.efit.entity.TaxInvoiceVO;
 import com.whydigit.efit.entity.TermsAndConditionsVO;
 import com.whydigit.efit.entity.UnitVO;
 import com.whydigit.efit.entity.VendorAddressVO;
@@ -177,6 +183,9 @@ import com.whydigit.efit.repo.PodRepo;
 import com.whydigit.efit.repo.ProofOfDeliveryRepo;
 import com.whydigit.efit.repo.ServiceRepo;
 import com.whydigit.efit.repo.StockBranchRepo;
+import com.whydigit.efit.repo.TaxInvoiceKitLineRepo;
+import com.whydigit.efit.repo.TaxInvoiceProductLineRepo;
+import com.whydigit.efit.repo.TaxInvoiceRepo;
 import com.whydigit.efit.repo.TermsAndConditionsRepo;
 import com.whydigit.efit.repo.TransportPickupRepo;
 import com.whydigit.efit.repo.UnitRepo;
@@ -199,8 +208,19 @@ public class MasterServiceImpl implements MasterService {
 
 	@Autowired
 	AssetRepo assetRepo;
+	
 	@Autowired
 	AssetCategoryRepo assetCategoryRepo;
+	
+	@Autowired
+	TaxInvoiceRepo taxInvoiceRepo;
+	
+	@Autowired
+	TaxInvoiceProductLineRepo taxInvoiceProductLineRepo;
+	
+	@Autowired
+	TaxInvoiceKitLineRepo taxInvoiceKitLineRepo;
+	
 	@Autowired
 	CustomersRepo customersRepo;
 	
@@ -3731,4 +3751,179 @@ public class MasterServiceImpl implements MasterService {
 		return invoiceRepo.findById(id).get();
 		}
 
+	@Override
+	public Map<String, Object> createUpdateTaxInvoice(TaxInvoiceDTO taxInvoiceDTO) throws ApplicationException {
+	    TaxInvoiceVO taxInvoiceVO = new TaxInvoiceVO();
+	    String message;
+
+	    if (ObjectUtils.isEmpty(taxInvoiceDTO.getId())) {
+	        List<TaxInvoiceProductLineVO> taxInvoiceProductLineVOs = new ArrayList<>();
+	        List<TaxInvoiceKitLineVO> taxInvoiceKitLineVOs = new ArrayList<>();
+
+	        if (taxInvoiceDTO.getProductLines() != null) {
+	            for (TaxInvoiceProductLineDTO productLineDTO : taxInvoiceDTO.getProductLines()) {
+	                TaxInvoiceProductLineVO productLineVO = new TaxInvoiceProductLineVO();
+	                productLineVO.setDescription(productLineDTO.getDescription());
+	                productLineVO.setQuantity(productLineDTO.getQuantity());
+	                productLineVO.setRate(productLineDTO.getRate());
+	                productLineVO.setAmount(productLineDTO.getAmount());
+	                productLineVO.setTaxInvoiceVO(taxInvoiceVO);
+	                taxInvoiceProductLineVOs.add(productLineVO);
+	            }
+	        }
+
+	        if (taxInvoiceDTO.getKitLines() != null) {
+	            for (TaxInvoiceKitLineDTO kitLineDTO : taxInvoiceDTO.getKitLines()) {
+	                TaxInvoiceKitLineVO kitLineVO = new TaxInvoiceKitLineVO();
+	                kitLineVO.setDate(kitLineDTO.getDate());
+	                kitLineVO.setManifestNo(kitLineDTO.getManifestNo());
+	                kitLineVO.setEmitter(kitLineDTO.getEmitter());
+	                kitLineVO.setLocation(kitLineDTO.getLocation());
+	                kitLineVO.setKitNo(kitLineDTO.getKitNo());
+	                kitLineVO.setKitQty(kitLineDTO.getKitQty());
+	                kitLineVO.setTaxInvoiceVO(taxInvoiceVO);
+	                taxInvoiceKitLineVOs.add(kitLineVO);
+	            }
+	        }
+
+	        taxInvoiceVO.setProductLines(taxInvoiceProductLineVOs);
+	        taxInvoiceVO.setKitLines(taxInvoiceKitLineVOs);
+	        taxInvoiceVO.setCreatedBy(taxInvoiceDTO.getCreatedBy());
+	        taxInvoiceVO.setModifiedBy(taxInvoiceDTO.getCreatedBy());
+
+	        String base64Image = taxInvoiceDTO.getLogo();
+	        if (base64Image != null && base64Image.startsWith("data:image/")) {
+	            base64Image = base64Image.substring(base64Image.indexOf(",") + 1);
+	            byte[] imageBytes = Base64.getDecoder().decode(base64Image);
+	            taxInvoiceVO.setLogo(imageBytes);
+	        }
+
+	        mapTaxInvoiceDTOToTaxInvoiceVO(taxInvoiceDTO, taxInvoiceVO);
+	        message = "Tax Invoice Created successfully";
+	    } else {
+	        taxInvoiceVO = taxInvoiceRepo.findById(taxInvoiceDTO.getId()).get();
+	       
+	        List<TaxInvoiceProductLineVO> existingProductLines = taxInvoiceProductLineRepo.findByTaxInvoiceVO(taxInvoiceVO);
+	        taxInvoiceProductLineRepo.deleteAll(existingProductLines);
+	        
+	        List<TaxInvoiceKitLineVO> existingKitLines = taxInvoiceKitLineRepo.findByTaxInvoiceVO(taxInvoiceVO);
+	        taxInvoiceKitLineRepo.deleteAll(existingKitLines);
+	        
+	        List<TaxInvoiceProductLineVO> taxInvoiceProductLineVOs = new ArrayList<>();
+	        List<TaxInvoiceKitLineVO> taxInvoiceKitLineVOs = new ArrayList<>();
+
+	        if (taxInvoiceDTO.getProductLines() != null) {
+	            for (TaxInvoiceProductLineDTO productLineDTO : taxInvoiceDTO.getProductLines()) {
+	                TaxInvoiceProductLineVO productLineVO = new TaxInvoiceProductLineVO();
+	                productLineVO.setDescription(productLineDTO.getDescription());
+	                productLineVO.setQuantity(productLineDTO.getQuantity());
+	                productLineVO.setRate(productLineDTO.getRate());
+	                productLineVO.setAmount(productLineDTO.getAmount());
+	                productLineVO.setTaxInvoiceVO(taxInvoiceVO);
+	                taxInvoiceProductLineVOs.add(productLineVO);
+	            }
+	        }
+
+	        if (taxInvoiceDTO.getKitLines() != null) {
+	            for (TaxInvoiceKitLineDTO kitLineDTO : taxInvoiceDTO.getKitLines()) {
+	                TaxInvoiceKitLineVO kitLineVO = new TaxInvoiceKitLineVO();
+	                kitLineVO.setDate(kitLineDTO.getDate());
+	                kitLineVO.setManifestNo(kitLineDTO.getManifestNo());
+	                kitLineVO.setEmitter(kitLineDTO.getEmitter());
+	                kitLineVO.setLocation(kitLineDTO.getLocation());
+	                kitLineVO.setKitNo(kitLineDTO.getKitNo());
+	                kitLineVO.setKitQty(kitLineDTO.getKitQty());
+	                kitLineVO.setTaxInvoiceVO(taxInvoiceVO);
+	                taxInvoiceKitLineVOs.add(kitLineVO);
+	            }
+	        }
+
+	        taxInvoiceVO.setModifiedBy(taxInvoiceDTO.getCreatedBy());
+	        taxInvoiceVO.setProductLines(taxInvoiceProductLineVOs);
+	        taxInvoiceVO.setKitLines(taxInvoiceKitLineVOs);
+	        mapTaxInvoiceDTOToTaxInvoiceVO(taxInvoiceDTO, taxInvoiceVO);
+
+	        String base64Image = taxInvoiceDTO.getLogo();
+	        if (base64Image != null && base64Image.startsWith("data:image/")) {
+	            base64Image = base64Image.substring(base64Image.indexOf(",") + 1);
+	            byte[] imageBytes = Base64.getDecoder().decode(base64Image);
+	            taxInvoiceVO.setLogo(imageBytes);
+	        }
+
+	        message = "Tax Invoice Updated successfully";
+	    }
+
+	    taxInvoiceRepo.save(taxInvoiceVO);
+	    Map<String, Object> response = new HashMap<>();
+	    response.put("taxInvoiceVO", taxInvoiceVO);
+	    response.put("message", message);
+	    return response;
+	}
+
+	private void mapTaxInvoiceDTOToTaxInvoiceVO(TaxInvoiceDTO taxInvoiceDTO, TaxInvoiceVO taxInvoiceVO) {
+	    taxInvoiceVO.setLogoWidth(taxInvoiceDTO.getLogoWidth());
+	    taxInvoiceVO.setTitle(taxInvoiceDTO.getTitle());
+	    taxInvoiceVO.setCompanyName(taxInvoiceDTO.getCompanyName());
+	    taxInvoiceVO.setName(taxInvoiceDTO.getName());
+	    taxInvoiceVO.setCompanyAddress(taxInvoiceDTO.getCompanyAddress());
+	    taxInvoiceVO.setCompanyAddress2(taxInvoiceDTO.getCompanyAddress2());
+	    taxInvoiceVO.setCompanyCountry(taxInvoiceDTO.getCompanyCountry());
+	    taxInvoiceVO.setBillTo(taxInvoiceDTO.getBillTo());
+	    taxInvoiceVO.setClientName(taxInvoiceDTO.getClientName());
+	    taxInvoiceVO.setClientAddress(taxInvoiceDTO.getClientAddress());
+	    taxInvoiceVO.setClientAddress2(taxInvoiceDTO.getClientAddress2());
+	    taxInvoiceVO.setClientCountry(taxInvoiceDTO.getClientCountry());
+	    taxInvoiceVO.setShipTo(taxInvoiceDTO.getShipTo());
+	    taxInvoiceVO.setSclientName(taxInvoiceDTO.getSclientName());
+	    taxInvoiceVO.setSclientAddress(taxInvoiceDTO.getSclientAddress());
+	    taxInvoiceVO.setSclientAddress2(taxInvoiceDTO.getSclientAddress2());
+	    taxInvoiceVO.setSclientCountry(taxInvoiceDTO.getSclientCountry());
+	    taxInvoiceVO.setInvoiceTitleLabel(taxInvoiceDTO.getInvoiceTitleLabel());
+	    taxInvoiceVO.setInvoiceTitle(taxInvoiceDTO.getInvoiceTitle());
+	    taxInvoiceVO.setInvoiceDateLabel(taxInvoiceDTO.getInvoiceDateLabel());
+	    taxInvoiceVO.setInvoiceDate(taxInvoiceDTO.getInvoiceDate());
+	    taxInvoiceVO.setInvoiceDueDateLabel(taxInvoiceDTO.getInvoiceDueDateLabel());
+	    taxInvoiceVO.setInvoiceDueDate(taxInvoiceDTO.getInvoiceDueDate());
+	    taxInvoiceVO.setProductLineDescription(taxInvoiceDTO.getProductLineDescription());
+	    taxInvoiceVO.setProductLineQuantity(taxInvoiceDTO.getProductLineQuantity());
+	    taxInvoiceVO.setProductLineQuantityRate(taxInvoiceDTO.getProductLineQuantityRate());
+	    taxInvoiceVO.setProductLineQuantityAmount(taxInvoiceDTO.getProductLineQuantityAmount());
+	    taxInvoiceVO.setKitLineDate(taxInvoiceDTO.getKitLineDate());
+	    taxInvoiceVO.setKitLineManifestNo(taxInvoiceDTO.getKitLineManifestNo());
+	    taxInvoiceVO.setKitLineEmitter(taxInvoiceDTO.getKitLineEmitter());
+	    taxInvoiceVO.setKitLineLocation(taxInvoiceDTO.getKitLineLocation());
+	    taxInvoiceVO.setKitLineKitNo(taxInvoiceDTO.getKitLineKitNo());
+	    taxInvoiceVO.setKitLineKitQty(taxInvoiceDTO.getKitLineKitQty());
+	    taxInvoiceVO.setSubTotalLabel(taxInvoiceDTO.getSubTotalLabel());
+	    taxInvoiceVO.setTaxLabel(taxInvoiceDTO.getTaxLabel());
+	    taxInvoiceVO.setTaxLabel1(taxInvoiceDTO.getTaxLabel1());
+	    taxInvoiceVO.setTotalLabel(taxInvoiceDTO.getTotalLabel());
+	    taxInvoiceVO.setCurrency(taxInvoiceDTO.getCurrency());
+	    taxInvoiceVO.setNotesLabel(taxInvoiceDTO.getNotesLabel());
+	    taxInvoiceVO.setNotes(taxInvoiceDTO.getNotes());
+	    taxInvoiceVO.setTermLabel(taxInvoiceDTO.getTermLabel());
+	    taxInvoiceVO.setTerm(taxInvoiceDTO.getTerm());
+	    taxInvoiceVO.setPayTo(taxInvoiceDTO.getPayTo());
+	    taxInvoiceVO.setBankName(taxInvoiceDTO.getBankName());
+	    taxInvoiceVO.setAccountName(taxInvoiceDTO.getAccountName());
+	    taxInvoiceVO.setAccountNo(taxInvoiceDTO.getAccountNo());
+	    taxInvoiceVO.setIFSC(taxInvoiceDTO.getIFSC());
+	    taxInvoiceVO.setPayToLabel(taxInvoiceDTO.getPayToLabel());
+	    taxInvoiceVO.setBankNameLabel(taxInvoiceDTO.getBankNameLabel());
+	    taxInvoiceVO.setAccountNameLabel(taxInvoiceDTO.getAccountNameLabel());
+	    taxInvoiceVO.setAccountNoLabel(taxInvoiceDTO.getAccountNoLabel());
+	    taxInvoiceVO.setIFSCLabel(taxInvoiceDTO.getIFSCLabel());
+	}
+	
+	@Override
+	public List<TaxInvoiceVO> getAllTaxInvoice(Long orgId) {
+		
+		return taxInvoiceRepo.findAllByOrgId(orgId);
+	}
+
+	@Override
+	public TaxInvoiceVO getTaxInvoiceById(Long id) {
+		// TODO Auto-generated method stub
+		return taxInvoiceRepo.findById(id).get();
+		}
 }
