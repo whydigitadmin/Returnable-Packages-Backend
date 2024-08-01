@@ -30,6 +30,7 @@ import com.whydigit.efit.dto.TransportPickupDetailsDTO;
 import com.whydigit.efit.entity.AssetStockDetailsVO;
 import com.whydigit.efit.entity.BinOutwardDetailsVO;
 import com.whydigit.efit.entity.BinOutwardVO;
+import com.whydigit.efit.entity.DeclarationAndNotesVO;
 import com.whydigit.efit.entity.DispatchVO;
 import com.whydigit.efit.entity.FlowVO;
 import com.whydigit.efit.entity.GathereingEmptyDetailsVO;
@@ -55,6 +56,7 @@ import com.whydigit.efit.repo.FlowRepo;
 import com.whydigit.efit.repo.GatheringEmptyRepo;
 import com.whydigit.efit.repo.IssueManifestProviderDetailsRepo;
 import com.whydigit.efit.repo.IssueManifestProviderRepo;
+import com.whydigit.efit.repo.DeclarationAndNotesRepo;
 import com.whydigit.efit.repo.OemBinInwardDetailsRepo;
 import com.whydigit.efit.repo.OemBinInwardRepo;
 import com.whydigit.efit.repo.OemBinOutwardDetailsRepo;
@@ -119,6 +121,9 @@ public class OemServiceImpl implements OemService {
 	
 	@Autowired
 	RetrievalManifestProviderDetailsRepo retrievalManifestProviderDetailsRepo;
+	
+	@Autowired
+	DeclarationAndNotesRepo declarationAndNotesRepo;
 
 	@Override
 	public OemBinInwardVO createOemBinInward(OemBinInwardDTO oemBinInwardDTO) {
@@ -860,6 +865,7 @@ public class OemServiceImpl implements OemService {
 
 	private IssueManifestProviderVO getIssueManifestProviderVOFromIssueManifestProviderDTO(
 			IssueManifestProviderVO issueManifestProviderVO, IssueManifestProviderDTO issueManifestProviderDTO) {
+		
 		issueManifestProviderVO.setTransactionNo(issueManifestProviderDTO.getTransactionNo());
 		issueManifestProviderVO.setTransactionDate(issueManifestProviderDTO.getTransactionDate());
 		issueManifestProviderVO.setDispatchDate(issueManifestProviderDTO.getDispatchDate());
@@ -872,7 +878,7 @@ public class OemServiceImpl implements OemService {
 		issueManifestProviderVO.setAmountInWords(issueManifestProviderDTO.getAmountInWords());
 		issueManifestProviderVO.setAmount(issueManifestProviderDTO.getAmount());
 		issueManifestProviderVO.setTransporterName(issueManifestProviderDTO.getTransporterName());
-		issueManifestProviderVO.setVehicleeNo(issueManifestProviderDTO.getVechileNo());
+		issueManifestProviderVO.setVehicleNo(issueManifestProviderDTO.getVehicleNo());
 		issueManifestProviderVO.setDriverPhoneNo(issueManifestProviderDTO.getDriverPhoneNo());
 		issueManifestProviderVO.setActive(issueManifestProviderDTO.isActive());
 		issueManifestProviderVO.setCancel(issueManifestProviderDTO.isCancel());
@@ -1006,6 +1012,27 @@ public class OemServiceImpl implements OemService {
 	@Override
 	public Optional<RetrievalManifestProviderVO> getRetrievalManifestProviderById(Long id) {
 		return retrievalManifestProviderRepo.findById(id);
+	}
+
+	@Override
+	public DeclarationAndNotesVO createDeclarationAndNotes(DeclarationAndNotesVO declarationAndNotesVO) {
+		declarationAndNotesVO=new DeclarationAndNotesVO();
+		StringBuilder builder=new StringBuilder();
+		builder.append("The packaging products given on hire shall always remain the property of SCM AI-PACKS Private Limited and shall not be used for the purpose otherwise agreed upon. ");
+		builder.append("same shall be returned at the address notified by SCM AI-PACKS Private Limited.");
+		String builder1=builder.toString().replace(",", " ");
+		declarationAndNotesVO.setDeclaration(builder1.toString());
+		declarationAndNotesVO.setNote1("1. The goods listed in the above manifest are used empty packaging issued to customer on a daily hire basis. The service is packaging on.".replace(","," "));
+		declarationAndNotesVO.setNote1Bold("rental model and not sale to customer.".replace(","," "));
+		declarationAndNotesVO.setNote2("2. No E-Way Bill is required for Empty Cargo Containers. Refer, Rule 14 of Central Goods and Services Tax (Second Amendment) Rules, 2018.".replace(","," "));
+		
+		return declarationAndNotesRepo.save(declarationAndNotesVO);
+	}
+
+	@Override
+	public List<DeclarationAndNotesVO> getAllDeclarationAndNotes() {
+		
+		return declarationAndNotesRepo.findAll();
 	}
 
 }

@@ -14,6 +14,7 @@ import com.whydigit.efit.dto.OemBinOutwardDTO;
 import com.whydigit.efit.dto.RetreivalDTO;
 import com.whydigit.efit.dto.RetrievalManifestProviderDTO;
 import com.whydigit.efit.dto.TransportPickupDTO;
+import com.whydigit.efit.entity.DeclarationAndNotesVO;
 import com.whydigit.efit.entity.GatheringEmptyVO;
 import com.whydigit.efit.entity.IssueManifestProviderVO;
 import com.whydigit.efit.entity.OemBinInwardVO;
@@ -104,4 +105,9 @@ public interface OemService {
 	
 	Optional<RetrievalManifestProviderVO> getRetrievalManifestProviderById(Long id);
 	
+	//DeclarationAndNotes
+
+	DeclarationAndNotesVO createDeclarationAndNotes(DeclarationAndNotesVO declarationAndNotesVO);
+
+	List<DeclarationAndNotesVO>  getAllDeclarationAndNotes();
 }

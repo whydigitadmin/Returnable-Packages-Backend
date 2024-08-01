@@ -28,6 +28,7 @@ import com.whydigit.efit.dto.ResponseDTO;
 import com.whydigit.efit.dto.RetreivalDTO;
 import com.whydigit.efit.dto.RetrievalManifestProviderDTO;
 import com.whydigit.efit.dto.TransportPickupDTO;
+import com.whydigit.efit.entity.DeclarationAndNotesVO;
 import com.whydigit.efit.entity.GatheringEmptyVO;
 import com.whydigit.efit.entity.IssueManifestProviderVO;
 import com.whydigit.efit.entity.OemBinInwardVO;
@@ -987,5 +988,58 @@ public class OemController extends BaseController {
 
 	}
 
+	//DECLARATION AND NOTES
+	
+	@PostMapping("/createDeclarationAndNotes")
+	public ResponseEntity<ResponseDTO> createDeclarationAndNotes(@RequestBody DeclarationAndNotesVO declarationAndNotesVO) {
+		String methodName = "createDeclarationAndNotes()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		DeclarationAndNotesVO declarationAndNotesVO1 = new DeclarationAndNotesVO();
+		try {
+			declarationAndNotesVO1 = oemService.createDeclarationAndNotes(declarationAndNotesVO);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(CommonConstant.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "DeclarationAndNotes Created Successfully");
+			responseObjectsMap.put("declarationAndNotesVO1", declarationAndNotesVO1);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "Oem Bin Inward Failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
 
+	@GetMapping("/getAllDeclarationAndNotes")
+	public ResponseEntity<ResponseDTO> getAllDeclarationAndNotes() {
+		String methodName = "getAllDeclarationAndNotesById()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<DeclarationAndNotesVO> declarationAndNotesVO =new ArrayList<DeclarationAndNotesVO>();
+		try {
+			declarationAndNotesVO = oemService.getAllDeclarationAndNotes();
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "DeclarationAndNotes information get successfully By Id");
+			responseObjectsMap.put("declarationAndNotesVO", declarationAndNotesVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "DeclarationAndNotes information receive failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+
+	}
+	
 }

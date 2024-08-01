@@ -3,8 +3,6 @@ package com.whydigit.efit.dto;
 import java.time.LocalDate;
 import java.util.List;
 
-import com.whydigit.efit.entity.IssueManifestProviderDetailsVO;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -40,7 +38,7 @@ public class IssueManifestProviderDTO {
 
 	private String transporterName;
 
-	private String vechileNo;
+	private String vehicleNo;
 
 	private String driverPhoneNo;
 
@@ -53,5 +51,6 @@ public class IssueManifestProviderDTO {
 	private Long orgId;
 	
 	private List<IssueManifestProviderDetailsDTO> issueManifestProviderDetailsDTO;
+	
 
 }
