@@ -3,6 +3,7 @@ package com.whydigit.efit.entity;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -11,10 +12,13 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.whydigit.efit.dto.CreatedUpdatedDate;
@@ -30,8 +34,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class IssueManifestProviderVO {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "issuemanifestprovidergen")
-	@SequenceGenerator(name = "issuemanifestprovidergen", sequenceName = "issuemanifestproviderseq", initialValue = 1000000001, allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "mimgen")
+	@SequenceGenerator(name = "mimgen", sequenceName = "mimseq", initialValue = 1000000001, allocationSize = 1)
 	@Column(name = "mimid")
 	private Long id;
 	@Column(name = "orgid")
@@ -60,14 +64,14 @@ public class IssueManifestProviderVO {
 	private Long amount;
 	@Column(name = "transportername")
 	private String transporterName;
-	@Column(name = "vehicleeno")
-	private String vehicleeNo;
+	@Column(name = "vehicleno")
+	private String vehicleNo;
 	@Column(name = "driverphoneno")
 	private String driverPhoneNo;
-	@Column(name = "declaration")
-	private String declaration;
-	@Column(name = "notes")
-	private String notes;
+//	@Column(name = "declaration")
+//	private String declaration;
+//	@Column(name = "notes")
+//	private String notes;
 	@Column(name = "active")
 	private boolean active;
 	@Column(name = "cancel")
@@ -76,6 +80,14 @@ public class IssueManifestProviderVO {
 	private String createdBy;
 	@Column(name = "modifiedby")
 	private String updatedBy;
+	@Column(name ="declaration",length = 1000)
+	private String declaration;
+	@Column(name ="note1",length = 1000)
+	private String note1;
+	@Column(name ="note1bold",length = 1000)
+	private String note1Bold;
+	@Column(name ="note2",length = 1000)
+	private String note2;
 
 	@JsonGetter("active")
 	public String getActive() {
