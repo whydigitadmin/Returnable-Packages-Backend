@@ -14,6 +14,7 @@ public class DispatchDTO {
 	
 	private Long id;
 	private String docId;
+	private LocalDate docDate;
 	private Long flowId;
 	private String invoiceNo;
 	private LocalDate invoiceDate;

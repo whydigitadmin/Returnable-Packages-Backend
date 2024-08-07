@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class TaxInvoiceKitLineDTO {
 	
 	private Long id;
-	private LocalDate date;
+	private String date;
     private String manifestNo;
     private String emitter;
     private String location;

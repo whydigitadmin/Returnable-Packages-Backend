@@ -1,5 +1,6 @@
 package com.whydigit.efit.dto;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -12,6 +13,7 @@ import lombok.NoArgsConstructor;
 public class GatheringEmptyDTO {
 	private String docId;
 	private Long orgId;
+	private LocalDate docDate;
 	private String stockBranch;
 	private String createdBy;
 	private String modifiedBy;

@@ -34,14 +34,14 @@ public class TaxInvoiceDTO {
 	private String invoiceTitleLabel;
 	private String invoiceTitle;
 	private String invoiceDateLabel;
-	private LocalDate invoiceDate;
+	private String invoiceDate;
 	private String invoiceDueDateLabel;
-	private LocalDate invoiceDueDate;
+	private String invoiceDueDate;
 	private String productLineDescription;
 	private String productLineQuantity;
 	private String productLineQuantityRate;
 	private String productLineQuantityAmount;
-	private LocalDate kitLineDate;
+	private String kitLineDate;
 	private String kitLineManifestNo;
 	private String kitLineEmitter;
 	private String kitLineLocation;
@@ -66,6 +66,17 @@ public class TaxInvoiceDTO {
 	private String accountNameLabel;
 	private String accountNoLabel;
 	private String IFSCLabel;
+	
+	private String invoiceNo;
+	private String invoiceNoLabel;
+	private String terms;
+	private String termsLabel;
+	private String dueDateLabel;
+	private String dueDate;
+	private String serviceMonthLabel;
+	private String serviceMonth;
+	private String placeSupplyLabel;
+	private String placeSupply;
 	private List<TaxInvoiceProductLineDTO> productLines;
     private List<TaxInvoiceKitLineDTO> kitLines;
 	private String createdBy;

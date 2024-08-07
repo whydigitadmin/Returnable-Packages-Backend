@@ -32,7 +32,7 @@ public class TaxInvoiceKitLineVO {
 	private Long id;
 	
 	@Column(name = "kitlinedate")
-	private LocalDate date;
+	private String date;
 	@Column(name = "manifestno")
     private String manifestNo;
 	@Column(name = "emitter")

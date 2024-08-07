@@ -42,7 +42,7 @@ public class IssueRequestVO {
 	@Column(name = "docid")
 	private String docId;
 	@Column(name = "docdate")
-	private LocalDate docDate = LocalDate.now();
+	private LocalDate docDate;
 	@Column(name = "orgid")
 	private long orgId;
 	@Column(name = "customerid")

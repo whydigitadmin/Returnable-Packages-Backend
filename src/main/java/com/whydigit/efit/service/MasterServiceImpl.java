@@ -3913,7 +3913,18 @@ public class MasterServiceImpl implements MasterService {
 	    taxInvoiceVO.setAccountNameLabel(taxInvoiceDTO.getAccountNameLabel());
 	    taxInvoiceVO.setAccountNoLabel(taxInvoiceDTO.getAccountNoLabel());
 	    taxInvoiceVO.setIFSCLabel(taxInvoiceDTO.getIFSCLabel());
-	}
+	    taxInvoiceVO.setOrgId(taxInvoiceDTO.getOrgId());
+	    taxInvoiceVO.setInvoiceNo(taxInvoiceDTO.getInvoiceNo());
+	    taxInvoiceVO.setInvoiceNoLabel(taxInvoiceDTO.getInvoiceNoLabel());
+	    taxInvoiceVO.setTerms(taxInvoiceDTO.getTerms());
+	    taxInvoiceVO.setTermsLabel(taxInvoiceDTO.getTermsLabel());
+	    taxInvoiceVO.setDueDateLabel(taxInvoiceDTO.getDueDateLabel());
+	    taxInvoiceVO.setDueDate(taxInvoiceDTO.getDueDate());
+	    taxInvoiceVO.setServiceMonthLabel(taxInvoiceDTO.getServiceMonthLabel());
+	    taxInvoiceVO.setServiceMonth(taxInvoiceDTO.getServiceMonth());
+	    taxInvoiceVO.setPlaceSupplyLabel(taxInvoiceDTO.getPlaceSupplyLabel());
+	    taxInvoiceVO.setPlaceSupply(taxInvoiceDTO.getPlaceSupply());
+	    }
 	
 	@Override
 	public List<TaxInvoiceVO> getAllTaxInvoice(Long orgId) {
@@ -3923,7 +3934,6 @@ public class MasterServiceImpl implements MasterService {
 
 	@Override
 	public TaxInvoiceVO getTaxInvoiceById(Long id) {
-		// TODO Auto-generated method stub
 		return taxInvoiceRepo.findById(id).get();
 		}
 }

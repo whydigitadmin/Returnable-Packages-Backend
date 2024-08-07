@@ -250,6 +250,7 @@ public class EmitterServiceImpl implements EmitterService {
 		issueRequestVO.setDemandDate(issueRequestDTO.getDemandDate());
 		issueRequestVO.setFlowTo(issueRequestDTO.getFlowTo());
 		issueRequestVO.setIssueStatus(0);
+		issueRequestVO.setDocDate(issueRequestDTO.getRequestDate());
 		issueRequestVO.setRemark(issueRequestDTO.getRemark());
 		issueRequestVO.setReqAddressId(issueRequestDTO.getReqAddressId());
 		issueRequestVO.setRequestedDate(currentDateTime);
@@ -1086,6 +1087,7 @@ public class EmitterServiceImpl implements EmitterService {
 
 		FlowVO flowVO = flowRepo.findById(dispatchDTO.getFlowId()).get();
 		dispatchVO.setFlowId(dispatchDTO.getFlowId());
+		dispatchVO.setDocDate(dispatchDTO.getDocDate());
 		dispatchVO.setFlow(flowVO.getFlowName());
 		dispatchVO.setInvoiceNo(dispatchDTO.getInvoiceNo());
 		dispatchVO.setInvoiceDate(dispatchDTO.getInvoiceDate());

@@ -1,6 +1,5 @@
 package com.whydigit.efit.entity;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -98,13 +97,13 @@ public class TaxInvoiceVO {
 	private String invoiceDateLabel;
 
 	@Column(name = "invoicedate")
-	private LocalDate invoiceDate;
+	private String invoiceDate;
 
 	@Column(name = "invoiceduedatelabel")
 	private String invoiceDueDateLabel;
 
 	@Column(name = "invoiceduedate")
-	private LocalDate invoiceDueDate;
+	private String invoiceDueDate;
 
 	@Column(name = "productlinedescription")
 	private String productLineDescription;
@@ -119,7 +118,7 @@ public class TaxInvoiceVO {
 	private String productLineQuantityAmount;
 
 	@Column(name = "kitlinedate")
-	private LocalDate kitLineDate;
+	private String kitLineDate;
 
 	@Column(name = "kitlinemanifestno")
 	private String kitLineManifestNo;
@@ -192,6 +191,27 @@ public class TaxInvoiceVO {
 
 	@Column(name = "ifscLabel")
 	private String IFSCLabel;
+	
+	@Column(name = "invoiceno")
+	private String invoiceNo;
+	@Column(name = "invoicenolabel")
+	private String invoiceNoLabel;
+	@Column(name = "terms")
+	private String terms;
+	@Column(name = "termslabel")
+	private String termsLabel;
+	@Column(name = "duedatelabel")
+	private String dueDateLabel;
+	@Column(name = "duedate")
+	private String dueDate;
+	@Column(name = "servicemonthlabel")
+	private String serviceMonthLabel;
+	@Column(name = "servicemonth")
+	private String serviceMonth;
+	@Column(name = "placesupplylabel")
+	private String placeSupplyLabel;
+	@Column(name = "placesupply")
+	private String placeSupply;
 	
 	@Column(name = "createdby")
 	private String createdBy;
