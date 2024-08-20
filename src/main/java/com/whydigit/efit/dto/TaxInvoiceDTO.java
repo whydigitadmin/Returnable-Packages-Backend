@@ -50,6 +50,7 @@ public class TaxInvoiceDTO {
 	private String subTotalLabel;
 	private String taxLabel;
 	private String taxLabel1;
+	private String taxLabel2;
 	private String totalLabel;
 	private String currency;
 	private String notesLabel;

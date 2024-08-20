@@ -7,4 +7,6 @@ import com.whydigit.efit.entity.RetrievalManifestProviderVO;
 @Repository
 public interface RetrievalManifestProviderRepo extends JpaRepository<RetrievalManifestProviderVO, Long>{
 
+	boolean existsByOrgIdAndTransactionNo(Long orgId, String transactionNo);
+
 }

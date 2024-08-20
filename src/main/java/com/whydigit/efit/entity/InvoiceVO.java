@@ -87,6 +87,8 @@ public class InvoiceVO {
     private String taxLabel;
 	@Column(name = "taxlabel1")
     private String taxLabel1;
+	@Column(name = "taxlabel2")
+    private String taxLabel2;
 	@Column(name = "term",length = 1000)
     private String term;
 	@Column(name = "termlabel")

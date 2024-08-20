@@ -3730,13 +3730,12 @@ public class MasterServiceImpl implements MasterService {
         invoiceVO.setNotes(invoiceDTO.getNotes());
         invoiceVO.setTaxLabel(invoiceDTO.getTaxLabel());
         invoiceVO.setTaxLabel1(invoiceDTO.getTaxLabel1());
+        invoiceVO.setTaxLabel2(invoiceDTO.getTaxLabel2());
         invoiceVO.setTerm(invoiceDTO.getTerm());
         invoiceVO.setTermLabel(invoiceDTO.getTermLabel());
         invoiceVO.setTotalLabel(invoiceDTO.getTotalLabel());
         invoiceVO.setSubTotalLabel(invoiceDTO.getSubTotalLabel());
-        invoiceVO.setOrgId(invoiceDTO.getOrgId());
-        
-        
+        invoiceVO.setOrgId(invoiceDTO.getOrgId());       
 	}
 
 	@Override
@@ -3897,6 +3896,7 @@ public class MasterServiceImpl implements MasterService {
 	    taxInvoiceVO.setSubTotalLabel(taxInvoiceDTO.getSubTotalLabel());
 	    taxInvoiceVO.setTaxLabel(taxInvoiceDTO.getTaxLabel());
 	    taxInvoiceVO.setTaxLabel1(taxInvoiceDTO.getTaxLabel1());
+	    taxInvoiceVO.setTaxLabel2(taxInvoiceDTO.getTaxLabel2());
 	    taxInvoiceVO.setTotalLabel(taxInvoiceDTO.getTotalLabel());
 	    taxInvoiceVO.setCurrency(taxInvoiceDTO.getCurrency());
 	    taxInvoiceVO.setNotesLabel(taxInvoiceDTO.getNotesLabel());

@@ -42,6 +42,7 @@ public class InvoiceDTO {
     private String notes;
     private String taxLabel;
     private String taxLabel1;
+    private String taxLabel2;
     private String term;
     private String termLabel;
     private String totalLabel;
