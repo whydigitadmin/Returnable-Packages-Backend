@@ -21,4 +21,6 @@ public class LoginFormDTO {
 	@NotBlank
 	@Size(min = 6, max = 100, message = "Password is required")
 	private String password;
+	
+	private String loginIp;
 }

@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class BinOutwardDTO {
 	private LocalDate docDate;
-	private String flow;
+	private Long flowid;
 	private String kitNo;
 	private int outwardKitQty;
 	private String createdBy;
@@ -22,10 +22,9 @@ public class BinOutwardDTO {
 	private String orgin;
 	private Long emitterId;
 	private String emitter;
+	private String partCode;
+	private String partName;
 
 	private List<BinOutwardDetailsDTO> binOutwardDetailsDTO;
 
-	
-
-	
 }

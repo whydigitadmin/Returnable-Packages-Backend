@@ -11,7 +11,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class OemBinOutwardDetailsDTO {
 	
+	private Long id;
 	private String asset;
 	private String assetCode;
-	private int qty;
+	private String category;
+	private int availqty;
+	private int outQty;
+
 }

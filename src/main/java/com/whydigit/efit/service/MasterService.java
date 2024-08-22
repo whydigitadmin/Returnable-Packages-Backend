@@ -13,13 +13,15 @@ import com.whydigit.efit.dto.AssetDTO;
 import com.whydigit.efit.dto.AssetInwardDTO;
 import com.whydigit.efit.dto.AssetTaggingDTO;
 import com.whydigit.efit.dto.AssetTypeDTO;
-import com.whydigit.efit.dto.BinInwardDTO;
+import com.whydigit.efit.dto.BinAllotmentDTO;
+import com.whydigit.efit.dto.BinRetrievalDTO;
 import com.whydigit.efit.dto.BranchDTO;
 import com.whydigit.efit.dto.CnoteDTO;
 import com.whydigit.efit.dto.CustomerAttachmentType;
 import com.whydigit.efit.dto.CustomersDTO;
 import com.whydigit.efit.dto.DmapDTO;
 import com.whydigit.efit.dto.FlowDTO;
+import com.whydigit.efit.dto.InvoiceDTO;
 import com.whydigit.efit.dto.KitDTO;
 import com.whydigit.efit.dto.KitResponseDTO;
 import com.whydigit.efit.dto.PoDTO;
@@ -27,7 +29,9 @@ import com.whydigit.efit.dto.PodDTO;
 import com.whydigit.efit.dto.ProofOfDeliveryDTO;
 import com.whydigit.efit.dto.ServiceDTO;
 import com.whydigit.efit.dto.StockBranchDTO;
+import com.whydigit.efit.dto.TaxInvoiceDTO;
 import com.whydigit.efit.dto.TermsAndConditionsDTO;
+import com.whydigit.efit.dto.UnitDTO;
 import com.whydigit.efit.dto.VendorDTO;
 import com.whydigit.efit.entity.AssetCategoryVO;
 import com.whydigit.efit.entity.AssetInwardVO;
@@ -36,12 +40,14 @@ import com.whydigit.efit.entity.AssetTypeVO;
 import com.whydigit.efit.entity.AssetVO;
 import com.whydigit.efit.entity.BinAllotmentNewVO;
 import com.whydigit.efit.entity.BinInwardVO;
+import com.whydigit.efit.entity.BinRetrievalVO;
 import com.whydigit.efit.entity.BranchVO;
 import com.whydigit.efit.entity.CnoteVO;
 import com.whydigit.efit.entity.CustomersAddressVO;
 import com.whydigit.efit.entity.CustomersVO;
 import com.whydigit.efit.entity.DmapVO;
 import com.whydigit.efit.entity.FlowVO;
+import com.whydigit.efit.entity.InvoiceVO;
 import com.whydigit.efit.entity.KitVO;
 import com.whydigit.efit.entity.ManufacturerProductVO;
 import com.whydigit.efit.entity.ManufacturerVO;
@@ -50,6 +56,7 @@ import com.whydigit.efit.entity.PodVO;
 import com.whydigit.efit.entity.ProofOfDeliveryVO;
 import com.whydigit.efit.entity.ServiceVO;
 import com.whydigit.efit.entity.StockBranchVO;
+import com.whydigit.efit.entity.TaxInvoiceVO;
 import com.whydigit.efit.entity.TermsAndConditionsVO;
 import com.whydigit.efit.entity.UnitVO;
 import com.whydigit.efit.entity.VendorAddressVO;
@@ -62,14 +69,12 @@ import com.whydigit.efit.exception.ApplicationException;
 public interface MasterService {
 
 	List<AssetVO> getAllAsset(Long orgId);
-	
+
 	List<AssetVO> getAllActiveAsset(Long orgId);
 
-	List<AssetVO> getAllAssetByCategory(Long orgId,String category);
-	
+	List<AssetVO> getAllAssetByCategory(Long orgId, String category);
+
 	Optional<AssetVO> getAssetById(Long id);
-	
-	
 
 	AssetVO createAsset(AssetVO assetVO) throws ApplicationException;
 
@@ -87,7 +92,7 @@ public interface MasterService {
 	AssetCategoryVO updateAssetCategory(AssetCategoryDTO assetGroupVO) throws ApplicationException;
 
 	// CUstomers
-	
+
 	List<CustomersVO> getAllActiveCustomers(Long orgId);
 
 	List<CustomersVO> getAllCustomers(Long orgId);
@@ -98,11 +103,9 @@ public interface MasterService {
 
 	CustomersVO updateCustomers(CustomersDTO customersDTO) throws ApplicationException;
 
-
 	void deleteCustomers(Long id);
 
 	void deleteCustomersBankDetails(Long id);
-
 
 	void deleteCustomersAddress(Long id);
 
@@ -111,11 +114,13 @@ public interface MasterService {
 	// FLOW
 
 	List<FlowVO> getAllFlow(Long orgId, Long emitterId);
-	
+
 	List<FlowVO> getAllActiveFlow(Long orgId, Long emitterId);
 
+	List<FlowVO> getAllReceiverActiveFlow(Long orgId, Long receiverId);
+
 	Set<Object[]> getKitDetailsByEmitter(Long emitterId, Long orgId);
-	
+
 	Optional<FlowVO> getFlowById(long id);
 
 	FlowVO createFlow(FlowDTO flowDTO) throws ApplicationException;
@@ -141,7 +146,7 @@ public interface MasterService {
 	List<AssetTypeVO> getAllAssetType(Long orgId);
 
 	AssetTypeVO createAssetType(AssetTypeVO assetCategoryVO);
-	
+
 	AssetTypeVO updateAssetType(AssetTypeDTO assetTypeVO) throws ApplicationException;
 
 //unit
@@ -152,15 +157,15 @@ public interface MasterService {
 
 	UnitVO createUnit(UnitVO unitVO) throws ApplicationException;
 
-	Optional<UnitVO> updateUnit(UnitVO unitVO) throws ApplicationException;
+	UnitVO updateUnit(UnitDTO unitVO) throws ApplicationException;
 
 	void deleteUnit(Long id);
 
 	// Create Kit
 	List<KitResponseDTO> getAllKit(Long orgId);
-	
+
 	List<KitResponseDTO> getActiveAllKit(Long orgId);
-	
+
 	Optional<KitVO> getKitById(Long id);
 
 	Optional<KitVO> getKitByKitCode(String kitName);
@@ -182,7 +187,7 @@ public interface MasterService {
 
 	// Vendor
 	List<VendorVO> getAllVendor(Long orgId);
-	
+
 	List<VendorVO> getAllActiveVendor(Long orgId);
 
 	Optional<VendorVO> getVendorById(Long id);
@@ -228,7 +233,7 @@ public interface MasterService {
 	StockBranchVO updateStockBranch(StockBranchDTO stockBranchDTO) throws ApplicationException;
 
 	List<StockBranchVO> getAllStockBranchByOrgId(Long orgId);
-	
+
 	List<StockBranchVO> getAllActiveStockBranchByOrgId(Long orgId);
 
 	AssetInwardVO createAssetInward(AssetInwardDTO assetInwardDTO);
@@ -238,7 +243,7 @@ public interface MasterService {
 	AssetTaggingVO createTagging(AssetTaggingDTO assetTaggingDTO);
 
 	List<AssetTaggingVO> getAllAsetTaggingByOrgId(Long orgId);
-	
+
 	AssetTaggingVO getTaggingById(Long id);
 
 	Set<Object[]> getTagCodeByAsset(String assetcode, String asset, int endno, String category);
@@ -281,11 +286,11 @@ public interface MasterService {
 
 	// Bin Allotmentdetails
 
+	BinAllotmentNewVO createBinAllotment(BinAllotmentDTO binAllotmentDTO);
+
 	Set<Object[]> getAllotmentNoByEmitterIdAndOrgId(Long orgId, Long emitterId);
 
 	Set<Object[]> getAllotmentDetailsByAllotmentNoAndOrgId(Long orgId, String docid);
-
-	BinInwardVO updateCreateBinInward(BinInwardDTO binInwardDTO) throws ApplicationException;
 
 	Set<Object[]> getAlllBinInwardByEmitterAndOrgId(Long emitterid, Long orgId);
 
@@ -307,7 +312,7 @@ public interface MasterService {
 
 	// Bin allotment Issue manifest pdf
 
-	Set<Object[]> getBinAllotmentPdfHeaderDetails(String docid);
+	List<Map<String, String>> getBinAllotmentPdfHeaderDetails(String docid);
 
 	List<Object[]> getBinAllotmentPdfGridDetails(String docid);
 
@@ -320,55 +325,89 @@ public interface MasterService {
 	List<Object[]> getRandomAssetDetailsByKitCodeAndAllotQty(String kitCode, int qty, String stockbranch);
 
 	// Get Bin Allotment details
-	
-	List<BinAllotmentNewVO> getCustomizedAllotmentDetails(String kitCode, String flow, String emitter, LocalDate startAllotDate,
-			LocalDate endAllotDate);
-	
-	List<Object[]>availableAllAssetDetails(Long orgId);
+
+	List<BinAllotmentNewVO> getCustomizedAllotmentDetails(String kitCode, String flow, String emitter,
+			LocalDate startAllotDate, LocalDate endAllotDate);
+
+	List<Object[]> availableAllAssetDetails(Long orgId);
 
 	List<FlowVO> getFlowByKitCode(String kitcode);
 
-	List<Object[]> getAvailableKitQtyByEmitter(Long orgId, Long emitterId, String kitId, Long flowId);
+	List<Map<String, Object>> getAvailableKitQtyByEmitter(Long orgId, Long emitterId, String kitId, Long flowId);
 
-	Set<Object[]> getAssetDetailsByAssetForAssetInward(Long orgId, String stockBranch, String sku,int qty);
+	Set<Object[]> getAssetDetailsByAssetForAssetInward(Long orgId, String stockBranch, String sku, int qty);
 
 	Set<Object[]> getAvailAssetDetailsByBranch(Long orgId, String stockBranch, String category);
-	
-	
+
 	List<BranchVO> getAllBranch(Long orgId);
-	
+
 	List<BranchVO> getAllActiveBranch(Long orgId);
-	
+
 	Optional<BranchVO> getBranchById(Long id);
 
 	BranchVO createUpdateBranch(BranchDTO branchDTO) throws ApplicationException;
-	
+
 	void deleteBranch(Long id);
 
 	Set<Object[]> getEmitterAndReceiverByKitNo(String kitNo);
 
-	
+	Set<Object[]> getBranchLocationByFlow(Long orgId, Long flowId);
+
+	void ExcelUploadForAssetCategory(MultipartFile[] files, CustomerAttachmentType type, Long orgId, String createdBy)
+			throws ApplicationException;
+
+	int getTotalRows();
+
+	int getSuccessfulUploads();
+
+	void ExcelUploadForStockBranch(MultipartFile[] files, CustomerAttachmentType type, Long orgId, String createdBy)
+			throws ApplicationException;
+
+	List<Map<String, Object>> getPartNoAndPartName(Long flowId, String kitNo, Long emitterId);
+
+	Set<Object[]> getAvalkitqtyByWarehouse(String warehouse, String kitName);
+
+	void ExcelUploadForUnit(MultipartFile[] files, CustomerAttachmentType type, Long orgId, String createdBy)
+			throws ApplicationException;
+
+	// Bin retrieval
+	BinRetrievalVO createBinRetrieval(BinRetrievalDTO binRetrievalDTO);
+
+	List<Map<String, Object>> getPendingBinRetrievalTransportPickupDetails(Long orgId, Long userId);
+
+	List<Map<String, Object>> getTransportPickupDetailsByDocId(Long orgId, String pickupDocId);
+
+	String getDocIdByBinRetrieval();
+
+	List<BinRetrievalVO> getBinReterivalByOrgId(Long orgId);
+
+	List<BinRetrievalVO> getBinReterivalByDocId(String docId);
+
+	List<BinRetrievalVO> getAllBinReterival(Long id);
+
+	List<Map<String, Object>> getAvilQtyByEmitterBykitWise(Long orgId, Long userId);
+
+	List<String> getActiveAssetcategory(Long orgId,String assetCategory);
+
+	Map<String, List<VendorVO>> VendorsType(Long orgId);
+
+	List<String> getAllActiveAssetcategory(Long orgId);
 
 	
-
+	// Invoice
 	
-
+	Map<String, Object> createUpdateInvoice(InvoiceDTO invoiceDTO)throws ApplicationException;
 	
-
+	List<InvoiceVO> getAllInvoice(Long orgId);
 	
-
+	InvoiceVO getInvoiceById(Long id);
 	
-
-
+	// Tax Invoice
 	
-
+	Map<String, Object> createUpdateTaxInvoice(TaxInvoiceDTO taxInvoiceDTO)throws ApplicationException;
 	
-
-
+	List<TaxInvoiceVO> getAllTaxInvoice(Long orgId);
 	
-
-	
-
-	
+	TaxInvoiceVO getTaxInvoiceById(Long id);
 
 }

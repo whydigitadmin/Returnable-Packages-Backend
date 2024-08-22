@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -16,6 +17,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.whydigit.efit.dto.CreatedUpdatedDate;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -39,10 +41,8 @@ public class OemBinOutwardVO {
 	private String docId;
 	@Column(name = "docdate")
 	private LocalDate docDate;
-	@Column(name = "kit")
-	private String kit;
-	@Column(name = "outwardkitqty")
-	private int outwardKitQty;
+	@Column(name = "stockbranch")
+	private String stockBranch;
 	@Column(name = "createdby")
 	private String createdby;
 	@Column(name = "modifiedby")
@@ -57,16 +57,14 @@ public class OemBinOutwardVO {
 	private Long orgId;
 	@Column(name = "finyr")
 	private String finYr;
+	@Column(name = "receiverid")
+	private Long receiverId;
 	@Builder.Default
-	private String scode = "BNIN";
+	private String scode = "OEMBO";
 	@Builder.Default
-	private String pm = "M";
-	@Builder.Default
-	private String screen = "OEM BIN OUTWARD";
-	@Column(name = "sourceid")
-	private String sourceId;
-	@Column(name="outwarddocid")
-	private String outwardDocId;
+	private String screen = "Bin Outward";
+	
+	private String retreival;
 
 	@OneToMany(mappedBy = "oemBinOutwardVO", cascade = CascadeType.ALL)
 	@JsonManagedReference
@@ -87,4 +85,6 @@ public class OemBinOutwardVO {
 				: LocalDate.now().minusYears(1).format(DateTimeFormatter.ofPattern("yyyy"));
 		return fyFull;
 	}
+	@Embedded
+	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
 }

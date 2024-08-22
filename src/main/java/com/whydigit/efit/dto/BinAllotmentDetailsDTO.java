@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BinAllotmentDetailsDTO {
-	
+
 	private String tagCode;
 	private String rfId;
 	private String asset;

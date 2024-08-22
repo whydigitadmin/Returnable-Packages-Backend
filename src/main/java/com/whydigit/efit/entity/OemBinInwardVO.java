@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -16,6 +17,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.whydigit.efit.dto.CreatedUpdatedDate;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -39,18 +41,23 @@ public class OemBinInwardVO {
 	private String docId;
 	@Column(name = "docdate")
 	private LocalDate docDate;
-	@Column(name = "kitno")
-	private String kitNo;
-	@Column(name = "recievedkitqty")
-	private int recievedKitQty;
+	private String flow;
+	@Column(name = "flowid")
+	private Long flowId;
+	@Column(name = "dispatchdocid")
+	private String dispatchId;
+	@Column(name = "invoiceno")
+	private String invoiceNo;
+	@Column(name = "invoicedate")
+	private LocalDate invoiceDate;
+	@Column(name = "oeminwardno")
+	private String oemInwardNo;
+	@Column(name = "oeminwarddate")
+	private LocalDate oemInwardDate;
 	@Column(name = "createdby")
 	private String createdby;
 	@Column(name = "modifiedby")
 	private String modifiedby;
-	@Column(name = "grnno")
-	private String grnNo;
-	@Column(name = "grndate")
-	private LocalDate grnDate;
 	@Column(name = "cancelremarks")
 	private String cancelRemark;
 	@Column(name = "active")
@@ -61,12 +68,14 @@ public class OemBinInwardVO {
 	private Long orgId;
 	@Column(name = "finyr")
 	private String finyr;
-	@Builder.Default
+	@Builder.Default  
 	private String scode = "OEMBI";
 	@Builder.Default
 	private String screen = "Bin Inward";
-	@Column(name = "outwarddocid")
-	private String outwardDocId;
+	
+	
+	@Column(name = "receiverid")
+	private Long receiverid;
 	
 
 	@OneToMany(mappedBy = "oemBinInwardVO", cascade = CascadeType.ALL)
@@ -88,4 +97,7 @@ public class OemBinInwardVO {
 				: LocalDate.now().minusYears(1).format(DateTimeFormatter.ofPattern("yyyy"));
 		return fyFull;
 	}
+	
+	@Embedded
+	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
 }

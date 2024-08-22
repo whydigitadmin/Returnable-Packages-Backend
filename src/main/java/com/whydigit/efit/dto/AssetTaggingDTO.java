@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AssetTaggingDTO {
-	
+
 	private String docId;
 	private LocalDate docDate;
 	private String category;
@@ -21,8 +21,9 @@ public class AssetTaggingDTO {
 	private int seqTo;
 	private Long orgId;
 	private String createdBy;
-	
-	private List<AssetTaggingDetailsDTO>taggingDetailsDTO;
-	
+	private String poNo;
+	private LocalDate poDate;
+
+	private List<AssetTaggingDetailsDTO> taggingDetailsDTO;
 
 }

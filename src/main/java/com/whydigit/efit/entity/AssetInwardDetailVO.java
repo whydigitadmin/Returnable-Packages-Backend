@@ -31,31 +31,27 @@ public class AssetInwardDetailVO {
 	private long assetInwardDetailId;
 	
 	
-	@Column(name="skudetail",length=40)
+	@Column(name="skudetail")
 	private String skuDetail;
-	@Column(name="skucode",length=20)
+	@Column(name="skucode")
 	private String skucode;
-	@Column(name="skuqty",length=15)
+	@Column(name="skuqty")
 	private int skuQty;
 	@Column(name="stockvalue",precision = 2,scale =4)
 	private Float stockValue;
-	@Column(name="binlocation",length=20)
+	@Column(name="binlocation")
 	private String binLocation;
-	@Column(name="stocklocation",length=40)
+	@Column(name="stocklocation")
 	private String stockLocation;
-	@Column(name="tagcode",length=40)
+	@Column(name="tagcode")
 	private String tagCode;
-	@Column(name="rfid",length=100)
+	@Column(name="rfid")
 	private String rfId;
 	
 	@ManyToOne
     @JoinColumn(name ="assetinwardid")
 	@JsonBackReference
 	private AssetInwardVO assetInwardVO;
-	
-	
 
-	@Embedded
-	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
 	
 }

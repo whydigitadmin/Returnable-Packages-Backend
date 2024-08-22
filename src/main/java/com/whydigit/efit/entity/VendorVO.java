@@ -31,44 +31,44 @@ public class VendorVO {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "vendorgen")
 	@SequenceGenerator(name = "vendorgen", sequenceName = "vendorseq", initialValue = 1000000001, allocationSize = 1)
-	@Column(name="vendorid")
+	@Column(name = "vendorid")
 	private Long id;
-	
-	@Column(name="orgid")
+
+	@Column(name = "orgid")
 	private Long orgId;
-	
+
 	private boolean cancel;
-	
-	@Column(name="createdby",length = 25)
-	private String createdby;
-	
-	@Column(name="modifiedby",length = 25)
-	private String modifiedby;
-	
-	@Column(name="cancelremarks",length = 50)
+
+	@Column(name = "createdby")
+	private String createdBy;
+
+	@Column(name = "modifiedby")
+	private String modifiedBy;
+
+	@Column(name = "cancelremarks")
 	private String cancelremarks;
-	
-	@Column(name="type",length = 25)
+
+	@Column(name = "type")
 	private String venderType;
-	
-	@Column(name="displayname",length = 25)
+
+	@Column(name = "displayname")
 	private String displyName;
-	
-	@Column(name="phone",length = 25)
+
+	@Column(name = "phone")
 	private String phoneNumber;
-	
-	@Column(name="legalname",length = 25)
+
+	@Column(name = "legalname")
 	private String entityLegalName;
-	
-	@Column(name="email",length = 50)
+
+	@Column(name = "email")
 	private String email;
 	
-	@Column(name="activeportal",length = 25)
+	private String country;
+
+	@Column(name = "activeportal")
 	private boolean venderActivePortal;
-	
-	
+
 	private boolean active;
-	
 
 	@OneToMany(mappedBy = "vendorVO", cascade = CascadeType.ALL)
 	@JsonManagedReference
@@ -77,17 +77,17 @@ public class VendorVO {
 	@OneToMany(mappedBy = "vendorVO", cascade = CascadeType.ALL)
 	@JsonManagedReference
 	List<VendorAddressVO> vendorAddressVO;
-	
-	@JsonGetter("active")
-    public String getActive() {
-        return active ? "Active" : "In-Active";
-    }
 
-    // Optionally, if you want to control serialization for 'cancel' field similarly
-    @JsonGetter("cancel")
-    public String getCancel() {
-        return cancel ? "T" : "F";
-    }
+	@JsonGetter("active")
+	public String getActive() {
+		return active ? "Active" : "In-Active";
+	}
+
+	// Optionally, if you want to control serialization for 'cancel' field similarly
+	@JsonGetter("cancel")
+	public String getCancel() {
+		return cancel ? "T" : "F";
+	}
 
 	@Embedded
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();

@@ -9,8 +9,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -46,11 +44,10 @@ public class PartStudyController extends BaseController {
 	public static final Logger LOGGER = LoggerFactory.getLogger(BasicMasterController.class);
 
 	@Autowired
-	private PartStudyService partStudyService;
-	
+	PartStudyService partStudyService;
+
 	Map<String, Object> responseObjectsMap = new HashMap<>();
-	
-	
+
 	@GetMapping("/basicDetails")
 	public ResponseEntity<ResponseDTO> getAllBasicDetail(@RequestParam(required = false) Long orgId) {
 		String methodName = "getAllBasicDetail()";
@@ -75,7 +72,7 @@ public class PartStudyController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-	
+
 	@GetMapping("/ActivebasicDetails")
 	public ResponseEntity<ResponseDTO> getAllActiveBasicDetail(@RequestParam(required = false) Long orgId) {
 		String methodName = "getAllActiveBasicDetail()";
@@ -221,7 +218,6 @@ public class PartStudyController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-	
 
 	@GetMapping("/packageDetail/{id}")
 	public ResponseEntity<ResponseDTO> getPackingDetailById(@PathVariable Long id) {
@@ -249,7 +245,6 @@ public class PartStudyController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
-
 	@PutMapping("/updatePackingDetail")
 	public ResponseEntity<ResponseDTO> updatePackingDetail(@RequestBody PackingDetailDTO packingDetailDTO) {
 		String methodName = "updatePackingDetail()";
@@ -275,25 +270,28 @@ public class PartStudyController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-	
+
 	@PostMapping("/saveAttachments")
-	public ResponseEntity<ResponseDTO> saveAttachments(@RequestParam MultipartFile[] files, @RequestParam PDAttachmentType type, @RequestParam Long refPsId){			
+	public ResponseEntity<ResponseDTO> saveAttachments(@RequestParam MultipartFile[] files,
+			@RequestParam PDAttachmentType type, @RequestParam Long refPsId) {
 		String methodName = "saveAttachments()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
 		try {
-	     partStudyService.saveAttachments(files,type,refPsId);
+			partStudyService.saveAttachments(files, type, refPsId);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
 		}
 		if (StringUtils.isBlank(errorMsg)) {
-			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, new StringBuilder(type.name()).append(" attachments saved successfully").toString());
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE,
+					new StringBuilder(type.name()).append(" attachments saved successfully").toString());
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} else {
-			responseDTO = createServiceResponseError(responseObjectsMap, new StringBuilder(type.name()).append(" attachments saved failed. please try Again.").toString(),
+			responseDTO = createServiceResponseError(responseObjectsMap,
+					new StringBuilder(type.name()).append(" attachments saved failed. please try Again.").toString(),
 					errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
@@ -421,7 +419,6 @@ public class PartStudyController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-	
 
 	@GetMapping("/stockDetail/{id}")
 	public ResponseEntity<ResponseDTO> getStockDetailById(@PathVariable Long id) {
@@ -494,7 +491,7 @@ public class PartStudyController extends BaseController {
 //		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 //		return ResponseEntity.ok().body(responseDTO);
 //	}
-	
+
 	@GetMapping("/generatePartStudyId")
 	public ResponseEntity<ResponseDTO> generatePartStudyId(@RequestParam(required = false) String refPsId) {
 		String methodName = "generatePartStudyId()";
@@ -502,7 +499,7 @@ public class PartStudyController extends BaseController {
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
-		boolean status =false;
+		boolean status = false;
 		try {
 			status = partStudyService.generatePartStudyId(refPsId);
 		} catch (Exception e) {
@@ -513,25 +510,25 @@ public class PartStudyController extends BaseController {
 			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Generate PartStudyId information get successfully");
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} else {
-			responseDTO = createServiceResponseError(responseObjectsMap, "Generate PartStudyId information information receive failed",
-					errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap,
+					"Generate PartStudyId information information receive failed", errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-	
+
 	@GetMapping("/searchPartStudyById")
 	public ResponseEntity<ResponseDTO> searchPartStudy(@RequestParam(required = false) Long emitterId,
-			@RequestParam(required = false) Long refPsId,@RequestParam(required = false) Long orgId,
-			@RequestParam(required = false) String partName,@RequestParam(required = false) String partNumber){			
+			@RequestParam(required = false) Long refPsId, @RequestParam(required = false) Long orgId,
+			@RequestParam(required = false) String partName, @RequestParam(required = false) String partNumber) {
 		String methodName = "searchPartStudy()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
 		Map<String, Object> basicDetailVO = new HashMap<>();
-		try {      
-			basicDetailVO = partStudyService.searchPartStudy(emitterId, refPsId, orgId, partName,partNumber);
+		try {
+			basicDetailVO = partStudyService.searchPartStudy(emitterId, refPsId, orgId, partName, partNumber);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
@@ -547,7 +544,7 @@ public class PartStudyController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-	
+
 	@PostMapping("/uploadPartImage")
 	public ResponseEntity<ResponseDTO> uploadPartImage(@RequestParam Long id,
 			@RequestParam("file") MultipartFile file) {
@@ -571,7 +568,7 @@ public class PartStudyController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 
 	}
-	
+
 	@PostMapping("/uploadPartDrawing")
 	public ResponseEntity<ResponseDTO> uploadPartDrawing(@RequestParam Long id,
 			@RequestParam("file") MultipartFile file) {
@@ -595,7 +592,7 @@ public class PartStudyController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 
 	}
-	
+
 	@PostMapping("/uploadExPackageImage")
 	public ResponseEntity<ResponseDTO> uploadExPackageImage(@RequestParam Long id,
 			@RequestParam("file") MultipartFile file) {
@@ -619,7 +616,7 @@ public class PartStudyController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 
 	}
-	
+
 	@PostMapping("/uploadApprovedCommercialImage")
 	public ResponseEntity<ResponseDTO> uploadApprovedCommercialImage(@RequestParam Long id,
 			@RequestParam("file") MultipartFile file) {
@@ -637,13 +634,14 @@ public class PartStudyController extends BaseController {
 
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-			responseDTO = createServiceResponseError(responseObjectsMap, "Approved Commercial Uploaded Failed", errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "Approved Commercial Uploaded Failed",
+					errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 
 	}
-	
+
 	@PostMapping("/uploadApprovedTechnicalDrawing")
 	public ResponseEntity<ResponseDTO> uploadApprovedTechnicalDrawing(@RequestParam Long id,
 			@RequestParam("file") MultipartFile file) {
@@ -661,13 +659,14 @@ public class PartStudyController extends BaseController {
 
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-			responseDTO = createServiceResponseError(responseObjectsMap, "Approved Technical Drawing Uploaded Failed", errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "Approved Technical Drawing Uploaded Failed",
+					errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 
 	}
-	
+
 	@PostMapping("/uploadPartImageInBloob")
 	public ResponseEntity<ResponseDTO> uploadPartImageInBloob(@RequestParam("file") MultipartFile file,
 			@RequestParam Long refPsId) {
@@ -693,7 +692,7 @@ public class PartStudyController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-	
+
 	@PostMapping("/uploadExistingPackingImageInBloob")
 	public ResponseEntity<ResponseDTO> uploadExistingPackingImageInBloob(@RequestParam("file") MultipartFile file,
 			@RequestParam Long refPsId) {
@@ -714,7 +713,8 @@ public class PartStudyController extends BaseController {
 			responseObjectsMap.put("packingDetailVO", packingDetailVO);
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} else {
-			responseDTO = createServiceResponseError(responseObjectsMap, "ExistingPackingImage Upload Failed", errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "ExistingPackingImage Upload Failed",
+					errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
@@ -766,13 +766,14 @@ public class PartStudyController extends BaseController {
 			responseObjectsMap.put("packingDetailVO", packingDetailVO);
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} else {
-			responseDTO = createServiceResponseError(responseObjectsMap, "ApprovedCommercialContract Upload Failed", errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, "ApprovedCommercialContract Upload Failed",
+					errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-	
-	@PostMapping("/uploadCommercialInBloob")
+
+	@PostMapping("/uploadTechnicalDrawingInBloob")
 	public ResponseEntity<ResponseDTO> uploadCommercialInBloob(@RequestParam("file") MultipartFile file,
 			@RequestParam Long refPsId) {
 		String methodName = "uploadCommercialInBloob()";
@@ -797,55 +798,63 @@ public class PartStudyController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-	
-	
 
-//	    @PostMapping("/uploadCommercialInBlob")
-//	    public ResponseEntity<ResponseDTO> uploadCommercialInBlob(@RequestParam("file") MultipartFile file,
-//	                                                              @RequestParam Long refPsId) {
-//	        String methodName = "uploadCommercialInBlob()";
-//	        LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
-//	        String errorMsg = null;
-//	        Map<String, Object> responseObjectsMap = new HashMap<>();
-//	        ResponseDTO responseDTO = null;
-//	        PackingDetailVO packingDetailVO = null;
-//	        try {
-//	            packingDetailVO = partStudyService.uploadCommercialInBlob(file, refPsId);
-//	        } catch (Exception e) {
-//	            errorMsg = e.getMessage();
-//	            LOGGER.error("Unable To Upload Commercial", methodName, errorMsg);
-//	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(createServiceResponseError(responseObjectsMap, "Commercial Upload Failed", errorMsg));
-//	        }
-//	        if (StringUtils.isBlank(errorMsg)) {
-//	            String imageUrl = String.format("/api/partStudy/commercialImage/%d", refPsId);
-//	            responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Commercial Successfully Upload");
-//	            responseObjectsMap.put("imageUrl", imageUrl);
-//	            responseDTO = createServiceResponse(responseObjectsMap);
-//	        } else {
-//	            responseDTO = createServiceResponseError(responseObjectsMap, "Commercial Upload Failed", errorMsg);
-//	        }
-//	        LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
-//	        return ResponseEntity.ok().body(responseDTO);
-//	    }
+//	@PostMapping("/uploadPartImageInBloob")
+//    public CompletableFuture<ResponseEntity<ResponseDTO>> uploadPartImageInBlob(@RequestParam("file") MultipartFile file, @RequestParam Long refPsId) {
+//        return handleUpload(file, refPsId, "uploadPartImageInBloob()", partStudyService::uploadPartImageInBloob, "PartImage");
+//    }
 //
-//	    @GetMapping("/commercialImage/{id}")
-//	    public ResponseEntity<byte[]> getCommercialImage(@PathVariable Long id) {
-//	        String methodName = "getCommercialImage()";
-//	        LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
-//	        byte[] image = null;
-//	        try {
-//	            image = partStudyService.getCommercialImageById(id);
-//	        } catch (Exception e) {
-//	            LOGGER.error("Unable to retrieve image for id: " + id, e);
-//	            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-//	        }
-//	        if (image == null) {
-//	            LOGGER.error("Image not found for id: " + id);
-//	            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-//	        }
-//	        return ResponseEntity.ok()
-//	                .contentType(MediaType.IMAGE_JPEG)
-//	                .body(image);
-//	    }
-	}
+//    @PostMapping("/uploadExistingPackingImageInBloob")
+//    public CompletableFuture<ResponseEntity<ResponseDTO>> uploadExistingPackingImageInBlob(@RequestParam("file") MultipartFile file, @RequestParam Long refPsId) {
+//        return handleUpload(file, refPsId, "uploadExistingPackingImageInBloob()", partStudyService::uploadExistingPackingImageInBloob, "ExistingPackingImage");
+//    }
+//
+//    @PostMapping("/uploadpartdrawingInBloob")
+//    public CompletableFuture<ResponseEntity<ResponseDTO>> uploadPartDrawingInBlob(@RequestParam("file") MultipartFile file, @RequestParam Long refPsId) {
+//        return handleUpload(file, refPsId, "uploadpartdrawingInBloob()", partStudyService::uploadpartdrawingInBloob, "PartDrawing");
+//    }
+//
+//    @PostMapping("/uploadApprovedCommercialContractInBloob")
+//    public CompletableFuture<ResponseEntity<ResponseDTO>> uploadApprovedCommercialContractInBlob(@RequestParam("file") MultipartFile file, @RequestParam Long refPsId) {
+//        return handleUpload(file, refPsId, "uploadApprovedCommercialContractInBloob()", partStudyService::uploadApprovedCommercialContractInBloob, "ApprovedCommercialContract");
+//    }
+//
+//    @PostMapping("/uploadTechnicalDrawingInBloob")
+//    public CompletableFuture<ResponseEntity<ResponseDTO>> uploadCommercialInBlob(@RequestParam("file") MultipartFile file, @RequestParam Long refPsId) {
+//        return handleUpload(file, refPsId, "uploadTechnicalDrawingInBloob()", partStudyService::uploadCommercialInBloob, "Commercial");
+//    }
+//
+//    private CompletableFuture<ResponseEntity<ResponseDTO>> handleUpload(MultipartFile file, Long refPsId, String methodName, UploadFunction uploadFunction, String uploadType) {
+//        LOGGER.debug("Starting method: {}", methodName);
+//       
+//        Map<String, Object> responseObjectsMap = new HashMap<>();
+//        return CompletableFuture.supplyAsync(() -> {
+//            PackingDetailVO packingDetailVO = null;
+//            ResponseDTO responseDTO = null;
+//            String errorMsg = null;
+//            try {
+//                packingDetailVO = uploadFunction.upload(file, refPsId);
+//            } catch (Exception e) {
+//                errorMsg = e.getMessage();
+//                LOGGER.error("Unable to upload {}: {}", uploadType, errorMsg);
+//            }
+//
+//            if (errorMsg == null) {
+//                responseObjectsMap.put("message", uploadType + " successfully uploaded");
+//                responseObjectsMap.put("packingDetailVO", packingDetailVO);
+//                responseDTO = createServiceResponse(responseObjectsMap);
+//            } else {
+//                responseDTO = createServiceResponseError(responseObjectsMap, uploadType + " upload failed", errorMsg);
+//            }
+//
+//            LOGGER.debug("Ending method: {}", methodName);
+//            return ResponseEntity.ok().body(responseDTO);
+//        });
+//    }
+//
+//    @FunctionalInterface
+//    private interface UploadFunction {
+//        PackingDetailVO upload(MultipartFile file, Long refPsId) throws IOException;
+//    }
 
+}

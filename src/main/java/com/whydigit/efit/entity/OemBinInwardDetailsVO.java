@@ -30,15 +30,27 @@ public class OemBinInwardDetailsVO {
 	@SequenceGenerator(name = "oembinwarddetailsgen", sequenceName = "oembinwarddetailsseq", initialValue = 1000000001, allocationSize = 1)
 	@Column(name = "oembinwarddetailsid")
 	private Long id;
-	@Column(name = "asset")
-	private String asset;
-	@Column(name = "assetcode")
-	private String assetCode;
-	@Column(name = "recievedqty")
-	private int recievedQty;
+	@Column(name = "outwarddocid")
+	private String outwardDocId;
+	@Column(name = "outwarddocdate")
+	private String outwardDocDate;
+	@Column(name = "partname")
+	private String partName;
+	@Column(name = "partno")
+	private String partNo;
+	@Column(name = "allotedqty")
+	private int allotedQty;
+	@Column(name = "kitno")
+	private String kitNo;
+	@Column(name = "receivedkitqty")
+	private int receivedKitQty;
+	
+	
 
 	@ManyToOne
 	@JoinColumn(name = "oembininwardid")
 	@JsonBackReference
 	private OemBinInwardVO oemBinInwardVO;
+
+
 }

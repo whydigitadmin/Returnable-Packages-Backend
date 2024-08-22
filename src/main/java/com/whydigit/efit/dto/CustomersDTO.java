@@ -20,6 +20,8 @@ public class CustomersDTO {
 	private String phoneNumber;
 	private boolean customerActivatePortal;
 	private boolean active;
+	private String createdBy;
+	//private String modifiedBy;
 	
 	private List<CustomersAddressDTO>customerAddressDTO;
 	

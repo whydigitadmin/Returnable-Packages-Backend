@@ -19,8 +19,12 @@ public class VendorDTO {
 	private String phoneNumber;
 	private String entityLegalName;
 	private String email;
+	private String country;
 	private boolean venderActivePortal;
 	private boolean active;
+	private String createdBy;
+	//private String modifiedBy;
+	
 	
 	private List<VendorAddressDTO>vendorAddressDTO;
 	

@@ -1,4 +1,5 @@
 package com.whydigit.efit.controller;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,25 +30,23 @@ import com.whydigit.efit.service.OutboundService;
 @RequestMapping("/api/DcVendor")
 public class OutboundController extends BaseController {
 	public static final Logger LOGGER = LoggerFactory.getLogger(BasicMasterController.class);
-	
+
 	@Autowired
 	OutboundService outboundService;
-	
+
 	@GetMapping("/view")
-	public ResponseEntity<ResponseDTO>getAllDcVendorVO(){
-		String methodName="getAllDcVendorVO";
-		LOGGER.debug(CommonConstant.STARTING_METHOD,methodName);
-		String errorMsg=null;
-		Map<String, Object>responseObjectsMap=new HashMap<>();
-		ResponseDTO responseDTO=null;
-		List<DcVendorVO>dcVendorVO=new ArrayList<>();
+	public ResponseEntity<ResponseDTO> getAllDcVendorVO() {
+		String methodName = "getAllDcVendorVO";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<DcVendorVO> dcVendorVO = new ArrayList<>();
 		try {
-			dcVendorVO= outboundService.getAllDcVendorVO();
-		}
-		catch(Exception e)
-		{
+			dcVendorVO = outboundService.getAllDcVendorVO();
+		} catch (Exception e) {
 			errorMsg = e.getMessage();
-			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);			
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
 		}
 		if (StringUtils.isBlank(errorMsg)) {
 			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "DcVendor information get successfully");
@@ -59,17 +58,17 @@ public class OutboundController extends BaseController {
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
-		
+
 	}
-	
+
 	@GetMapping("/view/{id}")
 	public Optional<DcVendorVO> getbyId(@PathVariable int id) {
 		return outboundService.getDcVendorVOById(id);
-		
+
 	}
-	
+
 	@PostMapping("/view")
-	public ResponseEntity<ResponseDTO>createDcVendorVO(@RequestBody DcVendorVO dcVendorVO){
+	public ResponseEntity<ResponseDTO> createDcVendorVO(@RequestBody DcVendorVO dcVendorVO) {
 		String methodName = "createDcVendorVO()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -87,9 +86,9 @@ public class OutboundController extends BaseController {
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
-		
+
 	}
-	
+
 	@PutMapping("/view")
 	public ResponseEntity<ResponseDTO> updateDcVendorVO(@RequestBody DcVendorVO dcVendorVO) {
 		String methodName = "updateDcVendorVO()";
@@ -115,7 +114,7 @@ public class OutboundController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-	
+
 	@DeleteMapping("/view/{id}")
 	public ResponseEntity<ResponseDTO> deleteDcVendorVO(@PathVariable int id) {
 		String methodName = "deleteDcVendorVO()";
@@ -135,7 +134,5 @@ public class OutboundController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-
-	
 
 }

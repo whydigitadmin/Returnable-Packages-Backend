@@ -25,54 +25,60 @@ public class OrganizationVO {
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "orgseqgen")
 	@SequenceGenerator(name = "orgseqgen", sequenceName = "orgseqname", initialValue = 1000000001, allocationSize = 1)
-	@Column(name="organizationid")
+	@Column(name = "organizationid")
 	private Long id;
-	
-	@Column(name="cancel")
+
+	@Column(name = "cancel")
 	private boolean cancel;
-	
-	@Column(name="createdby",length = 25)
+
+	@Column(name = "createdby")
 	private String createdby;
-	
-	@Column(name="modifiedby",length = 25)
+
+	@Column(name = "modifiedby")
 	private String modifiedby;
-	
-	@Column(name="name",length = 100)
+
+	@Column(name = "name")
 	private String name;
-	
-	@Column(name="phone",length = 25)
+
+	@Column(name = "phone")
 	private String phoneNumber;
-	
-	@Column(name="street",length = 25)
-	private String street;
-	
-	@Column(name="city",length = 25)
+
+	@Column(name = "city")
 	private String city;
-	
-	@Column(name="state",length = 25)
+
+	@Column(name = "state")
 	private String state;
-	
-	@Column(name="pincode",length = 25)
-	private String postalCode;
-	
-	@Column(name="country",length = 25)
+
+	@Column(name = "pincode")
+	private String pinCode;
+
+	@Column(name = "country")
 	private String country;
-	
-	@Column(name="logo",length = 25)
+
+	@Column(name = "logo")
 	private String orgLogo;
-	
-	@Column(name="code",length = 25)
+
+	@Column(name = "code")
 	private String code;
+
+	private String email;
 	
-	@Column(name="active")
-	private boolean isActive;
+	private String address;
 	
-	@Column(name="subscriptionType",length = 25)
+	private String password;
+	
+	@Column(name = "adminfirstname")
+	private String adminFirstName;
+	
+	@Column(name = "active")
+	private boolean active;
+
+	@Column(name = "subscriptionType")
 	private String subscriptionType;
-	
-	@Column(name = "cancelremarks",length = 25)
+
+	@Column(name = "cancelremarks")
 	private String cancelRemarks;
-	
+
 	@Embedded
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
 }

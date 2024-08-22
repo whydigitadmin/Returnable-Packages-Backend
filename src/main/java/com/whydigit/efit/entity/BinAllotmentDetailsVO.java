@@ -29,19 +29,19 @@ public class BinAllotmentDetailsVO {
 	@Column(name = "binallotment1id")
 	private Long id;
 	
-	@Column(name = "tagcode",length = 30)
+	@Column(name = "tagcode")
 	private String tagCode;
 	
-	@Column(name = "rfid",length = 100)
+	@Column(name = "rfid")
 	private String rfId;
 	
-	@Column(name = "asset",length = 30)
+	@Column(name = "asset")
 	private String asset;
 	
-	@Column(name = "assetcode",length = 30)
+	@Column(name = "assetcode")
 	private String assetCode;
 	
-	@Column(name = "skuqty",length = 10)
+	@Column(name = "skuqty")
 	private int qty;
 	
 	@ManyToOne

@@ -43,7 +43,7 @@ public class BinInwardVO {
 	@Column(name = "active")
 	private boolean active;
 
-	@Column(name = "docid", length = 25)
+	@Column(name = "docid")
 	private String docid;
 
 	@Column(name = "docdate")
@@ -52,38 +52,44 @@ public class BinInwardVO {
 	@Column(name = "cancel")
 	private boolean cancel;
 
-	@Column(name = "createdby", length = 25)
+	@Column(name = "createdby")
 	private String createdBy;
 
-	@Column(name = "modifiedby", length = 25)
+	@Column(name = "modifiedby")
 	private String modifiedBy;
 
-	@Column(name = "cancelremarks", length = 25)
+	@Column(name = "cancelremarks")
 	private String cancelRemarks;
-	@Column(name = "allotmentno", length = 25)
+	@Column(name = "allotmentno")
 	private String allotmentNo;
-	@Column(name = "reqno", length = 25)
+	@Column(name = "reqno")
 	private String reqNo;
-	@Column(name = "flow", length = 120)
+	@Column(name = "flow")
 	private String flow;
-	@Column(name = "finyr", length = 25)
+	@Column(name = "finyr")
 	private String finYr;
-	@Column(name = "kitcode", length = 25)
+	@Column(name = "kitcode")
 	private String kitCode;
-	@Column(name = "allotedqty", length = 25)
+	@Column(name = "allotedqty")
 	private int allotedQty;
-	@Column(name = "emitterid", length = 25)
+	@Column(name = "emitterid")
 	private Long emitterId;
 	@Column(name = "allotdate")
 	private LocalDate allotDate;
 	@Column(name = "binreqdate")
 	private LocalDate binReqDate;
-	@Column(name = "returnqty", length = 15)
+	@Column(name = "returnqty")
 	private int returnQty;
-	@Column(name = "returnremarks", length = 150)
+	@Column(name = "returnremarks")
 	private String returnRemarks;
-	@Column(name = "podfileuploadpath", length = 250)
+	@Column(name = "podfileuploadpath")
 	private String podFileUploadPath;
+	@Column(name="partname")
+	private String partName;
+	@Column(name="partcode")
+	private String partCode;
+	
+	
 	
 	
 	@Column(name = "reqkitqty")

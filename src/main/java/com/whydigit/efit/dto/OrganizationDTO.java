@@ -1,7 +1,5 @@
 package com.whydigit.efit.dto;
 
-import javax.validation.constraints.NotBlank;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,14 +9,34 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class OrganizationDTO {
 
-	@NotBlank(message = "Organization name is required")
+	private Long id;
+
+	private String createdby;
+
 	private String orgName;
+
 	private String phoneNumber;
-	private String street;
+
 	private String city;
+
 	private String state;
-	private String postalCode;
+
+	private String pinCode;
+
 	private String country;
+
 	private String orgLogo;
- 	
+
+	private String code;
+
+	private String email;
+
+	private String address;
+
+	private String password;
+
+	private boolean active;
+	
+	private String adminFirstName;
+
 }

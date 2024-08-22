@@ -28,27 +28,27 @@ public class CnoteVO {
 	@SequenceGenerator(name = "cnoteegen", sequenceName = "cnoteseqge", initialValue = 1000000001, allocationSize = 1)
 	@Column(name = "cnoteid")
 	private Long cnoteId;
-	@Column(name = "scode", length = 5)
+	@Column(name = "scode")
 	private String scode = "CNOTE";
-	@Column(name = "createdby", length = 25)
+	@Column(name = "createdby")
 	private String createdBy;
-	@Column(name = "modifiedby", length = 25)
+	@Column(name = "modifiedby")
 	private String modifiedBy;
-	@Column(name = "cancelremarks", length = 25)   
+	@Column(name = "cancelremarks")
 	private String cancelRemarks;
-	@Column(name = "code", length = 10)
+	@Column(name = "code")
 	private String code;
-	@Column(name = "description", length = 40)
+	@Column(name = "description")
 	private String description;
-	@Column(name = "servicecode", length = 2)
+	@Column(name = "servicecode")
 	private String serviceCode;
-	@Column(name = "rcode", length = 10)
+	@Column(name = "rcode")
 	private String rcode;
-	@Column(name = "ccode", length = 10)
+	@Column(name = "ccode")
 	private String ccode;
-	@Column(name = "rledger", length = 25)
+	@Column(name = "rledger")
 	private String rlEdger;
-	@Column(name = "cledger", length = 25)
+	@Column(name = "cledger")
 	private String clEdger;
 	@Column(name = "fromdate")
 	private LocalDate fromDate = LocalDate.now();

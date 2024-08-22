@@ -52,26 +52,12 @@ public class FlowDetailVO {
 	private String partName;
 	@Column(name="cycletime")
 	private String cycleTime;
-	@Column(name="subreceiver")
-	private String subReceiver;
+	
 	private boolean active;
-
-	@Column(name = "createdby")
-	private String createdBy;
-	@Column(name = "modifiedby")
-	private String modifiedBy;
-	@Column(name = "cancelRemarks")
-	private String cancelRemarks;
 
 	
 	@JsonBackReference
 	@ManyToOne
 	@JoinColumn(name = "flowid")
 	private FlowVO flowVO;
-
-	@Embedded
-	@Builder.Default
-	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
-
-	
 }

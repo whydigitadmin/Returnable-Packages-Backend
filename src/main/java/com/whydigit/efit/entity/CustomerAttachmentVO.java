@@ -1,6 +1,5 @@
 package com.whydigit.efit.entity;
 
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -24,12 +23,12 @@ public class CustomerAttachmentVO {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "CustomerAttachmentVO")
 	@SequenceGenerator(name = "CustomerAttachmentVO", sequenceName = "CustomerAttachmentVo", initialValue = 1000000001, allocationSize = 1)
-	@Column(name="customer3id")
+	@Column(name = "customer3id")
 	private long id;
-	@Column(name="filename",length = 25)
+	@Column(name = "filename")
 	private String fileName;
-	@Column(name="type",length = 25)
+	@Column(name = "type")
 	private String type;
-	@Column(name="customerid")
+	@Column(name = "customerid")
 	private Long customerId;
 }

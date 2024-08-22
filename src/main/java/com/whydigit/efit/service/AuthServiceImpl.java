@@ -137,7 +137,7 @@ public class AuthServiceImpl implements AuthService {
 	}
 
 	private OrganizationVO getOrganizationVOFromCreateOrganizationFormDTO(
-			CreateOrganizationFormDTO createOrganizationFormDTO) {
+		CreateOrganizationFormDTO createOrganizationFormDTO) {
 		OrganizationVO organizationVO = new OrganizationVO();
 		OrganizationDTO organizationDTO = createOrganizationFormDTO.getOrganizationDTO();
 		organizationVO.setName(organizationDTO.getOrgName());
@@ -146,9 +146,16 @@ public class AuthServiceImpl implements AuthService {
 		organizationVO.setOrgLogo(organizationDTO.getOrgLogo());
 		organizationVO.setActive(true);
 		organizationVO.setPhoneNumber(organizationDTO.getPhoneNumber());
-		organizationVO.setPostalCode(organizationDTO.getPostalCode());
+		organizationVO.setPinCode(organizationDTO.getPinCode());
 		organizationVO.setState(organizationDTO.getState());
-		organizationVO.setStreet(organizationDTO.getStreet());
+		organizationVO.setAddress(organizationDTO.getAddress());
+		organizationVO.setEmail(organizationDTO.getEmail());
+		try {
+			organizationVO.setPassword(encoder.encode(CryptoUtils.getDecrypt(createOrganizationFormDTO.getPassword())));
+		} catch (Exception e) {
+			LOGGER.error(e.getMessage());
+			throw new ApplicationContextException(UserConstants.ERRROR_MSG_UNABLE_TO_ENCODE_USER_PASSWORD);
+		}
 		organizationVO.setSubscriptionType(CommonConstant.SUBSCRIPTION_TYPE_DEMO);
 		return organizationVO;
 	}
@@ -183,12 +190,12 @@ public class AuthServiceImpl implements AuthService {
 			if(userVO.isActive())
 			{
 				if (compareEncodedPasswordWithEncryptedPassword(loginRequest.getPassword(), userVO.getPassword())) {
-					if(!userVO.isLoginStatus()) {
-						updateUserLoginInformation(userVO);
-					}
-					else {
-						throw new ApplicationContextException(UserConstants.ERRROR_MSG_LOGIN_STATUS);
-					}
+//					if(!userVO.isLoginStatus()) {
+						updateUserLoginInformation(userVO,loginRequest);
+//					}
+//					else {
+//						throw new ApplicationContextException(UserConstants.ERRROR_MSG_LOGIN_STATUS);
+//					}
 				
 				} else {
 					throw new ApplicationContextException(UserConstants.ERRROR_MSG_PASSWORD_MISMATCH);
@@ -240,11 +247,11 @@ public class AuthServiceImpl implements AuthService {
 	/**
 	 * @param userVO
 	 */
-	private void updateUserLoginInformation(UserVO userVO1) {
+	private void updateUserLoginInformation(UserVO userVO1,LoginFormDTO loginRequest) {
 		try {
 			userVO1.setLoginStatus(true);
 			userRepo.save(userVO1);
-			userService.createUserAction(userVO1.getUserName(), userVO1.getUserId(),
+			userService.createUserLoginAction(userVO1.getUserName(), userVO1.getUserId(),loginRequest.getLoginIp(),
 					UserConstants.USER_ACTION_TYPE_LOGIN);
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage());
@@ -379,6 +386,7 @@ public class AuthServiceImpl implements AuthService {
 		userVO.setFirstName(createUserFormDTO.getFirstName());
 		userVO.setLastName(createUserFormDTO.getLastName());
 		userVO.setUserName(createUserFormDTO.getUserName());
+		userVO.setViewFlag(createUserFormDTO.isViewFlag());
 		userVO.setEmail(createUserFormDTO.getEmail());
 		userVO.setAccessRightsRoleId(createUserFormDTO.getAccessRightsRoleId());
 		userVO.setPNo(createUserFormDTO.getPNo());
@@ -406,7 +414,7 @@ public class AuthServiceImpl implements AuthService {
 	                .collect(Collectors.toList());
 
 	        List<FlowVO> flows = flowRepo.findAllById(flowIdList);
-	        flows.forEach(flow -> flow.setEflag(false));
+	        flows.forEach(flow -> flow.setEflag(true));
 	        flowRepo.saveAll(flows);
 	    }
 		userVO.setAccessFlowId(flowIds);
@@ -448,6 +456,7 @@ public class AuthServiceImpl implements AuthService {
 		userVO.setAccessWarehouse(warehouseIds);
 		userVO.setFirstName(createUserFormDTO.getFirstName());
 		userVO.setLastName(createUserFormDTO.getLastName());
+		userVO.setViewFlag(createUserFormDTO.isViewFlag());
 		userVO.setPNo(createUserFormDTO.getPNo());
 		userVO.setActive(createUserFormDTO.isActive());
 		userVO.setRole(createUserFormDTO.getRole());

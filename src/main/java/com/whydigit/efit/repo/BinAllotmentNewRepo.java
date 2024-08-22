@@ -25,8 +25,8 @@ public interface BinAllotmentNewRepo extends JpaRepository<BinAllotmentNewVO, Lo
 	@Query(nativeQuery = true, value = "CALL next_allotcode()")
 	void nextDocseq();
 
-	@Query(nativeQuery = true, value = "select a.docid,a.docdate reqDate,a.emitter,a.emitterid,b.kitcode,b.kitqty reqKitQty,b.partno,b.partname,a.flow,a.flowid from issuerequest a, issuerequest2 b where a.issuerequestid=b.issuerequestid and a.orgid=?1 and a.docid=?2")
-	Set<Object[]> findReqDetailsByOrgId(Long orgId,String reqno);
+	@Query(nativeQuery = true, value = "select a.docid,a.docdate reqDate,a.emitter,a.emitterid,b.kitcode,b.kitqty reqKitQty,b.partno,b.partname,a.flow,a.flowid from issuerequest a, issuerequest2 b where a.issuerequestid=b.issuerequestid and a.orgid=?1 and a.docid=?2 and b.kitcode=?3")
+	Set<Object[]> findReqDetailsByOrgId(Long orgId,String reqno,String kitNo);
 
 	@Query(nativeQuery = true, value = "select * from binallotment where orgid=?1")
 	List<BinAllotmentNewVO> getAllBinAllotment(Long orgId);
@@ -38,7 +38,8 @@ public interface BinAllotmentNewRepo extends JpaRepository<BinAllotmentNewVO, Lo
 			+ "    AND docid NOT IN (SELECT allotmentno FROM bininward)")
 	Set<Object[]> getAllotmentNoByEmitterIdAndOrgId(Long orgId, Long emitterId);
 
-	@Query(nativeQuery = true, value = "select a.docdate binallotdate,a.binreqno,a.binreqdate,b.flow,a.kitcode,a.allotkitqty,a.reqkitqty from binallotment a, issuerequest b where a.binreqno=b.docid and a.orgid=?1  and a.docid=?2")
+	@Query(nativeQuery = true, value = "select a.docdate binallotdate,a.binreqno,a.binreqdate,b.flow,a.kitcode,a.allotkitqty,a.reqkitqty,a.part,a.partcode from binallotment a, issuerequest b \r\n"
+			+ "where a.binreqno=b.docid and a.orgid=?1  and a.docid=?2")
 	Set<Object[]> getAllotmentDetailsByAllotmentNoAndOrgId(Long orgId, String docid);
 
 	@Query(nativeQuery = true, value = "select b.asset,b.assetcode,b.rfid,b.tagcode,b.skuqty from binallotment a , binallotment1 b where a.binallotmentid=b.binallotmentid and a.docid=?2 and a.orgid=?1")
@@ -47,8 +48,8 @@ public interface BinAllotmentNewRepo extends JpaRepository<BinAllotmentNewVO, Lo
 	@Query(nativeQuery =true,value = "select * from binallotment where docid=?1")
 	List<BinAllotmentNewVO> getAllAssetByOrgId(String docId);
 	
-	@Query(nativeQuery =true,value = "SELECT a.docid, a.docdate, b.flow, a.kitcode, a.allotkitqty, a.reqkitqty,a.emitterid,a.orgid,a.part as partname,a.partcode FROM binallotment a \r\n"
-			+ "INNER JOIN issuerequest b ON a.binreqno = b.docid WHERE a.docid NOT IN (SELECT allotmentno FROM bininward) and a.orgid=?1 and a.emitterid=?2")
+	@Query(nativeQuery =true,value = "SELECT a.docid, a.docdate, b.flow, a.kitcode, a.allotkitqty, a.reqkitqty,a.emitterid,a.orgid,a.part as partname,a.partcode,a.binreqno FROM binallotment a \r\n"
+			+ "INNER JOIN issuerequest b ON a.binreqno = b.docid WHERE concat(a.docid,a.binreqno,a.kitcode) not IN (SELECT concat(c.allotmentno,c.reqno,c.kitcode) FROM bininward c) and a.orgid=?1 and a.emitterid=?2")
 	Set<Object[]> getWaitingforBinInwardDetailsByEmitterAndOrgId(Long orgId, Long emitterid);
 
 	
@@ -146,10 +147,15 @@ public interface BinAllotmentNewRepo extends JpaRepository<BinAllotmentNewVO, Lo
 
 	List<BinAllotmentNewVO> findAllBinAllotmentByEmitterId(Specification<BinAllotmentNewVO> specification);
 
-	@Query(nativeQuery = true, value = "select a.docid allotno,a.docdate allotdate,a.binreqno,a.binreqdate,c.address sender_address,c.city sender_city,c.state sender_state,c.gst sender_gst,d.name sender_name,e.legalname receiver_name,c.pincode from binallotment a, issuerequest b,warehouse c ,organization d,customer e where a.orgid=d.organizationid and a.binreqno=b.docid and b.whlocationid=c.warehouseid and b.emitterid=e.customerid and a.docid=?1")
+	@Query(nativeQuery = true, value = "select a.binreqno,a.binreqdate,c.address sender_address,c.city sender_city,c.state sender_state,c.gst sender_gst,d.name sender_name,e.legalname receiver_name,c.pincode,concat(f.street1,',',f.street2,',',f.city,',',f.state,',',f.pincode)receiverAddress,f.gstin receiverGstin from binallotment a, issuerequest b,warehouse c ,organization d,customer e ,customer1 f where a.orgid=d.organizationid and a.binreqno=b.docid and e.customerid=f.customerid\r\n"
+			+ "			and b.whlocationid=c.warehouseid and b.emitterid=e.customerid  and a.binreqno= ?1 \r\n"
+			+ "            group by a.binreqno,a.binreqdate,c.address ,c.city ,c.state ,c.gst ,\r\n"
+			+ "			d.name ,e.legalname ,c.pincode,concat(f.street1,',',f.street2,',',f.city,',',f.state,',',f.pincode),f.gstin ")
 	Set<Object[]> getBinAllotmentHeader(String docid);
 
-	@Query(nativeQuery = true, value = "select a.kitcode,a.allotkitqty,b.asset product_name,b.assetcode product_code,sum(b.skuqty) product_qty from binallotment a, binallotment1 b where a.binallotmentid=b.binallotmentid and a.docid=?1 group by a.kitcode,a.allotkitqty,b.asset,b.assetcode")
+	@Query(nativeQuery = true, value = "select a.kitcode,a.allotkitqty,b.asset product_name,b.assetcode product_code,sum(b.skuqty) product_qty,a.docid allotNo,a.docdate allotDate from binallotment a, binallotment1 b \r\n"
+			+ "            where a.binallotmentid=b.binallotmentid and a.binreqno= ?1\r\n"
+			+ "            group by a.docid,a.docdate, a.kitcode,a.allotkitqty,b.asset,b.assetcode")
 	List<Object[]> getBinAllotmentGrid(String docid);
 
 	

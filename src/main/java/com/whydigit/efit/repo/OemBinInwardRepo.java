@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import com.whydigit.efit.entity.BinInwardDetailsVO;
 import com.whydigit.efit.entity.OemBinInwardDetailsVO;
 import com.whydigit.efit.entity.OemBinInwardVO;
+import com.whydigit.efit.entity.OemBinOutwardVO;
 
 public interface OemBinInwardRepo extends JpaRepository<OemBinInwardVO, Long> {
 
@@ -17,15 +18,22 @@ public interface OemBinInwardRepo extends JpaRepository<OemBinInwardVO, Long> {
 			+ ") AS finyr")
 	String findFinyr();
 
-	@Query(nativeQuery = true, value = "select oeminwarddocid from oembinoutwarddocidseq")
+	@Query(nativeQuery = true, value = "select sequence_value from oembininwarddocidseq")
 	int finddocid();
 
-	@Query(nativeQuery = true, value = "CALL next_oeminwarddocid()")
+	@Query(nativeQuery = true, value = "CALL next_oembininwarddocid_sequence_value()")
 	void nextseq();
 
-@Query(value = "select * from oembininward where orgid=?1",nativeQuery =true)	
-	List<OemBinInwardVO> findAllOemBinInwardByOrgIdAndUserId(Long orgId);
+	@Query(value = "select * from oembininward where orgid=?1 and receiverid=?2", nativeQuery = true)
+	List<OemBinInwardVO> findAllOemBinInwardByOrgIdAndUserId(Long orgId,Long receiverid);
 
+	@Query(value = "select a from OemBinInwardVO a where a.docId=?1")
+	OemBinInwardVO findOemInwardByDocId(String docId);
 
+	@Query(value = "select * from oembininward where receiverid=?1", nativeQuery = true)
+	List<OemBinInwardVO> getAllOemBinInwardByReceiverId(Long receiverId);
+
+	
+	
 
 }

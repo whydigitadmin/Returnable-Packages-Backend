@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AssetCategoryDTO {
-	
+
 	private Long id;
 	private boolean active;
 	private Long orgId;

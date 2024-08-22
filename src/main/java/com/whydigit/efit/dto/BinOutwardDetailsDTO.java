@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BinOutwardDetailsDTO {
-	
+
 	private String asset;
 	private String assetCode;
 	private int qty;

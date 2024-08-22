@@ -2,6 +2,7 @@ package com.whydigit.efit.repo;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -40,14 +41,54 @@ public interface KitRepo extends JpaRepository<KitVO, Long> {
 
 	KitVO findAllByKitNo(String kitName);
 
-	@Query(nativeQuery = true, value = "SELECT kit, availkitqty FROM availablekitemitter WHERE orgid =?1 AND emitterid =?2 AND kit =?3 AND flowid =?4")
-	List<Object[]> findByavaliableKitQtyByEmitter(Long orgId, Long emitterId, String kitId, Long flowId);
+//	@Query(nativeQuery = true,value="SELECT \r\n"
+//			+ "    a.kitcode AS kitcode,\r\n"
+//			+ "    COALESCE(FLOOR(MIN(a.avalqty)), 0) AS avalqty\r\n"
+//			+ "FROM\r\n"
+//			+ "    (\r\n"
+//			+ "    SELECT \r\n"
+//			+ "        a.kitno AS kitcode,\r\n"
+//			+ "        b.asset AS asset,\r\n"
+//			+ "        b.quantity AS quantity,\r\n"
+//			+ "        COALESCE(SUM(c.skuqty), 0) AS SUM_skuqty,\r\n"
+//			+ "        CASE\r\n"
+//			+ "            WHEN b.quantity <> 0 THEN COALESCE(SUM(c.skuqty) / b.quantity, 0)\r\n"
+//			+ "            ELSE 0\r\n"
+//			+ "        END AS avalqty\r\n"
+//			+ "    FROM\r\n"
+//			+ "        kit a\r\n"
+//			+ "    JOIN kit2 b ON a.kitid = b.kitid\r\n"
+//			+ "    LEFT JOIN stockdetails c ON b.asset = c.sku\r\n"
+//			+ "        AND c.status = 'S' and stockbranch=?2 and c.orgid=?1\r\n"
+//			+ "    GROUP BY  a.kitno, b.asset, b.quantity\r\n"
+//			+ "    ) a where a.kitcode=?3\r\n"
+//			+ "GROUP BY a.kitcode")
+//	List<Object[]> findByAvailableKitQtyByEmitter(Long orgId, String stockbranch, String kitId);
 
 	boolean existsByKitNoAndOrgId(String kitNo, long orgId);
 
 	boolean existsByKitDescAndOrgId(String kitDesc, long orgId);
 
 	KitVO findAllByKitNoAndOrgId(String kitName, long orgId);
+
+	@Query(nativeQuery = true,value = " select g.kitno kitcode,g.kitqty avlqty from(\r\n"
+			+ "select f.flow,f.emitterid,f.kitno,orgid,sum(invqty) -sum(outqty) kitqty from (\r\n"
+			+ "select a.flow,a.emitterid,a.kitcode kitno,a.orgid,SUM(a.allotedqty)invqty,0 outqty from bininward a group by a.flow,a.emitterid,a.kitcode,a.orgid\r\n"
+			+ "union\r\n"
+			+ "select flow,emitterid,kitno ,orgid,0 invqty,SUM(outwardkitqty) outqty from binoutward group by flow,orgid,emitterid,kitno) f where f.flow=?4\r\n"
+			+ "and f.orgid=?1 and f.emitterid=?2 and f.kitno=?3 group by f.flow,f.emitterid,f.kitno,orgid)g where g.kitqty >0")
+	Set<Object[]> findByAvailableKitQtyByEmitter(Long orgId, Long emitterId, String kitId, String flowName);
+	
+	@Query(nativeQuery = true,value = " select g.flow,g.kitno kitcode,g.kitqty avlqty from(\r\n"
+			+ "select f.flow,f.emitterid,f.kitno,orgid,sum(invqty) -sum(outqty) kitqty from (\r\n"
+			+ "select a.flow,a.emitterid,a.kitcode kitno,a.orgid,SUM(a.allotedqty)invqty,0 outqty from bininward a group by a.flow,a.emitterid,a.kitcode,a.orgid\r\n"
+			+ "union\r\n"
+			+ "select flow,emitterid,kitno ,orgid,0 invqty,SUM(outwardkitqty) outqty from binoutward group by flow,orgid,emitterid,kitno) f where f.flow=?3\r\n"
+			+ "and f.orgid=?1 and f.emitterid=?2  group by f.flow,f.emitterid,f.kitno,orgid)g where g.kitqty >0")
+	Set<Object[]> findByStockKitQtyByEmitter(Long orgId, Long emitterId, String flowName);
+	
+	
+
 
 	
 
