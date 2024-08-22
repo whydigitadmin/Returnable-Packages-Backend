@@ -39,189 +39,200 @@ public class TaxInvoiceVO {
 	@Column(name = "logowidth")
 	private int logoWidth;
 
-	@Column(name = "title")
-	private String title;
+	@Column(name = "title", columnDefinition = "TEXT")
+    private String title;
 
-	@Column(name = "companyname", length = 1000)
-	private String companyName;
+    @Column(name = "companyname", length = 1000, columnDefinition = "TEXT")
+    private String companyName;
 
-	@Column(name = "name")
-	private String name;
+    @Column(name = "name", columnDefinition = "TEXT")
+    private String name;
 
-	@Column(name = "companyaddress")
-	private String companyAddress;
+    @Column(name = "companyaddress", columnDefinition = "TEXT")
+    private String companyAddress;
 
-	@Column(name = "companyaddress2")
-	private String companyAddress2;
+    @Column(name = "companyaddress2", columnDefinition = "TEXT")
+    private String companyAddress2;
 
-	@Column(name = "companycountry")
-	private String companyCountry;
+    @Column(name = "companycountry", columnDefinition = "TEXT")
+    private String companyCountry;
 
-	@Column(name = "billto")
-	private String billTo;
+    @Column(name = "billto", columnDefinition = "TEXT")
+    private String billTo;
 
-	@Column(name = "clientname")
-	private String clientName;
+    @Column(name = "clientname", columnDefinition = "TEXT")
+    private String clientName;
 
-	@Column(name = "clientaddress")
-	private String clientAddress;
+    @Column(name = "clientaddress", columnDefinition = "TEXT")
+    private String clientAddress;
 
-	@Column(name = "clientaddress2")
-	private String clientAddress2;
+    @Column(name = "clientaddress2", columnDefinition = "TEXT")
+    private String clientAddress2;
 
-	@Column(name = "clientcountry")
-	private String clientCountry;
+    @Column(name = "clientcountry", columnDefinition = "TEXT")
+    private String clientCountry;
 
-	@Column(name = "shipto")
-	private String shipTo;
+    @Column(name = "shipto", columnDefinition = "TEXT")
+    private String shipTo;
 
-	@Column(name = "sclientname")
-	private String sclientName;
+    @Column(name = "sclientname", columnDefinition = "TEXT")
+    private String sclientName;
 
-	@Column(name = "sclientaddress")
-	private String sclientAddress;
+    @Column(name = "sclientaddress", columnDefinition = "TEXT")
+    private String sclientAddress;
 
-	@Column(name = "sclientaddress2")
-	private String sclientAddress2;
+    @Column(name = "sclientaddress2", columnDefinition = "TEXT")
+    private String sclientAddress2;
 
-	@Column(name = "sclientcountry")
-	private String sclientCountry;
+    @Column(name = "sclientcountry", columnDefinition = "TEXT")
+    private String sclientCountry;
 
-	@Column(name = "invoicetitlelabel")
-	private String invoiceTitleLabel;
+    @Column(name = "invoicetitlelabel", columnDefinition = "TEXT")
+    private String invoiceTitleLabel;
 
-	@Column(name = "invoicetitle")
-	private String invoiceTitle;
+    @Column(name = "invoicetitle", columnDefinition = "TEXT")
+    private String invoiceTitle;
 
-	@Column(name = "invoicedatelabel")
-	private String invoiceDateLabel;
+    @Column(name = "invoicedatelabel", columnDefinition = "TEXT")
+    private String invoiceDateLabel;
 
-	@Column(name = "invoicedate")
-	private String invoiceDate;
+    @Column(name = "invoicedate", columnDefinition = "TEXT")
+    private String invoiceDate;
 
-	@Column(name = "invoiceduedatelabel")
-	private String invoiceDueDateLabel;
+    @Column(name = "invoiceduedatelabel", columnDefinition = "TEXT")
+    private String invoiceDueDateLabel;
 
-	@Column(name = "invoiceduedate")
-	private String invoiceDueDate;
+    @Column(name = "invoiceduedate", columnDefinition = "TEXT")
+    private String invoiceDueDate;
 
-	@Column(name = "productlinedescription")
-	private String productLineDescription;
+    @Column(name = "productlinedescription", columnDefinition = "TEXT")
+    private String productLineDescription;
 
-	@Column(name = "productlinequantity")
-	private String productLineQuantity;
+    @Column(name = "productlinequantity", columnDefinition = "TEXT")
+    private String productLineQuantity;
 
-	@Column(name = "productlinequantityrate")
-	private String productLineQuantityRate;
+    @Column(name = "productlinequantityrate", columnDefinition = "TEXT")
+    private String productLineQuantityRate;
 
-	@Column(name = "productlinequantityamount")
-	private String productLineQuantityAmount;
+    @Column(name = "productlinequantityamount", columnDefinition = "TEXT")
+    private String productLineQuantityAmount;
 
-	@Column(name = "kitlinedate")
-	private String kitLineDate;
+    @Column(name = "kitlinedate", columnDefinition = "TEXT")
+    private String kitLineDate;
 
-	@Column(name = "kitlinemanifestno")
-	private String kitLineManifestNo;
+    @Column(name = "kitlinemanifestno", columnDefinition = "TEXT")
+    private String kitLineManifestNo;
 
-	@Column(name = "kitlineemitter")
-	private String kitLineEmitter;
+    @Column(name = "kitlineemitter", columnDefinition = "TEXT")
+    private String kitLineEmitter;
 
-	@Column(name = "kitlinelocation")
-	private String kitLineLocation;
+    @Column(name = "kitlinelocation", columnDefinition = "TEXT")
+    private String kitLineLocation;
 
-	@Column(name = "kitlinekitno")
-	private String kitLineKitNo;
+    @Column(name = "kitlinekitno", columnDefinition = "TEXT")
+    private String kitLineKitNo;
 
-	@Column(name = "kitlinekitqty")
-	private String kitLineKitQty;
+    @Column(name = "kitlinekitqty", columnDefinition = "TEXT")
+    private String kitLineKitQty;
 
-	@Column(name = "subtotalabel")
-	private String subTotalLabel;
+    @Column(name = "subtotalabel", columnDefinition = "TEXT")
+    private String subTotalLabel;
 
-	@Column(name = "taxlabel")
-	private String taxLabel;
+    @Column(name = "taxlabel", columnDefinition = "TEXT")
+    private String taxLabel;
 
-	@Column(name = "taxlabel1")
-	private String taxLabel1;
-	
-	@Column(name = "taxlabel2")
-	private String taxLabel2;
+    @Column(name = "taxlabel1", columnDefinition = "TEXT")
+    private String taxLabel1;
 
-	@Column(name = "totallabel")
-	private String totalLabel;
+    @Column(name = "taxlabel2", columnDefinition = "TEXT")
+    private String taxLabel2;
 
-	@Column(name = "currency")
-	private String currency;
+    @Column(name = "totallabel", columnDefinition = "TEXT")
+    private String totalLabel;
 
-	@Column(name = "noteslabel")
-	private String notesLabel;
+    @Column(name = "currency", columnDefinition = "TEXT")
+    private String currency;
 
-	@Column(name = "notes")
-	private String notes;
+    @Column(name = "noteslabel", columnDefinition = "TEXT")
+    private String notesLabel;
 
-	@Column(name = "termlabel")
-	private String termLabel;
+    @Column(name = "notes", columnDefinition = "TEXT")
+    private String notes;
 
-	@Column(name = "term", length = 1000)
-	private String term;
+    @Column(name = "termlabel", columnDefinition = "TEXT")
+    private String termLabel;
 
-	@Column(name = "payto")
-	private String payTo;
+    @Column(name = "term", length = 1000, columnDefinition = "TEXT")
+    private String term;
 
-	@Column(name = "bankname")
-	private String bankName;
+    @Column(name = "payto", columnDefinition = "TEXT")
+    private String payTo;
 
-	@Column(name = "accountname")
-	private String accountName;
+    @Column(name = "bankname", columnDefinition = "TEXT")
+    private String bankName;
 
-	@Column(name = "accountno")
-	private String accountNo;
+    @Column(name = "accountname", columnDefinition = "TEXT")
+    private String accountName;
 
-	@Column(name = "ifsc")
-	private String IFSC;
+    @Column(name = "accountno", columnDefinition = "TEXT")
+    private String accountNo;
 
-	@Column(name = "paytolabel")
-	private String payToLabel;
+    @Column(name = "ifsc", columnDefinition = "TEXT")
+    private String IFSC;
 
-	@Column(name = "banknamelabel")
-	private String bankNameLabel;
+    @Column(name = "paytolabel", columnDefinition = "TEXT")
+    private String payToLabel;
 
-	@Column(name = "accountnamelabel")
-	private String accountNameLabel;
+    @Column(name = "banknamelabel", columnDefinition = "TEXT")
+    private String bankNameLabel;
 
-	@Column(name = "accountnolabel")
-	private String accountNoLabel;
+    @Column(name = "accountnamelabel", columnDefinition = "TEXT")
+    private String accountNameLabel;
 
-	@Column(name = "ifscLabel")
-	private String IFSCLabel;
-	
-	@Column(name = "invoiceno")
-	private String invoiceNo;
-	@Column(name = "invoicenolabel")
-	private String invoiceNoLabel;
-	@Column(name = "terms")
-	private String terms;
-	@Column(name = "termslabel")
-	private String termsLabel;
-	@Column(name = "duedatelabel")
-	private String dueDateLabel;
-	@Column(name = "duedate")
-	private String dueDate;
-	@Column(name = "servicemonthlabel")
-	private String serviceMonthLabel;
-	@Column(name = "servicemonth")
-	private String serviceMonth;
-	@Column(name = "placesupplylabel")
-	private String placeSupplyLabel;
-	@Column(name = "placesupply")
-	private String placeSupply;
-	
-	@Column(name = "createdby")
-	private String createdBy;
-	@Column(name = "modifiedby")
-	private String modifiedBy;
-	@Column(name = "orgid")
-	private Long orgId;
+    @Column(name = "accountnolabel", columnDefinition = "TEXT")
+    private String accountNoLabel;
+
+    @Column(name = "ifscLabel", columnDefinition = "TEXT")
+    private String IFSCLabel;
+
+    @Column(name = "invoiceno", columnDefinition = "TEXT")
+    private String invoiceNo;
+
+    @Column(name = "invoicenolabel", columnDefinition = "TEXT")
+    private String invoiceNoLabel;
+
+    @Column(name = "terms", columnDefinition = "TEXT")
+    private String terms;
+
+    @Column(name = "termslabel", columnDefinition = "TEXT")
+    private String termsLabel;
+
+    @Column(name = "duedatelabel", columnDefinition = "TEXT")
+    private String dueDateLabel;
+
+    @Column(name = "duedate", columnDefinition = "TEXT")
+    private String dueDate;
+
+    @Column(name = "servicemonthlabel", columnDefinition = "TEXT")
+    private String serviceMonthLabel;
+
+    @Column(name = "servicemonth", columnDefinition = "TEXT")
+    private String serviceMonth;
+
+    @Column(name = "placesupplylabel", columnDefinition = "TEXT")
+    private String placeSupplyLabel;
+
+    @Column(name = "placesupply", columnDefinition = "TEXT")
+    private String placeSupply;
+
+    @Column(name = "createdby", columnDefinition = "TEXT")
+    private String createdBy;
+
+    @Column(name = "modifiedby", columnDefinition = "TEXT")
+    private String modifiedBy;
+
+    @Column(name = "orgid")
+    private Long orgId;
 	
 	private boolean cancel=false;
 	

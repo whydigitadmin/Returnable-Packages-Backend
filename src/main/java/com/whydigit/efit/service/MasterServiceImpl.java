@@ -3657,7 +3657,7 @@ public class MasterServiceImpl implements MasterService {
 			invoiceVO.setPoNo(invoiceDTO.getPoNo());
 			invoiceVO.setProductLines(invoiceProductLinesVO);
 			invoiceVO.setCreatedBy(invoiceDTO.getCreatedBy());
-			invoiceVO.setModifiedeBy(invoiceDTO.getCreatedBy());
+			invoiceVO.setModifiedBy(invoiceDTO.getCreatedBy());
 			 String base64Image = invoiceDTO.getLogo();
 			if (base64Image != null && base64Image.startsWith("data:image/")) {
 	            base64Image = base64Image.substring(base64Image.indexOf(",") + 1);
@@ -3697,7 +3697,7 @@ public class MasterServiceImpl implements MasterService {
 					invoiceProductLinesVO.add(invoiceProductLinesVO1);
 				}
 			}
-	        invoiceVO.setModifiedeBy(invoiceDTO.getCreatedBy());
+	        invoiceVO.setModifiedBy(invoiceDTO.getCreatedBy());
 	        invoiceVO.setProductLines(invoiceProductLinesVO);
 	        mapInvoiceDTOToInvoiceVO(invoiceDTO,invoiceVO);
 	        String base64Image = invoiceDTO.getLogo();
