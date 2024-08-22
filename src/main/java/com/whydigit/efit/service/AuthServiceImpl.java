@@ -191,7 +191,7 @@ public class AuthServiceImpl implements AuthService {
 			{
 				if (compareEncodedPasswordWithEncryptedPassword(loginRequest.getPassword(), userVO.getPassword())) {
 //					if(!userVO.isLoginStatus()) {
-						updateUserLoginInformation(userVO);
+						updateUserLoginInformation(userVO,loginRequest);
 //					}
 //					else {
 //						throw new ApplicationContextException(UserConstants.ERRROR_MSG_LOGIN_STATUS);
@@ -247,11 +247,11 @@ public class AuthServiceImpl implements AuthService {
 	/**
 	 * @param userVO
 	 */
-	private void updateUserLoginInformation(UserVO userVO1) {
+	private void updateUserLoginInformation(UserVO userVO1,LoginFormDTO loginRequest) {
 		try {
 			userVO1.setLoginStatus(true);
 			userRepo.save(userVO1);
-			userService.createUserAction(userVO1.getUserName(), userVO1.getUserId(),
+			userService.createUserLoginAction(userVO1.getUserName(), userVO1.getUserId(),loginRequest.getLoginIp(),
 					UserConstants.USER_ACTION_TYPE_LOGIN);
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage());

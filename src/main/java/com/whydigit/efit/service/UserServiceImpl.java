@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import com.whydigit.efit.common.CommonConstant;
 import com.whydigit.efit.common.UserConstants;
+import com.whydigit.efit.dto.LoginFormDTO;
 import com.whydigit.efit.dto.UserResponseDTO;
 import com.whydigit.efit.entity.UserActionVO;
 import com.whydigit.efit.entity.UserVO;
@@ -57,11 +58,23 @@ public class UserServiceImpl implements UserService {
 		try {
 			userVO.setLoginStatus(false);
 			userRepo.save(userVO);
-			createUserAction(userVO.getUserName(), userVO.getUserId(), UserConstants.USER_ACTION_TYPE_LOGOUT);
+			createUserLogoutAction(userVO.getUserName(), userVO.getUserId(), UserConstants.USER_ACTION_TYPE_LOGOUT);
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage());
 			throw new ApplicationContextException(UserConstants.ERRROR_MSG_UNABLE_TO_UPDATE_USER_INFORMATION);
 		}
+	}
+
+	private void createUserLogoutAction(String userName, Long userId, String userActionTypeLogout) {
+		try {
+			UserActionVO userActionVO = new UserActionVO();
+			userActionVO.setUserName(userName);
+			userActionVO.setUserId(userId);
+			userActionRepo.save(userActionVO);
+		} catch (Exception e) {
+			LOGGER.error(e.getMessage());
+		}
+		
 	}
 
 	@Override
@@ -107,10 +120,22 @@ public class UserServiceImpl implements UserService {
 			userVO.setActive(false);
 			userVO.setAccountRemovedDate(new Date());
 			userRepo.save(userVO);
-			createUserAction(userVO.getUserName(), userVO.getUserId(), UserConstants.USER_ACTION_REMOVE_ACCOUNT);
+			createUserRemoveAction(userVO.getUserName(), userVO.getUserId(), UserConstants.USER_ACTION_REMOVE_ACCOUNT);
 		} else {
 			throw new ApplicationContextException(UserConstants.ERRROR_MSG_INVALID_USER_NAME);
 		}
+	}
+
+	private void createUserRemoveAction(String userName, Long userId, String userActionRemoveAccount) {
+		try {
+			UserActionVO userActionVO = new UserActionVO();
+			userActionVO.setUserName(userName);
+			userActionVO.setUserId(userId);
+			userActionRepo.save(userActionVO);
+		} catch (Exception e) {
+			LOGGER.error(e.getMessage());
+		}
+		
 	}
 
 	public static UserResponseDTO mapUserVOToDTO(UserVO userVO) {
@@ -126,4 +151,21 @@ public class UserServiceImpl implements UserService {
 		userDTO.setAccountRemovedDate(userVO.getAccountRemovedDate());
 		return userDTO;
 	}
+
+	@Override
+	public void createUserLoginAction(String userName, Long userId, String loginIp, String userActionTypeLogin) {
+		try {
+			UserActionVO userActionVO = new UserActionVO();
+			userActionVO.setUserName(userName);
+			userActionVO.setUserId(userId);
+			userActionVO.setActionType(userActionTypeLogin);
+			userActionVO.setLoginIp(loginIp);
+			userActionRepo.save(userActionVO);
+		} catch (Exception e) {
+			LOGGER.error(e.getMessage());
+		}
+		
+	}
+
+	
 }
