@@ -27,6 +27,7 @@ public class UserActionVO {
 	private long userId;
 	private String actionType;
 	private String actionDate;
+	private String loginIp;
 
 	@PrePersist
 	public void onSave() {
