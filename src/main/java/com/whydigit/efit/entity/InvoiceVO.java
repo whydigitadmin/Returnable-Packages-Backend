@@ -39,6 +39,14 @@ public class InvoiceVO {
     private int logoWidth;
 	@Column(name = "title")
     private String title;
+	@Column(name = "podate")
+    private String poDate;
+	@Column(name = "podatelabel")
+    private String poDateLabel;
+	@Column(name = "pono")
+    private String poNo;
+	@Column(name = "ponolabel")
+    private String poNoLabel;
 	@Column(name = "companyname")
     private String companyName;
 	@Column(name = "name")
@@ -97,18 +105,14 @@ public class InvoiceVO {
     private String totalLabel;
 	@Column(name = "subtotallabel")
     private String subTotalLabel;
-	
-	
 	@Column(name = "orgid")
 	private Long orgId;
 	@Column(name = "createdby")
 	private String createdBy;
 	@Column(name = "modifiedby")
 	private String modifiedeBy;
-	
 	@Column(name="cancel")
 	private boolean cancel=false;
-	
 	@OneToMany(mappedBy = "invoiceVO", cascade = CascadeType.ALL)
 	@JsonManagedReference
     private List<InvoiceProductLinesVO>productLines;

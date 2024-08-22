@@ -4090,7 +4090,6 @@ public class MasterController extends BaseController {
 	public ResponseEntity<ResponseDTO> createUpdateInvocie(@RequestBody InvoiceDTO invoiceDTO) {
 	    String methodName = "createUpdateInvocie()";
 	    LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
-	    String errorMsg = null;
 	    Map<String, Object> responseObjectsMap = new HashMap<>();
 	    ResponseDTO responseDTO = null;
 	    try {
@@ -4099,7 +4098,7 @@ public class MasterController extends BaseController {
 	        responseObjectsMap.put("invoiceVO", invoiceVO.get("invoiceVO"));
 	        responseDTO = createServiceResponse(responseObjectsMap);
 	    } catch (Exception e) {
-	        errorMsg = e.getMessage();
+	    	String errorMsg =  e.getMessage();
 	        LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
 	        responseDTO = createServiceResponseError(responseObjectsMap, errorMsg, errorMsg);
 	    }
@@ -4167,7 +4166,6 @@ public class MasterController extends BaseController {
 	public ResponseEntity<ResponseDTO> createUpdateTaxInvocie(@RequestBody TaxInvoiceDTO taxInvoiceDTO) {
 	    String methodName = "createUpdateTaxInvocie()";
 	    LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
-	    String errorMsg = null;
 	    Map<String, Object> responseObjectsMap = new HashMap<>();
 	    ResponseDTO responseDTO = null;
 	    try {
@@ -4176,7 +4174,7 @@ public class MasterController extends BaseController {
 	        responseObjectsMap.put("taxInvoiceVO", taxInvoiceVO.get("taxInvoiceVO"));
 	        responseDTO = createServiceResponse(responseObjectsMap);
 	    } catch (Exception e) {
-	        errorMsg = e.getMessage();
+	    	String errorMsg =  e.getMessage();
 	        LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
 	        responseDTO = createServiceResponseError(responseObjectsMap, errorMsg, errorMsg);
 	    }

@@ -915,7 +915,6 @@ public class OemController extends BaseController {
 	public ResponseEntity<ResponseDTO> createUpdateRetrievalManifest(@RequestBody RetrievalManifestProviderDTO retrievalManifestProviderDTO) {
 	    String methodName = "createUpdateRetrievalManifest()";
 	    LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
-	    
 	    Map<String, Object> responseObjectsMap = new HashMap<>();
 	    ResponseDTO responseDTO = null;
 	    try {

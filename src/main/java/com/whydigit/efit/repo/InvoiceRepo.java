@@ -12,6 +12,8 @@ public interface InvoiceRepo extends JpaRepository<InvoiceVO, Long>{
 
 	@Query(value = "select a from InvoiceVO a where a.orgId=?1")
 	List<InvoiceVO> findAllByOrgId(Long orgId);
+
+	boolean existsByOrgIdAndPoNo(Long orgId, String poNo);
 	
 
 

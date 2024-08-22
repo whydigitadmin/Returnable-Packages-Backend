@@ -20,6 +20,10 @@ public class InvoiceDTO {
     private String title;
     private String companyName;
     private String name;
+    private String poDate;
+    private String poDateLabel;
+    private String poNo;
+    private String poNoLabel;
     private String companyAddress;
     private String companyAddress2;
     private String companyCountry;

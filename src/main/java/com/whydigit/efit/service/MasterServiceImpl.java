@@ -3650,6 +3650,11 @@ public class MasterServiceImpl implements MasterService {
 					invoiceProductLinesVO.add(invoiceProductLinesVO1);
 				}
 			}
+			if(invoiceRepo.existsByOrgIdAndPoNo(invoiceDTO.getOrgId(),invoiceDTO.getPoNo()))
+			{
+				throw new ApplicationException("Po No already Exists");
+			}
+			invoiceVO.setPoNo(invoiceDTO.getPoNo());
 			invoiceVO.setProductLines(invoiceProductLinesVO);
 			invoiceVO.setCreatedBy(invoiceDTO.getCreatedBy());
 			invoiceVO.setModifiedeBy(invoiceDTO.getCreatedBy());
@@ -3667,6 +3672,14 @@ public class MasterServiceImpl implements MasterService {
 		{
 			
 			invoiceVO=invoiceRepo.findById(invoiceDTO.getId()).get();
+			if(!invoiceVO.getPoNo().equals(invoiceDTO.getPoNo()))
+			{
+				if(invoiceRepo.existsByOrgIdAndPoNo(invoiceDTO.getOrgId(),invoiceDTO.getPoNo()))
+				{
+					throw new ApplicationException("Po No already Exists");
+				}
+				invoiceVO.setPoNo(invoiceDTO.getPoNo());		
+			}
 			List<InvoiceProductLinesVO>invoiceProductLinesVO2= invoiceProductLinesRepo.findByInvoiceVO(invoiceVO);
 	        invoiceProductLinesRepo.deleteAll(invoiceProductLinesVO2);
 	        
@@ -3696,6 +3709,11 @@ public class MasterServiceImpl implements MasterService {
 	        message = "Invoice Updated successfully";
 			
 		}
+		String pono=invoiceDTO.getPoNo();
+		 if(pono==null)
+		    {
+		    	throw new ApplicationException("Field cannot be Empty");
+		    }
 		invoiceRepo.save(invoiceVO);
 		Map<String, Object> response = new HashMap<>();
 	    response.put("invoiceVO", invoiceVO);
@@ -3708,6 +3726,8 @@ public class MasterServiceImpl implements MasterService {
         invoiceVO.setTitle(invoiceDTO.getTitle());
         invoiceVO.setCompanyName(invoiceDTO.getCompanyName());
         invoiceVO.setName(invoiceDTO.getName());
+        invoiceVO.setPoDate(invoiceDTO.getPoDate());
+        invoiceVO.setPoDateLabel(invoiceDTO.getPoDateLabel());
         invoiceVO.setCompanyAddress(invoiceDTO.getCompanyAddress());
         invoiceVO.setCompanyAddress2(invoiceDTO.getCompanyAddress2());
         invoiceVO.setCompanyCountry(invoiceDTO.getCompanyCountry());
@@ -3784,6 +3804,12 @@ public class MasterServiceImpl implements MasterService {
 	                taxInvoiceKitLineVOs.add(kitLineVO);
 	            }
 	        }
+	        
+				if(taxInvoiceRepo.existsByOrgIdAndInvoiceNo(taxInvoiceDTO.getOrgId(),taxInvoiceDTO.getInvoiceNo()))
+				{
+					throw new ApplicationException("InvoiceNo already Exists");
+				}
+				taxInvoiceVO.setInvoiceNo(taxInvoiceDTO.getInvoiceNo());		
 
 	        taxInvoiceVO.setProductLines(taxInvoiceProductLineVOs);
 	        taxInvoiceVO.setKitLines(taxInvoiceKitLineVOs);
@@ -3801,6 +3827,15 @@ public class MasterServiceImpl implements MasterService {
 	        message = "Tax Invoice Created successfully";
 	    } else {
 	        taxInvoiceVO = taxInvoiceRepo.findById(taxInvoiceDTO.getId()).get();
+	        
+	        if(!taxInvoiceVO.getInvoiceNo().equals(taxInvoiceDTO.getInvoiceNo()))
+			{
+				if(taxInvoiceRepo.existsByOrgIdAndInvoiceNo(taxInvoiceDTO.getOrgId(),taxInvoiceDTO.getInvoiceNo()))
+				{
+					throw new ApplicationException("InvoiceNo already Exists");
+				}
+				taxInvoiceVO.setInvoiceNo(taxInvoiceDTO.getInvoiceNo());		
+			}
 	       
 	        List<TaxInvoiceProductLineVO> existingProductLines = taxInvoiceProductLineRepo.findByTaxInvoiceVO(taxInvoiceVO);
 	        taxInvoiceProductLineRepo.deleteAll(existingProductLines);
@@ -3851,7 +3886,11 @@ public class MasterServiceImpl implements MasterService {
 
 	        message = "Tax Invoice Updated successfully";
 	    }
-
+	    String invoiceno=taxInvoiceDTO.getInvoiceNo();
+	    if(invoiceno==null)
+	    {
+	    	throw new ApplicationException("Field cannot be Empty");
+	    }
 	    taxInvoiceRepo.save(taxInvoiceVO);
 	    Map<String, Object> response = new HashMap<>();
 	    response.put("taxInvoiceVO", taxInvoiceVO);
@@ -3914,7 +3953,6 @@ public class MasterServiceImpl implements MasterService {
 	    taxInvoiceVO.setAccountNoLabel(taxInvoiceDTO.getAccountNoLabel());
 	    taxInvoiceVO.setIFSCLabel(taxInvoiceDTO.getIFSCLabel());
 	    taxInvoiceVO.setOrgId(taxInvoiceDTO.getOrgId());
-	    taxInvoiceVO.setInvoiceNo(taxInvoiceDTO.getInvoiceNo());
 	    taxInvoiceVO.setInvoiceNoLabel(taxInvoiceDTO.getInvoiceNoLabel());
 	    taxInvoiceVO.setTerms(taxInvoiceDTO.getTerms());
 	    taxInvoiceVO.setTermsLabel(taxInvoiceDTO.getTermsLabel());
