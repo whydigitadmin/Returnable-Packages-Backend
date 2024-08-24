@@ -3,6 +3,8 @@ package com.whydigit.efit.service;
 import java.util.List;
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletRequest;
+
 import com.whydigit.efit.dto.ChangePasswordFormDTO;
 import com.whydigit.efit.dto.CreateOrganizationFormDTO;
 import com.whydigit.efit.dto.CreateUserFormDTO;
@@ -17,7 +19,7 @@ public interface AuthService {
 
 	public void signup(CreateOrganizationFormDTO createOrganizationFormDTO);
 
-	public UserResponseDTO login(LoginFormDTO loginRequest);
+	public UserResponseDTO login(LoginFormDTO loginRequest,HttpServletRequest request);
 
 	public void logout(String userName);
 
