@@ -47,6 +47,7 @@ import com.whydigit.efit.dto.FlowDTO;
 import com.whydigit.efit.dto.InvoiceDTO;
 import com.whydigit.efit.dto.KitDTO;
 import com.whydigit.efit.dto.KitResponseDTO;
+import com.whydigit.efit.dto.PaymentAdviceDTO;
 import com.whydigit.efit.dto.PoDTO;
 import com.whydigit.efit.dto.PodDTO;
 import com.whydigit.efit.dto.ProofOfDeliveryDTO;
@@ -75,6 +76,7 @@ import com.whydigit.efit.entity.InvoiceVO;
 import com.whydigit.efit.entity.KitVO;
 import com.whydigit.efit.entity.ManufacturerProductVO;
 import com.whydigit.efit.entity.ManufacturerVO;
+import com.whydigit.efit.entity.PaymentAdviceVO;
 import com.whydigit.efit.entity.PoVO;
 import com.whydigit.efit.entity.PodVO;
 import com.whydigit.efit.entity.ProofOfDeliveryVO;
@@ -1068,7 +1070,7 @@ public class MasterController extends BaseController {
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
-		Map<String, List<VendorVO>> vendorVO  = null;
+		Map<String, List<VendorVO>> vendorVO = null;
 		try {
 			vendorVO = masterService.VendorsType(orgId);
 		} catch (Exception e) {
@@ -1085,6 +1087,7 @@ public class MasterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
+
 	@GetMapping("/AllVendor")
 	public ResponseEntity<ResponseDTO> getAllVendor(@RequestParam Long orgId) {
 		String methodName = "getAllVendor()";
@@ -3365,8 +3368,6 @@ public class MasterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-	
-	
 
 	@GetMapping("/getAssetDetailsForAssetInward")
 	public ResponseEntity<ResponseDTO> getAssetDetailsForAssetInward(@RequestParam Long orgId,
@@ -4034,15 +4035,16 @@ public class MasterController extends BaseController {
 	}
 
 	@GetMapping("/getActiveAssetcategory")
-	public ResponseEntity<ResponseDTO> getActiveAssetcategory(@RequestParam(required = true) Long orgId,@RequestParam(required = true) String assetCategory) {
+	public ResponseEntity<ResponseDTO> getActiveAssetcategory(@RequestParam(required = true) Long orgId,
+			@RequestParam(required = true) String assetCategory) {
 		String methodName = "getActiveAssetcategory()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
-		List<String> activeAssetcategory  = new ArrayList<>();
+		List<String> activeAssetcategory = new ArrayList<>();
 		try {
-			activeAssetcategory = masterService.getActiveAssetcategory(orgId,assetCategory);
+			activeAssetcategory = masterService.getActiveAssetcategory(orgId, assetCategory);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
@@ -4052,13 +4054,13 @@ public class MasterController extends BaseController {
 			responseObjectsMap.put("category", activeAssetcategory);
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} else {
-			responseDTO = createServiceResponseError(responseObjectsMap, "Active Asset Category Information receive failed",
-					errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap,
+					"Active Asset Category Information receive failed", errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-	
+
 	@GetMapping("/getAllActiveAssetcategory")
 	public ResponseEntity<ResponseDTO> getAllActiveAssetcategory(@RequestParam(required = true) Long orgId) {
 		String methodName = "getAllActiveAssetcategory()";
@@ -4066,7 +4068,7 @@ public class MasterController extends BaseController {
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
-		List<String> activeAssetcategory  = new ArrayList<>();
+		List<String> activeAssetcategory = new ArrayList<>();
 		try {
 			activeAssetcategory = masterService.getAllActiveAssetcategory(orgId);
 		} catch (Exception e) {
@@ -4078,34 +4080,33 @@ public class MasterController extends BaseController {
 			responseObjectsMap.put("category", activeAssetcategory);
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} else {
-			responseDTO = createServiceResponseError(responseObjectsMap, "Active Asset Category Information receive failed",
-					errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap,
+					"Active Asset Category Information receive failed", errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-	
 
 	@PutMapping("/createUpdateInvoice")
 	public ResponseEntity<ResponseDTO> createUpdateInvocie(@RequestBody InvoiceDTO invoiceDTO) {
-	    String methodName = "createUpdateInvocie()";
-	    LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
-	    Map<String, Object> responseObjectsMap = new HashMap<>();
-	    ResponseDTO responseDTO = null;
-	    try {
-	        Map<String, Object> invoiceVO = masterService.createUpdateInvoice(invoiceDTO);
-	        responseObjectsMap.put(CommonConstant.STRING_MESSAGE, invoiceVO.get("message"));
-	        responseObjectsMap.put("invoiceVO", invoiceVO.get("invoiceVO"));
-	        responseDTO = createServiceResponse(responseObjectsMap);
-	    } catch (Exception e) {
-	    	String errorMsg =  e.getMessage();
-	        LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-	        responseDTO = createServiceResponseError(responseObjectsMap, errorMsg, errorMsg);
-	    }
-	    LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
-	    return ResponseEntity.ok().body(responseDTO);
+		String methodName = "createUpdateInvocie()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		try {
+			Map<String, Object> invoiceVO = masterService.createUpdateInvoice(invoiceDTO);
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, invoiceVO.get("message"));
+			responseObjectsMap.put("invoiceVO", invoiceVO.get("invoiceVO"));
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} catch (Exception e) {
+			String errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, errorMsg, errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
 	}
-	
+
 	@GetMapping("/getAllInvoiceByOrgId")
 	public ResponseEntity<ResponseDTO> getAllInvoiceByOrgId(@RequestParam(required = true) Long orgId) {
 		String methodName = "getAllInvoiceByOrgId()";
@@ -4113,7 +4114,7 @@ public class MasterController extends BaseController {
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
-		List<InvoiceVO> invoiceVO  = new ArrayList<>();
+		List<InvoiceVO> invoiceVO = new ArrayList<>();
 		try {
 			invoiceVO = masterService.getAllInvoice(orgId);
 		} catch (Exception e) {
@@ -4131,7 +4132,7 @@ public class MasterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-	
+
 	@GetMapping("/getInvoiceById")
 	public ResponseEntity<ResponseDTO> getInvoiceById(@RequestParam(required = true) Long id) {
 		String methodName = "getInvoiceById()";
@@ -4139,7 +4140,7 @@ public class MasterController extends BaseController {
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
-		InvoiceVO invoiceVO  = new InvoiceVO();
+		InvoiceVO invoiceVO = new InvoiceVO();
 		try {
 			invoiceVO = masterService.getInvoiceById(id);
 		} catch (Exception e) {
@@ -4157,31 +4158,29 @@ public class MasterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-	
-	
-	
+
 	// Tax Invoice
-	
+
 	@PutMapping("/createUpdateTaxInvoice")
 	public ResponseEntity<ResponseDTO> createUpdateTaxInvocie(@RequestBody TaxInvoiceDTO taxInvoiceDTO) {
-	    String methodName = "createUpdateTaxInvocie()";
-	    LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
-	    Map<String, Object> responseObjectsMap = new HashMap<>();
-	    ResponseDTO responseDTO = null;
-	    try {
-	        Map<String, Object> taxInvoiceVO = masterService.createUpdateTaxInvoice(taxInvoiceDTO);
-	        responseObjectsMap.put(CommonConstant.STRING_MESSAGE, taxInvoiceVO.get("message"));
-	        responseObjectsMap.put("taxInvoiceVO", taxInvoiceVO.get("taxInvoiceVO"));
-	        responseDTO = createServiceResponse(responseObjectsMap);
-	    } catch (Exception e) {
-	    	String errorMsg =  e.getMessage();
-	        LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
-	        responseDTO = createServiceResponseError(responseObjectsMap, errorMsg, errorMsg);
-	    }
-	    LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
-	    return ResponseEntity.ok().body(responseDTO);
+		String methodName = "createUpdateTaxInvocie()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		try {
+			Map<String, Object> taxInvoiceVO = masterService.createUpdateTaxInvoice(taxInvoiceDTO);
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, taxInvoiceVO.get("message"));
+			responseObjectsMap.put("taxInvoiceVO", taxInvoiceVO.get("taxInvoiceVO"));
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} catch (Exception e) {
+			String errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, errorMsg, errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
 	}
-	
+
 	@GetMapping("/getAllTaxInvoiceByOrgId")
 	public ResponseEntity<ResponseDTO> getAllTaxInvoiceByOrgId(@RequestParam(required = true) Long orgId) {
 		String methodName = "getAllTaxInvoiceByOrgId()";
@@ -4189,7 +4188,7 @@ public class MasterController extends BaseController {
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
-		List<TaxInvoiceVO> taxInvoiceVO  = new ArrayList<>();
+		List<TaxInvoiceVO> taxInvoiceVO = new ArrayList<>();
 		try {
 			taxInvoiceVO = masterService.getAllTaxInvoice(orgId);
 		} catch (Exception e) {
@@ -4207,7 +4206,7 @@ public class MasterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-	
+
 	@GetMapping("/getTaxInvoiceById")
 	public ResponseEntity<ResponseDTO> getTaxInvoiceById(@RequestParam(required = true) Long id) {
 		String methodName = "getTaxInvoiceById()";
@@ -4215,7 +4214,7 @@ public class MasterController extends BaseController {
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
-		TaxInvoiceVO taxInvoiceVO  = new TaxInvoiceVO();
+		TaxInvoiceVO taxInvoiceVO = new TaxInvoiceVO();
 		try {
 			taxInvoiceVO = masterService.getTaxInvoiceById(id);
 		} catch (Exception e) {
@@ -4233,4 +4232,78 @@ public class MasterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
+
+	// PaymentAdvice
+	@PutMapping("/createUpdatePaymentAdvice")
+	public ResponseEntity<ResponseDTO> createUpdatePaymentAdvice(@RequestBody PaymentAdviceDTO paymentAdviceDTO) {
+		String methodName = "createUpdatePaymentAdvice()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		try {
+			Map<String, Object> paymentAdviceVO = masterService.createUpdatePaymentAdvice(paymentAdviceDTO);
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, paymentAdviceVO.get("message"));
+			responseObjectsMap.put("paymentAdviceVO", paymentAdviceVO.get("paymentAdviceVO"));
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} catch (Exception e) {
+			String errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, errorMsg, errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
+	@GetMapping("/getAllPaymentAdviceByOrgId")
+	public ResponseEntity<ResponseDTO> getAllPaymentAdviceByOrgId(@RequestParam(required = true) Long orgId) {
+		String methodName = "getAllPaymentAdviceByOrgId()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<PaymentAdviceVO> paymentAdviceVO = new ArrayList<>();
+		try {
+			paymentAdviceVO = masterService.getAllPaymentAdvice(orgId);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "PaymentAdvice Information get successfully");
+			responseObjectsMap.put("paymentAdviceVO", paymentAdviceVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "PaymentAdvice Information receive failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
+	@GetMapping("/getPaymentAdviceById")
+	public ResponseEntity<ResponseDTO> getPaymentAdviceById(@RequestParam(required = true) Long id) {
+		String methodName = "getPaymentAdviceById()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		PaymentAdviceVO paymentAdviceVO = new PaymentAdviceVO();
+		try {
+			paymentAdviceVO = masterService.getPaymentAdviceById(id);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "PaymentAdvice Information get successfully");
+			responseObjectsMap.put("paymentAdviceVO", paymentAdviceVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "PaymentAdvice Information receive failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
 }

@@ -3,16 +3,13 @@ package com.whydigit.efit.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class InvoiceProductLinesDTO {
+public class PaymentAdviceBillDetailsDTO {
 	
-	private String description;
-    private String quantity;
-    private String rate;
-    private Long amount;
-	
-
+	private Long id;
+	private String billReference;
+	private String date;
+	private Long amount;
 }

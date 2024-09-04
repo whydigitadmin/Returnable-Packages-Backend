@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -80,6 +79,9 @@ import com.whydigit.efit.dto.InvoiceProductLinesDTO;
 import com.whydigit.efit.dto.KitAssetDTO;
 import com.whydigit.efit.dto.KitDTO;
 import com.whydigit.efit.dto.KitResponseDTO;
+import com.whydigit.efit.dto.PaymentAdviceBillDetailsDTO;
+import com.whydigit.efit.dto.PaymentAdviceDTO;
+import com.whydigit.efit.dto.PaymentAdviceDetailsDTO;
 import com.whydigit.efit.dto.Po1DTO;
 import com.whydigit.efit.dto.PoDTO;
 import com.whydigit.efit.dto.Pod1DTO;
@@ -127,6 +129,9 @@ import com.whydigit.efit.entity.KitAssetVO;
 import com.whydigit.efit.entity.KitVO;
 import com.whydigit.efit.entity.ManufacturerProductVO;
 import com.whydigit.efit.entity.ManufacturerVO;
+import com.whydigit.efit.entity.PaymentAdviceBillDetailsVO;
+import com.whydigit.efit.entity.PaymentAdviceDetailsVO;
+import com.whydigit.efit.entity.PaymentAdviceVO;
 import com.whydigit.efit.entity.PoVO;
 import com.whydigit.efit.entity.PoVO1;
 import com.whydigit.efit.entity.Pod1VO;
@@ -177,6 +182,9 @@ import com.whydigit.efit.repo.KitAssetRepo;
 import com.whydigit.efit.repo.KitRepo;
 import com.whydigit.efit.repo.ManufacturerProductRepo;
 import com.whydigit.efit.repo.ManufacturerRepo;
+import com.whydigit.efit.repo.PaymentAdviceBillDetailsRepo;
+import com.whydigit.efit.repo.PaymentAdviceDetailsRepo;
+import com.whydigit.efit.repo.PaymentAdviceRepo;
 import com.whydigit.efit.repo.Po1Repo;
 import com.whydigit.efit.repo.PoRepo;
 import com.whydigit.efit.repo.PodRepo;
@@ -196,7 +204,6 @@ import com.whydigit.efit.repo.VendorRepo;
 import com.whydigit.efit.repo.WarehouseRepository;
 import com.whydigit.efit.util.CommonUtils;
 
-
 @Service
 public class MasterServiceImpl implements MasterService {
 
@@ -208,25 +215,25 @@ public class MasterServiceImpl implements MasterService {
 
 	@Autowired
 	AssetRepo assetRepo;
-	
+
 	@Autowired
 	AssetCategoryRepo assetCategoryRepo;
-	
+
 	@Autowired
 	TaxInvoiceRepo taxInvoiceRepo;
-	
+
 	@Autowired
 	TaxInvoiceProductLineRepo taxInvoiceProductLineRepo;
-	
+
 	@Autowired
 	TaxInvoiceKitLineRepo taxInvoiceKitLineRepo;
-	
+
 	@Autowired
 	CustomersRepo customersRepo;
-	
+
 	@Autowired
 	InvoiceRepo invoiceRepo;
-	
+
 	@Autowired
 	InvoiceProductLinesRepo invoiceProductLinesRepo;
 
@@ -351,6 +358,15 @@ public class MasterServiceImpl implements MasterService {
 
 	@Autowired
 	PodRepo podRepo;
+
+	@Autowired
+	PaymentAdviceRepo paymentAdviceRepo;
+
+	@Autowired
+	PaymentAdviceBillDetailsRepo paymentAdviceBillDetailsRepo;
+
+	@Autowired
+	PaymentAdviceDetailsRepo paymentAdviceDetailsRepo;
 
 	@Autowired
 	private ProofOfDeliveryRepo proofOfDeliveryRepo;
@@ -1817,7 +1833,7 @@ public class MasterServiceImpl implements MasterService {
 		assetInwardVO.setOrgId(assetInwardDTO.getOrgId());
 		assetInwardVO.setCategory(assetInwardDTO.getCategory());
 		assetInwardVO.setAssetCode(assetInwardDTO.getAssetCode());
-		assetInwardVO.setQty(assetInwardDTO.getQty()); 
+		assetInwardVO.setQty(assetInwardDTO.getQty());
 		assetInwardVO.setCreatedBy(assetInwardDTO.getCreatedBy());
 		assetInwardVO.setModifiedBy(assetInwardDTO.getCreatedBy());
 		List<AssetInwardDetailVO> assetInwardDetailVO = new ArrayList<>();
@@ -3630,18 +3646,16 @@ public class MasterServiceImpl implements MasterService {
 		return details;
 	}
 
+	// Invoice
 	@Override
 	public Map<String, Object> createUpdateInvoice(InvoiceDTO invoiceDTO) throws ApplicationException {
-		InvoiceVO invoiceVO=new InvoiceVO();
+		InvoiceVO invoiceVO = new InvoiceVO();
 		String message;
-		if(ObjectUtils.isEmpty(invoiceDTO.getId()))
-		{
-			List<InvoiceProductLinesVO>invoiceProductLinesVO= new ArrayList<>();
-			if(invoiceDTO.getProductLines()!=null)
-			{
-				for(InvoiceProductLinesDTO invoiceProductLinesDTO : invoiceDTO.getProductLines())
-				{
-					InvoiceProductLinesVO invoiceProductLinesVO1= new InvoiceProductLinesVO();
+		if (ObjectUtils.isEmpty(invoiceDTO.getId())) {
+			List<InvoiceProductLinesVO> invoiceProductLinesVO = new ArrayList<>();
+			if (invoiceDTO.getItems() != null) {
+				for (InvoiceProductLinesDTO invoiceProductLinesDTO : invoiceDTO.getItems()) {
+					InvoiceProductLinesVO invoiceProductLinesVO1 = new InvoiceProductLinesVO();
 					invoiceProductLinesVO1.setDescription(invoiceProductLinesDTO.getDescription());
 					invoiceProductLinesVO1.setQuantity(invoiceProductLinesDTO.getQuantity());
 					invoiceProductLinesVO1.setRate(invoiceProductLinesDTO.getRate());
@@ -3650,45 +3664,38 @@ public class MasterServiceImpl implements MasterService {
 					invoiceProductLinesVO.add(invoiceProductLinesVO1);
 				}
 			}
-			if(invoiceRepo.existsByOrgIdAndPoNo(invoiceDTO.getOrgId(),invoiceDTO.getPoNo()))
-			{
+			if (invoiceRepo.existsByOrgIdAndPoNumber(invoiceDTO.getOrgId(), invoiceDTO.getPoNumber())) {
 				throw new ApplicationException("Po No already Exists");
 			}
-			invoiceVO.setPoNo(invoiceDTO.getPoNo());
+			invoiceVO.setPoNumber(invoiceDTO.getPoNumber());
 			invoiceVO.setProductLines(invoiceProductLinesVO);
 			invoiceVO.setCreatedBy(invoiceDTO.getCreatedBy());
 			invoiceVO.setModifiedBy(invoiceDTO.getCreatedBy());
-			 String base64Image = invoiceDTO.getLogo();
-			if (base64Image != null && base64Image.startsWith("data:image/")) {
-	            base64Image = base64Image.substring(base64Image.indexOf(",") + 1);
-	            byte[] imageBytes = Base64.getDecoder().decode(base64Image);
-	            invoiceVO.setLogo(imageBytes);
-	        }
-			mapInvoiceDTOToInvoiceVO(invoiceDTO,invoiceVO);
-			
-			message="Invoice Created successfully";
-		}
-		else
-		{
-			
-			invoiceVO=invoiceRepo.findById(invoiceDTO.getId()).get();
-			if(!invoiceVO.getPoNo().equals(invoiceDTO.getPoNo()))
-			{
-				if(invoiceRepo.existsByOrgIdAndPoNo(invoiceDTO.getOrgId(),invoiceDTO.getPoNo()))
-				{
+//			String base64Image = invoiceDTO.getLogo();
+//			if (base64Image != null && base64Image.startsWith("data:image/")) {
+//				base64Image = base64Image.substring(base64Image.indexOf(",") + 1);
+//				byte[] imageBytes = Base64.getDecoder().decode(base64Image);
+//				invoiceVO.setLogo(imageBytes);
+//			}
+			mapInvoiceDTOToInvoiceVO(invoiceDTO, invoiceVO);
+
+			message = "Invoice Created successfully";
+		} else {
+
+			invoiceVO = invoiceRepo.findById(invoiceDTO.getId()).get();
+			if (!invoiceVO.getPoNumber().equals(invoiceDTO.getPoNumber())) {
+				if (invoiceRepo.existsByOrgIdAndPoNumber(invoiceDTO.getOrgId(), invoiceDTO.getPoNumber())) {
 					throw new ApplicationException("Po No already Exists");
 				}
-				invoiceVO.setPoNo(invoiceDTO.getPoNo());		
+				invoiceVO.setPoNumber(invoiceDTO.getPoNumber());
 			}
-			List<InvoiceProductLinesVO>invoiceProductLinesVO2= invoiceProductLinesRepo.findByInvoiceVO(invoiceVO);
-	        invoiceProductLinesRepo.deleteAll(invoiceProductLinesVO2);
-	        
-	        List<InvoiceProductLinesVO>invoiceProductLinesVO= new ArrayList<>();
-	        if(invoiceDTO.getProductLines()!=null)
-			{
-				for(InvoiceProductLinesDTO invoiceProductLinesDTO : invoiceDTO.getProductLines())
-				{
-					InvoiceProductLinesVO invoiceProductLinesVO1= new InvoiceProductLinesVO();
+			List<InvoiceProductLinesVO> invoiceProductLinesVO2 = invoiceProductLinesRepo.findByInvoiceVO(invoiceVO);
+			invoiceProductLinesRepo.deleteAll(invoiceProductLinesVO2);
+
+			List<InvoiceProductLinesVO> invoiceProductLinesVO = new ArrayList<>();
+			if (invoiceDTO.getItems() != null) {
+				for (InvoiceProductLinesDTO invoiceProductLinesDTO : invoiceDTO.getItems()) {
+					InvoiceProductLinesVO invoiceProductLinesVO1 = new InvoiceProductLinesVO();
 					invoiceProductLinesVO1.setDescription(invoiceProductLinesDTO.getDescription());
 					invoiceProductLinesVO1.setQuantity(invoiceProductLinesDTO.getQuantity());
 					invoiceProductLinesVO1.setRate(invoiceProductLinesDTO.getRate());
@@ -3697,70 +3704,71 @@ public class MasterServiceImpl implements MasterService {
 					invoiceProductLinesVO.add(invoiceProductLinesVO1);
 				}
 			}
-	        invoiceVO.setModifiedBy(invoiceDTO.getCreatedBy());
-	        invoiceVO.setProductLines(invoiceProductLinesVO);
-	        mapInvoiceDTOToInvoiceVO(invoiceDTO,invoiceVO);
-	        String base64Image = invoiceDTO.getLogo();
-	        if (base64Image != null && base64Image.startsWith("data:image/")) {
-	            base64Image = base64Image.substring(base64Image.indexOf(",") + 1);
-	            byte[] imageBytes = Base64.getDecoder().decode(base64Image);
-	            invoiceVO.setLogo(imageBytes);
-	        }
-	        message = "Invoice Updated successfully";
-			
+			invoiceVO.setModifiedBy(invoiceDTO.getCreatedBy());
+			invoiceVO.setProductLines(invoiceProductLinesVO);
+			mapInvoiceDTOToInvoiceVO(invoiceDTO, invoiceVO);
+//			String base64Image = invoiceDTO.getLogo();
+//			if (base64Image != null && base64Image.startsWith("data:image/")) {
+//				base64Image = base64Image.substring(base64Image.indexOf(",") + 1);
+//				byte[] imageBytes = Base64.getDecoder().decode(base64Image);
+//				invoiceVO.setLogo(imageBytes);
+//			}
+			message = "Invoice Updated successfully";
+
 		}
-		String pono=invoiceDTO.getPoNo();
-		 if(pono==null)
-		    {
-		    	throw new ApplicationException("Field cannot be Empty");
-		    }
+		String pono = invoiceDTO.getPoNumber();
+		if (pono == null) {
+			throw new ApplicationException("Field cannot be Empty");
+		}
 		invoiceRepo.save(invoiceVO);
 		Map<String, Object> response = new HashMap<>();
-	    response.put("invoiceVO", invoiceVO);
-	    response.put("message", message);
-	    return response;
+		response.put("invoiceVO", invoiceVO);
+		response.put("message", message);
+		return response;
 	}
 
 	private void mapInvoiceDTOToInvoiceVO(InvoiceDTO invoiceDTO, InvoiceVO invoiceVO) {
-        invoiceVO.setLogoWidth(invoiceDTO.getLogoWidth());
-        invoiceVO.setTitle(invoiceDTO.getTitle());
-        invoiceVO.setCompanyName(invoiceDTO.getCompanyName());
-        invoiceVO.setName(invoiceDTO.getName());
-        invoiceVO.setPoDate(invoiceDTO.getPoDate());
-        invoiceVO.setPoDateLabel(invoiceDTO.getPoDateLabel());
-        invoiceVO.setCompanyAddress(invoiceDTO.getCompanyAddress());
-        invoiceVO.setCompanyAddress2(invoiceDTO.getCompanyAddress2());
-        invoiceVO.setCompanyCountry(invoiceDTO.getCompanyCountry());
-        invoiceVO.setBillTo(invoiceDTO.getBillTo());
-        invoiceVO.setClientName(invoiceDTO.getClientName());
-        invoiceVO.setClientAddress(invoiceDTO.getClientAddress());
-        invoiceVO.setClientAddress2(invoiceDTO.getClientAddress2());
-        invoiceVO.setClientCountry(invoiceDTO.getClientCountry());
-        invoiceVO.setInvoiceTitleLabel(invoiceDTO.getInvoiceTitleLabel());
-        invoiceVO.setInvoiceTitle(invoiceDTO.getInvoiceTitle());
-        invoiceVO.setInvoiceDateLabel(invoiceDTO.getInvoiceDateLabel());
-        invoiceVO.setInvoiceDate(LocalDate.now());
-        invoiceVO.setInvoiceDueDateLabel(invoiceDTO.getInvoiceDueDateLabel());
-        invoiceVO.setInvoiceDueDate(invoiceDTO.getInvoiceDueDate());
-        invoiceVO.setProductLineDescription(invoiceDTO.getProductLineDescription());
-        invoiceVO.setProductLineQuantity(invoiceDTO.getProductLineQuantity());
-        invoiceVO.setProductLineQuantityRate(invoiceDTO.getProductLineQuantityRate());
-        invoiceVO.setProductLineQuantityAmount(invoiceDTO.getProductLineQuantityAmount());
-        invoiceVO.setNotesLabel(invoiceDTO.getNotesLabel());
-        invoiceVO.setNotes(invoiceDTO.getNotes());
-        invoiceVO.setTaxLabel(invoiceDTO.getTaxLabel());
-        invoiceVO.setTaxLabel1(invoiceDTO.getTaxLabel1());
-        invoiceVO.setTaxLabel2(invoiceDTO.getTaxLabel2());
-        invoiceVO.setTerm(invoiceDTO.getTerm());
-        invoiceVO.setTermLabel(invoiceDTO.getTermLabel());
-        invoiceVO.setTotalLabel(invoiceDTO.getTotalLabel());
-        invoiceVO.setSubTotalLabel(invoiceDTO.getSubTotalLabel());
-        invoiceVO.setOrgId(invoiceDTO.getOrgId());       
+
+		invoiceVO.setPoDate(invoiceDTO.getPoDate());
+		invoiceVO.setPoNumber(invoiceDTO.getPoNumber());
+		invoiceVO.setCompanyAddress(invoiceDTO.getCompanyAddress());
+		invoiceVO.setVendorAddress(invoiceDTO.getVendorAddress());
+		invoiceVO.setDeliveryAddress(invoiceDTO.getDeliveryAddress());
+		invoiceVO.setTermsAndConditions(invoiceDTO.getTermsAndConditions());
+		invoiceVO.setSubtotal(invoiceDTO.getSubtotal());
+		invoiceVO.setSgst(invoiceDTO.getSgst());
+		invoiceVO.setCgst(invoiceDTO.getCgst());
+		invoiceVO.setTotal(invoiceDTO.getTotal());
+		invoiceVO.setGstType(invoiceDTO.getGstType());
+		invoiceVO.setIgst(invoiceDTO.getIgst());
+//		invoiceVO.setLogoWidth(invoiceDTO.getLogoWidth());
+//		invoiceVO.setTitle(invoiceDTO.getTitle());
+//		invoiceVO.setCompanyName(invoiceDTO.getCompanyName());
+//		invoiceVO.setName(invoiceDTO.getName());
+//		invoiceVO.setPoDate(invoiceDTO.getPoDate());
+//		invoiceVO.setCompanyAddress(invoiceDTO.getCompanyAddress());
+//		invoiceVO.setCompanyAddress2(invoiceDTO.getCompanyAddress2());
+//		invoiceVO.setCompanyCountry(invoiceDTO.getCompanyCountry());
+//		invoiceVO.setBillTo(invoiceDTO.getBillTo());
+//		invoiceVO.setClientName(invoiceDTO.getClientName());
+//		invoiceVO.setClientAddress(invoiceDTO.getClientAddress());
+//		invoiceVO.setClientAddress2(invoiceDTO.getClientAddress2());
+//		invoiceVO.setClientCountry(invoiceDTO.getClientCountry());
+//		invoiceVO.setInvoiceTitle(invoiceDTO.getInvoiceTitle());
+//		invoiceVO.setInvoiceDate(LocalDate.now());
+//		invoiceVO.setInvoiceDueDate(invoiceDTO.getInvoiceDueDate());
+//		invoiceVO.setProductLineDescription(invoiceDTO.getProductLineDescription());
+//		invoiceVO.setProductLineQuantity(invoiceDTO.getProductLineQuantity());
+//		invoiceVO.setProductLineQuantityRate(invoiceDTO.getProductLineQuantityRate());
+//		invoiceVO.setProductLineQuantityAmount(invoiceDTO.getProductLineQuantityAmount());
+//		invoiceVO.setNotes(invoiceDTO.getNotes());
+//		invoiceVO.setTerm(invoiceDTO.getTerm());
+		invoiceVO.setOrgId(invoiceDTO.getOrgId());
 	}
 
 	@Override
 	public List<InvoiceVO> getAllInvoice(Long orgId) {
-		
+
 		return invoiceRepo.findAllByOrgId(orgId);
 	}
 
@@ -3768,210 +3776,303 @@ public class MasterServiceImpl implements MasterService {
 	public InvoiceVO getInvoiceById(Long id) {
 		// TODO Auto-generated method stub
 		return invoiceRepo.findById(id).get();
-		}
+	}
 
+	// TaxInvoice
 	@Override
 	public Map<String, Object> createUpdateTaxInvoice(TaxInvoiceDTO taxInvoiceDTO) throws ApplicationException {
-	    TaxInvoiceVO taxInvoiceVO = new TaxInvoiceVO();
-	    String message;
+		TaxInvoiceVO taxInvoiceVO = new TaxInvoiceVO();
+		String message;
 
-	    if (ObjectUtils.isEmpty(taxInvoiceDTO.getId())) {
-	        List<TaxInvoiceProductLineVO> taxInvoiceProductLineVOs = new ArrayList<>();
-	        List<TaxInvoiceKitLineVO> taxInvoiceKitLineVOs = new ArrayList<>();
+		if (ObjectUtils.isEmpty(taxInvoiceDTO.getId())) {
+			List<TaxInvoiceProductLineVO> taxInvoiceProductLineVOs = new ArrayList<>();
+			List<TaxInvoiceKitLineVO> taxInvoiceKitLineVOs = new ArrayList<>();
 
-	        if (taxInvoiceDTO.getProductLines() != null) {
-	            for (TaxInvoiceProductLineDTO productLineDTO : taxInvoiceDTO.getProductLines()) {
-	                TaxInvoiceProductLineVO productLineVO = new TaxInvoiceProductLineVO();
-	                productLineVO.setDescription(productLineDTO.getDescription());
-	                productLineVO.setQuantity(productLineDTO.getQuantity());
-	                productLineVO.setRate(productLineDTO.getRate());
-	                productLineVO.setAmount(productLineDTO.getAmount());
-	                productLineVO.setTaxInvoiceVO(taxInvoiceVO);
-	                taxInvoiceProductLineVOs.add(productLineVO);
-	            }
-	        }
-
-	        if (taxInvoiceDTO.getKitLines() != null) {
-	            for (TaxInvoiceKitLineDTO kitLineDTO : taxInvoiceDTO.getKitLines()) {
-	                TaxInvoiceKitLineVO kitLineVO = new TaxInvoiceKitLineVO();
-	                kitLineVO.setDate(kitLineDTO.getDate());
-	                kitLineVO.setManifestNo(kitLineDTO.getManifestNo());
-	                kitLineVO.setEmitter(kitLineDTO.getEmitter());
-	                kitLineVO.setLocation(kitLineDTO.getLocation());
-	                kitLineVO.setKitNo(kitLineDTO.getKitNo());
-	                kitLineVO.setKitQty(kitLineDTO.getKitQty());
-	                kitLineVO.setTaxInvoiceVO(taxInvoiceVO);
-	                taxInvoiceKitLineVOs.add(kitLineVO);
-	            }
-	        }
-	        
-				if(taxInvoiceRepo.existsByOrgIdAndInvoiceNo(taxInvoiceDTO.getOrgId(),taxInvoiceDTO.getInvoiceNo()))
-				{
-					throw new ApplicationException("InvoiceNo already Exists");
+			if (taxInvoiceDTO.getProductLines() != null) {
+				for (TaxInvoiceProductLineDTO productLineDTO : taxInvoiceDTO.getProductLines()) {
+					TaxInvoiceProductLineVO productLineVO = new TaxInvoiceProductLineVO();
+					productLineVO.setDescription(productLineDTO.getDescription());
+					productLineVO.setQuantity(productLineDTO.getQuantity());
+					productLineVO.setRate(productLineDTO.getRate());
+					productLineVO.setAmount(productLineDTO.getAmount());
+					productLineVO.setTaxInvoiceVO(taxInvoiceVO);
+					taxInvoiceProductLineVOs.add(productLineVO);
 				}
-				taxInvoiceVO.setInvoiceNo(taxInvoiceDTO.getInvoiceNo());		
-
-	        taxInvoiceVO.setProductLines(taxInvoiceProductLineVOs);
-	        taxInvoiceVO.setKitLines(taxInvoiceKitLineVOs);
-	        taxInvoiceVO.setCreatedBy(taxInvoiceDTO.getCreatedBy());
-	        taxInvoiceVO.setModifiedBy(taxInvoiceDTO.getCreatedBy());
-
-	        String base64Image = taxInvoiceDTO.getLogo();
-	        if (base64Image != null && base64Image.startsWith("data:image/")) {
-	            base64Image = base64Image.substring(base64Image.indexOf(",") + 1);
-	            byte[] imageBytes = Base64.getDecoder().decode(base64Image);
-	            taxInvoiceVO.setLogo(imageBytes);
-	        }
-
-	        mapTaxInvoiceDTOToTaxInvoiceVO(taxInvoiceDTO, taxInvoiceVO);
-	        message = "Tax Invoice Created successfully";
-	    } else {
-	        taxInvoiceVO = taxInvoiceRepo.findById(taxInvoiceDTO.getId()).get();
-	        
-	        if(!taxInvoiceVO.getInvoiceNo().equals(taxInvoiceDTO.getInvoiceNo()))
-			{
-				if(taxInvoiceRepo.existsByOrgIdAndInvoiceNo(taxInvoiceDTO.getOrgId(),taxInvoiceDTO.getInvoiceNo()))
-				{
-					throw new ApplicationException("InvoiceNo already Exists");
-				}
-				taxInvoiceVO.setInvoiceNo(taxInvoiceDTO.getInvoiceNo());		
 			}
-	       
-	        List<TaxInvoiceProductLineVO> existingProductLines = taxInvoiceProductLineRepo.findByTaxInvoiceVO(taxInvoiceVO);
-	        taxInvoiceProductLineRepo.deleteAll(existingProductLines);
-	        
-	        List<TaxInvoiceKitLineVO> existingKitLines = taxInvoiceKitLineRepo.findByTaxInvoiceVO(taxInvoiceVO);
-	        taxInvoiceKitLineRepo.deleteAll(existingKitLines);
-	        
-	        List<TaxInvoiceProductLineVO> taxInvoiceProductLineVOs = new ArrayList<>();
-	        List<TaxInvoiceKitLineVO> taxInvoiceKitLineVOs = new ArrayList<>();
 
-	        if (taxInvoiceDTO.getProductLines() != null) {
-	            for (TaxInvoiceProductLineDTO productLineDTO : taxInvoiceDTO.getProductLines()) {
-	                TaxInvoiceProductLineVO productLineVO = new TaxInvoiceProductLineVO();
-	                productLineVO.setDescription(productLineDTO.getDescription());
-	                productLineVO.setQuantity(productLineDTO.getQuantity());
-	                productLineVO.setRate(productLineDTO.getRate());
-	                productLineVO.setAmount(productLineDTO.getAmount());
-	                productLineVO.setTaxInvoiceVO(taxInvoiceVO);
-	                taxInvoiceProductLineVOs.add(productLineVO);
-	            }
-	        }
+			if (taxInvoiceDTO.getKitLines() != null) {
+				for (TaxInvoiceKitLineDTO kitLineDTO : taxInvoiceDTO.getKitLines()) {
+					TaxInvoiceKitLineVO kitLineVO = new TaxInvoiceKitLineVO();
+					kitLineVO.setAnnexureDate(kitLineDTO.getAnnexureDate());
+					kitLineVO.setManifestNo(kitLineDTO.getManifestNo());
+					kitLineVO.setEmitter(kitLineDTO.getEmitter());
+					kitLineVO.setLocation(kitLineDTO.getLocation());
+					kitLineVO.setKitNo(kitLineDTO.getKitNo());
+					kitLineVO.setKitQty(kitLineDTO.getKitQty());
+					kitLineVO.setTaxInvoiceVO(taxInvoiceVO);
+					taxInvoiceKitLineVOs.add(kitLineVO);
+				}
+			}
 
-	        if (taxInvoiceDTO.getKitLines() != null) {
-	            for (TaxInvoiceKitLineDTO kitLineDTO : taxInvoiceDTO.getKitLines()) {
-	                TaxInvoiceKitLineVO kitLineVO = new TaxInvoiceKitLineVO();
-	                kitLineVO.setDate(kitLineDTO.getDate());
-	                kitLineVO.setManifestNo(kitLineDTO.getManifestNo());
-	                kitLineVO.setEmitter(kitLineDTO.getEmitter());
-	                kitLineVO.setLocation(kitLineDTO.getLocation());
-	                kitLineVO.setKitNo(kitLineDTO.getKitNo());
-	                kitLineVO.setKitQty(kitLineDTO.getKitQty());
-	                kitLineVO.setTaxInvoiceVO(taxInvoiceVO);
-	                taxInvoiceKitLineVOs.add(kitLineVO);
-	            }
-	        }
+			if (taxInvoiceRepo.existsByOrgIdAndInvoiceNo(taxInvoiceDTO.getOrgId(), taxInvoiceDTO.getInvoiceNo())) {
+				throw new ApplicationException("InvoiceNo already Exists");
+			}
+			taxInvoiceVO.setInvoiceNo(taxInvoiceDTO.getInvoiceNo());
 
-	        taxInvoiceVO.setModifiedBy(taxInvoiceDTO.getCreatedBy());
-	        taxInvoiceVO.setProductLines(taxInvoiceProductLineVOs);
-	        taxInvoiceVO.setKitLines(taxInvoiceKitLineVOs);
-	        mapTaxInvoiceDTOToTaxInvoiceVO(taxInvoiceDTO, taxInvoiceVO);
+			taxInvoiceVO.setProductLines(taxInvoiceProductLineVOs);
+			taxInvoiceVO.setKitLines(taxInvoiceKitLineVOs);
+			taxInvoiceVO.setCreatedBy(taxInvoiceDTO.getCreatedBy());
+			taxInvoiceVO.setModifiedBy(taxInvoiceDTO.getCreatedBy());
 
-	        String base64Image = taxInvoiceDTO.getLogo();
-	        if (base64Image != null && base64Image.startsWith("data:image/")) {
-	            base64Image = base64Image.substring(base64Image.indexOf(",") + 1);
-	            byte[] imageBytes = Base64.getDecoder().decode(base64Image);
-	            taxInvoiceVO.setLogo(imageBytes);
-	        }
+//			String base64Image = taxInvoiceDTO.getLogo();
+//			if (base64Image != null && base64Image.startsWith("data:image/")) {
+//				base64Image = base64Image.substring(base64Image.indexOf(",") + 1);
+//				byte[] imageBytes = Base64.getDecoder().decode(base64Image);
+//				taxInvoiceVO.setLogo(imageBytes);
+//			}
 
-	        message = "Tax Invoice Updated successfully";
-	    }
-	    String invoiceno=taxInvoiceDTO.getInvoiceNo();
-	    if(invoiceno==null)
-	    {
-	    	throw new ApplicationException("Field cannot be Empty");
-	    }
-	    taxInvoiceRepo.save(taxInvoiceVO);
-	    Map<String, Object> response = new HashMap<>();
-	    response.put("taxInvoiceVO", taxInvoiceVO);
-	    response.put("message", message);
-	    return response;
+			mapTaxInvoiceDTOToTaxInvoiceVO(taxInvoiceDTO, taxInvoiceVO);
+			message = "Tax Invoice Created successfully";
+		} else {
+			taxInvoiceVO = taxInvoiceRepo.findById(taxInvoiceDTO.getId()).get();
+
+			if (!taxInvoiceVO.getInvoiceNo().equals(taxInvoiceDTO.getInvoiceNo())) {
+				if (taxInvoiceRepo.existsByOrgIdAndInvoiceNo(taxInvoiceDTO.getOrgId(), taxInvoiceDTO.getInvoiceNo())) {
+					throw new ApplicationException("InvoiceNo already Exists");
+				}
+				taxInvoiceVO.setInvoiceNo(taxInvoiceDTO.getInvoiceNo());
+			}
+
+			List<TaxInvoiceProductLineVO> existingProductLines = taxInvoiceProductLineRepo
+					.findByTaxInvoiceVO(taxInvoiceVO);
+			taxInvoiceProductLineRepo.deleteAll(existingProductLines);
+
+			List<TaxInvoiceKitLineVO> existingKitLines = taxInvoiceKitLineRepo.findByTaxInvoiceVO(taxInvoiceVO);
+			taxInvoiceKitLineRepo.deleteAll(existingKitLines);
+
+			List<TaxInvoiceProductLineVO> taxInvoiceProductLineVOs = new ArrayList<>();
+			List<TaxInvoiceKitLineVO> taxInvoiceKitLineVOs = new ArrayList<>();
+
+			if (taxInvoiceDTO.getProductLines() != null) {
+				for (TaxInvoiceProductLineDTO productLineDTO : taxInvoiceDTO.getProductLines()) {
+					TaxInvoiceProductLineVO productLineVO = new TaxInvoiceProductLineVO();
+					productLineVO.setDescription(productLineDTO.getDescription());
+					productLineVO.setQuantity(productLineDTO.getQuantity());
+					productLineVO.setRate(productLineDTO.getRate());
+					productLineVO.setAmount(productLineDTO.getAmount());
+					productLineVO.setTaxInvoiceVO(taxInvoiceVO);
+					taxInvoiceProductLineVOs.add(productLineVO);
+				}
+			}
+
+			if (taxInvoiceDTO.getKitLines() != null) {
+				for (TaxInvoiceKitLineDTO kitLineDTO : taxInvoiceDTO.getKitLines()) {
+					TaxInvoiceKitLineVO kitLineVO = new TaxInvoiceKitLineVO();
+					kitLineVO.setAnnexureDate(kitLineDTO.getAnnexureDate());
+					kitLineVO.setManifestNo(kitLineDTO.getManifestNo());
+					kitLineVO.setEmitter(kitLineDTO.getEmitter());
+					kitLineVO.setLocation(kitLineDTO.getLocation());
+					kitLineVO.setKitNo(kitLineDTO.getKitNo());
+					kitLineVO.setKitQty(kitLineDTO.getKitQty());
+					kitLineVO.setTaxInvoiceVO(taxInvoiceVO);
+					taxInvoiceKitLineVOs.add(kitLineVO);
+				}
+			}
+
+			taxInvoiceVO.setModifiedBy(taxInvoiceDTO.getCreatedBy());
+			taxInvoiceVO.setProductLines(taxInvoiceProductLineVOs);
+			taxInvoiceVO.setKitLines(taxInvoiceKitLineVOs);
+			mapTaxInvoiceDTOToTaxInvoiceVO(taxInvoiceDTO, taxInvoiceVO);
+
+//			String base64Image = taxInvoiceDTO.getLogo();
+//			if (base64Image != null && base64Image.startsWith("data:image/")) {
+//				base64Image = base64Image.substring(base64Image.indexOf(",") + 1);
+//				byte[] imageBytes = Base64.getDecoder().decode(base64Image);
+//				taxInvoiceVO.setLogo(imageBytes);
+//			}
+
+			message = "Tax Invoice Updated successfully";
+		}
+		String invoiceno = taxInvoiceDTO.getInvoiceNo();
+		if (invoiceno == null) {
+			throw new ApplicationException("Field cannot be Empty");
+		}
+		taxInvoiceRepo.save(taxInvoiceVO);
+		Map<String, Object> response = new HashMap<>();
+		response.put("taxInvoiceVO", taxInvoiceVO);
+		response.put("message", message);
+		return response;
 	}
 
 	private void mapTaxInvoiceDTOToTaxInvoiceVO(TaxInvoiceDTO taxInvoiceDTO, TaxInvoiceVO taxInvoiceVO) {
-	    taxInvoiceVO.setLogoWidth(taxInvoiceDTO.getLogoWidth());
-	    taxInvoiceVO.setTitle(taxInvoiceDTO.getTitle());
-	    taxInvoiceVO.setCompanyName(taxInvoiceDTO.getCompanyName());
-	    taxInvoiceVO.setName(taxInvoiceDTO.getName());
-	    taxInvoiceVO.setCompanyAddress(taxInvoiceDTO.getCompanyAddress());
-	    taxInvoiceVO.setCompanyAddress2(taxInvoiceDTO.getCompanyAddress2());
-	    taxInvoiceVO.setCompanyCountry(taxInvoiceDTO.getCompanyCountry());
-	    taxInvoiceVO.setBillTo(taxInvoiceDTO.getBillTo());
-	    taxInvoiceVO.setClientName(taxInvoiceDTO.getClientName());
-	    taxInvoiceVO.setClientAddress(taxInvoiceDTO.getClientAddress());
-	    taxInvoiceVO.setClientAddress2(taxInvoiceDTO.getClientAddress2());
-	    taxInvoiceVO.setClientCountry(taxInvoiceDTO.getClientCountry());
-	    taxInvoiceVO.setShipTo(taxInvoiceDTO.getShipTo());
-	    taxInvoiceVO.setSclientName(taxInvoiceDTO.getSclientName());
-	    taxInvoiceVO.setSclientAddress(taxInvoiceDTO.getSclientAddress());
-	    taxInvoiceVO.setSclientAddress2(taxInvoiceDTO.getSclientAddress2());
-	    taxInvoiceVO.setSclientCountry(taxInvoiceDTO.getSclientCountry());
-	    taxInvoiceVO.setInvoiceTitleLabel(taxInvoiceDTO.getInvoiceTitleLabel());
-	    taxInvoiceVO.setInvoiceTitle(taxInvoiceDTO.getInvoiceTitle());
-	    taxInvoiceVO.setInvoiceDateLabel(taxInvoiceDTO.getInvoiceDateLabel());
-	    taxInvoiceVO.setInvoiceDate(taxInvoiceDTO.getInvoiceDate());
-	    taxInvoiceVO.setInvoiceDueDateLabel(taxInvoiceDTO.getInvoiceDueDateLabel());
-	    taxInvoiceVO.setInvoiceDueDate(taxInvoiceDTO.getInvoiceDueDate());
-	    taxInvoiceVO.setProductLineDescription(taxInvoiceDTO.getProductLineDescription());
-	    taxInvoiceVO.setProductLineQuantity(taxInvoiceDTO.getProductLineQuantity());
-	    taxInvoiceVO.setProductLineQuantityRate(taxInvoiceDTO.getProductLineQuantityRate());
-	    taxInvoiceVO.setProductLineQuantityAmount(taxInvoiceDTO.getProductLineQuantityAmount());
-	    taxInvoiceVO.setKitLineDate(taxInvoiceDTO.getKitLineDate());
-	    taxInvoiceVO.setKitLineManifestNo(taxInvoiceDTO.getKitLineManifestNo());
-	    taxInvoiceVO.setKitLineEmitter(taxInvoiceDTO.getKitLineEmitter());
-	    taxInvoiceVO.setKitLineLocation(taxInvoiceDTO.getKitLineLocation());
-	    taxInvoiceVO.setKitLineKitNo(taxInvoiceDTO.getKitLineKitNo());
-	    taxInvoiceVO.setKitLineKitQty(taxInvoiceDTO.getKitLineKitQty());
-	    taxInvoiceVO.setSubTotalLabel(taxInvoiceDTO.getSubTotalLabel());
-	    taxInvoiceVO.setTaxLabel(taxInvoiceDTO.getTaxLabel());
-	    taxInvoiceVO.setTaxLabel1(taxInvoiceDTO.getTaxLabel1());
-	    taxInvoiceVO.setTaxLabel2(taxInvoiceDTO.getTaxLabel2());
-	    taxInvoiceVO.setTotalLabel(taxInvoiceDTO.getTotalLabel());
-	    taxInvoiceVO.setCurrency(taxInvoiceDTO.getCurrency());
-	    taxInvoiceVO.setNotesLabel(taxInvoiceDTO.getNotesLabel());
-	    taxInvoiceVO.setNotes(taxInvoiceDTO.getNotes());
-	    taxInvoiceVO.setTermLabel(taxInvoiceDTO.getTermLabel());
-	    taxInvoiceVO.setTerm(taxInvoiceDTO.getTerm());
-	    taxInvoiceVO.setPayTo(taxInvoiceDTO.getPayTo());
-	    taxInvoiceVO.setBankName(taxInvoiceDTO.getBankName());
-	    taxInvoiceVO.setAccountName(taxInvoiceDTO.getAccountName());
-	    taxInvoiceVO.setAccountNo(taxInvoiceDTO.getAccountNo());
-	    taxInvoiceVO.setIFSC(taxInvoiceDTO.getIFSC());
-	    taxInvoiceVO.setPayToLabel(taxInvoiceDTO.getPayToLabel());
-	    taxInvoiceVO.setBankNameLabel(taxInvoiceDTO.getBankNameLabel());
-	    taxInvoiceVO.setAccountNameLabel(taxInvoiceDTO.getAccountNameLabel());
-	    taxInvoiceVO.setAccountNoLabel(taxInvoiceDTO.getAccountNoLabel());
-	    taxInvoiceVO.setIFSCLabel(taxInvoiceDTO.getIFSCLabel());
-	    taxInvoiceVO.setOrgId(taxInvoiceDTO.getOrgId());
-	    taxInvoiceVO.setInvoiceNoLabel(taxInvoiceDTO.getInvoiceNoLabel());
-	    taxInvoiceVO.setTerms(taxInvoiceDTO.getTerms());
-	    taxInvoiceVO.setTermsLabel(taxInvoiceDTO.getTermsLabel());
-	    taxInvoiceVO.setDueDateLabel(taxInvoiceDTO.getDueDateLabel());
-	    taxInvoiceVO.setDueDate(taxInvoiceDTO.getDueDate());
-	    taxInvoiceVO.setServiceMonthLabel(taxInvoiceDTO.getServiceMonthLabel());
-	    taxInvoiceVO.setServiceMonth(taxInvoiceDTO.getServiceMonth());
-	    taxInvoiceVO.setPlaceSupplyLabel(taxInvoiceDTO.getPlaceSupplyLabel());
-	    taxInvoiceVO.setPlaceSupply(taxInvoiceDTO.getPlaceSupply());
-	    }
-	
+		taxInvoiceVO.setCompanyAddress(taxInvoiceDTO.getCompanyAddress());
+		taxInvoiceVO.setInvoiceNo(taxInvoiceDTO.getInvoiceNo());
+		taxInvoiceVO.setInvoiceDate(taxInvoiceDTO.getInvoiceDate());
+		taxInvoiceVO.setTerm(taxInvoiceDTO.getTerm());
+		taxInvoiceVO.setDueDate(taxInvoiceDTO.getDueDate());
+		taxInvoiceVO.setServiceMonth(taxInvoiceDTO.getServiceMonth());
+		taxInvoiceVO.setBillToAddress(taxInvoiceDTO.getBillToAddress());
+		taxInvoiceVO.setShipToAddress(taxInvoiceDTO.getShipToAddress());
+		taxInvoiceVO.setGstType(taxInvoiceDTO.getGstType());
+		taxInvoiceVO.setSgst(taxInvoiceDTO.getSgst());
+		taxInvoiceVO.setCgst(taxInvoiceDTO.getCgst());
+		taxInvoiceVO.setIgst(taxInvoiceDTO.getIgst());
+		taxInvoiceVO.setTotal(taxInvoiceDTO.getTotal());
+		taxInvoiceVO.setSubTotal(taxInvoiceDTO.getSubTotal());
+		taxInvoiceVO.setTermsAndConditions(taxInvoiceDTO.getTermsAndConditions());
+		taxInvoiceVO.setBankName(taxInvoiceDTO.getBankName());
+		taxInvoiceVO.setAccountName(taxInvoiceDTO.getAccountName());
+		taxInvoiceVO.setAccountNo(taxInvoiceDTO.getAccountNo());
+		taxInvoiceVO.setIFSC(taxInvoiceDTO.getIFSC());
+		taxInvoiceVO.setNotes(taxInvoiceDTO.getNotes());
+		taxInvoiceVO.setOrgId(taxInvoiceDTO.getOrgId());
+	}
+
 	@Override
 	public List<TaxInvoiceVO> getAllTaxInvoice(Long orgId) {
-		
+
 		return taxInvoiceRepo.findAllByOrgId(orgId);
 	}
 
 	@Override
 	public TaxInvoiceVO getTaxInvoiceById(Long id) {
 		return taxInvoiceRepo.findById(id).get();
+	}
+
+	// PaymentAdvice
+	@Override
+	public Map<String, Object> createUpdatePaymentAdvice(PaymentAdviceDTO paymentAdviceDTO)
+			throws ApplicationException {
+		PaymentAdviceVO paymentAdviceVO;
+		String message;
+
+		// Check if ID exists to determine whether to create or update
+		if (ObjectUtils.isEmpty(paymentAdviceDTO.getId())) {
+			// Creating new PaymentAdviceVO
+			paymentAdviceVO = new PaymentAdviceVO();
+			message = "PaymentAdvice Created successfully";
+
+			// Set child entities
+			List<PaymentAdviceBillDetailsVO> paymentAdviceBillDetailsVO = new ArrayList<>();
+			if (paymentAdviceDTO.getPaymentAdviceBillDetailsDTO() != null) {
+				for (PaymentAdviceBillDetailsDTO paymentAdviceBillDetailsDTO : paymentAdviceDTO
+						.getPaymentAdviceBillDetailsDTO()) {
+					PaymentAdviceBillDetailsVO paymentAdviceBillDetailsVO1 = new PaymentAdviceBillDetailsVO();
+					paymentAdviceBillDetailsVO1.setBillReference(paymentAdviceBillDetailsDTO.getBillReference());
+					paymentAdviceBillDetailsVO1.setDate(paymentAdviceBillDetailsDTO.getDate());
+					paymentAdviceBillDetailsVO1.setAmount(paymentAdviceBillDetailsDTO.getAmount());
+					paymentAdviceBillDetailsVO1.setAmount(paymentAdviceBillDetailsDTO.getAmount());
+					paymentAdviceBillDetailsVO1.setPaymentAdviceVO(paymentAdviceVO);
+					paymentAdviceBillDetailsVO.add(paymentAdviceBillDetailsVO1);
+				}
+			}
+
+			List<PaymentAdviceDetailsVO> paymentAdviceDetailsVO = new ArrayList<>();
+			if (paymentAdviceDTO.getPaymentAdviceDetailsDTO() != null) {
+				for (PaymentAdviceDetailsDTO paymentAdviceDetailsDTO : paymentAdviceDTO.getPaymentAdviceDetailsDTO()) {
+					PaymentAdviceDetailsVO paymentAdviceDetailsVO1 = new PaymentAdviceDetailsVO();
+					paymentAdviceDetailsVO1.setPaymentMode(paymentAdviceDetailsDTO.getPaymentMode());
+					paymentAdviceDetailsVO1.setAccountNo(paymentAdviceDetailsDTO.getAccountNo());
+					paymentAdviceDetailsVO1.setBank(paymentAdviceDetailsDTO.getBank());
+					paymentAdviceDetailsVO1.setPaymentAmount(paymentAdviceDetailsDTO.getPaymentAmount());
+					paymentAdviceDetailsVO1.setUtrNo(paymentAdviceDetailsDTO.getUtrNo());
+					paymentAdviceDetailsVO1.setPaymentDate(paymentAdviceDetailsDTO.getPaymentDate());
+					paymentAdviceDetailsVO1.setIssuedFrom(paymentAdviceDetailsDTO.getIssuedFrom());
+					paymentAdviceDetailsVO1.setPaymentAdviceVO(paymentAdviceVO);
+					paymentAdviceDetailsVO.add(paymentAdviceDetailsVO1);
+				}
+			}
+
+			paymentAdviceVO.setPaymentAdviceBillDetailsVO(paymentAdviceBillDetailsVO);
+			paymentAdviceVO.setPaymentAdviceDetailsVO(paymentAdviceDetailsVO);
+			paymentAdviceVO.setCreatedBy(paymentAdviceDTO.getCreatedBy());
+			paymentAdviceVO.setModifiedBy(paymentAdviceDTO.getCreatedBy());
+			mapPaymentAdviceDTOToPaymentAdviceVO(paymentAdviceDTO, paymentAdviceVO);
+
+		} else {
+			// Updating existing PaymentAdviceVO
+			paymentAdviceVO = paymentAdviceRepo.findById(paymentAdviceDTO.getId())
+					.orElseThrow(() -> new ApplicationException("Payment Advice not found"));
+			message = "PaymentAdvice Updated successfully";
+
+			// Delete existing related entities
+			List<PaymentAdviceBillDetailsVO> existingBillDetails = paymentAdviceBillDetailsRepo
+					.findByPaymentAdviceVO(paymentAdviceVO);
+			paymentAdviceBillDetailsRepo.deleteAll(existingBillDetails);
+
+			List<PaymentAdviceDetailsVO> existingDetails = paymentAdviceDetailsRepo
+					.findByPaymentAdviceVO(paymentAdviceVO);
+			paymentAdviceDetailsRepo.deleteAll(existingDetails);
+
+			// Set new child entities
+			List<PaymentAdviceBillDetailsVO> paymentAdviceBillDetailsVO = new ArrayList<>();
+			if (paymentAdviceDTO.getPaymentAdviceBillDetailsDTO() != null) {
+				for (PaymentAdviceBillDetailsDTO paymentAdviceBillDetailsDTO : paymentAdviceDTO
+						.getPaymentAdviceBillDetailsDTO()) {
+					PaymentAdviceBillDetailsVO paymentAdviceBillDetailsVO1 = new PaymentAdviceBillDetailsVO();
+					paymentAdviceBillDetailsVO1.setBillReference(paymentAdviceBillDetailsDTO.getBillReference());
+					paymentAdviceBillDetailsVO1.setDate(paymentAdviceBillDetailsDTO.getDate());
+					paymentAdviceBillDetailsVO1.setAmount(paymentAdviceBillDetailsDTO.getAmount());
+					paymentAdviceBillDetailsVO1.setAmount(paymentAdviceBillDetailsDTO.getAmount());
+					paymentAdviceBillDetailsVO1.setPaymentAdviceVO(paymentAdviceVO);
+					paymentAdviceBillDetailsVO.add(paymentAdviceBillDetailsVO1);
+				}
+			}
+
+			List<PaymentAdviceDetailsVO> paymentAdviceDetailsVO = new ArrayList<>();
+			if (paymentAdviceDTO.getPaymentAdviceDetailsDTO() != null) {
+				for (PaymentAdviceDetailsDTO paymentAdviceDetailsDTO : paymentAdviceDTO.getPaymentAdviceDetailsDTO()) {
+					PaymentAdviceDetailsVO paymentAdviceDetailsVO1 = new PaymentAdviceDetailsVO();
+					paymentAdviceDetailsVO1.setPaymentMode(paymentAdviceDetailsDTO.getPaymentMode());
+					paymentAdviceDetailsVO1.setAccountNo(paymentAdviceDetailsDTO.getAccountNo());
+					paymentAdviceDetailsVO1.setBank(paymentAdviceDetailsDTO.getBank());
+					paymentAdviceDetailsVO1.setPaymentAmount(paymentAdviceDetailsDTO.getPaymentAmount());
+					paymentAdviceDetailsVO1.setUtrNo(paymentAdviceDetailsDTO.getUtrNo());
+					paymentAdviceDetailsVO1.setPaymentDate(paymentAdviceDetailsDTO.getPaymentDate());
+					paymentAdviceDetailsVO1.setIssuedFrom(paymentAdviceDetailsDTO.getIssuedFrom());
+					paymentAdviceDetailsVO1.setPaymentAdviceVO(paymentAdviceVO);
+					paymentAdviceDetailsVO.add(paymentAdviceDetailsVO1);
+				}
+			}
+
+			paymentAdviceVO.setPaymentAdviceBillDetailsVO(paymentAdviceBillDetailsVO);
+			paymentAdviceVO.setPaymentAdviceDetailsVO(paymentAdviceDetailsVO);
+			paymentAdviceVO.setModifiedBy(paymentAdviceDTO.getCreatedBy());
+			mapPaymentAdviceDTOToPaymentAdviceVO(paymentAdviceDTO, paymentAdviceVO);
 		}
+
+		// Save or update the PaymentAdviceVO
+		paymentAdviceRepo.save(paymentAdviceVO);
+
+		// Prepare response
+		Map<String, Object> response = new HashMap<>();
+		response.put("paymentAdviceVO", paymentAdviceVO);
+		response.put("message", message);
+
+		return response;
+	}
+
+	private void mapPaymentAdviceDTOToPaymentAdviceVO(PaymentAdviceDTO paymentAdviceDTO,
+			PaymentAdviceVO paymentAdviceVO) {
+		paymentAdviceVO.setCompanyAddress(paymentAdviceDTO.getCompanyAddress());
+		paymentAdviceVO.setBillerName(paymentAdviceDTO.getBillerName());
+		paymentAdviceVO.setBillerAddress(paymentAdviceDTO.getBillerAddress());
+		paymentAdviceVO.setDate(paymentAdviceDTO.getDate());
+		paymentAdviceVO.setAmount(paymentAdviceDTO.getAmount());
+		paymentAdviceVO.setPaymentMode(paymentAdviceDTO.getPaymentMode());
+		paymentAdviceVO.setOrgId(paymentAdviceDTO.getOrgId());
+	}
+
+	@Override
+	public List<PaymentAdviceVO> getAllPaymentAdvice(Long orgId) {
+
+		return paymentAdviceRepo.findAllByOrgId(orgId);
+	}
+
+	@Override
+	public PaymentAdviceVO getPaymentAdviceById(Long id) {
+		// TODO Auto-generated method stub
+		return paymentAdviceRepo.findById(id).get();
+	}
+
 }

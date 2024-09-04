@@ -31,8 +31,8 @@ public class TaxInvoiceKitLineVO {
 	@Column(name = "taxinvoicekitlineid")
 	private Long id;
 	
-	@Column(name = "kitlinedate")
-	private String date;
+	@Column(name = "annexuredate")
+	private String annexureDate;
 	@Column(name = "manifestno")
     private String manifestNo;
 	@Column(name = "emitter")
