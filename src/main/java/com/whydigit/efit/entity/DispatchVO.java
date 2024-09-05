@@ -36,7 +36,7 @@ public class DispatchVO {
 	@Column(name = "docid")
 	private String docId;
 	@Column(name = "docdate")
-	private LocalDate docDate=LocalDate.now();
+	private LocalDate docDate;
 	@Column(name = "flowid")
 	private Long flowId;
 	@Column(name = "flow")

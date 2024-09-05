@@ -7,5 +7,7 @@ import com.whydigit.efit.entity.IssueManifestProviderVO;
 @Repository
 public interface IssueManifestProviderRepo extends JpaRepository<IssueManifestProviderVO, Long>{
 
+	boolean existsByOrgIdAndTransactionNo(Long orgId, String transactionNo);
+
 
 }

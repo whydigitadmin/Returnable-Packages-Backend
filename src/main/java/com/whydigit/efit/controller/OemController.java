@@ -836,7 +836,6 @@ public class OemController extends BaseController {
 	public ResponseEntity<ResponseDTO> createUpdateIssuemanifest(@RequestBody IssueManifestProviderDTO issueManifestProviderDTO) {
 	    String methodName = "createUpdateIssuemanifest()";
 	    LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
-	    String errorMsg = null;
 	    Map<String, Object> responseObjectsMap = new HashMap<>();
 	    ResponseDTO responseDTO = null;
 	    try {
@@ -845,7 +844,7 @@ public class OemController extends BaseController {
 	        responseObjectsMap.put("issueManifestProviderVO", issueManifestProviderVO.get("issueManifestProviderVO"));
 	        responseDTO = createServiceResponse(responseObjectsMap);
 	    } catch (Exception e) {
-	        errorMsg = e.getMessage();
+	    	String errorMsg =  e.getMessage(); 
 	        LOGGER.error(CommonConstant.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
 	        responseDTO = createServiceResponseError(responseObjectsMap, errorMsg, errorMsg);
 	    }
@@ -916,7 +915,6 @@ public class OemController extends BaseController {
 	public ResponseEntity<ResponseDTO> createUpdateRetrievalManifest(@RequestBody RetrievalManifestProviderDTO retrievalManifestProviderDTO) {
 	    String methodName = "createUpdateRetrievalManifest()";
 	    LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
-	    String errorMsg = null;
 	    Map<String, Object> responseObjectsMap = new HashMap<>();
 	    ResponseDTO responseDTO = null;
 	    try {
@@ -925,7 +923,7 @@ public class OemController extends BaseController {
 	        responseObjectsMap.put("issueManifestProviderVO", retrievalManifestProviderVO.get("retrievalManifestProviderVO"));
 	        responseDTO = createServiceResponse(responseObjectsMap);
 	    } catch (Exception e) {
-	        errorMsg = e.getMessage();
+	    	String errorMsg =  e.getMessage();
 	        LOGGER.error(CommonConstant.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
 	        responseDTO = createServiceResponseError(responseObjectsMap, errorMsg, errorMsg);
 	    }

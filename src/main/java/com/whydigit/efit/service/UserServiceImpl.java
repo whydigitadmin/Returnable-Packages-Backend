@@ -1,6 +1,10 @@
 package com.whydigit.efit.service;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Date;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -13,10 +17,10 @@ import org.springframework.stereotype.Service;
 
 import com.whydigit.efit.common.CommonConstant;
 import com.whydigit.efit.common.UserConstants;
-import com.whydigit.efit.dto.LoginFormDTO;
 import com.whydigit.efit.dto.UserResponseDTO;
 import com.whydigit.efit.entity.UserActionVO;
 import com.whydigit.efit.entity.UserVO;
+import com.whydigit.efit.exception.ApplicationException;
 import com.whydigit.efit.repo.TokenRepo;
 import com.whydigit.efit.repo.UserActionRepo;
 import com.whydigit.efit.repo.UserRepo;
@@ -153,19 +157,35 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void createUserLoginAction(String userName, Long userId, String loginIp, String userActionTypeLogin) {
+	public void createUserLoginAction(String userName, Long userId,HttpServletRequest request, String userActionTypeLogin) {
 		try {
 			UserActionVO userActionVO = new UserActionVO();
 			userActionVO.setUserName(userName);
 			userActionVO.setUserId(userId);
 			userActionVO.setActionType(userActionTypeLogin);
-			userActionVO.setLoginIp(loginIp);
+			String clientIp = request.getHeader("X-Forwarded-For");
+			if (clientIp == null || clientIp.isEmpty()) {
+				clientIp = request.getRemoteAddr();
+			}
+			// Validate and ensure it's an IPv4 address
+			if (isValidIPv4(clientIp)) {
+				userActionVO.setLoginIp(clientIp);
+			} 
 			userActionRepo.save(userActionVO);
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage());
 		}
 		
 	}
+
+	private boolean isValidIPv4(String ip) {
+        try {
+            InetAddress inetAddress = InetAddress.getByName(ip);
+            return inetAddress.getHostAddress().equals(ip) && ip.indexOf(':') == -1; // Check for no colons
+        } catch (UnknownHostException e) {
+            return false;
+        }
+    }
 
 	
 }

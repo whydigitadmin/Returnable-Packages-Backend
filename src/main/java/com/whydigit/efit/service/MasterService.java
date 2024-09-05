@@ -24,6 +24,7 @@ import com.whydigit.efit.dto.FlowDTO;
 import com.whydigit.efit.dto.InvoiceDTO;
 import com.whydigit.efit.dto.KitDTO;
 import com.whydigit.efit.dto.KitResponseDTO;
+import com.whydigit.efit.dto.PaymentAdviceDTO;
 import com.whydigit.efit.dto.PoDTO;
 import com.whydigit.efit.dto.PodDTO;
 import com.whydigit.efit.dto.ProofOfDeliveryDTO;
@@ -51,6 +52,7 @@ import com.whydigit.efit.entity.InvoiceVO;
 import com.whydigit.efit.entity.KitVO;
 import com.whydigit.efit.entity.ManufacturerProductVO;
 import com.whydigit.efit.entity.ManufacturerVO;
+import com.whydigit.efit.entity.PaymentAdviceVO;
 import com.whydigit.efit.entity.PoVO;
 import com.whydigit.efit.entity.PodVO;
 import com.whydigit.efit.entity.ProofOfDeliveryVO;
@@ -409,5 +411,13 @@ public interface MasterService {
 	List<TaxInvoiceVO> getAllTaxInvoice(Long orgId);
 	
 	TaxInvoiceVO getTaxInvoiceById(Long id);
+	
+	// PaymentAdvice
+	
+	Map<String, Object> createUpdatePaymentAdvice(PaymentAdviceDTO paymentAdviceDTO)throws ApplicationException;
+		
+	List<PaymentAdviceVO> getAllPaymentAdvice(Long orgId);
+		
+	PaymentAdviceVO getPaymentAdviceById(Long id);
 
 }

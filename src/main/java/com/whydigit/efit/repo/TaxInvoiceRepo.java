@@ -10,4 +10,6 @@ public interface TaxInvoiceRepo extends JpaRepository<TaxInvoiceVO, Long> {
 
 	List<TaxInvoiceVO> findAllByOrgId(Long orgId);
 
+	boolean existsByOrgIdAndInvoiceNo(Long orgId, String invoiceNo);
+
 }

@@ -38,7 +38,7 @@ public class TaxInvoiceProductLineVO {
 	@Column(name="rate")
 	private String rate;
 	@Column(name="amount")
-	private String amount; 
+	private Long amount; 
 	
 	@ManyToOne
 	@JsonBackReference

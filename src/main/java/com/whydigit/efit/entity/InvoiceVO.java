@@ -22,95 +22,131 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name="invoice")
+@Table(name = "invoice")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class InvoiceVO {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "invoicegen")
 	@SequenceGenerator(name = "invoicegen", sequenceName = "invoiceseq", initialValue = 1000000001, allocationSize = 1)
 	@Column(name = "invoiceid")
 	private Long id;
-	@Column(name = "logo", columnDefinition = "LONGBLOB")
-	private byte[] logo;
-	@Column(name = "logowidth")
-    private int logoWidth;
-	@Column(name = "title")
-    private String title;
-	@Column(name = "companyname")
-    private String companyName;
-	@Column(name = "name")
-    private String name;
-	@Column(name = "companyaddress")
-    private String companyAddress;
-	@Column(name = "companyaddress2")
-    private String companyAddress2;
-	@Column(name = "companycountry")
-    private String companyCountry;
-	@Column(name = "billto")
-    private String billTo;
-	@Column(name = "clientname")
-    private String clientName;
-	@Column(name = "clientaddress")
-    private String clientAddress;
-	@Column(name = "clientaddress2")
-    private String clientAddress2;
-	@Column(name = "clientcountry")
-    private String clientCountry;
-	@Column(name = "invoicetitlelabel")
-    private String invoiceTitleLabel;
-	@Column(name = "invoicetitle")
-    private String invoiceTitle;
-	@Column(name = "invoicedatelabel")
-    private String invoiceDateLabel;
-	@Column(name = "invoicedate")
-    private LocalDate invoiceDate;
-	@Column(name = "invoiceduedatelabel")
-    private String invoiceDueDateLabel;
-	@Column(name = "invoiceduedate")
-    private LocalDate invoiceDueDate;
-	@Column(name = "productlinedescription")
-    private String productLineDescription;
-	@Column(name = "productlinequantity")
-    private String productLineQuantity;
-	@Column(name = "productlinequantityrate")
-    private String productLineQuantityRate;
-	@Column(name = "productlinequantityamount")
-    private String productLineQuantityAmount;
-	@Column(name = "noteslabel")
-    private String notesLabel;
-	@Column(name = "notes",length = 1000)
-    private String notes;
-	@Column(name = "taxlabel")
-    private String taxLabel;
-	@Column(name = "taxlabel1")
-    private String taxLabel1;
-	@Column(name = "term",length = 1000)
-    private String term;
-	@Column(name = "termlabel")
-    private String termLabel;
-	@Column(name = "totallabel")
-    private String totalLabel;
-	@Column(name = "subtotallabel")
-    private String subTotalLabel;
-	
-	
+
+	@Column(name = "podate", columnDefinition = "TEXT")
+	private String poDate;
+
+	@Column(name = "pono", columnDefinition = "TEXT")
+	private String poNumber;
+
+	@Column(name = "companyaddress", columnDefinition = "TEXT")
+	private String companyAddress;
+
+	@Column(name = "vendoraddress", columnDefinition = "TEXT")
+	private String vendorAddress;
+
+	@Column(name = "deliveryaddress", columnDefinition = "TEXT")
+	private String deliveryAddress;
+
+	@Column(name = "termsandconditions", length = 1000, columnDefinition = "TEXT")
+	private String termsAndConditions;
+
+	@Column(name = "subtotal")
+	private Long subtotal;
+
+	@Column(name = "sgst")
+	private Integer sgst;
+
+	@Column(name = "cgst")
+	private Integer cgst;
+
+	@Column(name = "total")
+	private Long total;
+
+	@Column(name = "gsttype", length = 1000, columnDefinition = "TEXT")
+	private String gstType;
+
+	@Column(name = "igst")
+	private Integer igst;
+
 	@Column(name = "orgid")
 	private Long orgId;
-	@Column(name = "createdby")
+	
+	@Column(name = "createdby", columnDefinition = "TEXT")
 	private String createdBy;
-	@Column(name = "modifiedby")
-	private String modifiedeBy;
 	
-	@Column(name="cancel")
-	private boolean cancel=false;
+	@Column(name = "modifiedby", columnDefinition = "TEXT")
+	private String modifiedBy;
 	
+	@Column(name = "cancel")
+	private boolean cancel = false;
+	
+//    @Column(name = "logo", columnDefinition = "LONGBLOB")
+//    private byte[] logo;
+//
+//    @Column(name = "logowidth")
+//    private int logoWidth;
+//
+//    @Column(name = "title", columnDefinition = "TEXT")
+//    private String title;
+	
+//	  @Column(name = "companyname", columnDefinition = "TEXT")
+//    private String companyName;
+
+//    @Column(name = "name", columnDefinition = "TEXT")
+//    private String name;
+
+//    @Column(name = "companyaddress2", columnDefinition = "TEXT")
+//    private String companyAddress2;
+
+//	@Column(name = "companycountry", columnDefinition = "TEXT")
+//	private String companyCountry;
+//
+//	@Column(name = "billto", columnDefinition = "TEXT")
+//	private String billTo;
+//
+//	@Column(name = "clientname", columnDefinition = "TEXT")
+//	private String clientName;
+//
+//	@Column(name = "clientaddress", columnDefinition = "TEXT")
+//	private String clientAddress;
+//
+//	@Column(name = "clientaddress2", columnDefinition = "TEXT")
+//	private String clientAddress2;
+//
+//	@Column(name = "clientcountry", columnDefinition = "TEXT")
+//	private String clientCountry;
+//
+//	@Column(name = "invoicetitle", columnDefinition = "TEXT")
+//	private String invoiceTitle;
+//
+//	@Column(name = "invoicedate")
+//	private LocalDate invoiceDate;
+//
+//	@Column(name = "invoiceduedate")
+//	private LocalDate invoiceDueDate;
+//
+//	@Column(name = "productlinedescription", columnDefinition = "TEXT")
+//	private String productLineDescription;
+//
+//	@Column(name = "productlinequantity", columnDefinition = "TEXT")
+//	private String productLineQuantity;
+//
+//	@Column(name = "productlinequantityrate", columnDefinition = "TEXT")
+//	private String productLineQuantityRate;
+//
+//	@Column(name = "productlinequantityamount", columnDefinition = "TEXT")
+//	private String productLineQuantityAmount;
+//
+//	@Column(name = "notes", length = 1000, columnDefinition = "TEXT")
+//	private String notes;
+
+
 	@OneToMany(mappedBy = "invoiceVO", cascade = CascadeType.ALL)
 	@JsonManagedReference
-    private List<InvoiceProductLinesVO>productLines;
-	
+	private List<InvoiceProductLinesVO> productLines;
+
 	@Embedded
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
 }

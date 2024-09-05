@@ -37,7 +37,7 @@ public class GatheringEmptyVO {
 	@Column(name = "docid")
 	private String docId;
 	@Column(name = "docdate")
-	private LocalDate docDate=LocalDate.now();
+	private LocalDate docDate;
 	@Column(name = "stockBranch")
 	private String stockBranch;
 	@Column(name = "createdby")

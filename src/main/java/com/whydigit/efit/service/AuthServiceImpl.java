@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 
 import org.apache.commons.lang3.ObjectUtils;
@@ -178,7 +179,7 @@ public class AuthServiceImpl implements AuthService {
 	}
 
 	@Override
-	public UserResponseDTO login(LoginFormDTO loginRequest) {
+	public UserResponseDTO login(LoginFormDTO loginRequest,HttpServletRequest request) {
 		String methodName = "login()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		if (ObjectUtils.isEmpty(loginRequest) || StringUtils.isBlank(loginRequest.getUserName())
@@ -191,7 +192,7 @@ public class AuthServiceImpl implements AuthService {
 			{
 				if (compareEncodedPasswordWithEncryptedPassword(loginRequest.getPassword(), userVO.getPassword())) {
 //					if(!userVO.isLoginStatus()) {
-						updateUserLoginInformation(userVO,loginRequest);
+						updateUserLoginInformation(userVO,request);
 //					}
 //					else {
 //						throw new ApplicationContextException(UserConstants.ERRROR_MSG_LOGIN_STATUS);
@@ -247,11 +248,11 @@ public class AuthServiceImpl implements AuthService {
 	/**
 	 * @param userVO
 	 */
-	private void updateUserLoginInformation(UserVO userVO1,LoginFormDTO loginRequest) {
+	private void updateUserLoginInformation(UserVO userVO1,HttpServletRequest request) {
 		try {
 			userVO1.setLoginStatus(true);
 			userRepo.save(userVO1);
-			userService.createUserLoginAction(userVO1.getUserName(), userVO1.getUserId(),loginRequest.getLoginIp(),
+			userService.createUserLoginAction(userVO1.getUserName(), userVO1.getUserId(),request,
 					UserConstants.USER_ACTION_TYPE_LOGIN);
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage());

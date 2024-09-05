@@ -392,6 +392,7 @@ public class OemServiceImpl implements OemService {
 		gatheringEmptyRepo.nextseq();
 
 		gatheringEmptyVO.setDocId(gatheringEmptyDTO.getDocId());
+		gatheringEmptyVO.setDocDate(gatheringEmptyDTO.getDocDate());
 		gatheringEmptyVO.setOrgId(gatheringEmptyDTO.getOrgId());
 		gatheringEmptyVO.setReceiverId(gatheringEmptyDTO.getReceiverId());
 		gatheringEmptyVO.setStockBranch(gatheringEmptyDTO.getStockBranch());
@@ -844,6 +845,15 @@ public class OemServiceImpl implements OemService {
 					.orElseThrow(() -> new ApplicationException(
 							"This Id Not Found Any Information, Invalid Id: " + issueManifestProviderDTO.getId()));
 			issueManifestProviderVO.setUpdatedBy(issueManifestProviderDTO.getCreatedBy());
+			if(!issueManifestProviderVO.getTransactionNo().equals(issueManifestProviderDTO.getTransactionNo()))
+			{
+				if(issueManifestProviderRepo.existsByOrgIdAndTransactionNo(issueManifestProviderDTO.getOrgId(),issueManifestProviderDTO.getTransactionNo()))
+				{
+					throw new ApplicationException("TransactionNo already Exists");
+				}
+				issueManifestProviderVO.setTransactionNo(issueManifestProviderDTO.getTransactionNo());
+						
+			}
 			message = "IssueManifestProvider Updation Sucessfully";
 
 		} else {
@@ -851,6 +861,11 @@ public class OemServiceImpl implements OemService {
 			issueManifestProviderVO = new IssueManifestProviderVO();
 			issueManifestProviderVO.setCreatedBy(issueManifestProviderDTO.getCreatedBy());
 			issueManifestProviderVO.setUpdatedBy(issueManifestProviderDTO.getCreatedBy());
+			if(issueManifestProviderRepo.existsByOrgIdAndTransactionNo(issueManifestProviderDTO.getOrgId(),issueManifestProviderDTO.getTransactionNo()))
+			{
+				throw new ApplicationException("TransactionNo already Exists");
+			}
+			issueManifestProviderVO.setTransactionNo(issueManifestProviderDTO.getTransactionNo());
 			message = "IssueManifestProvider Creatrion Sucessfully";
 		}
 		getIssueManifestProviderVOFromIssueManifestProviderDTO(issueManifestProviderVO, issueManifestProviderDTO);
@@ -864,9 +879,7 @@ public class OemServiceImpl implements OemService {
 	}
 
 	private IssueManifestProviderVO getIssueManifestProviderVOFromIssueManifestProviderDTO(
-			IssueManifestProviderVO issueManifestProviderVO, IssueManifestProviderDTO issueManifestProviderDTO) {
-		
-		issueManifestProviderVO.setTransactionNo(issueManifestProviderDTO.getTransactionNo());
+			IssueManifestProviderVO issueManifestProviderVO, IssueManifestProviderDTO issueManifestProviderDTO) throws ApplicationException {
 		issueManifestProviderVO.setTransactionDate(issueManifestProviderDTO.getTransactionDate());
 		issueManifestProviderVO.setDispatchDate(issueManifestProviderDTO.getDispatchDate());
 		issueManifestProviderVO.setTransactionType(issueManifestProviderDTO.getTransactionType());
@@ -883,7 +896,6 @@ public class OemServiceImpl implements OemService {
 		issueManifestProviderVO.setActive(issueManifestProviderDTO.isActive());
 		issueManifestProviderVO.setCancel(issueManifestProviderDTO.isCancel());
 		issueManifestProviderVO.setOrgId(issueManifestProviderDTO.getOrgId());
-
 		if (issueManifestProviderDTO.getId() != null) {
 
 			List<IssueManifestProviderDetailsVO> issueManifestProviderDetailsVOs = issueManifestProviderDetailsRepo
@@ -937,6 +949,16 @@ public class OemServiceImpl implements OemService {
 					.orElseThrow(() -> new ApplicationException(
 							"This Id Not Found Any Information, Invalid Id: " + retrievalManifestProviderDTO.getId()));
 			retrievalManifestProviderVO.setUpdatedBy(retrievalManifestProviderDTO.getCreatedBy());
+			
+			if(!retrievalManifestProviderVO.getTransactionNo().equals(retrievalManifestProviderDTO.getTransactionNo()))
+			{
+				if(retrievalManifestProviderRepo.existsByOrgIdAndTransactionNo(retrievalManifestProviderDTO.getOrgId(),retrievalManifestProviderDTO.getTransactionNo()))
+				{
+					throw new ApplicationException("TransactionNo already Exists");
+				}
+				retrievalManifestProviderVO.setTransactionNo(retrievalManifestProviderDTO.getTransactionNo());
+						
+			}
 			message = "IssueManifestProvider Updation Sucessfully";
 
 		} else {
@@ -944,6 +966,11 @@ public class OemServiceImpl implements OemService {
 			retrievalManifestProviderVO = new RetrievalManifestProviderVO();
 			retrievalManifestProviderVO.setCreatedBy(retrievalManifestProviderDTO.getCreatedBy());
 			retrievalManifestProviderVO.setUpdatedBy(retrievalManifestProviderDTO.getCreatedBy());
+				if(retrievalManifestProviderRepo.existsByOrgIdAndTransactionNo(retrievalManifestProviderDTO.getOrgId(),retrievalManifestProviderDTO.getTransactionNo()))
+				{
+					throw new ApplicationException("TransactionNo already Exists");
+				}
+				retrievalManifestProviderVO.setTransactionNo(retrievalManifestProviderDTO.getTransactionNo());
 			message = "IssueManifestProvider Creatrion Sucessfully";
 		}
 		getRetrievalManifestProviderVOFromRetrievalManifestProviderDTO(retrievalManifestProviderVO, retrievalManifestProviderDTO);
@@ -957,8 +984,8 @@ public class OemServiceImpl implements OemService {
 	}
 
 	private RetrievalManifestProviderVO getRetrievalManifestProviderVOFromRetrievalManifestProviderDTO(
-			RetrievalManifestProviderVO retrievalManifestProviderVO, RetrievalManifestProviderDTO retrievalManifestProviderDTO) {
-		retrievalManifestProviderVO.setTransactionNo(retrievalManifestProviderDTO.getTransactionNo());
+			RetrievalManifestProviderVO retrievalManifestProviderVO, RetrievalManifestProviderDTO retrievalManifestProviderDTO) throws ApplicationException {
+				
 		retrievalManifestProviderVO.setTransactionDate(retrievalManifestProviderDTO.getTransactionDate());
 		retrievalManifestProviderVO.setDispatchDate(retrievalManifestProviderDTO.getDispatchDate());
 		retrievalManifestProviderVO.setTransactionType(retrievalManifestProviderDTO.getTransactionType());
@@ -973,7 +1000,7 @@ public class OemServiceImpl implements OemService {
 		retrievalManifestProviderVO.setActive(retrievalManifestProviderDTO.isActive());
 		retrievalManifestProviderVO.setCancel(retrievalManifestProviderDTO.isCancel());
 		retrievalManifestProviderVO.setOrgId(retrievalManifestProviderDTO.getOrgId());
-
+		
 		if (retrievalManifestProviderDTO.getId() != null) {
 
 			List<RetrievalManifestProviderDetailsVO> retrievalManifestProviderDetailsVOs = retrievalManifestProviderDetailsRepo
@@ -987,7 +1014,7 @@ public class OemServiceImpl implements OemService {
 				.getRetrievalManifestProviderDetailsDTO()) {
 
 			RetrievalManifestProviderDetailsVO retrievalManifestProviderDetailsVO = new RetrievalManifestProviderDetailsVO();
-
+			
 			retrievalManifestProviderDetailsVO.setAsset(detailsDTO.getAsset());
 			retrievalManifestProviderDetailsVO.setAssetCode(detailsDTO.getAssetCode());
 			retrievalManifestProviderDetailsVO.setAssetQty(detailsDTO.getAssetQty());
