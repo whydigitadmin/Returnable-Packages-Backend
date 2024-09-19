@@ -1,6 +1,7 @@
 package com.whydigit.efit.repo;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -26,5 +27,12 @@ public interface GatheringEmptyRepo extends JpaRepository<GatheringEmptyVO, Long
 	List<GatheringEmptyVO> getAllGatheringEmptyByOrgId(Long orgId);
 	@Query(nativeQuery = true,value = "select * from gatheringempty where receiverid=?1 ")
 	List<GatheringEmptyVO> getAllGatheringEmptyByReceiverId(Long receiverId);
+
+	@Query(nativeQuery = true,value="select docid,docdate,stock_branch from gatheringempty  where receiverid=?2  and  retreival='Pending' and orgid=?1 and stock_branch=?3\r\n"
+			+ "			group by docid,docdate,stock_branch")
+	Set<Object[]> getOemEmptyStockDetailsForRetreival(Long orgId, Long receiverId, String stockBranch);
+
+	@Query("select a from GatheringEmptyVO a where a.docId=?1 ")
+	GatheringEmptyVO findByDocId(String outwardDocId);
 
 }

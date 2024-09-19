@@ -56,6 +56,7 @@ public class GatheringEmptyVO {
 	private String finyr;
 	private String scode = "GEMTY";
 	private String screen="Gathering Empty";
+	private String retreival;
 	
 	@Column(name="receiverid")
 	private Long receiverId;
