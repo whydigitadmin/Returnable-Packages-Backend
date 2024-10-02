@@ -430,6 +430,35 @@ public class MasterController extends BaseController {
 
 	// customers
 
+	@PostMapping("/customerUpload")
+	public ResponseEntity<ResponseDTO> customerUpload(@RequestParam("file") MultipartFile file,
+			@RequestParam("orgId") Long orgId, @RequestParam("createdBy") String createdBy) {
+		String methodName = "customerUpload()";
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		try {
+			// Call service method to process Excel upload
+			masterService.uploadCustomerData(file, orgId, createdBy);
+			// Retrieve the counts after processing
+			Map<String, Object> paramObjectsMap = new HashMap<>();
+			paramObjectsMap.put("message", "Excel Upload For  Customer successful");
+			responseObjectsMap.put("paramObjectsMap", paramObjectsMap);
+			responseDTO = createServiceResponse(responseObjectsMap);
+
+		} catch (Exception e) {
+			String errorMsg = e.getMessage();
+			LOGGER.error(CommonConstant.EXCEPTION, methodName, e);
+			responseObjectsMap.put("statusFlag", "Error");
+			responseObjectsMap.put("status", false);
+			responseObjectsMap.put("errorMessage", errorMsg);
+
+			responseDTO = createServiceResponseError(responseObjectsMap, "Excel Upload For Customer Failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
 	@GetMapping("/customers")
 	public ResponseEntity<ResponseDTO> getAllActiveCustomers(@RequestParam(required = false) Long orgId) {
 		String methodName = "getAllActiveCustomers()";

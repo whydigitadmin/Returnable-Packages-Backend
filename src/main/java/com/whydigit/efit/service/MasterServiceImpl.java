@@ -700,7 +700,7 @@ public class MasterServiceImpl implements MasterService {
 		CustomersVO customersVO = new CustomersVO();
 		customersVO.setOrgId(customersDTO.getOrgId());
 		customersVO.setCustomerType(customersDTO.getCustomerType());
-		customersVO.setEntityLegalName(customersDTO.getEntityLegalName());
+		customersVO.setEntityLegalName(customersDTO.getEntityLegalName().toUpperCase());
 		customersVO.setEmail(customersDTO.getEmail());
 		customersVO.setCreatedBy(customersDTO.getCreatedBy());
 		customersVO.setModifiedBy(customersDTO.getCreatedBy());
@@ -715,7 +715,7 @@ public class MasterServiceImpl implements MasterService {
 			customersRepo.nextRecCode();
 		}
 		customersVO.setCustomerCode(customerCode);
-		customersVO.setDisplayName(customersDTO.getDisplayName());
+		customersVO.setDisplayName(customersDTO.getDisplayName().toUpperCase());
 		customersVO.setPhoneNumber(customersDTO.getPhoneNumber());
 		customersVO.setCustomerActivatePortal(customersDTO.isCustomerActivatePortal());
 		customersVO.setActive(customersDTO.isActive());
@@ -726,18 +726,18 @@ public class MasterServiceImpl implements MasterService {
 			for (CustomersAddressDTO addressDTO : customersDTO.getCustomerAddressDTO()) {
 				CustomersAddressVO custAddress = new CustomersAddressVO();
 				custAddress.setGstRegistrationStatus(addressDTO.getGstRegistrationStatus());
-				custAddress.setStreet1(addressDTO.getStreet1());
-				custAddress.setStreet2(addressDTO.getStreet2());
+				custAddress.setStreet1(addressDTO.getStreet1().toUpperCase());
+				custAddress.setStreet2(addressDTO.getStreet2().toUpperCase());
 				custAddress.setPinCode(addressDTO.getPinCode());
 				custAddress.setPhoneNumber(addressDTO.getPhoneNumber());
-				custAddress.setGstNumber(addressDTO.getGstNumber());
-				custAddress.setCity(addressDTO.getCity());
-				custAddress.setContactName(addressDTO.getContactName());
+				custAddress.setGstNumber(addressDTO.getGstNumber().toUpperCase());
+				custAddress.setCity(addressDTO.getCity().toUpperCase());
+				custAddress.setContactName(addressDTO.getContactName().toUpperCase());
 				custAddress.setState(addressDTO.getState());
 				custAddress.setEmail(addressDTO.getEmail());
-				custAddress.setDesignation(addressDTO.getDesignation());
+				custAddress.setDesignation(addressDTO.getDesignation().toUpperCase());
 				custAddress.setCustomersVO(customersVO);
-				custAddress.setCountry(addressDTO.getCountry());
+				custAddress.setCountry(addressDTO.getCountry().toUpperCase());
 
 				customersAddressVO.add(custAddress);
 			}
@@ -749,10 +749,10 @@ public class MasterServiceImpl implements MasterService {
 			for (CustomersBankDetailsDTO bankDetailsDTO : customersDTO.getCustomerBankDetailsDTO()) {
 				CustomersBankDetailsVO bankdetails = new CustomersBankDetailsVO();
 
-				bankdetails.setBank(bankDetailsDTO.getBank());
-				bankdetails.setAccountName(bankDetailsDTO.getAccountName());
-				bankdetails.setIfscCode(bankDetailsDTO.getIfscCode());
-				bankdetails.setBranch(bankDetailsDTO.getBranch());
+				bankdetails.setBank(bankDetailsDTO.getBank().toUpperCase());
+				bankdetails.setAccountName(bankDetailsDTO.getAccountName().toUpperCase());
+				bankdetails.setIfscCode(bankDetailsDTO.getIfscCode().toUpperCase());
+				bankdetails.setBranch(bankDetailsDTO.getBranch().toUpperCase());
 				bankdetails.setAccountNo(bankDetailsDTO.getAccountNo());
 				bankdetails.setCustomersVO(customersVO);
 
@@ -784,33 +784,33 @@ public class MasterServiceImpl implements MasterService {
 					CustomersAddressVO custAddress = customersAddressRepo.findById(addressDTO.getId()).orElseThrow(
 							() -> new ApplicationException("Address details not found for ID: " + addressDTO.getId()));
 					custAddress.setGstRegistrationStatus(addressDTO.getGstRegistrationStatus());
-					custAddress.setStreet1(addressDTO.getStreet1());
-					custAddress.setStreet2(addressDTO.getStreet2());
+					custAddress.setStreet1(addressDTO.getStreet1().toUpperCase());
+					custAddress.setStreet2(addressDTO.getStreet2().toUpperCase());
 					custAddress.setPinCode(addressDTO.getPinCode());
 					custAddress.setPhoneNumber(addressDTO.getPhoneNumber());
-					custAddress.setGstNumber(addressDTO.getGstNumber());
-					custAddress.setCity(addressDTO.getCity());
-					custAddress.setContactName(addressDTO.getContactName());
-					custAddress.setState(addressDTO.getState());
+					custAddress.setGstNumber(addressDTO.getGstNumber().toUpperCase());
+					custAddress.setCity(addressDTO.getCity().toUpperCase());
+					custAddress.setContactName(addressDTO.getContactName().toUpperCase());
+					custAddress.setState(addressDTO.getState().toUpperCase());
 					custAddress.setEmail(addressDTO.getEmail());
-					custAddress.setDesignation(addressDTO.getDesignation());
-					custAddress.setCountry(addressDTO.getCountry());
+					custAddress.setDesignation(addressDTO.getDesignation().toUpperCase());
+					custAddress.setCountry(addressDTO.getCountry().toUpperCase());
 					custAddress.setCustomersVO(customersVO);
 					customersAddressVO.add(custAddress);
 				} else {
 					CustomersAddressVO custAddress = new CustomersAddressVO();
 					custAddress.setGstRegistrationStatus(addressDTO.getGstRegistrationStatus());
-					custAddress.setStreet1(addressDTO.getStreet1());
-					custAddress.setStreet2(addressDTO.getStreet2());
-					custAddress.setPinCode(addressDTO.getPinCode());
+					custAddress.setStreet1(addressDTO.getStreet1().toUpperCase());
+					custAddress.setStreet2(addressDTO.getStreet2().toUpperCase());
+					custAddress.setPinCode(addressDTO.getPinCode().toUpperCase());
 					custAddress.setPhoneNumber(addressDTO.getPhoneNumber());
-					custAddress.setGstNumber(addressDTO.getGstNumber());
-					custAddress.setCity(addressDTO.getCity());
-					custAddress.setContactName(addressDTO.getContactName());
-					custAddress.setState(addressDTO.getState());
+					custAddress.setGstNumber(addressDTO.getGstNumber().toUpperCase());
+					custAddress.setCity(addressDTO.getCity().toUpperCase());
+					custAddress.setContactName(addressDTO.getContactName().toUpperCase());
+					custAddress.setState(addressDTO.getState().toUpperCase());
 					custAddress.setEmail(addressDTO.getEmail());
-					custAddress.setDesignation(addressDTO.getDesignation());
-					custAddress.setCountry(addressDTO.getCountry());
+					custAddress.setDesignation(addressDTO.getDesignation().toUpperCase());
+					custAddress.setCountry(addressDTO.getCountry().toUpperCase());
 					custAddress.setCustomersVO(customersVO);
 					customersAddressVO.add(custAddress);
 				}
@@ -826,19 +826,19 @@ public class MasterServiceImpl implements MasterService {
 					CustomersBankDetailsVO bankdetails = customersBankDetailsRepo.findById(bankDetailsDTO.getId())
 							.orElseThrow(() -> new ApplicationException(
 									"Bank details not found for ID: " + bankDetailsDTO.getId()));
-					bankdetails.setBank(bankDetailsDTO.getBank());
-					bankdetails.setAccountName(bankDetailsDTO.getAccountName());
-					bankdetails.setIfscCode(bankDetailsDTO.getIfscCode());
-					bankdetails.setBranch(bankDetailsDTO.getBranch());
+					bankdetails.setBank(bankDetailsDTO.getBank().toUpperCase());
+					bankdetails.setAccountName(bankDetailsDTO.getAccountName().toUpperCase());
+					bankdetails.setIfscCode(bankDetailsDTO.getIfscCode().toUpperCase());
+					bankdetails.setBranch(bankDetailsDTO.getBranch().toUpperCase());
 					bankdetails.setAccountNo(bankDetailsDTO.getAccountNo());
 					bankdetails.setCustomersVO(customersVO);
 					customersBankDetailsVO.add(bankdetails);
 				} else {
 					CustomersBankDetailsVO bankdetails = new CustomersBankDetailsVO();
-					bankdetails.setBank(bankDetailsDTO.getBank());
-					bankdetails.setAccountName(bankDetailsDTO.getAccountName());
-					bankdetails.setIfscCode(bankDetailsDTO.getIfscCode());
-					bankdetails.setBranch(bankDetailsDTO.getBranch());
+					bankdetails.setBank(bankDetailsDTO.getBank().toUpperCase());
+					bankdetails.setAccountName(bankDetailsDTO.getAccountName().toUpperCase());
+					bankdetails.setIfscCode(bankDetailsDTO.getIfscCode().toUpperCase());
+					bankdetails.setBranch(bankDetailsDTO.getBranch().toUpperCase());
 					bankdetails.setAccountNo(bankDetailsDTO.getAccountNo());
 					bankdetails.setCustomersVO(customersVO);
 					customersBankDetailsVO.add(bankdetails);
@@ -861,7 +861,7 @@ public class MasterServiceImpl implements MasterService {
 				throw new ApplicationException("Entity Legal Name Already exists");
 			}
 			// Update Entity Name if there's no duplicate
-			customersVO.setEntityLegalName(customersDTO.getEntityLegalName());
+			customersVO.setEntityLegalName(customersDTO.getEntityLegalName().toUpperCase());
 		}
 
 		if (!existingCustomer.getDisplayName().equals(customersDTO.getDisplayName())) {
@@ -870,7 +870,7 @@ public class MasterServiceImpl implements MasterService {
 				throw new ApplicationException("Display Name Already exists");
 			}
 			// Update Display Name if there's no duplicate
-			customersVO.setDisplayName(customersDTO.getDisplayName());
+			customersVO.setDisplayName(customersDTO.getDisplayName().toUpperCase());
 		}
 
 		customersVO.setOrgId(customersDTO.getOrgId());
@@ -882,6 +882,144 @@ public class MasterServiceImpl implements MasterService {
 
 		customersVO.setActive(customersDTO.isActive());
 	}
+	
+	
+	@Override
+	public void uploadCustomerData(MultipartFile file, Long orgId, String createdBy) throws Exception {
+	    try (Workbook workbook = WorkbookFactory.create(file.getInputStream())) {
+
+	        // Reading the customer sheet
+	        Sheet customerSheet = workbook.getSheetAt(0); // Assuming customer sheet is the first one
+	        List<CustomersDTO> customersDTOList = new ArrayList<>();
+
+	        for (Row row : customerSheet) {
+	            if (row.getRowNum() == 0) { // Skipping header
+	                continue;
+	            }
+
+	            CustomersDTO customersDTO = new CustomersDTO();
+	            customersDTO.setOrgId(orgId);
+
+	            // Handling customerType as Integer
+	            if (row.getCell(0).getCellType() == CellType.STRING) {
+	                String customerTypeValue = row.getCell(0).getStringCellValue().trim();
+
+	                if (customerTypeValue.equalsIgnoreCase("EMITTER")) {
+	                    customersDTO.setCustomerType(0); // Set to 0 for EMITTER
+	                } else if (customerTypeValue.equalsIgnoreCase("RECEIVER")) {
+	                    customersDTO.setCustomerType(1); // Set to 1 for RECEIVER
+	                } else {
+	                    // Handle invalid values or throw an exception if necessary
+	                    throw new IllegalArgumentException("Invalid customer type value: " + customerTypeValue);
+	                }
+	            } else if (row.getCell(0).getCellType() == CellType.NUMERIC) {
+	                customersDTO.setCustomerType((int) row.getCell(0).getNumericCellValue()); // Handle numeric values as usual
+	            }
+
+	            // EntityLegalName as String
+	            customersDTO.setEntityLegalName(row.getCell(1).getStringCellValue());
+
+	            // DisplayName as String
+	            customersDTO.setDisplayName(row.getCell(2).getStringCellValue());
+
+	            // Email as String
+	            customersDTO.setEmail(row.getCell(3).getStringCellValue());
+
+	            // PhoneNumber as String (convert numeric to string if necessary)
+	            if (row.getCell(4).getCellType() == CellType.NUMERIC) {
+	                customersDTO.setPhoneNumber(String.valueOf((long) row.getCell(4).getNumericCellValue()));
+	            } else if (row.getCell(4).getCellType() == CellType.STRING) {
+	                customersDTO.setPhoneNumber(row.getCell(4).getStringCellValue());
+	            }
+
+	            customersDTO.setCreatedBy(createdBy);
+	            customersDTO.setCustomerActivatePortal(true); // Assuming it's true
+	            customersDTO.setActive(true); // Assuming it's active
+
+	            // Check for duplicate entry before adding it to the list
+	            if (!customersRepo.existsByOrgIdAndEntityLegalNameIgnoreCase(customersDTO.getOrgId(), customersDTO.getEntityLegalName())) {
+	                customersDTOList.add(customersDTO);
+	            } else {
+	                // Log or handle duplicate data here
+	                System.out.println("Duplicate customer found for orgId: " + orgId + " and entityLegalName: " + customersDTO.getEntityLegalName());
+	            }
+	        }
+
+	        // Reading the address sheet
+	        Sheet addressSheet = workbook.getSheetAt(1); // Assuming address sheet is the second one
+	        for (Row row : addressSheet) {
+	            if (row.getRowNum() == 0) { // Skipping header
+	                continue;
+	            }
+
+	            String displayName = row.getCell(0).getStringCellValue();
+	            CustomersDTO customersDTO = customersDTOList.stream()
+	                    .filter(c -> c.getDisplayName().equals(displayName))
+	                    .findFirst()
+	                    .orElseThrow(() -> new RuntimeException("No customer found for display name: " + displayName));
+
+	            CustomersAddressDTO addressDTO = new CustomersAddressDTO();
+
+	            // Street1 as String
+	            addressDTO.setStreet1(row.getCell(1).getStringCellValue());
+
+	            // Street2 as String
+	            addressDTO.setStreet2(row.getCell(2).getStringCellValue());
+
+	            // City as String
+	            addressDTO.setCity(row.getCell(3).getStringCellValue());
+
+	            // State as String
+	            addressDTO.setState(row.getCell(4).getStringCellValue());
+
+	            // Country as String
+	            addressDTO.setCountry(row.getCell(5).getStringCellValue());
+
+	            // PinCode as String (convert numeric to string if necessary)
+	            if (row.getCell(6).getCellType() == CellType.NUMERIC) {
+	                addressDTO.setPinCode(String.valueOf((long) row.getCell(6).getNumericCellValue()));
+	            } else if (row.getCell(6).getCellType() == CellType.STRING) {
+	                addressDTO.setPinCode(row.getCell(6).getStringCellValue());
+	            }
+
+	            // PhoneNumber as String (convert numeric to string if necessary)
+	            if (row.getCell(7).getCellType() == CellType.NUMERIC) {
+	                addressDTO.setPhoneNumber(String.valueOf((long) row.getCell(7).getNumericCellValue()));
+	            } else if (row.getCell(7).getCellType() == CellType.STRING) {
+	                addressDTO.setPhoneNumber(row.getCell(7).getStringCellValue());
+	            }
+
+	            // GstRegistrationStatus as String
+	            addressDTO.setGstRegistrationStatus(row.getCell(8).getStringCellValue());
+
+	            // GstNumber as String
+	            addressDTO.setGstNumber(row.getCell(9).getStringCellValue());
+
+	            // Email as String
+	            addressDTO.setEmail(row.getCell(10).getStringCellValue());
+
+	            // ContactName as String
+	            addressDTO.setContactName(row.getCell(11).getStringCellValue());
+
+	            // Designation as String
+	            addressDTO.setDesignation(row.getCell(12).getStringCellValue());
+
+	            // Ensure customerAddressDTO list is initialized before adding
+	            if (customersDTO.getCustomerAddressDTO() == null) {
+	                customersDTO.setCustomerAddressDTO(new ArrayList<>());  // Initialize the list if null
+	            }
+	            customersDTO.getCustomerAddressDTO().add(addressDTO);
+	        }
+
+	        // Loop through the DTO list and call createCustomers for each entry
+	        for (CustomersDTO customer : customersDTOList) {
+	            createCustomers(customer); // Assuming this method takes a single CustomersDTO
+	        }
+	    }
+	}
+
+
+
 
 	@Override
 	public void deleteCustomers(Long id) {

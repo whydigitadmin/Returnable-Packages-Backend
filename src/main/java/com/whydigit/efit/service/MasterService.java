@@ -104,6 +104,8 @@ public interface MasterService {
 	CustomersVO createCustomers(CustomersDTO customersDTO);
 
 	CustomersVO updateCustomers(CustomersDTO customersDTO) throws ApplicationException;
+	
+	void uploadCustomerData(MultipartFile file, Long orgId, String createdBy) throws Exception;
 
 	void deleteCustomers(Long id);
 
@@ -419,5 +421,7 @@ public interface MasterService {
 	List<PaymentAdviceVO> getAllPaymentAdvice(Long orgId);
 		
 	PaymentAdviceVO getPaymentAdviceById(Long id);
+
+	
 
 }
