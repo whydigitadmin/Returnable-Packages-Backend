@@ -1010,6 +1010,43 @@ public class MasterServiceImpl implements MasterService {
 	            }
 	            customersDTO.getCustomerAddressDTO().add(addressDTO);
 	        }
+	        
+	        Sheet bankSheet = workbook.getSheetAt(2); // Assuming address sheet is the second one
+	        for (Row row : bankSheet) {
+	            if (row.getRowNum() == 0) { // Skipping header
+	                continue;
+	            }
+
+	            String displayName = row.getCell(0).getStringCellValue();
+	            CustomersDTO customersDTO = customersDTOList.stream()
+	                    .filter(c -> c.getDisplayName().equals(displayName))
+	                    .findFirst()
+	                    .orElseThrow(() -> new RuntimeException("No customer found for display name: " + displayName));
+
+	            CustomersBankDetailsDTO bankDTO = new CustomersBankDetailsDTO();
+
+	            // Street1 as String
+	            bankDTO.setAccountName(row.getCell(1).getStringCellValue());
+
+	            // Street2 as String
+	            bankDTO.setAccountNo((long) row.getCell(2).getNumericCellValue());
+
+	            // City as String
+	            bankDTO.setBank(row.getCell(3).getStringCellValue());
+
+	            // State as String
+	            bankDTO.setBranch(row.getCell(4).getStringCellValue());
+
+	            // Country as String
+	            bankDTO.setIfscCode(row.getCell(5).getStringCellValue());
+
+	            // Ensure customerAddressDTO list is initialized before adding
+	            if (customersDTO.getCustomerBankDetailsDTO() == null) {
+	                customersDTO.setCustomerBankDetailsDTO(new ArrayList<>());  // Initialize the list if null
+	            }
+	            customersDTO.getCustomerBankDetailsDTO().add(bankDTO);
+	        }
+	        
 
 	        // Loop through the DTO list and call createCustomers for each entry
 	        for (CustomersDTO customer : customersDTOList) {
