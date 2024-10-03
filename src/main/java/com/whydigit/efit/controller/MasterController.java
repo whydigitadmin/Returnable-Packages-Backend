@@ -431,7 +431,7 @@ public class MasterController extends BaseController {
 	// customers
 
 	@PostMapping("/customerUpload")
-	public ResponseEntity<ResponseDTO> customerUpload(@RequestParam("file") MultipartFile file,
+	public ResponseEntity<ResponseDTO> customerUpload(@RequestParam("files") MultipartFile file,
 			@RequestParam("orgId") Long orgId, @RequestParam("createdBy") String createdBy) {
 		String methodName = "customerUpload()";
 		Map<String, Object> responseObjectsMap = new HashMap<>();
@@ -440,20 +440,13 @@ public class MasterController extends BaseController {
 			// Call service method to process Excel upload
 			masterService.uploadCustomerData(file, orgId, createdBy);
 			// Retrieve the counts after processing
-			Map<String, Object> paramObjectsMap = new HashMap<>();
-			paramObjectsMap.put("message", "Excel Upload For  Customer successful");
-			responseObjectsMap.put("paramObjectsMap", paramObjectsMap);
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Customers Upload successfully");
 			responseDTO = createServiceResponse(responseObjectsMap);
-
 		} catch (Exception e) {
-			String errorMsg = e.getMessage();
-			LOGGER.error(CommonConstant.EXCEPTION, methodName, e);
-			responseObjectsMap.put("statusFlag", "Error");
-			responseObjectsMap.put("status", false);
-			responseObjectsMap.put("errorMessage", errorMsg);
-
-			responseDTO = createServiceResponseError(responseObjectsMap, "Excel Upload For Customer Failed",
-					errorMsg);
+			String errorMsg= null;
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, errorMsg, errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
@@ -1067,6 +1060,35 @@ public class MasterController extends BaseController {
 
 	// Vendor
 
+	@PostMapping("/vendorUpload")
+	public ResponseEntity<ResponseDTO> vendorUpload(@RequestParam("files") MultipartFile file,
+			@RequestParam("orgId") Long orgId, @RequestParam("createdBy") String createdBy) {
+		String methodName = "vendorUpload()";
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		try {
+			// Call service method to process Excel upload
+			masterService.uploadVendorData(file, orgId, createdBy);
+			// Retrieve the counts after processing
+			Map<String, Object> paramObjectsMap = new HashMap<>();
+			paramObjectsMap.put("message", "Excel Upload For  Vendor successful");
+			responseObjectsMap.put("paramObjectsMap", paramObjectsMap);
+			responseDTO = createServiceResponse(responseObjectsMap);
+
+		} catch (Exception e) {
+			String errorMsg = e.getMessage();
+			LOGGER.error(CommonConstant.EXCEPTION, errorMsg, errorMsg);
+			responseObjectsMap.put("statusFlag", "Error");
+			responseObjectsMap.put("status", false);
+			responseObjectsMap.put("errorMessage", errorMsg);
+
+			responseDTO = createServiceResponseError(responseObjectsMap, "Excel Upload For Vendor Failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+	
 	@GetMapping("/Vendor")
 	public ResponseEntity<ResponseDTO> getAllActiveVendor(@RequestParam Long orgId) {
 		String methodName = "getAllActiveVendor()";

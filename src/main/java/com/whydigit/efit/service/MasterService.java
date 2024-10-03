@@ -197,7 +197,9 @@ public interface MasterService {
 	Optional<VendorVO> getVendorById(Long id);
 
 	VendorVO updateCreateVendor(VendorDTO vendorDTO) throws ApplicationException;
-
+	
+	void uploadVendorData(MultipartFile file, Long orgId, String createdBy) throws Exception;
+	
 	List<VendorVO> getVendorByOrgId(Long orgId);
 
 	void deletevendor(long id);
@@ -421,6 +423,8 @@ public interface MasterService {
 	List<PaymentAdviceVO> getAllPaymentAdvice(Long orgId);
 		
 	PaymentAdviceVO getPaymentAdviceById(Long id);
+
+	
 
 	
 

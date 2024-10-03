@@ -693,9 +693,8 @@ public class MasterServiceImpl implements MasterService {
 	@Override
 	public CustomersVO createCustomers(CustomersDTO customersDTO) {
 
-		if (customersRepo.existsByEntityLegalNameAndDisplayNameAndOrgId(customersDTO.getEntityLegalName(),
-				customersDTO.getDisplayName(), customersDTO.getOrgId())) {
-			throw new RuntimeException("The Customer LegalName or DisplayName already exists");
+		if (customersRepo.existsByDisplayNameAndOrgId(customersDTO.getDisplayName(), customersDTO.getOrgId())) {
+			throw new RuntimeException("Display Name: "+ customersDTO.getDisplayName() +" Already exists");
 		}
 		CustomersVO customersVO = new CustomersVO();
 		customersVO.setOrgId(customersDTO.getOrgId());
@@ -856,10 +855,10 @@ public class MasterServiceImpl implements MasterService {
 
 		if (!existingCustomer.getEntityLegalName().equals(customersDTO.getEntityLegalName())) {
 			// Check if there's already an entry with the same Entity Name and orgId
-			if (customersRepo.existsByEntityLegalNameAndOrgId(customersDTO.getEntityLegalName(),
-					existingCustomer.getOrgId())) {
-				throw new ApplicationException("Entity Legal Name Already exists");
-			}
+//			if (customersRepo.existsByEntityLegalNameAndOrgId(customersDTO.getEntityLegalName(),
+//					existingCustomer.getOrgId())) {
+//				throw new ApplicationException("Entity Legal Name Already exists");
+//			}
 			// Update Entity Name if there's no duplicate
 			customersVO.setEntityLegalName(customersDTO.getEntityLegalName().toUpperCase());
 		}
@@ -867,7 +866,7 @@ public class MasterServiceImpl implements MasterService {
 		if (!existingCustomer.getDisplayName().equals(customersDTO.getDisplayName())) {
 			// Check if there's already an entry with the same Display Name and orgId
 			if (customersRepo.existsByDisplayNameAndOrgId(customersDTO.getDisplayName(), existingCustomer.getOrgId())) {
-				throw new ApplicationException("Display Name Already exists");
+				throw new ApplicationException("Display Name: "+ customersDTO.getDisplayName() +" Already exists");
 			}
 			// Update Display Name if there's no duplicate
 			customersVO.setDisplayName(customersDTO.getDisplayName().toUpperCase());
@@ -937,12 +936,12 @@ public class MasterServiceImpl implements MasterService {
 	            customersDTO.setActive(true); // Assuming it's active
 
 	            // Check for duplicate entry before adding it to the list
-	            if (!customersRepo.existsByOrgIdAndEntityLegalNameIgnoreCase(customersDTO.getOrgId(), customersDTO.getEntityLegalName())) {
+//	            if (!customersRepo.existsByOrgIdAndEntityLegalNameIgnoreCase(customersDTO.getOrgId(), customersDTO.getEntityLegalName())) {
 	                customersDTOList.add(customersDTO);
-	            } else {
+//	            } else {
 	                // Log or handle duplicate data here
-	                System.out.println("Duplicate customer found for orgId: " + orgId + " and entityLegalName: " + customersDTO.getEntityLegalName());
-	            }
+//	                System.out.println("Duplicate customer found for orgId: " + orgId + " and entityLegalName: " + customersDTO.getEntityLegalName());
+//	            }
 	        }
 
 	        // Reading the address sheet
@@ -1720,8 +1719,170 @@ public class MasterServiceImpl implements MasterService {
 		return VendorRepo.findById(id);
 	}
 
-	// Vendor
+	@Override
+	public void uploadVendorData(MultipartFile file, Long orgId, String createdBy) throws Exception {
+	    try (Workbook workbook = WorkbookFactory.create(file.getInputStream())) {
 
+	        // Reading the vendor sheet
+	        Sheet vendorSheet = workbook.getSheetAt(0); // Assuming vendor sheet is the first one
+	        List<VendorDTO> vendorDTOList = new ArrayList<>();
+
+	        for (Row row : vendorSheet) {
+	            if (row.getRowNum() == 0) { // Skipping header
+	                continue;
+	            }
+
+	            VendorDTO vendorDTO = new VendorDTO();
+	            vendorDTO.setOrgId(orgId);
+
+	            // Handling venderType as String
+	            vendorDTO.setVenderType(row.getCell(0).getStringCellValue().trim());
+
+	            // EntityLegalName as String
+	            vendorDTO.setEntityLegalName(row.getCell(1).getStringCellValue());
+
+	            // DisplayName as String
+	            vendorDTO.setDisplyName(row.getCell(2).getStringCellValue());
+
+	            // Email as String
+	            vendorDTO.setEmail(row.getCell(3).getStringCellValue());
+
+	            // PhoneNumber as String (convert numeric to string if necessary)
+	            if (row.getCell(4).getCellType() == CellType.NUMERIC) {
+	                vendorDTO.setPhoneNumber(String.valueOf((long) row.getCell(4).getNumericCellValue()));
+	            } else if (row.getCell(4).getCellType() == CellType.STRING) {
+	                vendorDTO.setPhoneNumber(row.getCell(4).getStringCellValue());
+	            }
+
+	            vendorDTO.setCreatedBy(createdBy);
+	            vendorDTO.setVenderActivePortal(true); // Assuming it's active
+	            vendorDTO.setActive(true); // Assuming it's active
+
+	            // Check for duplicate entry before adding it to the list
+//	            if (!vendorRepo.existsByOrgIdAndEntityLegalNameIgnoreCase(vendorDTO.getOrgId(), vendorDTO.getEntityLegalName())) {
+	                vendorDTOList.add(vendorDTO);
+//	            } else {
+//	                // Log or handle duplicate data here
+//	                System.out.println("Duplicate vendor found for orgId: " + orgId + " and entityLegalName: " + vendorDTO.getEntityLegalName());
+//	            }
+	        }
+
+	        // Reading the address sheet
+	        Sheet addressSheet = workbook.getSheetAt(1); // Assuming address sheet is the second one
+	        for (Row row : addressSheet) {
+	            if (row.getRowNum() == 0) { // Skipping header
+	                continue;
+	            }
+
+	            String displayName = row.getCell(0).getStringCellValue();
+	            VendorDTO vendorDTO = vendorDTOList.stream()
+	                    .filter(v -> v.getDisplyName().equals(displayName))
+	                    .findFirst()
+	                    .orElseThrow(() -> new RuntimeException("No vendor found for display name: " + displayName));
+
+	            VendorAddressDTO addressDTO = new VendorAddressDTO();
+
+	            // Street1 as String
+	            addressDTO.setStreet1(row.getCell(1).getStringCellValue());
+
+	            // Street2 as String
+	            addressDTO.setStreet2(row.getCell(2).getStringCellValue());
+
+	            // City as String
+	            addressDTO.setCity(row.getCell(3).getStringCellValue());
+
+	            // State as String
+	            addressDTO.setState(row.getCell(4).getStringCellValue());
+
+	            // Country as String
+	            addressDTO.setCountry(row.getCell(5).getStringCellValue());
+
+	            // PinCode as String (convert numeric to string if necessary)
+	            if (row.getCell(6).getCellType() == CellType.NUMERIC) {
+	                addressDTO.setPinCode(String.valueOf((long) row.getCell(6).getNumericCellValue()));
+	            } else if (row.getCell(6).getCellType() == CellType.STRING) {
+	                addressDTO.setPinCode(row.getCell(6).getStringCellValue());
+	            }
+
+	            // PhoneNumber as String (convert numeric to string if necessary)
+	            if (row.getCell(7).getCellType() == CellType.NUMERIC) {
+	                addressDTO.setPhoneNumber(String.valueOf((long) row.getCell(7).getNumericCellValue()));
+	            } else if (row.getCell(7).getCellType() == CellType.STRING) {
+	                addressDTO.setPhoneNumber(row.getCell(7).getStringCellValue());
+	            }
+
+	            // GstRegistrationStatus as String
+	            addressDTO.setGstRegistrationStatus(row.getCell(8).getStringCellValue());
+
+	            // GstNumber as String
+	            addressDTO.setGstNumber(row.getCell(9).getStringCellValue());
+
+	            // Email as String
+	            addressDTO.setEmail(row.getCell(10).getStringCellValue());
+
+	            // ContactName as String
+	            addressDTO.setContactName(row.getCell(11).getStringCellValue());
+
+	            // Designation as String
+	            addressDTO.setDesignation(row.getCell(12).getStringCellValue());
+
+	            // Ensure vendorAddressDTO list is initialized before adding
+	            if (vendorDTO.getVendorAddressDTO() == null) {
+	                vendorDTO.setVendorAddressDTO(new ArrayList<>());  // Initialize the list if null
+	            }
+	            vendorDTO.getVendorAddressDTO().add(addressDTO);
+	        }
+
+	        // Reading the bank sheet
+	        Sheet bankSheet = workbook.getSheetAt(2); // Assuming bank sheet is the third one
+	        for (Row row : bankSheet) {
+	            if (row.getRowNum() == 0) { // Skipping header
+	                continue;
+	            }
+
+	            String displayName = row.getCell(0).getStringCellValue();
+	            VendorDTO vendorDTO = vendorDTOList.stream()
+	                    .filter(v -> v.getDisplyName().equals(displayName))
+	                    .findFirst()
+	                    .orElseThrow(() -> new RuntimeException("No vendor found for display name: " + displayName));
+
+	            VendorBankDetailsDTO bankDTO = new VendorBankDetailsDTO();
+
+	            // AccountName as String
+	            bankDTO.setAccountName(row.getCell(1).getStringCellValue());
+
+	            // AccountNo as String (convert numeric value to string)
+	            if (row.getCell(2).getCellType() == CellType.NUMERIC) {
+	                bankDTO.setAccountNo(String.valueOf((long) row.getCell(2).getNumericCellValue()));
+	            } else if (row.getCell(2).getCellType() == CellType.STRING) {
+	                bankDTO.setAccountNo(row.getCell(2).getStringCellValue());
+	            }
+
+	            // Bank as String
+	            bankDTO.setBank(row.getCell(3).getStringCellValue());
+
+	            // Branch as String
+	            bankDTO.setBranch(row.getCell(4).getStringCellValue());
+
+	            // IFSC code as String
+	            bankDTO.setIfscCode(row.getCell(5).getStringCellValue());
+
+	            // Ensure vendorBankDetailsDTO list is initialized before adding
+	            if (vendorDTO.getVendorBankDetailsDTO() == null) {
+	                vendorDTO.setVendorBankDetailsDTO(new ArrayList<>());  // Initialize the list if null
+	            }
+	            vendorDTO.getVendorBankDetailsDTO().add(bankDTO);
+	        }
+
+	        // Loop through the DTO list and call createVendors for each entry
+	        for (VendorDTO vendor : vendorDTOList) {
+	            updateCreateVendor(vendor); // Assuming this method takes a single VendorDTO
+	        }
+	    }
+	}
+
+	
+	// Vendor
 	@Override
 	public VendorVO updateCreateVendor(VendorDTO vendorDTO) throws ApplicationException {
 
@@ -1748,10 +1909,10 @@ public class MasterServiceImpl implements MasterService {
 					bankDetailsVO = new VendorBankDetailsVO();
 				}
 				bankDetailsVO.setAccountNo(vendorbankDetailsDTO.getAccountNo());
-				bankDetailsVO.setBank(vendorbankDetailsDTO.getBank());
-				bankDetailsVO.setBranch(vendorbankDetailsDTO.getBranch());
-				bankDetailsVO.setAccountName(vendorbankDetailsDTO.getAccountName());
-				bankDetailsVO.setIfscCode(vendorbankDetailsDTO.getIfscCode());
+				bankDetailsVO.setBank(vendorbankDetailsDTO.getBank().toUpperCase());
+				bankDetailsVO.setBranch(vendorbankDetailsDTO.getBranch().toUpperCase());
+				bankDetailsVO.setAccountName(vendorbankDetailsDTO.getAccountName().toUpperCase());
+				bankDetailsVO.setIfscCode(vendorbankDetailsDTO.getIfscCode().toUpperCase());
 				bankDetailsVO.setVendorVO(vendorVO);
 				vendorBankDetailsVO.add(bankDetailsVO);
 			}
@@ -1768,19 +1929,19 @@ public class MasterServiceImpl implements MasterService {
 				} else {
 					vendorAddress = new VendorAddressVO();
 				}
-				vendorAddress.setGstNumber(vendorAddressDTO.getGstNumber());
-				vendorAddress.setStreet1(vendorAddressDTO.getStreet1());
-				vendorAddress.setStreet2(vendorAddressDTO.getStreet2());
-				vendorAddress.setCity(vendorAddressDTO.getCity());
+				vendorAddress.setGstNumber(vendorAddressDTO.getGstNumber().toUpperCase());
+				vendorAddress.setStreet1(vendorAddressDTO.getStreet1().toUpperCase());
+				vendorAddress.setStreet2(vendorAddressDTO.getStreet2().toUpperCase());
+				vendorAddress.setCity(vendorAddressDTO.getCity().toUpperCase());
 				vendorAddress.setPinCode(vendorAddressDTO.getPinCode());
-				vendorAddress.setContactName(vendorAddressDTO.getContactName());
+				vendorAddress.setContactName(vendorAddressDTO.getContactName().toUpperCase());
 				vendorAddress.setPhoneNumber(vendorAddressDTO.getPhoneNumber());
-				vendorAddress.setDesignation(vendorAddressDTO.getDesignation());
+				vendorAddress.setDesignation(vendorAddressDTO.getDesignation().toUpperCase());
 				vendorAddress.setEmail(vendorAddressDTO.getEmail());
-				vendorAddress.setGstRegistrationStatus(vendorAddressDTO.getGstRegistrationStatus());
-				vendorAddress.setState(vendorAddressDTO.getState());
+				vendorAddress.setGstRegistrationStatus(vendorAddressDTO.getGstRegistrationStatus().toUpperCase());
+				vendorAddress.setState(vendorAddressDTO.getState().toUpperCase());
 				vendorAddress.setVendorVO(vendorVO);
-				vendorAddress.setCountry(vendorAddressDTO.getCountry());
+				vendorAddress.setCountry(vendorAddressDTO.getCountry().toUpperCase());
 				vendorAddressVO.add(vendorAddress);
 			}
 		}
@@ -1799,12 +1960,12 @@ public class MasterServiceImpl implements MasterService {
 
 			if (!existingVendor.getEntityLegalName().equals(vendorDTO.getEntityLegalName())) {
 				// Check if there's already an entry with the same Entity Legal Name and orgId
-				if (vendorRepo.existsByEntityLegalNameAndOrgId(vendorDTO.getEntityLegalName(),
-						existingVendor.getOrgId())) {
-					throw new ApplicationException("Entity Legal Name already exists");
-				}
+//				if (vendorRepo.existsByEntityLegalNameAndOrgId(vendorDTO.getEntityLegalName(),
+//						existingVendor.getOrgId())) {
+//					throw new ApplicationException("Entity Legal Name already exists");
+//				}
 				// Update Entity Legal Name if there's no duplicate
-				vendorVO.setEntityLegalName(vendorDTO.getEntityLegalName());
+				vendorVO.setEntityLegalName(vendorDTO.getEntityLegalName().toUpperCase());
 			}
 
 			if (!existingVendor.getDisplyName().equals(vendorDTO.getDisplyName())) {
@@ -1813,14 +1974,14 @@ public class MasterServiceImpl implements MasterService {
 					throw new ApplicationException("Display Name already exists");
 				}
 				// Update Display Name if there's no duplicate
-				vendorVO.setDisplyName(vendorDTO.getDisplyName());
+				vendorVO.setDisplyName(vendorDTO.getDisplyName().toUpperCase());
 			}
 
 			vendorVO.setOrgId(vendorDTO.getOrgId());
-			vendorVO.setVenderType(vendorDTO.getVenderType());
+			vendorVO.setVenderType(vendorDTO.getVenderType().toUpperCase());
 			vendorVO.setPhoneNumber(vendorDTO.getPhoneNumber());
 			vendorVO.setEmail(vendorDTO.getEmail());
-			vendorVO.setCountry(vendorDTO.getCountry());
+			vendorVO.setCountry(vendorDTO.getCountry().toUpperCase());
 			vendorVO.setModifiedBy(vendorDTO.getCreatedBy());
 			vendorVO.setVenderActivePortal(vendorDTO.isVenderActivePortal());
 			vendorVO.setActive(vendorDTO.isActive());
@@ -1829,13 +1990,13 @@ public class MasterServiceImpl implements MasterService {
 				throw new ApplicationException("Entity Legal Name already exists");
 			}
 			if (vendorRepo.existsByDisplyNameAndOrgId(vendorDTO.getDisplyName(), vendorDTO.getOrgId())) {
-				throw new ApplicationException("Display Name already exists");
+				throw new ApplicationException("Display Name: "+vendorDTO.getDisplyName()+ " already exists");
 			}
 			vendorVO.setOrgId(vendorDTO.getOrgId());
-			vendorVO.setVenderType(vendorDTO.getVenderType());
-			vendorVO.setDisplyName(vendorDTO.getDisplyName());
+			vendorVO.setVenderType(vendorDTO.getVenderType().toUpperCase());
+			vendorVO.setDisplyName(vendorDTO.getDisplyName().toUpperCase());
 			vendorVO.setPhoneNumber(vendorDTO.getPhoneNumber());
-			vendorVO.setEntityLegalName(vendorDTO.getEntityLegalName());
+			vendorVO.setEntityLegalName(vendorDTO.getEntityLegalName().toUpperCase());
 			vendorVO.setEmail(vendorDTO.getEmail());
 			vendorVO.setCreatedBy(vendorDTO.getCreatedBy());
 			vendorVO.setModifiedBy(vendorDTO.getCreatedBy());

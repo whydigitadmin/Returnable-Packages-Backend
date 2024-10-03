@@ -33,6 +33,8 @@ public interface VendorRepo extends JpaRepository<VendorVO, Long> {
     @Query("select a from VendorVO a where a.venderType='SUPPLIER' and a.active=true")
 	List<VendorVO> getAllActiveSupplierVendorsByOrgId(Long orgId);
 
+	boolean existsByOrgIdAndEntityLegalNameIgnoreCase(long orgId, String entityLegalName);
+
 	
 
 	

@@ -47,6 +47,7 @@ public interface CustomersRepo extends JpaRepository<CustomersVO, Long> {
 
 	boolean existsByOrgIdAndEntityLegalNameIgnoreCase(long orgId, String entityLegalName);
 
+
 	
 	}
 
