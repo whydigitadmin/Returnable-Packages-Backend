@@ -220,6 +220,7 @@ public class EmitterServiceImpl implements EmitterService {
 		String requestnumber = finyr + "BR" + issueRequestRepo.finddocid();
 		issueRequestVO.setDocId(requestnumber);
 		issueRequestRepo.updatesequence();
+		
 		issueRequestVO.setEmitter(customersRepo.findCustomerLegalnameByEmitterId(issueRequestDTO.getEmitterId()));
 		issueRequestVO.setEmitterCode(customersRepo.findcustomercodeByEmitterId(issueRequestDTO.getEmitterId()));
 		issueRequestVO.setFlowName(flowVO.getFlowName());

@@ -1776,9 +1776,10 @@ public class MasterServiceImpl implements MasterService {
 
 	            String displayName = row.getCell(0).getStringCellValue();
 	            VendorDTO vendorDTO = vendorDTOList.stream()
-	                    .filter(v -> v.getDisplyName().equals(displayName))
-	                    .findFirst()
-	                    .orElseThrow(() -> new RuntimeException("No vendor found for display name: " + displayName));
+	                .filter(v -> v.getDisplyName().equals(displayName))
+	                .findFirst()
+	                .orElseThrow(() -> new RuntimeException(String.format("Vendor display name: %s", displayName+" not Exist in Sheet 1")));
+
 
 	            VendorAddressDTO addressDTO = new VendorAddressDTO();
 
@@ -1842,9 +1843,10 @@ public class MasterServiceImpl implements MasterService {
 
 	            String displayName = row.getCell(0).getStringCellValue();
 	            VendorDTO vendorDTO = vendorDTOList.stream()
-	                    .filter(v -> v.getDisplyName().equals(displayName))
-	                    .findFirst()
-	                    .orElseThrow(() -> new RuntimeException("No vendor found for display name: " + displayName));
+	                .filter(v -> v.getDisplyName().equals(displayName))
+	                .findFirst()
+	                .orElseThrow(() -> new RuntimeException(String.format("Vendor display name: %s", displayName+" not Exist in Sheet 1")));
+
 
 	            VendorBankDetailsDTO bankDTO = new VendorBankDetailsDTO();
 
