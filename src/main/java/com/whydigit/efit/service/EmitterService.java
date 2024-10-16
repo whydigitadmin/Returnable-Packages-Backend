@@ -156,4 +156,7 @@ public interface EmitterService {
 
 	Set<Object[]> getReqDetailsByOrgId(Long orgid, String reqNo, String kitNo);
 
+	void uploadIssueRequestData(MultipartFile file, Long orgId, Long emitterId, String createdBy) throws Exception;
+
+
 }

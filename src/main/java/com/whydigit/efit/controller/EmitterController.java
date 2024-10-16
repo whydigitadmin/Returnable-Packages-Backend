@@ -1547,5 +1547,27 @@ public class EmitterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
+	
+	@PostMapping("/issueRequestUpload")
+	public ResponseEntity<ResponseDTO> issueRequestUpload(@RequestParam MultipartFile file,
+			@RequestParam Long orgId,@RequestParam Long emitterId,@RequestParam String createdBy) {
+		String methodName = "issueRequestUpload()";
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		try {
+			// Call service method to process Excel upload
+			emitterService.uploadIssueRequestData(file, orgId, emitterId, createdBy);
+			// Retrieve the counts after processing
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Issue Request Upload successfully");
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} catch (Exception e) {
+			String errorMsg= null;
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, errorMsg, errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
 
 }

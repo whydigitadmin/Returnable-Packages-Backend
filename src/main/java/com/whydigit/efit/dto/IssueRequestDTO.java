@@ -13,9 +13,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class IssueRequestDTO {
 
-	private long emitterId;
+	private Long emitterId;
 	private LocalDate requestDate;
-	private long orgId;
+	private Long orgId;
 	private long reqAddressId;
 	private Long flowTo;
 	private LocalDate demandDate;

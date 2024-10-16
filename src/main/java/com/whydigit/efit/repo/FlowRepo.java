@@ -88,4 +88,7 @@ public interface FlowRepo extends JpaRepository<FlowVO, Long> {
 	@Query(value = "select b.whlocation from  warehouse b,flow c where  b.whlocation=c.whlocation and c.flowid=?2 and b.orgid=?1 group by b.whlocation", nativeQuery = true)
 	Set<Object[]> findByBranchcode(Long orgId, Long flowId);
 
+	@Query(nativeQuery = true, value ="select a.* from flow a where a.orgid=?1 and a.emitterid=?2 and a.flow=?3")
+	FlowVO findByOrgIdAndEmitterIdAndFlowName(Long orgId, Long emitterId, String stringCellValue);
+
 }

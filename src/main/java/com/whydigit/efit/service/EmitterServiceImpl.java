@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,6 +25,13 @@ import javax.transaction.Transactional;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.DateUtil;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -112,6 +120,9 @@ public class EmitterServiceImpl implements EmitterService {
 
 	@Autowired
 	AssetRepo assetRepo;
+
+	@Autowired
+	MasterService masterService;
 
 	@Autowired
 	DispatchRepository dispatchRepository;
@@ -220,7 +231,7 @@ public class EmitterServiceImpl implements EmitterService {
 		String requestnumber = finyr + "BR" + issueRequestRepo.finddocid();
 		issueRequestVO.setDocId(requestnumber);
 		issueRequestRepo.updatesequence();
-		
+
 		issueRequestVO.setEmitter(customersRepo.findCustomerLegalnameByEmitterId(issueRequestDTO.getEmitterId()));
 		issueRequestVO.setEmitterCode(customersRepo.findcustomercodeByEmitterId(issueRequestDTO.getEmitterId()));
 		issueRequestVO.setFlowName(flowVO.getFlowName());
@@ -708,8 +719,8 @@ public class EmitterServiceImpl implements EmitterService {
 	}
 
 	@Override
-	public Set<Object[]> getReqDetailsByOrgId(Long orgId, String reqNo,String kitNo) {
-		return binAllotmentNewRepo.findReqDetailsByOrgId(orgId, reqNo,kitNo);
+	public Set<Object[]> getReqDetailsByOrgId(Long orgId, String reqNo, String kitNo) {
+		return binAllotmentNewRepo.findReqDetailsByOrgId(orgId, reqNo, kitNo);
 	}
 
 	@Override
@@ -1285,7 +1296,7 @@ public class EmitterServiceImpl implements EmitterService {
 
 	@Override
 	public List<Map<String, Object>> getKitLedgerByEmitter(String startDate, String endDate, Long flowId, Long orgId) {
-		Set<Object[]> getKitLedger = assetStockDetailsRepo.getKitLedger(startDate, endDate,flowId,orgId);
+		Set<Object[]> getKitLedger = assetStockDetailsRepo.getKitLedger(startDate, endDate, flowId, orgId);
 
 		return getgetKitLedgerDetails(getKitLedger);
 	}
@@ -1295,22 +1306,20 @@ public class EmitterServiceImpl implements EmitterService {
 		for (Object[] ps : getKitLedger) {
 			Map<String, Object> values = new HashMap<>();
 			values.put("kitNo", ps[0] != null ? ps[0].toString() : "");
-			values.put("oqty", ps[1] != null ?  Integer.parseInt(ps[1].toString()) : 0);
+			values.put("oqty", ps[1] != null ? Integer.parseInt(ps[1].toString()) : 0);
 			values.put("rqty", ps[2] != null ? Integer.parseInt(ps[2].toString()) : 0);
-			values.put("dqty", ps[3] != null ?  Integer.parseInt(ps[3].toString()) : 0);
+			values.put("dqty", ps[3] != null ? Integer.parseInt(ps[3].toString()) : 0);
 			values.put("cqty", ps[4] != null ? Integer.parseInt(ps[4].toString()) : 0);
 			status.add(values);
 		}
 		return status;
 	}
-	
+
 	@Override
-	public List<Map<String, Object>> getStockKitQtyByEmitter(Long orgId, Long emitterId,
-			Long flowId) {
+	public List<Map<String, Object>> getStockKitQtyByEmitter(Long orgId, Long emitterId, Long flowId) {
 
 		FlowVO flowVO = flowRepo.findById(flowId).get();
-		Set<Object[]> emitterStockKitQty = kitRepo.findByStockKitQtyByEmitter(orgId, emitterId,
-				flowVO.getFlowName());
+		Set<Object[]> emitterStockKitQty = kitRepo.findByStockKitQtyByEmitter(orgId, emitterId, flowVO.getFlowName());
 
 		return getStockKitDetails(emitterStockKitQty);
 	}
@@ -1325,5 +1334,185 @@ public class EmitterServiceImpl implements EmitterService {
 			avlKitQty.add(part);
 		}
 		return avlKitQty;
+	}
+
+	private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+	@Override
+	public void uploadIssueRequestData(MultipartFile file, Long orgId, Long emitterId, String createdBy)
+			throws Exception {
+		try (Workbook workbook = WorkbookFactory.create(file.getInputStream())) {
+
+			// Reading the customer sheet
+			Sheet issueRequestHeaderSheet = workbook.getSheetAt(0); // Assuming customer sheet is the first one
+			List<IssueRequestDTO> customersDTOList = new ArrayList<>();
+			Map<String, IssueRequestDTO> requestDTOMap = new HashMap<>();
+			for (Row row : issueRequestHeaderSheet) {
+				if (row.getRowNum() == 0) { // Skipping header
+					continue;
+				}
+
+				IssueRequestDTO issueRequestDTO = new IssueRequestDTO();
+				issueRequestDTO.setEmitterId(emitterId);
+				issueRequestDTO.setOrgId(orgId);
+				issueRequestDTO.setReqAddressId(0);
+				issueRequestDTO.setCreatedBy(createdBy);
+				// Handling Request date
+
+				issueRequestDTO.setRequestDate(parseDate(row.getCell(1)));
+
+				String flowName = getStringCellValue(row.getCell(2)).trim().toUpperCase();
+
+				if (flowName.isEmpty()) {
+					System.out.println("Flow Name is empty, skipping row.");
+					continue; // Skip rows with empty flow names
+				}
+
+				System.out.println("Flow Name: '" + flowName + "' Length: " + flowName.length());
+
+				FlowVO flowVO = flowRepo.findByOrgIdAndEmitterIdAndFlowName(orgId, emitterId, flowName);
+
+				if (flowVO == null) {
+					throw new RuntimeException("No Flow found for Org ID: " + orgId + ", Emitter ID: " + emitterId
+							+ ", and Flow Name: " + flowName);
+				}
+
+				issueRequestDTO.setFlowTo(flowVO.getId());
+
+	                issueRequestDTO.setDemandDate(parseDate(row.getCell(3)));
+				// Convert string to enum and set to issueRequestDTO
+				String irTypeString = getStringCellValue(row.getCell(4)).trim().toUpperCase();
+
+				try {
+					IssueRequestType irType = IssueRequestType.valueOf(irTypeString);
+					issueRequestDTO.setIrType(irType);
+				} catch (IllegalArgumentException e) {
+					// Handle the case where the value is not a valid enum constant
+					throw new RuntimeException("Invalid Issue Request Type: " + irTypeString);
+				}
+
+				String headerEntryNo = row.getCell(0).getStringCellValue(); // Assuming this is the unique identifier
+				requestDTOMap.put(headerEntryNo, issueRequestDTO);
+				customersDTOList.add(issueRequestDTO);
+			}
+
+			// Reading the address sheet
+			Sheet issueRequestDetails = workbook.getSheetAt(1); // Assuming address sheet is the second one
+			for (Row row : issueRequestDetails) {
+				if (row.getRowNum() == 0) { // Skipping header
+					continue;
+				}
+
+				String detailEntryNo = getStringCellValue(row.getCell(0)); // This should match with headerEntryNo
+				IssueRequestDTO matchingRequestDTO = requestDTOMap.get(detailEntryNo);
+
+				if (matchingRequestDTO == null) {
+					throw new RuntimeException("No matching entry number in Sheet 1: " + detailEntryNo);
+				}
+
+				IssueItemDTO issueItemDTO = new IssueItemDTO();
+
+				KitVO kitVO = kitRepo.findAllByKitNoAndOrgId(getStringCellValue(row.getCell(1)), orgId);
+				// Street1 as String
+				issueItemDTO.setKitName(kitVO.getKitNo());
+				// Street2 as String
+				issueItemDTO.setKitQty(getNumericCellValue(row.getCell(2)));
+
+				Long flowToId = matchingRequestDTO.getFlowTo();
+				List<Map<String, Object>> partDetails = masterService.getPartNoAndPartName(flowToId, kitVO.getKitNo(),
+						emitterId);
+
+				// Assuming partDetails contains only one entry, you can retrieve the first map:
+				if (!partDetails.isEmpty()) {
+					Map<String, Object> partDetail = partDetails.get(0); // Get the first map
+					// Setting values to issueItemDTO from the map
+					issueItemDTO.setPartName(
+							partDetail.get("partName") != null ? partDetail.get("partName").toString() : null);
+					issueItemDTO
+							.setPartNo(partDetail.get("partNo") != null ? partDetail.get("partNo").toString() : null);
+					issueItemDTO.setPartQty(
+							partDetail.get("partQty") != null ? Integer.parseInt(partDetail.get("partQty").toString())
+									: 0);
+				}
+				// State as String
+				issueItemDTO.setIssueItemStatus(0);
+
+				// Ensure customerAddressDTO list is initialized before adding
+				if (matchingRequestDTO.getIssueItemDTO() == null) {
+					matchingRequestDTO.setIssueItemDTO(new ArrayList<>()); // Initialize the list if null
+				}
+				matchingRequestDTO.getIssueItemDTO().add(issueItemDTO);
+			}
+
+			// Loop through the DTO list and call createCustomers for each entry
+			for (IssueRequestDTO issuDto : customersDTOList) {
+				createIssueRequest(issuDto); // Assuming this method takes a single CustomersDTO
+			}
+		}
+	}
+
+	private LocalDate parseDate(String dateString) {
+	    try {
+	        return LocalDate.parse(dateString, formatter);
+	    } catch (Exception e) {
+	        System.out.println("Failed to parse date: " + dateString);
+	        return null;
+	    }
+	}
+
+	private String getStringCellValue(Cell cell) {
+		if (cell == null) {
+			return ""; // Return empty string if cell is null
+		}
+
+		switch (cell.getCellType()) {
+		case STRING:
+			return cell.getStringCellValue().trim(); // Return the string value
+		case NUMERIC:
+			return String.valueOf(cell.getNumericCellValue()); // Convert numeric to string
+		case BOOLEAN:
+			return String.valueOf(cell.getBooleanCellValue()); // Convert boolean to string
+		case FORMULA:
+			return cell.getCellFormula(); // Handle formulas
+		default:
+			return ""; // Handle any other cell types (BLANK, etc.)
+		}
+	}
+
+	private LocalDate parseDate(Cell cell) {
+	    if (cell == null) {
+	        return null;
+	    }
+	    if (cell.getCellType() == CellType.NUMERIC) {
+	        // Check if it's a date (Excel stores dates as numeric)
+	        if (DateUtil.isCellDateFormatted(cell)) {
+	            return cell.getLocalDateTimeCellValue().toLocalDate(); // Extract LocalDate directly from the cell
+	        } else {
+	            throw new RuntimeException("Cell is not formatted as a date.");
+	        }
+	    } else if (cell.getCellType() == CellType.STRING) {
+	        // Handle string formatted date
+	        try {
+	            String stringCellValue = cell.getStringCellValue().trim();
+	            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+	            return LocalDate.parse(stringCellValue, formatter);
+	        } catch (Exception e) {
+	            throw new RuntimeException("Failed to parse string date: " + cell.getStringCellValue());
+	        }
+	    }
+	    return null;
+	}
+
+	
+	private int getNumericCellValue(Cell cell) {
+		if (cell == null) {
+			return 0; // or throw an exception if you prefer
+		}
+		switch (cell.getCellType()) {
+		case NUMERIC:
+			return (int) cell.getNumericCellValue();
+		default:
+			return 0; // or throw an exception if the cell type is not numeric
+		}
 	}
 }
