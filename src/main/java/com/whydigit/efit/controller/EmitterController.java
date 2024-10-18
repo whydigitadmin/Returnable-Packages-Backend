@@ -1549,14 +1549,14 @@ public class EmitterController extends BaseController {
 	}
 	
 	@PostMapping("/issueRequestUpload")
-	public ResponseEntity<ResponseDTO> issueRequestUpload(@RequestParam MultipartFile file,
+	public ResponseEntity<ResponseDTO> issueRequestUpload(@RequestParam MultipartFile files,
 			@RequestParam Long orgId,@RequestParam Long emitterId,@RequestParam String createdBy) {
 		String methodName = "issueRequestUpload()";
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
 		try {
 			// Call service method to process Excel upload
-			emitterService.uploadIssueRequestData(file, orgId, emitterId, createdBy);
+			emitterService.uploadIssueRequestData(files, orgId, emitterId, createdBy);
 			// Retrieve the counts after processing
 			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Issue Request Upload successfully");
 			responseDTO = createServiceResponse(responseObjectsMap);
