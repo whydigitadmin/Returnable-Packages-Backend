@@ -72,6 +72,8 @@ import com.whydigit.efit.entity.FlowDetailVO;
 import com.whydigit.efit.entity.FlowVO;
 import com.whydigit.efit.entity.InwardVO;
 import com.whydigit.efit.entity.IssueItemVO;
+import com.whydigit.efit.entity.IssueManifestProviderDetailsVO;
+import com.whydigit.efit.entity.IssueManifestProviderVO;
 import com.whydigit.efit.entity.IssueRequestApprovedVO;
 import com.whydigit.efit.entity.IssueRequestVO;
 import com.whydigit.efit.entity.KitVO;
@@ -96,9 +98,12 @@ import com.whydigit.efit.repo.DispatchRepository;
 import com.whydigit.efit.repo.DmapDetailsRepo;
 import com.whydigit.efit.repo.EmitterInwardRepo;
 import com.whydigit.efit.repo.EmitterOutwardRepo;
+import com.whydigit.efit.repo.FlowDetailRepo;
 import com.whydigit.efit.repo.FlowRepo;
 import com.whydigit.efit.repo.InwardRepo;
 import com.whydigit.efit.repo.IssueItemRepo;
+import com.whydigit.efit.repo.IssueManifestProviderDetailsRepo;
+import com.whydigit.efit.repo.IssueManifestProviderRepo;
 import com.whydigit.efit.repo.IssueRequestRepo;
 import com.whydigit.efit.repo.KitAssetRepo;
 import com.whydigit.efit.repo.KitRepo;
@@ -125,6 +130,12 @@ public class EmitterServiceImpl implements EmitterService {
 	MasterService masterService;
 
 	@Autowired
+	IssueManifestProviderRepo issueManifestProviderRepo;
+
+	@Autowired
+	IssueManifestProviderDetailsRepo issueManifestProviderDetailsRepo;
+
+	@Autowired
 	DispatchRepository dispatchRepository;
 
 	@Autowired
@@ -147,6 +158,9 @@ public class EmitterServiceImpl implements EmitterService {
 
 	@Autowired
 	FlowRepo flowRepo;
+	
+	@Autowired
+	FlowDetailRepo flowDetailRepo;
 
 	@Autowired
 	ReturnStockRepo returnStockRepo;
@@ -1379,7 +1393,7 @@ public class EmitterServiceImpl implements EmitterService {
 
 				issueRequestDTO.setFlowTo(flowVO.getId());
 
-	                issueRequestDTO.setDemandDate(parseDate(row.getCell(3)));
+				issueRequestDTO.setDemandDate(parseDate(row.getCell(3)));
 				// Convert string to enum and set to issueRequestDTO
 				String irTypeString = getStringCellValue(row.getCell(4)).trim().toUpperCase();
 
@@ -1452,12 +1466,12 @@ public class EmitterServiceImpl implements EmitterService {
 	}
 
 	private LocalDate parseDate(String dateString) {
-	    try {
-	        return LocalDate.parse(dateString, formatter);
-	    } catch (Exception e) {
-	        System.out.println("Failed to parse date: " + dateString);
-	        return null;
-	    }
+		try {
+			return LocalDate.parse(dateString, formatter);
+		} catch (Exception e) {
+			System.out.println("Failed to parse date: " + dateString);
+			return null;
+		}
 	}
 
 	private String getStringCellValue(Cell cell) {
@@ -1480,30 +1494,29 @@ public class EmitterServiceImpl implements EmitterService {
 	}
 
 	private LocalDate parseDate(Cell cell) {
-	    if (cell == null) {
-	        return null;
-	    }
-	    if (cell.getCellType() == CellType.NUMERIC) {
-	        // Check if it's a date (Excel stores dates as numeric)
-	        if (DateUtil.isCellDateFormatted(cell)) {
-	            return cell.getLocalDateTimeCellValue().toLocalDate(); // Extract LocalDate directly from the cell
-	        } else {
-	            throw new RuntimeException("Cell is not formatted as a date.");
-	        }
-	    } else if (cell.getCellType() == CellType.STRING) {
-	        // Handle string formatted date
-	        try {
-	            String stringCellValue = cell.getStringCellValue().trim();
-	            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-	            return LocalDate.parse(stringCellValue, formatter);
-	        } catch (Exception e) {
-	            throw new RuntimeException("Failed to parse string date: " + cell.getStringCellValue());
-	        }
-	    }
-	    return null;
+		if (cell == null) {
+			return null;
+		}
+		if (cell.getCellType() == CellType.NUMERIC) {
+			// Check if it's a date (Excel stores dates as numeric)
+			if (DateUtil.isCellDateFormatted(cell)) {
+				return cell.getLocalDateTimeCellValue().toLocalDate(); // Extract LocalDate directly from the cell
+			} else {
+				throw new RuntimeException("Cell is not formatted as a date.");
+			}
+		} else if (cell.getCellType() == CellType.STRING) {
+			// Handle string formatted date
+			try {
+				String stringCellValue = cell.getStringCellValue().trim();
+				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+				return LocalDate.parse(stringCellValue, formatter);
+			} catch (Exception e) {
+				throw new RuntimeException("Failed to parse string date: " + cell.getStringCellValue());
+			}
+		}
+		return null;
 	}
 
-	
 	private int getNumericCellValue(Cell cell) {
 		if (cell == null) {
 			return 0; // or throw an exception if you prefer
@@ -1515,4 +1528,225 @@ public class EmitterServiceImpl implements EmitterService {
 			return 0; // or throw an exception if the cell type is not numeric
 		}
 	}
+	
+//	@Override
+//	public Map<String, Object> CreateIsueRequestFromMim(Long mimId, String createdBy) {
+//	    Map<String, Object> response = new HashMap<>();
+//
+//	    try {
+//	        IssueManifestProviderVO issueManifestProviderVO = issueManifestProviderRepo.findById(mimId).get();
+//	        CustomersVO customersVO = customersRepo.findByDisplayNameAndOrgId(issueManifestProviderVO.getReceiver(),
+//	                issueManifestProviderVO.getOrgId());
+//	        List<FlowVO> flowVO = flowRepo.findActiveByOrgIdAndEmitterId(issueManifestProviderVO.getOrgId(),
+//	                customersVO.getId());
+//	        IssueRequestVO issueRequestVO = issueRequestRepo.findByDocIdAndOrgId(issueManifestProviderVO.getTransactionNo(),
+//	                issueManifestProviderVO.getOrgId());
+//
+//	        if (issueRequestVO == null) {
+//	            issueRequestVO = new IssueRequestVO();
+//	            issueRequestVO.setDocId(issueManifestProviderVO.getTransactionNo());
+//	            issueRequestVO.setDocDate(issueManifestProviderVO.getTransactionDate());
+//	            issueRequestVO.setDemandDate(issueManifestProviderVO.getTransactionDate());
+//	            issueRequestVO.setCustomerId(customersVO.getId());
+//	            issueRequestVO.setEmitter(customersVO.getDisplayName());
+//	            issueRequestVO.setEmitterCode(customersVO.getCustomerCode());
+//	            issueRequestVO.setEmitterId(customersVO.getId());
+//
+//	            if (flowVO != null && !flowVO.isEmpty()) {
+//	                String flowName = flowVO.get(0).getFlowName();
+//	                Long flowId = flowVO.get(0).getId();
+//
+//	                issueRequestVO.setFlowName(flowName);
+//	                issueRequestVO.setFlowTo(flowId);
+//	                String whName = flowVO.get(0).getWarehouseLocation();
+//	                Long whId = flowVO.get(0).getWarehouseId();
+//	                issueRequestVO.setWarehouseLocation(whName);
+//	                issueRequestVO.setWarehouseLocationId(whId);
+//	            }
+//
+//	            issueRequestVO.setCreatedBy(createdBy);
+//	            issueRequestVO.setModifiedBy(createdBy);
+//	            issueRequestVO.setIrType(IssueRequestType.IR_KIT);
+//	            issueRequestVO.setIssueStatus(0);
+//	            issueRequestVO.setReqAddressId(0);
+//	            issueRequestVO.setOrgId(issueManifestProviderVO.getOrgId());
+//
+//	            Map<String, Set<Integer>> groupedKitDetails = issueManifestProviderVO.getIssueManifestProviderDetailsVOs().stream()
+//	        		    .collect(Collectors.groupingBy(
+//	        		        IssueManifestProviderDetailsVO::getKitId,
+//	        		        Collectors.mapping(
+//	        		            details -> details.getKitQty().intValue(), // Convert Long to Integer
+//	        		            Collectors.toSet() // Collect as Set to ensure uniqueness
+//	        		        )
+//	        		    ));
+//
+//	        		List<IssueItemVO> issueItemVOs = new ArrayList<>();
+//	        		for (Map.Entry<String, Set<Integer>> entry : groupedKitDetails.entrySet()) { // Change Integer to Set<Integer>
+//	        		    IssueItemVO issueItem = new IssueItemVO();
+//	        		    issueItem.setIssueItemStatus(0);
+//	        		    issueItem.setKitName(entry.getKey());
+//
+//	        		    // Get the first unique quantity from the Set
+//	        		    Integer quantity = entry.getValue().stream().findFirst().orElse(0); // Get first or default
+//	        		    issueItem.setKitQty(quantity);
+//
+//	        		    issueItem.setIssueRequestVO(issueRequestVO);
+//	        		    issueItem.setIssueItemStatus(EmitterConstant.ISSUE_REQUEST_STATUS_PENDING);
+//	        		    issueItem.setIssuedQty(0);
+//	        		    issueItemVOs.add(issueItem);
+//	        		}
+//
+//	            issueRequestVO.setIssueItemVO(issueItemVOs);
+//	        } else {
+//	            // Handle the case when the issueRequestVO already exists
+//	        	Map<String, Set<Integer>> groupedKitDetails = issueManifestProviderVO.getIssueManifestProviderDetailsVOs().stream()
+//	        		    .collect(Collectors.groupingBy(
+//	        		        IssueManifestProviderDetailsVO::getKitId,
+//	        		        Collectors.mapping(
+//	        		            details -> details.getKitQty().intValue(), // Convert Long to Integer
+//	        		            Collectors.toSet() // Collect as Set to ensure uniqueness
+//	        		        )
+//	        		    ));
+//
+//	        		List<IssueItemVO> issueItemVOs = new ArrayList<>();
+//	        		for (Map.Entry<String, Set<Integer>> entry : groupedKitDetails.entrySet()) { // Change Integer to Set<Integer>
+//	        		    IssueItemVO issueItem = new IssueItemVO();
+//	        		    issueItem.setIssueItemStatus(0);
+//	        		    issueItem.setKitName(entry.getKey());
+//
+//	        		    // Get the first unique quantity from the Set
+//	        		    Integer quantity = entry.getValue().stream().findFirst().orElse(0); // Get first or default
+//	        		    issueItem.setKitQty(quantity);
+//	        		    issueItem.setIssueRequestVO(issueRequestVO);
+//	        		    issueItem.setIssueItemStatus(EmitterConstant.ISSUE_REQUEST_STATUS_PENDING);
+//	        		    issueItem.setIssuedQty(0);
+//	        		    
+//	        		    issueItemVOs.add(issueItem);
+//	        		}
+//
+//	            issueRequestVO.setIssueItemVO(issueItemVOs);
+//	        }
+//
+//	        issueRequestRepo.save(issueRequestVO);
+//	        response.put("message", "Successfully Generated");
+//	    } catch (Exception e) {
+//	        response.put("error", "Error occurred while generating issue request: " + e.getMessage());
+//	    }
+//
+//	    return response;
+//	}
+	
+	@Override
+	public Map<String, Object> CreateIssueRequestFromMim(List<Long> mimIds, String createdBy) {
+	    Map<String, Object> response = new HashMap<>();
+	    List<Map<String, Object>> responses = new ArrayList<>(); // To collect responses for each mimId
+	    int totalSavedCount = 0;
+	    for (Long mimId : mimIds) {
+	        try {
+	            IssueManifestProviderVO issueManifestProviderVO = issueManifestProviderRepo.findById(mimId).orElse(null);
+	            if (issueManifestProviderVO == null) {
+	                response.put("error", "Mim ID " + mimId + " not found.");
+	                continue; // Skip this mimId if it doesn't exist
+	            }
+
+	            CustomersVO customersVO = customersRepo.findByDisplayNameAndOrgId(issueManifestProviderVO.getReceiver(),
+	                    issueManifestProviderVO.getOrgId());
+	            List<FlowVO> flowVO = flowRepo.findActiveByOrgIdAndEmitterId(issueManifestProviderVO.getOrgId(),
+	                    customersVO.getId());
+	            IssueRequestVO issueRequestVO = issueRequestRepo.findByDocIdAndOrgId(issueManifestProviderVO.getTransactionNo(),
+	                    issueManifestProviderVO.getOrgId());
+
+	            if (issueRequestVO == null) {
+	                issueRequestVO = new IssueRequestVO();
+	                issueRequestVO.setDocId(issueManifestProviderVO.getTransactionNo());
+	                issueRequestVO.setDocDate(issueManifestProviderVO.getTransactionDate());
+	                issueRequestVO.setDemandDate(issueManifestProviderVO.getTransactionDate());
+	                issueRequestVO.setCustomerId(customersVO.getId());
+	                issueRequestVO.setEmitter(customersVO.getDisplayName());
+	                issueRequestVO.setEmitterCode(customersVO.getCustomerCode());
+	                issueRequestVO.setEmitterId(customersVO.getId());
+
+	                if (flowVO != null && !flowVO.isEmpty()) {
+	                    String flowName = flowVO.get(0).getFlowName();
+	                    Long flowId = flowVO.get(0).getId();
+	                    issueRequestVO.setFlowName(flowName);
+	                    issueRequestVO.setFlowTo(flowId);
+	                    String whName = flowVO.get(0).getWarehouseLocation();
+	                    Long whId = flowVO.get(0).getWarehouseId();
+	                    issueRequestVO.setWarehouseLocation(whName);
+	                    issueRequestVO.setWarehouseLocationId(whId);
+	                }
+
+	                issueRequestVO.setCreatedBy(createdBy);
+	                issueRequestVO.setModifiedBy(createdBy);
+	                issueRequestVO.setIrType(IssueRequestType.IR_KIT);
+	                issueRequestVO.setIssueStatus(0);
+	                issueRequestVO.setReqAddressId(0);
+	                issueRequestVO.setOrgId(issueManifestProviderVO.getOrgId());
+
+	                Map<String, Set<Integer>> groupedKitDetails = issueManifestProviderVO.getIssueManifestProviderDetailsVOs().stream()
+	                        .collect(Collectors.groupingBy(
+	                                IssueManifestProviderDetailsVO::getKitId,
+	                                Collectors.mapping(
+	                                        details -> details.getKitQty().intValue(),
+	                                        Collectors.toSet()
+	                                )
+	                        ));
+
+	                List<IssueItemVO> issueItemVOs = new ArrayList<>();
+	                for (Map.Entry<String, Set<Integer>> entry : groupedKitDetails.entrySet()) {
+	                    IssueItemVO issueItem = new IssueItemVO();
+	                    issueItem.setIssueItemStatus(0);
+	                    issueItem.setKitName(entry.getKey());
+	                    Integer quantity = entry.getValue().stream().findFirst().orElse(0);
+	                    issueItem.setKitQty(quantity);
+	                    issueItem.setIssueRequestVO(issueRequestVO);
+	                    issueItem.setIssueItemStatus(EmitterConstant.ISSUE_REQUEST_STATUS_PENDING);
+	                    issueItem.setIssuedQty(0);
+	                    issueItemVOs.add(issueItem);
+	                }
+
+	                issueRequestVO.setIssueItemVO(issueItemVOs);
+	            } else {
+	                // Handle the case when the issueRequestVO already exists
+	                Map<String, Set<Integer>> groupedKitDetails = issueManifestProviderVO.getIssueManifestProviderDetailsVOs().stream()
+	                        .collect(Collectors.groupingBy(
+	                                IssueManifestProviderDetailsVO::getKitId,
+	                                Collectors.mapping(
+	                                        details -> details.getKitQty().intValue(),
+	                                        Collectors.toSet()
+	                                )
+	                        ));
+
+	                List<IssueItemVO> issueItemVOs = new ArrayList<>();
+	                for (Map.Entry<String, Set<Integer>> entry : groupedKitDetails.entrySet()) {
+	                    IssueItemVO issueItem = new IssueItemVO();
+	                    issueItem.setIssueItemStatus(0);
+	                    issueItem.setKitName(entry.getKey());
+	                    Integer quantity = entry.getValue().stream().findFirst().orElse(0);
+	                    issueItem.setKitQty(quantity);
+	                    issueItem.setIssueRequestVO(issueRequestVO);
+	                    issueItem.setIssueItemStatus(EmitterConstant.ISSUE_REQUEST_STATUS_PENDING);
+	                    issueItem.setIssuedQty(0);
+	                    issueItemVOs.add(issueItem);
+	                }
+
+	                issueRequestVO.setIssueItemVO(issueItemVOs);
+	            }
+
+	            issueRequestRepo.save(issueRequestVO);
+	            totalSavedCount++;
+	            responses.add(Map.of("mimId", mimId, "message", "Successfully Generated")); // Collect success response for this mimId
+	        } catch (Exception e) {
+	            responses.add(Map.of("mimId", mimId, "error", "Error occurred while generating issue request: " + e.getMessage()));
+	        }
+	    }
+	    response.put("totalSavedCount", totalSavedCount);
+	    response.put("responses", responses); // Return all responses at once
+	    return response;
+	}
+
+
+
+
 }

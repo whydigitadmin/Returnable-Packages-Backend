@@ -68,6 +68,8 @@ public interface EmitterService {
 
 	IssueRequestVO issueRequestQtyApprovel(IssueRequestQtyApprovelDTO issueRequestQtyApprovelDTO)
 			throws ApplicationException;
+	
+//	Map<String, Object> CreateIsueRequestFromMim(Long mimId,String createdBy);
 
 	void cancelIssueRequest(Long issueRequestId, Long issueRequestItemId) throws ApplicationException;
 
@@ -157,6 +159,10 @@ public interface EmitterService {
 	Set<Object[]> getReqDetailsByOrgId(Long orgid, String reqNo, String kitNo);
 
 	void uploadIssueRequestData(MultipartFile file, Long orgId, Long emitterId, String createdBy) throws Exception;
+
+	Map<String, Object> CreateIssueRequestFromMim(List<Long> mimIds, String createdBy);
+
+	
 
 
 }

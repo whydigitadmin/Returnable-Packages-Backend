@@ -80,5 +80,8 @@ public interface IssueRequestRepo
 			+ " where concat(a.docid,a.binreqno,a.kitcode) not in (select concat(allotmentno,reqno,kitcode) from bininward) and a.emitterid=?1 and c.emitterid=?1 and a.kitcode=c.kitno and a.orgid=?2 and c.flowid= d.flowid  and a.flow=d.flow\r\n"
 			+ " group by a.docid,a.docdate,a.flow,a.kitcode,a.allotkitqty,c.partno ,c.partname,a.binreqno,a.binreqdate", nativeQuery = true)
 	Set<Object[]> getBinInward(Long emitterId, Long orgId);
+
+	@Query(value = "select a from IssueRequestVO a where a.docId=?1 and a.orgId=?2")
+	IssueRequestVO findByDocIdAndOrgId(String transactionNo, Long orgId);
 	
 }

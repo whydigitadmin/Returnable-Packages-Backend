@@ -1569,5 +1569,32 @@ public class EmitterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
+	
+	@PutMapping("/CreateIssueRequestFromMIM")
+	public ResponseEntity<ResponseDTO> CreateIssueRequestFromMIM(@RequestParam List<Long> mimId, @RequestParam String createdBy) {
+	    String methodName = "CreateIssueRequestFromMIM()";
+	    LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+	    String errorMsg = null;
+	    Map<String, Object> responseObjectsMap = new HashMap<>();
+	    ResponseDTO responseDTO = null;
+
+	    try {
+	        Map<String, Object> issuRequest = emitterService.CreateIssueRequestFromMim(mimId, createdBy);
+	        
+	        // Retrieve the total saved count and responses from the issuRequest map
+	        int totalSavedCount = (int) issuRequest.getOrDefault("totalSavedCount", 0);	        
+	        // Add both total saved count and individual responses to the responseObjectsMap
+	        responseObjectsMap.put("totalSavedCount", totalSavedCount);
+	        responseDTO = createServiceResponse(responseObjectsMap);
+	    } catch (Exception e) {
+	        errorMsg = e.getMessage();
+	        LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+	        responseDTO = createServiceResponseError(responseObjectsMap, errorMsg, errorMsg);
+	    }
+
+	    LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+	    return ResponseEntity.ok().body(responseDTO);
+	}
+
 
 }
