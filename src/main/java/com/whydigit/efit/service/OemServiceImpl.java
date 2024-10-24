@@ -931,6 +931,12 @@ public class OemServiceImpl implements OemService {
 		
 		return issueManifestProviderRepo.findAll();
 	}
+	
+	@Override
+	public List<IssueManifestProviderVO> getAllIssueManifestProviderForPendingIssueRequest(Long orgId) {
+		
+		return issueManifestProviderRepo.findAllIssueManifeasrProvider(orgId);
+	}
 
 	@Override
 	public Optional<IssueManifestProviderVO> getAllIssueManifestProviderById(Long id) {

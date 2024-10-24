@@ -110,4 +110,6 @@ public interface OemService {
 	DeclarationAndNotesVO createDeclarationAndNotes(DeclarationAndNotesVO declarationAndNotesVO);
 
 	List<DeclarationAndNotesVO>  getAllDeclarationAndNotes();
+
+	List<IssueManifestProviderVO> getAllIssueManifestProviderForPendingIssueRequest(Long orgId);
 }

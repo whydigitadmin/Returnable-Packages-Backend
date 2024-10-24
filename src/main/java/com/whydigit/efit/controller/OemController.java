@@ -879,6 +879,33 @@ public class OemController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 
 	}
+	
+	@GetMapping("/getAllIssueManifestProviderForPendingIR")
+	public ResponseEntity<ResponseDTO> getAllIssueManifestProviderForPendingIR(@RequestParam Long orgId) {
+		String methodName = "getAllIssueManifestProviderForPendingIR()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<IssueManifestProviderVO> IssueManifestProviderVO =new ArrayList<IssueManifestProviderVO>();
+		try {
+			IssueManifestProviderVO = oemService.getAllIssueManifestProviderForPendingIssueRequest(orgId);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "IssueManifestProvider information get successfully");
+			responseObjectsMap.put("IssueManifestProviderVO", IssueManifestProviderVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "IssueManifestProvider information receive failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+
+	}
 
 
 	@GetMapping("/getAllIssueManifestProviderById")
