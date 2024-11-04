@@ -31,4 +31,6 @@ public interface BinRetrievalRepo  extends JpaRepository<BinRetrievalVO, Long>{
 
 	@Query(nativeQuery=true,value ="select * from binretrieval where orgid=?1")
 	List<BinRetrievalVO> findByOrgId(Long orgId);
+
+	BinRetrievalVO findByDocIdAndOrgId(String transactionNo, Long orgId);
 }

@@ -1745,8 +1745,34 @@ public class EmitterServiceImpl implements EmitterService {
 	    response.put("responses", responses); // Return all responses at once
 	    return response;
 	}
+	
+	
+	@Override
+	public List<Map<String,Object>>getIssueRequestFromMim(Long orgId){
+		Set<Object[]>getDetailsFromMIM=issueRequestRepo.getIssueRequestReportFromMIM(orgId);
+		
+		return findIssueRequestFromMIM(getDetailsFromMIM);
+		
+	}
 
-
+	private List<Map<String, Object>> findIssueRequestFromMIM(Set<Object[]> getDetailsFromMIM) {
+		List<Map<String, Object>> getIssueReport = new ArrayList<>();
+		for (Object[] issueReport : getDetailsFromMIM) {
+			Map<String, Object> issue = new HashMap<>();
+			issue.put("reqNo", issueReport[0] != null ? issueReport[0].toString() : "");
+			issue.put("reqDate", issueReport[1] != null ? issueReport[1].toString() : "");
+			issue.put("emitter", issueReport[2] != null ? issueReport[2].toString() : "");
+			issue.put("emitterId", issueReport[3] != null ? issueReport[3].toString() : "");
+			issue.put("kitCode", issueReport[4] != null ? issueReport[4].toString() : "");
+			issue.put("reqKitQty", issueReport[5] != null ? Integer.parseInt(issueReport[5].toString()) : 0);
+			issue.put("partNo", issueReport[6] != null ? issueReport[6].toString() : "");
+			issue.put("partName", issueReport[7] != null ? issueReport[7].toString() : "");
+			issue.put("flow", issueReport[8] != null ? issueReport[8].toString() : "");
+			issue.put("flowId", issueReport[9] != null ? issueReport[9].toString() : "");
+			getIssueReport.add(issue);
+		}
+		return getIssueReport;
+	}
 
 
 }

@@ -62,6 +62,7 @@ import com.whydigit.efit.dto.AssetTaggingDetailsDTO;
 import com.whydigit.efit.dto.AssetTypeDTO;
 import com.whydigit.efit.dto.BinAllotmentDTO;
 import com.whydigit.efit.dto.BinAllotmentDetailsDTO;
+import com.whydigit.efit.dto.BinAllotmentFromMIMDTO;
 import com.whydigit.efit.dto.BinRetrievalDTO;
 import com.whydigit.efit.dto.BinRetrievalDetailsDTO;
 import com.whydigit.efit.dto.BranchDTO;
@@ -125,6 +126,8 @@ import com.whydigit.efit.entity.FlowDetailVO;
 import com.whydigit.efit.entity.FlowVO;
 import com.whydigit.efit.entity.InvoiceProductLinesVO;
 import com.whydigit.efit.entity.InvoiceVO;
+import com.whydigit.efit.entity.IssueManifestProviderVO;
+import com.whydigit.efit.entity.IssueRequestVO;
 import com.whydigit.efit.entity.KitAssetVO;
 import com.whydigit.efit.entity.KitVO;
 import com.whydigit.efit.entity.ManufacturerProductVO;
@@ -138,6 +141,8 @@ import com.whydigit.efit.entity.Pod1VO;
 import com.whydigit.efit.entity.Pod2VO;
 import com.whydigit.efit.entity.PodVO;
 import com.whydigit.efit.entity.ProofOfDeliveryVO;
+import com.whydigit.efit.entity.RetrievalManifestProviderDetailsVO;
+import com.whydigit.efit.entity.RetrievalManifestProviderVO;
 import com.whydigit.efit.entity.ServiceVO;
 import com.whydigit.efit.entity.StockBranchVO;
 import com.whydigit.efit.entity.TaxInvoiceKitLineVO;
@@ -189,6 +194,8 @@ import com.whydigit.efit.repo.Po1Repo;
 import com.whydigit.efit.repo.PoRepo;
 import com.whydigit.efit.repo.PodRepo;
 import com.whydigit.efit.repo.ProofOfDeliveryRepo;
+import com.whydigit.efit.repo.RetrievalManifestProviderDetailsRepo;
+import com.whydigit.efit.repo.RetrievalManifestProviderRepo;
 import com.whydigit.efit.repo.ServiceRepo;
 import com.whydigit.efit.repo.StockBranchRepo;
 import com.whydigit.efit.repo.TaxInvoiceKitLineRepo;
@@ -245,6 +252,12 @@ public class MasterServiceImpl implements MasterService {
 
 	@Autowired
 	BinRetrievalRepo binRetrievalRepo;
+
+	@Autowired
+	RetrievalManifestProviderRepo retrievalManifestProviderRepo;
+
+	@Autowired
+	RetrievalManifestProviderDetailsRepo retrievalManifestProviderDetailsRepo;
 
 	@Autowired
 	FlowDetailRepo flowDetailRepo;
@@ -694,7 +707,7 @@ public class MasterServiceImpl implements MasterService {
 	public CustomersVO createCustomers(CustomersDTO customersDTO) {
 
 		if (customersRepo.existsByDisplayNameAndOrgId(customersDTO.getDisplayName(), customersDTO.getOrgId())) {
-			throw new RuntimeException("Display Name: "+ customersDTO.getDisplayName() +" Already exists");
+			throw new RuntimeException("Display Name: " + customersDTO.getDisplayName() + " Already exists");
 		}
 		CustomersVO customersVO = new CustomersVO();
 		customersVO.setOrgId(customersDTO.getOrgId());
@@ -866,7 +879,7 @@ public class MasterServiceImpl implements MasterService {
 		if (!existingCustomer.getDisplayName().equals(customersDTO.getDisplayName())) {
 			// Check if there's already an entry with the same Display Name and orgId
 			if (customersRepo.existsByDisplayNameAndOrgId(customersDTO.getDisplayName(), existingCustomer.getOrgId())) {
-				throw new ApplicationException("Display Name: "+ customersDTO.getDisplayName() +" Already exists");
+				throw new ApplicationException("Display Name: " + customersDTO.getDisplayName() + " Already exists");
 			}
 			// Update Display Name if there's no duplicate
 			customersVO.setDisplayName(customersDTO.getDisplayName().toUpperCase());
@@ -881,181 +894,175 @@ public class MasterServiceImpl implements MasterService {
 
 		customersVO.setActive(customersDTO.isActive());
 	}
-	
-	
+
 	@Override
 	public void uploadCustomerData(MultipartFile file, Long orgId, String createdBy) throws Exception {
-	    try (Workbook workbook = WorkbookFactory.create(file.getInputStream())) {
+		try (Workbook workbook = WorkbookFactory.create(file.getInputStream())) {
 
-	        // Reading the customer sheet
-	        Sheet customerSheet = workbook.getSheetAt(0); // Assuming customer sheet is the first one
-	        List<CustomersDTO> customersDTOList = new ArrayList<>();
+			// Reading the customer sheet
+			Sheet customerSheet = workbook.getSheetAt(0); // Assuming customer sheet is the first one
+			List<CustomersDTO> customersDTOList = new ArrayList<>();
 
-	        for (Row row : customerSheet) {
-	            if (row.getRowNum() == 0) { // Skipping header
-	                continue;
-	            }
+			for (Row row : customerSheet) {
+				if (row.getRowNum() == 0) { // Skipping header
+					continue;
+				}
 
-	            CustomersDTO customersDTO = new CustomersDTO();
-	            customersDTO.setOrgId(orgId);
+				CustomersDTO customersDTO = new CustomersDTO();
+				customersDTO.setOrgId(orgId);
 
-	            // Handling customerType as Integer
-	            if (row.getCell(0).getCellType() == CellType.STRING) {
-	                String customerTypeValue = row.getCell(0).getStringCellValue().trim();
+				// Handling customerType as Integer
+				if (row.getCell(0).getCellType() == CellType.STRING) {
+					String customerTypeValue = row.getCell(0).getStringCellValue().trim();
 
-	                if (customerTypeValue.equalsIgnoreCase("EMITTER")) {
-	                    customersDTO.setCustomerType(0); // Set to 0 for EMITTER
-	                } else if (customerTypeValue.equalsIgnoreCase("RECEIVER")) {
-	                    customersDTO.setCustomerType(1); // Set to 1 for RECEIVER
-	                } else {
-	                    // Handle invalid values or throw an exception if necessary
-	                    throw new IllegalArgumentException("Invalid customer type value: " + customerTypeValue);
-	                }
-	            } else if (row.getCell(0).getCellType() == CellType.NUMERIC) {
-	                customersDTO.setCustomerType((int) row.getCell(0).getNumericCellValue()); // Handle numeric values as usual
-	            }
+					if (customerTypeValue.equalsIgnoreCase("EMITTER")) {
+						customersDTO.setCustomerType(0); // Set to 0 for EMITTER
+					} else if (customerTypeValue.equalsIgnoreCase("RECEIVER")) {
+						customersDTO.setCustomerType(1); // Set to 1 for RECEIVER
+					} else {
+						// Handle invalid values or throw an exception if necessary
+						throw new IllegalArgumentException("Invalid customer type value: " + customerTypeValue);
+					}
+				} else if (row.getCell(0).getCellType() == CellType.NUMERIC) {
+					customersDTO.setCustomerType((int) row.getCell(0).getNumericCellValue()); // Handle numeric values
+																								// as usual
+				}
 
-	            // EntityLegalName as String
-	            customersDTO.setEntityLegalName(row.getCell(1).getStringCellValue());
+				// EntityLegalName as String
+				customersDTO.setEntityLegalName(row.getCell(1).getStringCellValue());
 
-	            // DisplayName as String
-	            customersDTO.setDisplayName(row.getCell(2).getStringCellValue());
+				// DisplayName as String
+				customersDTO.setDisplayName(row.getCell(2).getStringCellValue());
 
-	            // Email as String
-	            customersDTO.setEmail(row.getCell(3).getStringCellValue());
+				// Email as String
+				customersDTO.setEmail(row.getCell(3).getStringCellValue());
 
-	            // PhoneNumber as String (convert numeric to string if necessary)
-	            if (row.getCell(4).getCellType() == CellType.NUMERIC) {
-	                customersDTO.setPhoneNumber(String.valueOf((long) row.getCell(4).getNumericCellValue()));
-	            } else if (row.getCell(4).getCellType() == CellType.STRING) {
-	                customersDTO.setPhoneNumber(row.getCell(4).getStringCellValue());
-	            }
+				// PhoneNumber as String (convert numeric to string if necessary)
+				if (row.getCell(4).getCellType() == CellType.NUMERIC) {
+					customersDTO.setPhoneNumber(String.valueOf((long) row.getCell(4).getNumericCellValue()));
+				} else if (row.getCell(4).getCellType() == CellType.STRING) {
+					customersDTO.setPhoneNumber(row.getCell(4).getStringCellValue());
+				}
 
-	            customersDTO.setCreatedBy(createdBy);
-	            customersDTO.setCustomerActivatePortal(true); // Assuming it's true
-	            customersDTO.setActive(true); // Assuming it's active
+				customersDTO.setCreatedBy(createdBy);
+				customersDTO.setCustomerActivatePortal(true); // Assuming it's true
+				customersDTO.setActive(true); // Assuming it's active
 
-	            // Check for duplicate entry before adding it to the list
+				// Check for duplicate entry before adding it to the list
 //	            if (!customersRepo.existsByOrgIdAndEntityLegalNameIgnoreCase(customersDTO.getOrgId(), customersDTO.getEntityLegalName())) {
-	                customersDTOList.add(customersDTO);
+				customersDTOList.add(customersDTO);
 //	            } else {
-	                // Log or handle duplicate data here
+				// Log or handle duplicate data here
 //	                System.out.println("Duplicate customer found for orgId: " + orgId + " and entityLegalName: " + customersDTO.getEntityLegalName());
 //	            }
-	        }
+			}
 
-	        // Reading the address sheet
-	        Sheet addressSheet = workbook.getSheetAt(1); // Assuming address sheet is the second one
-	        for (Row row : addressSheet) {
-	            if (row.getRowNum() == 0) { // Skipping header
-	                continue;
-	            }
+			// Reading the address sheet
+			Sheet addressSheet = workbook.getSheetAt(1); // Assuming address sheet is the second one
+			for (Row row : addressSheet) {
+				if (row.getRowNum() == 0) { // Skipping header
+					continue;
+				}
 
-	            String displayName = row.getCell(0).getStringCellValue();
-	            CustomersDTO customersDTO = customersDTOList.stream()
-	                    .filter(c -> c.getDisplayName().equals(displayName))
-	                    .findFirst()
-	                    .orElseThrow(() -> new RuntimeException("No customer found for display name: " + displayName));
+				String displayName = row.getCell(0).getStringCellValue();
+				CustomersDTO customersDTO = customersDTOList.stream()
+						.filter(c -> c.getDisplayName().equals(displayName)).findFirst()
+						.orElseThrow(() -> new RuntimeException("No customer found for display name: " + displayName));
 
-	            CustomersAddressDTO addressDTO = new CustomersAddressDTO();
+				CustomersAddressDTO addressDTO = new CustomersAddressDTO();
 
-	            // Street1 as String
-	            addressDTO.setStreet1(row.getCell(1).getStringCellValue());
+				// Street1 as String
+				addressDTO.setStreet1(row.getCell(1).getStringCellValue());
 
-	            // Street2 as String
-	            addressDTO.setStreet2(row.getCell(2).getStringCellValue());
+				// Street2 as String
+				addressDTO.setStreet2(row.getCell(2).getStringCellValue());
 
-	            // City as String
-	            addressDTO.setCity(row.getCell(3).getStringCellValue());
+				// City as String
+				addressDTO.setCity(row.getCell(3).getStringCellValue());
 
-	            // State as String
-	            addressDTO.setState(row.getCell(4).getStringCellValue());
+				// State as String
+				addressDTO.setState(row.getCell(4).getStringCellValue());
 
-	            // Country as String
-	            addressDTO.setCountry(row.getCell(5).getStringCellValue());
+				// Country as String
+				addressDTO.setCountry(row.getCell(5).getStringCellValue());
 
-	            // PinCode as String (convert numeric to string if necessary)
-	            if (row.getCell(6).getCellType() == CellType.NUMERIC) {
-	                addressDTO.setPinCode(String.valueOf((long) row.getCell(6).getNumericCellValue()));
-	            } else if (row.getCell(6).getCellType() == CellType.STRING) {
-	                addressDTO.setPinCode(row.getCell(6).getStringCellValue());
-	            }
+				// PinCode as String (convert numeric to string if necessary)
+				if (row.getCell(6).getCellType() == CellType.NUMERIC) {
+					addressDTO.setPinCode(String.valueOf((long) row.getCell(6).getNumericCellValue()));
+				} else if (row.getCell(6).getCellType() == CellType.STRING) {
+					addressDTO.setPinCode(row.getCell(6).getStringCellValue());
+				}
 
-	            // PhoneNumber as String (convert numeric to string if necessary)
-	            if (row.getCell(7).getCellType() == CellType.NUMERIC) {
-	                addressDTO.setPhoneNumber(String.valueOf((long) row.getCell(7).getNumericCellValue()));
-	            } else if (row.getCell(7).getCellType() == CellType.STRING) {
-	                addressDTO.setPhoneNumber(row.getCell(7).getStringCellValue());
-	            }
+				// PhoneNumber as String (convert numeric to string if necessary)
+				if (row.getCell(7).getCellType() == CellType.NUMERIC) {
+					addressDTO.setPhoneNumber(String.valueOf((long) row.getCell(7).getNumericCellValue()));
+				} else if (row.getCell(7).getCellType() == CellType.STRING) {
+					addressDTO.setPhoneNumber(row.getCell(7).getStringCellValue());
+				}
 
-	            // GstRegistrationStatus as String
-	            addressDTO.setGstRegistrationStatus(row.getCell(8).getStringCellValue());
+				// GstRegistrationStatus as String
+				addressDTO.setGstRegistrationStatus(row.getCell(8).getStringCellValue());
 
-	            // GstNumber as String
-	            addressDTO.setGstNumber(row.getCell(9).getStringCellValue());
+				// GstNumber as String
+				addressDTO.setGstNumber(row.getCell(9).getStringCellValue());
 
-	            // Email as String
-	            addressDTO.setEmail(row.getCell(10).getStringCellValue());
+				// Email as String
+				addressDTO.setEmail(row.getCell(10).getStringCellValue());
 
-	            // ContactName as String
-	            addressDTO.setContactName(row.getCell(11).getStringCellValue());
+				// ContactName as String
+				addressDTO.setContactName(row.getCell(11).getStringCellValue());
 
-	            // Designation as String
-	            addressDTO.setDesignation(row.getCell(12).getStringCellValue());
+				// Designation as String
+				addressDTO.setDesignation(row.getCell(12).getStringCellValue());
 
-	            // Ensure customerAddressDTO list is initialized before adding
-	            if (customersDTO.getCustomerAddressDTO() == null) {
-	                customersDTO.setCustomerAddressDTO(new ArrayList<>());  // Initialize the list if null
-	            }
-	            customersDTO.getCustomerAddressDTO().add(addressDTO);
-	        }
-	        
-	        Sheet bankSheet = workbook.getSheetAt(2); // Assuming address sheet is the second one
-	        for (Row row : bankSheet) {
-	            if (row.getRowNum() == 0) { // Skipping header
-	                continue;
-	            }
+				// Ensure customerAddressDTO list is initialized before adding
+				if (customersDTO.getCustomerAddressDTO() == null) {
+					customersDTO.setCustomerAddressDTO(new ArrayList<>()); // Initialize the list if null
+				}
+				customersDTO.getCustomerAddressDTO().add(addressDTO);
+			}
 
-	            String displayName = row.getCell(0).getStringCellValue();
-	            CustomersDTO customersDTO = customersDTOList.stream()
-	                    .filter(c -> c.getDisplayName().equals(displayName))
-	                    .findFirst()
-	                    .orElseThrow(() -> new RuntimeException("No customer found for display name: " + displayName));
+			Sheet bankSheet = workbook.getSheetAt(2); // Assuming address sheet is the second one
+			for (Row row : bankSheet) {
+				if (row.getRowNum() == 0) { // Skipping header
+					continue;
+				}
 
-	            CustomersBankDetailsDTO bankDTO = new CustomersBankDetailsDTO();
+				String displayName = row.getCell(0).getStringCellValue();
+				CustomersDTO customersDTO = customersDTOList.stream()
+						.filter(c -> c.getDisplayName().equals(displayName)).findFirst()
+						.orElseThrow(() -> new RuntimeException("No customer found for display name: " + displayName));
 
-	            // Street1 as String
-	            bankDTO.setAccountName(row.getCell(1).getStringCellValue());
+				CustomersBankDetailsDTO bankDTO = new CustomersBankDetailsDTO();
 
-	            // Street2 as String
-	            bankDTO.setAccountNo((long) row.getCell(2).getNumericCellValue());
+				// Street1 as String
+				bankDTO.setAccountName(row.getCell(1).getStringCellValue());
 
-	            // City as String
-	            bankDTO.setBank(row.getCell(3).getStringCellValue());
+				// Street2 as String
+				bankDTO.setAccountNo((long) row.getCell(2).getNumericCellValue());
 
-	            // State as String
-	            bankDTO.setBranch(row.getCell(4).getStringCellValue());
+				// City as String
+				bankDTO.setBank(row.getCell(3).getStringCellValue());
 
-	            // Country as String
-	            bankDTO.setIfscCode(row.getCell(5).getStringCellValue());
+				// State as String
+				bankDTO.setBranch(row.getCell(4).getStringCellValue());
 
-	            // Ensure customerAddressDTO list is initialized before adding
-	            if (customersDTO.getCustomerBankDetailsDTO() == null) {
-	                customersDTO.setCustomerBankDetailsDTO(new ArrayList<>());  // Initialize the list if null
-	            }
-	            customersDTO.getCustomerBankDetailsDTO().add(bankDTO);
-	        }
-	        
+				// Country as String
+				bankDTO.setIfscCode(row.getCell(5).getStringCellValue());
 
-	        // Loop through the DTO list and call createCustomers for each entry
-	        for (CustomersDTO customer : customersDTOList) {
-	            createCustomers(customer); // Assuming this method takes a single CustomersDTO
-	        }
-	    }
+				// Ensure customerAddressDTO list is initialized before adding
+				if (customersDTO.getCustomerBankDetailsDTO() == null) {
+					customersDTO.setCustomerBankDetailsDTO(new ArrayList<>()); // Initialize the list if null
+				}
+				customersDTO.getCustomerBankDetailsDTO().add(bankDTO);
+			}
+
+			// Loop through the DTO list and call createCustomers for each entry
+			for (CustomersDTO customer : customersDTOList) {
+				createCustomers(customer); // Assuming this method takes a single CustomersDTO
+			}
+		}
 	}
-
-
-
 
 	@Override
 	public void deleteCustomers(Long id) {
@@ -1721,169 +1728,164 @@ public class MasterServiceImpl implements MasterService {
 
 	@Override
 	public void uploadVendorData(MultipartFile file, Long orgId, String createdBy) throws Exception {
-	    try (Workbook workbook = WorkbookFactory.create(file.getInputStream())) {
+		try (Workbook workbook = WorkbookFactory.create(file.getInputStream())) {
 
-	        // Reading the vendor sheet
-	        Sheet vendorSheet = workbook.getSheetAt(0); // Assuming vendor sheet is the first one
-	        List<VendorDTO> vendorDTOList = new ArrayList<>();
+			// Reading the vendor sheet
+			Sheet vendorSheet = workbook.getSheetAt(0); // Assuming vendor sheet is the first one
+			List<VendorDTO> vendorDTOList = new ArrayList<>();
 
-	        for (Row row : vendorSheet) {
-	            if (row.getRowNum() == 0) { // Skipping header
-	                continue;
-	            }
+			for (Row row : vendorSheet) {
+				if (row.getRowNum() == 0) { // Skipping header
+					continue;
+				}
 
-	            VendorDTO vendorDTO = new VendorDTO();
-	            vendorDTO.setOrgId(orgId);
+				VendorDTO vendorDTO = new VendorDTO();
+				vendorDTO.setOrgId(orgId);
 
-	            // Handling venderType as String
-	            vendorDTO.setVenderType(row.getCell(0).getStringCellValue().trim());
+				// Handling venderType as String
+				vendorDTO.setVenderType(row.getCell(0).getStringCellValue().trim());
 
-	            // EntityLegalName as String
-	            vendorDTO.setEntityLegalName(row.getCell(1).getStringCellValue());
+				// EntityLegalName as String
+				vendorDTO.setEntityLegalName(row.getCell(1).getStringCellValue());
 
-	            // DisplayName as String
-	            vendorDTO.setDisplyName(row.getCell(2).getStringCellValue());
+				// DisplayName as String
+				vendorDTO.setDisplyName(row.getCell(2).getStringCellValue());
 
-	            // Email as String
-	            vendorDTO.setEmail(row.getCell(3).getStringCellValue());
+				// Email as String
+				vendorDTO.setEmail(row.getCell(3).getStringCellValue());
 
-	            // PhoneNumber as String (convert numeric to string if necessary)
-	            if (row.getCell(4).getCellType() == CellType.NUMERIC) {
-	                vendorDTO.setPhoneNumber(String.valueOf((long) row.getCell(4).getNumericCellValue()));
-	            } else if (row.getCell(4).getCellType() == CellType.STRING) {
-	                vendorDTO.setPhoneNumber(row.getCell(4).getStringCellValue());
-	            }
+				// PhoneNumber as String (convert numeric to string if necessary)
+				if (row.getCell(4).getCellType() == CellType.NUMERIC) {
+					vendorDTO.setPhoneNumber(String.valueOf((long) row.getCell(4).getNumericCellValue()));
+				} else if (row.getCell(4).getCellType() == CellType.STRING) {
+					vendorDTO.setPhoneNumber(row.getCell(4).getStringCellValue());
+				}
 
-	            vendorDTO.setCreatedBy(createdBy);
-	            vendorDTO.setVenderActivePortal(true); // Assuming it's active
-	            vendorDTO.setActive(true); // Assuming it's active
+				vendorDTO.setCreatedBy(createdBy);
+				vendorDTO.setVenderActivePortal(true); // Assuming it's active
+				vendorDTO.setActive(true); // Assuming it's active
 
-	            // Check for duplicate entry before adding it to the list
+				// Check for duplicate entry before adding it to the list
 //	            if (!vendorRepo.existsByOrgIdAndEntityLegalNameIgnoreCase(vendorDTO.getOrgId(), vendorDTO.getEntityLegalName())) {
-	                vendorDTOList.add(vendorDTO);
+				vendorDTOList.add(vendorDTO);
 //	            } else {
 //	                // Log or handle duplicate data here
 //	                System.out.println("Duplicate vendor found for orgId: " + orgId + " and entityLegalName: " + vendorDTO.getEntityLegalName());
 //	            }
-	        }
+			}
 
-	        // Reading the address sheet
-	        Sheet addressSheet = workbook.getSheetAt(1); // Assuming address sheet is the second one
-	        for (Row row : addressSheet) {
-	            if (row.getRowNum() == 0) { // Skipping header
-	                continue;
-	            }
+			// Reading the address sheet
+			Sheet addressSheet = workbook.getSheetAt(1); // Assuming address sheet is the second one
+			for (Row row : addressSheet) {
+				if (row.getRowNum() == 0) { // Skipping header
+					continue;
+				}
 
-	            String displayName = row.getCell(0).getStringCellValue();
-	            VendorDTO vendorDTO = vendorDTOList.stream()
-	                .filter(v -> v.getDisplyName().equals(displayName))
-	                .findFirst()
-	                .orElseThrow(() -> new RuntimeException(String.format("Vendor display name: %s", displayName+" not Exist in Sheet 1")));
+				String displayName = row.getCell(0).getStringCellValue();
+				VendorDTO vendorDTO = vendorDTOList.stream().filter(v -> v.getDisplyName().equals(displayName))
+						.findFirst().orElseThrow(() -> new RuntimeException(
+								String.format("Vendor display name: %s", displayName + " not Exist in Sheet 1")));
 
+				VendorAddressDTO addressDTO = new VendorAddressDTO();
 
-	            VendorAddressDTO addressDTO = new VendorAddressDTO();
+				// Street1 as String
+				addressDTO.setStreet1(row.getCell(1).getStringCellValue());
 
-	            // Street1 as String
-	            addressDTO.setStreet1(row.getCell(1).getStringCellValue());
+				// Street2 as String
+				addressDTO.setStreet2(row.getCell(2).getStringCellValue());
 
-	            // Street2 as String
-	            addressDTO.setStreet2(row.getCell(2).getStringCellValue());
+				// City as String
+				addressDTO.setCity(row.getCell(3).getStringCellValue());
 
-	            // City as String
-	            addressDTO.setCity(row.getCell(3).getStringCellValue());
+				// State as String
+				addressDTO.setState(row.getCell(4).getStringCellValue());
 
-	            // State as String
-	            addressDTO.setState(row.getCell(4).getStringCellValue());
+				// Country as String
+				addressDTO.setCountry(row.getCell(5).getStringCellValue());
 
-	            // Country as String
-	            addressDTO.setCountry(row.getCell(5).getStringCellValue());
+				// PinCode as String (convert numeric to string if necessary)
+				if (row.getCell(6).getCellType() == CellType.NUMERIC) {
+					addressDTO.setPinCode(String.valueOf((long) row.getCell(6).getNumericCellValue()));
+				} else if (row.getCell(6).getCellType() == CellType.STRING) {
+					addressDTO.setPinCode(row.getCell(6).getStringCellValue());
+				}
 
-	            // PinCode as String (convert numeric to string if necessary)
-	            if (row.getCell(6).getCellType() == CellType.NUMERIC) {
-	                addressDTO.setPinCode(String.valueOf((long) row.getCell(6).getNumericCellValue()));
-	            } else if (row.getCell(6).getCellType() == CellType.STRING) {
-	                addressDTO.setPinCode(row.getCell(6).getStringCellValue());
-	            }
+				// PhoneNumber as String (convert numeric to string if necessary)
+				if (row.getCell(7).getCellType() == CellType.NUMERIC) {
+					addressDTO.setPhoneNumber(String.valueOf((long) row.getCell(7).getNumericCellValue()));
+				} else if (row.getCell(7).getCellType() == CellType.STRING) {
+					addressDTO.setPhoneNumber(row.getCell(7).getStringCellValue());
+				}
 
-	            // PhoneNumber as String (convert numeric to string if necessary)
-	            if (row.getCell(7).getCellType() == CellType.NUMERIC) {
-	                addressDTO.setPhoneNumber(String.valueOf((long) row.getCell(7).getNumericCellValue()));
-	            } else if (row.getCell(7).getCellType() == CellType.STRING) {
-	                addressDTO.setPhoneNumber(row.getCell(7).getStringCellValue());
-	            }
+				// GstRegistrationStatus as String
+				addressDTO.setGstRegistrationStatus(row.getCell(8).getStringCellValue());
 
-	            // GstRegistrationStatus as String
-	            addressDTO.setGstRegistrationStatus(row.getCell(8).getStringCellValue());
+				// GstNumber as String
+				addressDTO.setGstNumber(row.getCell(9).getStringCellValue());
 
-	            // GstNumber as String
-	            addressDTO.setGstNumber(row.getCell(9).getStringCellValue());
+				// Email as String
+				addressDTO.setEmail(row.getCell(10).getStringCellValue());
 
-	            // Email as String
-	            addressDTO.setEmail(row.getCell(10).getStringCellValue());
+				// ContactName as String
+				addressDTO.setContactName(row.getCell(11).getStringCellValue());
 
-	            // ContactName as String
-	            addressDTO.setContactName(row.getCell(11).getStringCellValue());
+				// Designation as String
+				addressDTO.setDesignation(row.getCell(12).getStringCellValue());
 
-	            // Designation as String
-	            addressDTO.setDesignation(row.getCell(12).getStringCellValue());
+				// Ensure vendorAddressDTO list is initialized before adding
+				if (vendorDTO.getVendorAddressDTO() == null) {
+					vendorDTO.setVendorAddressDTO(new ArrayList<>()); // Initialize the list if null
+				}
+				vendorDTO.getVendorAddressDTO().add(addressDTO);
+			}
 
-	            // Ensure vendorAddressDTO list is initialized before adding
-	            if (vendorDTO.getVendorAddressDTO() == null) {
-	                vendorDTO.setVendorAddressDTO(new ArrayList<>());  // Initialize the list if null
-	            }
-	            vendorDTO.getVendorAddressDTO().add(addressDTO);
-	        }
+			// Reading the bank sheet
+			Sheet bankSheet = workbook.getSheetAt(2); // Assuming bank sheet is the third one
+			for (Row row : bankSheet) {
+				if (row.getRowNum() == 0) { // Skipping header
+					continue;
+				}
 
-	        // Reading the bank sheet
-	        Sheet bankSheet = workbook.getSheetAt(2); // Assuming bank sheet is the third one
-	        for (Row row : bankSheet) {
-	            if (row.getRowNum() == 0) { // Skipping header
-	                continue;
-	            }
+				String displayName = row.getCell(0).getStringCellValue();
+				VendorDTO vendorDTO = vendorDTOList.stream().filter(v -> v.getDisplyName().equals(displayName))
+						.findFirst().orElseThrow(() -> new RuntimeException(
+								String.format("Vendor display name: %s", displayName + " not Exist in Sheet 1")));
 
-	            String displayName = row.getCell(0).getStringCellValue();
-	            VendorDTO vendorDTO = vendorDTOList.stream()
-	                .filter(v -> v.getDisplyName().equals(displayName))
-	                .findFirst()
-	                .orElseThrow(() -> new RuntimeException(String.format("Vendor display name: %s", displayName+" not Exist in Sheet 1")));
+				VendorBankDetailsDTO bankDTO = new VendorBankDetailsDTO();
 
+				// AccountName as String
+				bankDTO.setAccountName(row.getCell(1).getStringCellValue());
 
-	            VendorBankDetailsDTO bankDTO = new VendorBankDetailsDTO();
+				// AccountNo as String (convert numeric value to string)
+				if (row.getCell(2).getCellType() == CellType.NUMERIC) {
+					bankDTO.setAccountNo(String.valueOf((long) row.getCell(2).getNumericCellValue()));
+				} else if (row.getCell(2).getCellType() == CellType.STRING) {
+					bankDTO.setAccountNo(row.getCell(2).getStringCellValue());
+				}
 
-	            // AccountName as String
-	            bankDTO.setAccountName(row.getCell(1).getStringCellValue());
+				// Bank as String
+				bankDTO.setBank(row.getCell(3).getStringCellValue());
 
-	            // AccountNo as String (convert numeric value to string)
-	            if (row.getCell(2).getCellType() == CellType.NUMERIC) {
-	                bankDTO.setAccountNo(String.valueOf((long) row.getCell(2).getNumericCellValue()));
-	            } else if (row.getCell(2).getCellType() == CellType.STRING) {
-	                bankDTO.setAccountNo(row.getCell(2).getStringCellValue());
-	            }
+				// Branch as String
+				bankDTO.setBranch(row.getCell(4).getStringCellValue());
 
-	            // Bank as String
-	            bankDTO.setBank(row.getCell(3).getStringCellValue());
+				// IFSC code as String
+				bankDTO.setIfscCode(row.getCell(5).getStringCellValue());
 
-	            // Branch as String
-	            bankDTO.setBranch(row.getCell(4).getStringCellValue());
+				// Ensure vendorBankDetailsDTO list is initialized before adding
+				if (vendorDTO.getVendorBankDetailsDTO() == null) {
+					vendorDTO.setVendorBankDetailsDTO(new ArrayList<>()); // Initialize the list if null
+				}
+				vendorDTO.getVendorBankDetailsDTO().add(bankDTO);
+			}
 
-	            // IFSC code as String
-	            bankDTO.setIfscCode(row.getCell(5).getStringCellValue());
-
-	            // Ensure vendorBankDetailsDTO list is initialized before adding
-	            if (vendorDTO.getVendorBankDetailsDTO() == null) {
-	                vendorDTO.setVendorBankDetailsDTO(new ArrayList<>());  // Initialize the list if null
-	            }
-	            vendorDTO.getVendorBankDetailsDTO().add(bankDTO);
-	        }
-
-	        // Loop through the DTO list and call createVendors for each entry
-	        for (VendorDTO vendor : vendorDTOList) {
-	            updateCreateVendor(vendor); // Assuming this method takes a single VendorDTO
-	        }
-	    }
+			// Loop through the DTO list and call createVendors for each entry
+			for (VendorDTO vendor : vendorDTOList) {
+				updateCreateVendor(vendor); // Assuming this method takes a single VendorDTO
+			}
+		}
 	}
 
-	
 	// Vendor
 	@Override
 	public VendorVO updateCreateVendor(VendorDTO vendorDTO) throws ApplicationException {
@@ -1992,7 +1994,7 @@ public class MasterServiceImpl implements MasterService {
 				throw new ApplicationException("Entity Legal Name already exists");
 			}
 			if (vendorRepo.existsByDisplyNameAndOrgId(vendorDTO.getDisplyName(), vendorDTO.getOrgId())) {
-				throw new ApplicationException("Display Name: "+vendorDTO.getDisplyName()+ " already exists");
+				throw new ApplicationException("Display Name: " + vendorDTO.getDisplyName() + " already exists");
 			}
 			vendorVO.setOrgId(vendorDTO.getOrgId());
 			vendorVO.setVenderType(vendorDTO.getVenderType().toUpperCase());
@@ -4412,5 +4414,157 @@ public class MasterServiceImpl implements MasterService {
 		// TODO Auto-generated method stub
 		return paymentAdviceRepo.findById(id).get();
 	}
+
+	@Override
+	public List<Map<String, Object>> createBinAllotmentfromMIM(List<BinAllotmentFromMIMDTO> binAllotmentFromMIMDTO) {
+
+		int allottedCount = 0;
+		List<Map<String, Object>> allotmentResults = new ArrayList<>();
+
+		for (BinAllotmentFromMIMDTO allotmentFromMIMDTO : binAllotmentFromMIMDTO) {
+			FlowVO flowVO = flowRepo.findById(allotmentFromMIMDTO.getFlowId()).get();
+			BinAllotmentNewVO allotmentNewVO = new BinAllotmentNewVO();
+
+			int finyr = binAllotmentNewRepo.getFinyr();
+			String binallotment = finyr + "BA" + binAllotmentNewRepo.finddocid();
+			allotmentNewVO.setDocId(binallotment);
+			binAllotmentNewRepo.nextDocseq();
+
+			allotmentNewVO.setAllotkKitQty(allotmentFromMIMDTO.getAllotKitQty());
+			allotmentNewVO.setBinReqDate(allotmentFromMIMDTO.getBinReqDate());
+			allotmentNewVO.setBinReqNo(allotmentFromMIMDTO.getBinReqNo());
+			allotmentNewVO.setCreatedBy(allotmentFromMIMDTO.getCreatedby());
+			allotmentNewVO.setModifiedBy(allotmentFromMIMDTO.getCreatedby());
+			allotmentNewVO.setDocDate(LocalDate.now());
+			allotmentNewVO.setEmitter(allotmentFromMIMDTO.getEmitter());
+			allotmentNewVO.setEmitterId(allotmentFromMIMDTO.getEmitterId());
+			allotmentNewVO.setFlow(allotmentFromMIMDTO.getFlow());
+			allotmentNewVO.setFlowId(allotmentFromMIMDTO.getFlowId());
+			allotmentNewVO.setKitCode(allotmentFromMIMDTO.getKitCode());
+			allotmentNewVO.setOrgId(allotmentFromMIMDTO.getOrgId());
+			allotmentNewVO.setReqKitQty(allotmentFromMIMDTO.getReqKitQty());
+			allotmentNewVO.setStockBranch(flowVO.getWarehouseLocation());
+
+			List<BinAllotmentDetailsVO> allotmentDetailsVOs = new ArrayList<>();
+			Set<Object[]> getKitDetails = binAllotmentNewRepo.getKitDetailsFromBinAllotmentMIM(
+					allotmentFromMIMDTO.getKitCode(), allotmentFromMIMDTO.getAllotKitQty());
+			for (Object[] kitDetails : getKitDetails) {
+				BinAllotmentDetailsVO allotmentDetailsVO = new BinAllotmentDetailsVO();
+				allotmentDetailsVO.setAsset(kitDetails[3].toString());
+				allotmentDetailsVO.setAssetCode(kitDetails[1].toString());
+				allotmentDetailsVO.setQty(Integer.parseInt(kitDetails[2].toString()));
+				allotmentDetailsVO.setBinAllotmentNewVO(allotmentNewVO);
+				allotmentDetailsVOs.add(allotmentDetailsVO);
+			}
+			allotmentNewVO.setBinAllotmentDetailsVO(allotmentDetailsVOs);
+
+			binAllotmentNewRepo.save(allotmentNewVO);
+			allottedCount++;
+
+			// Store each allotment result in the list with relevant details
+			Map<String, Object> resultMap = new HashMap<>();
+			resultMap.put("binReqNo", allotmentFromMIMDTO.getBinReqNo());
+			resultMap.put("kitCode", allotmentFromMIMDTO.getKitCode());
+			resultMap.put("allotKitQty", allotmentFromMIMDTO.getAllotKitQty());
+			allotmentResults.add(resultMap);
+		}
+
+		// Print or return final count as part of the result
+		Map<String, Object> summary = new HashMap<>();
+		summary.put("totalAllotted", allottedCount);
+		allotmentResults.add(summary);
+
+		return allotmentResults;
+	}
+
+	@Override
+	public List<Map<String, Object>> createBinRetrievalFromRIM(List<Long> rimId, String createdBy) {
+	    List<Map<String, Object>> responses = new ArrayList<>();
+	    int totalSavedCount = 0;
+	    
+	    for (Long rimIds : rimId) {
+	        Map<String, Object> response = new HashMap<>();
+	        try {
+	            RetrievalManifestProviderVO retrievalManifestProviderVO = retrievalManifestProviderRepo.findById(rimIds).orElse(null);
+	            
+	            if (retrievalManifestProviderVO == null) {
+	                response.put("error", "Rim ID " + rimIds + " not found.");
+	                responses.add(response);
+	                continue;
+	            }
+	            
+	            CustomersVO customersVO = customersRepo.findByDisplayNameAndOrgId(
+	                retrievalManifestProviderVO.getSender(),
+	                retrievalManifestProviderVO.getOrgId()
+	            );
+	            
+	            BinRetrievalVO binRetrievalVO = new BinRetrievalVO();
+	            binRetrievalVO.setDocId(retrievalManifestProviderVO.getTransactionNo());
+	            binRetrievalVO.setDocDate(retrievalManifestProviderVO.getTransactionDate());
+	            binRetrievalVO.setDriverPhoneNo(retrievalManifestProviderVO.getDriverPhoneNo());
+	            binRetrievalVO.setFromStockBranch(retrievalManifestProviderVO.getSender());
+	            binRetrievalVO.setToStockBranch(retrievalManifestProviderVO.getReceiver());
+	            binRetrievalVO.setOrgId(retrievalManifestProviderVO.getOrgId());
+	            binRetrievalVO.setModifiedby(createdBy);
+	            binRetrievalVO.setCreatedby(createdBy);
+	            binRetrievalVO.setVechicleNo(retrievalManifestProviderVO.getVehicleeNo());
+	            binRetrievalVO.setPickupDate(retrievalManifestProviderVO.getDispatchDate());
+	            binRetrievalVO.setTransPorter(retrievalManifestProviderVO.getTransporterName());
+	            
+	            List<BinRetrievalDetailsVO> binRetrievalDetailsVOs = new ArrayList<>();
+	            List<RetrievalManifestProviderDetailsVO> retrievalManifestProviderDetailsVOs = 
+	                retrievalManifestProviderVO.getRetrievalManifestProviderDetailsVOs();
+	            
+	            Map<String, Long> assetQtySums = retrievalManifestProviderDetailsVOs.stream()
+	            	    .collect(Collectors.groupingBy(
+	            	        RetrievalManifestProviderDetailsVO::getAssetCode,
+	            	        Collectors.summingLong(RetrievalManifestProviderDetailsVO::getAssetQty)
+	            	    ));
+	            
+	            for (Map.Entry<String, Long> entry : assetQtySums.entrySet()) {
+	                String assetCode = entry.getKey();
+	                Long totalQty = entry.getValue();
+
+	                AssetVO assetVO = assetRepo.findByAssetCodeIdAndOrgId(assetCode, retrievalManifestProviderVO.getOrgId());
+	                
+	                BinRetrievalDetailsVO binRetrievalDetailsVO = new BinRetrievalDetailsVO();
+	                binRetrievalDetailsVO.setAsset(assetVO.getAssetName());
+	                binRetrievalDetailsVO.setAssetCode(assetVO.getAssetCodeId());
+	                binRetrievalDetailsVO.setCategory(assetVO.getCategory());
+	                
+	                binRetrievalDetailsVO.setInvqty(totalQty.intValue());
+	                binRetrievalDetailsVO.setRecqty(totalQty.intValue());
+	                binRetrievalDetailsVO.setGrnqty(0);
+	                binRetrievalDetailsVO.setDamageQty(0);
+	                binRetrievalDetailsVO.setShortQty(0);
+	                binRetrievalDetailsVO.setBinRetrievalVO(binRetrievalVO);
+	                
+	                binRetrievalDetailsVOs.add(binRetrievalDetailsVO);
+	            }
+	            
+	            binRetrievalVO.setBinRetrievalDetailsVO(binRetrievalDetailsVOs);
+	            binRetrievalRepo.save(binRetrievalVO);
+	            
+	            // Update response with success message
+	            response.put("rimId", rimIds);
+	            response.put("status", "Success");
+	            totalSavedCount++;
+	        } catch (Exception e) {
+	            response.put("rimId", rimIds);
+	            response.put("error", "Failed to process Rim ID " + rimIds + " due to: " + e.getMessage());
+	        }
+	        
+	        // Add response for each rimId
+	        responses.add(response);
+	    }
+	    
+	    // Add final count of saved records
+	    Map<String, Object> summary = new HashMap<>();
+	    summary.put("totalSavedCount", totalSavedCount);
+	    responses.add(summary);
+	    
+	    return responses;
+	}
+
 
 }

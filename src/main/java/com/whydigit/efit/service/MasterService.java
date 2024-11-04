@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.whydigit.efit.dto.AssetCategoryDTO;
@@ -14,6 +15,7 @@ import com.whydigit.efit.dto.AssetInwardDTO;
 import com.whydigit.efit.dto.AssetTaggingDTO;
 import com.whydigit.efit.dto.AssetTypeDTO;
 import com.whydigit.efit.dto.BinAllotmentDTO;
+import com.whydigit.efit.dto.BinAllotmentFromMIMDTO;
 import com.whydigit.efit.dto.BinRetrievalDTO;
 import com.whydigit.efit.dto.BranchDTO;
 import com.whydigit.efit.dto.CnoteDTO;
@@ -68,6 +70,7 @@ import com.whydigit.efit.entity.VendorVO;
 //import com.whydigit.efit.entity.VenderVO;
 import com.whydigit.efit.exception.ApplicationException;
 
+@Service
 public interface MasterService {
 
 	List<AssetVO> getAllAsset(Long orgId);
@@ -424,8 +427,8 @@ public interface MasterService {
 		
 	PaymentAdviceVO getPaymentAdviceById(Long id);
 
+	List<Map<String, Object>> createBinAllotmentfromMIM(List<BinAllotmentFromMIMDTO> binAllotmentFromMIMDTO);
 	
-
 	
-
+	List<Map<String, Object>> createBinRetrievalFromRIM(List<Long> rimId, String createdBy);
 }

@@ -1595,6 +1595,33 @@ public class EmitterController extends BaseController {
 	    LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 	    return ResponseEntity.ok().body(responseDTO);
 	}
+	
+	@GetMapping("/getIssueRequestreportFromMIMByOrgId")
+	public ResponseEntity<ResponseDTO> getIssueRequestreportFromMIMByOrgId(@RequestParam(required = false) Long OrgId) {
+		String methodName = "getIssueRequestreportFromMIMByOrgId()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<Map<String,Object>> getIssueReport = new ArrayList<>();
+		try {
+			getIssueReport = emitterService.getIssueRequestFromMim(OrgId);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "IssueRequest  information get successfully");
+			responseObjectsMap.put("issueRequestVO", getIssueReport);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "IssueRequest  information receive failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+
+	}
 
 
 }

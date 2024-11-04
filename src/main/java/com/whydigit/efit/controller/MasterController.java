@@ -37,6 +37,7 @@ import com.whydigit.efit.dto.AssetInwardDTO;
 import com.whydigit.efit.dto.AssetTaggingDTO;
 import com.whydigit.efit.dto.AssetTypeDTO;
 import com.whydigit.efit.dto.BinAllotmentDTO;
+import com.whydigit.efit.dto.BinAllotmentFromMIMDTO;
 import com.whydigit.efit.dto.BinRetrievalDTO;
 import com.whydigit.efit.dto.BranchDTO;
 import com.whydigit.efit.dto.CnoteDTO;
@@ -3626,6 +3627,40 @@ public class MasterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
+	
+	@PostMapping("/binAllotmentFromMim")
+    public ResponseEntity<ResponseDTO> binAllotmentFromMim(@RequestBody List<BinAllotmentFromMIMDTO> binAllotmentFromMIMDTO) {
+        String methodName = "binAllotmentFromMim";
+        LOGGER.debug("Starting method: {}", methodName);
+
+        ResponseDTO responseDTO = new ResponseDTO();
+        Map<String, Object> responseObjectsMap = new HashMap<>();
+        
+        try {
+            // Call service method to process the allotment
+            List<Map<String, Object>> binAllotmentVO = masterService.createBinAllotmentfromMIM(binAllotmentFromMIMDTO);
+            
+            // Success response
+            responseObjectsMap.put("message", "Bin Allotment Created Successfully");
+            responseObjectsMap.put("allottedRequests", binAllotmentVO.size()-1);  // Number of allotments created
+            responseDTO.addAllObject(responseObjectsMap);
+            responseDTO.setStatus(true);
+            responseDTO.setStatusFlag(ResponseDTO.OK);
+
+        } catch (Exception e) {
+            String errorMsg = e.getMessage();
+            LOGGER.error("Error in {}: {}", methodName, errorMsg);
+            
+            // Error response
+            responseObjectsMap.put("errorMessage", "Bin Allotment Failed");
+            responseDTO.addAllObject(responseObjectsMap);
+            responseDTO.setStatus(false);
+            responseDTO.setStatusFlag(ResponseDTO.ERROR);
+        }
+
+        LOGGER.debug("Ending method: {}", methodName);
+        return ResponseEntity.ok(responseDTO);
+    }
 
 	@GetMapping("/getBranchLocationByFlow")
 	public ResponseEntity<ResponseDTO> getBranchLocationByFlow(@RequestParam Long orgId, @RequestParam Long flowId) {
@@ -4356,5 +4391,47 @@ public class MasterController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
+	
+	@PostMapping("/createBinRetrievalFromRIM")
+	public ResponseEntity<ResponseDTO> createBinRetrievalFromRIM(
+			@RequestParam List<Long> rimIds, 
+	        @RequestParam String createdBy) {
+	    
+	    String methodName = "createBinRetrievalFromRIM";
+	    LOGGER.debug("Starting method: {}", methodName);
+
+	    ResponseDTO responseDTO = new ResponseDTO();
+	    Map<String, Object> responseObjectsMap = new HashMap<>();
+	    
+	    try {
+	        // Call service method to process the bin retrieval
+	        List<Map<String, Object>> binRetrievalResponse = masterService.createBinRetrievalFromRIM(rimIds, createdBy);
+	        
+	        // Success response
+	        responseObjectsMap.put("message", "Bin Retrieval Created Successfully");
+	        responseObjectsMap.put("processedRequests", binRetrievalResponse.size() - 1);  // Exclude summary from the count
+	        responseObjectsMap.put("details", binRetrievalResponse);  // Include detailed response
+	        
+	        responseDTO.addAllObject(responseObjectsMap);
+	        responseDTO.setStatus(true);
+	        responseDTO.setStatusFlag(ResponseDTO.OK);
+
+	    } catch (Exception e) {
+	        String errorMsg = e.getMessage();
+	        LOGGER.error("Error in {}: {}", methodName, errorMsg);
+	        
+	        // Error response
+	        responseObjectsMap.put("errorMessage", "Bin Retrieval Creation Failed");
+	        responseObjectsMap.put("details", e.getMessage());
+	        
+	        responseDTO.addAllObject(responseObjectsMap);
+	        responseDTO.setStatus(false);
+	        responseDTO.setStatusFlag(ResponseDTO.ERROR);
+	    }
+
+	    LOGGER.debug("Ending method: {}", methodName);
+	    return ResponseEntity.ok(responseDTO);
+	}
+
 
 }

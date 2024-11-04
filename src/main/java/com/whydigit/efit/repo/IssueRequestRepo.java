@@ -83,5 +83,45 @@ public interface IssueRequestRepo
 
 	@Query(value = "select a from IssueRequestVO a where a.docId=?1 and a.orgId=?2")
 	IssueRequestVO findByDocIdAndOrgId(String transactionNo, Long orgId);
+
+	@Query(nativeQuery = true,value = "SELECT \r\n"
+			+ "    a.docid, \r\n"
+			+ "    a.docdate AS reqDate, \r\n"
+			+ "    a.emitter, \r\n"
+			+ "    a.emitterid, \r\n"
+			+ "    b.kitcode, \r\n"
+			+ "    b.kitqty AS reqKitQty, \r\n"
+			+ "    b.partno, \r\n"
+			+ "    b.partname, \r\n"
+			+ "    a.flow, \r\n"
+			+ "    a.flowid\r\n"
+			+ "FROM \r\n"
+			+ "    issuerequest a \r\n"
+			+ "JOIN \r\n"
+			+ "    issuerequest2 b \r\n"
+			+ "    ON a.issuerequestid = b.issuerequestid\r\n"
+			+ "JOIN \r\n"
+			+ "    users u \r\n"
+			+ "    ON FIND_IN_SET(a.whlocationid, u.access_warehouse) > 0 \r\n"
+			+ "WHERE \r\n"
+			+ "    CONCAT(a.docid, b.kitcode) NOT IN (SELECT CONCAT(binreqno, kitcode) FROM binallotment) \r\n"
+			+ "    AND a.orgid = ?1 and a.docid in (SELECT docid \r\n"
+			+ "FROM issuerequest \r\n"
+			+ "WHERE orgid = ?1 \r\n"
+			+ "  AND docID IN (\r\n"
+			+ "    SELECT transactionno \r\n"
+			+ "    FROM mim \r\n"
+			+ "    WHERE orgid = ?1 \r\n"
+			+ "    GROUP BY transactionno\r\n"
+			+ "  ) \r\n"
+			+ "  AND docid NOT IN (\r\n"
+			+ "    SELECT docid \r\n"
+			+ "    FROM binallotment \r\n"
+			+ "    WHERE orgid = ?1\r\n"
+			+ "  )\r\n"
+			+ "GROUP BY docid)\r\n"
+			+ "GROUP BY \r\n"
+			+ "    a.docid, a.docdate, a.emitter, a.emitterid, b.kitcode, b.kitqty, b.partno, b.partname, a.flow, a.flowid")
+	Set<Object[]> getIssueRequestReportFromMIM(Long orgId);
 	
 }

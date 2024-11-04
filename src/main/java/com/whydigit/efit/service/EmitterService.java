@@ -161,6 +161,8 @@ public interface EmitterService {
 	void uploadIssueRequestData(MultipartFile file, Long orgId, Long emitterId, String createdBy) throws Exception;
 
 	Map<String, Object> CreateIssueRequestFromMim(List<Long> mimIds, String createdBy);
+	
+	List<Map<String,Object>>getIssueRequestFromMim(Long orgId);
 
 	
 
