@@ -58,6 +58,7 @@ import com.whydigit.efit.entity.PaymentAdviceVO;
 import com.whydigit.efit.entity.PoVO;
 import com.whydigit.efit.entity.PodVO;
 import com.whydigit.efit.entity.ProofOfDeliveryVO;
+import com.whydigit.efit.entity.RetrievalManifestProviderVO;
 import com.whydigit.efit.entity.ServiceVO;
 import com.whydigit.efit.entity.StockBranchVO;
 import com.whydigit.efit.entity.TaxInvoiceVO;
@@ -431,4 +432,6 @@ public interface MasterService {
 	
 	
 	List<Map<String, Object>> createBinRetrievalFromRIM(List<Long> rimId, String createdBy);
+	
+	List<RetrievalManifestProviderVO>getPendingBinRetrievalDetails(Long orgId);
 }

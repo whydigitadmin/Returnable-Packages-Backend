@@ -81,6 +81,7 @@ import com.whydigit.efit.entity.PaymentAdviceVO;
 import com.whydigit.efit.entity.PoVO;
 import com.whydigit.efit.entity.PodVO;
 import com.whydigit.efit.entity.ProofOfDeliveryVO;
+import com.whydigit.efit.entity.RetrievalManifestProviderVO;
 import com.whydigit.efit.entity.ServiceVO;
 import com.whydigit.efit.entity.StockBranchVO;
 import com.whydigit.efit.entity.TaxInvoiceVO;
@@ -4433,5 +4434,30 @@ public class MasterController extends BaseController {
 	    return ResponseEntity.ok(responseDTO);
 	}
 
+	@GetMapping("/getPendingBinRetrievalFromRIM")
+	public ResponseEntity<ResponseDTO> getPendingBinRetrievalFromRIM(@RequestParam Long orgId) {
+		String methodName = "getPendingBinRetrievalFromRIM()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<RetrievalManifestProviderVO> retrievalManifestProviderVOs = new ArrayList<>();
+		try {
+			retrievalManifestProviderVOs=masterService.getPendingBinRetrievalDetails(orgId);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "RetrievalManifestProvider Information get successfully");
+			responseObjectsMap.put("retrievalManifestProviderVOs", retrievalManifestProviderVOs);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "RetrievalManifestProvider Information receive failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
 
 }

@@ -4566,5 +4566,11 @@ public class MasterServiceImpl implements MasterService {
 	    return responses;
 	}
 
+	@Override
+	public List<RetrievalManifestProviderVO> getPendingBinRetrievalDetails(Long orgId) {
+		
+		return retrievalManifestProviderRepo.findPendingBinRetrievalDetails(orgId);
+	}
+
 
 }
